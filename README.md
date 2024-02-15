@@ -7,7 +7,8 @@ The chance of agreeing and the payment that you could receive increases based on
 **Requirements:**      
 
  [Flower Girls](https://www.nexusmods.com/skyrimspecialedition/mods/5941)
-
+Or
+[Sexlab]
  
 
 **Recommended Mods:**
