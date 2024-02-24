@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+cp mrt_SimpleProstitution_english.txt mrt_SimpleProstitution_chinese.txt
+cp mrt_SimpleProstitution_english.txt mrt_SimpleProstitution_czech.txt
+cp mrt_SimpleProstitution_english.txt mrt_SimpleProstitution_french.txt
+cp mrt_SimpleProstitution_english.txt mrt_SimpleProstitution_german.txt
+cp mrt_SimpleProstitution_english.txt mrt_SimpleProstitution_italian.txt
+cp mrt_SimpleProstitution_english.txt mrt_SimpleProstitution_japanese.txt
+cp mrt_SimpleProstitution_english.txt mrt_SimpleProstitution_polish.txt
+cp mrt_SimpleProstitution_english.txt mrt_SimpleProstitution_russian.txt
+cp mrt_SimpleProstitution_english.txt mrt_SimpleProstitution_spanish.txt
