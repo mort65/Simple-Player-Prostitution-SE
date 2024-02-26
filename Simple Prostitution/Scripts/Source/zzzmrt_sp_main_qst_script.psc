@@ -1,6 +1,6 @@
 Scriptname zzzmrt_sp_main_qst_script extends Quest Conditional
 
-GlobalVariable property BeggerFailureChance auto
+GlobalVariable property BeggarFailureChance auto
 GlobalVariable property DibelFailureChance auto
 zzzmrt_sp_flowergirls_interface property FlowerGirlsInterface auto
 zzzmrt_sp_sexlab_interface property SexLabInterface auto
@@ -9,6 +9,8 @@ ReferenceAlias property Owner auto
 GlobalVariable property WhoreFailureChance auto
 Bool property bBeggingClothing=True auto Hidden Conditional
 Bool property bBeggingEnabled=True auto Hidden Conditional
+Bool property bPoorHelpBeggar=True auto Hidden Conditional
+Bool property bGuardHelpBeggar=False auto Hidden Conditional
 Bool property bDibelAgent=True auto Hidden Conditional
 Bool property bDibelCrown=True auto Hidden Conditional
 Bool property bDibelEnabled=True auto Hidden Conditional
@@ -23,7 +25,7 @@ Bool property bWhoreEnabled=True auto Hidden Conditional
 Bool property bWhoreNeedLicense=True auto Hidden Conditional
 ImageSpaceModifier property blackScreen auto
 Formlist property currentAllowedLocations auto
-Spell property customerBeggerSpell auto
+Spell property customerBeggarSpell auto
 Spell property customerSpell auto
 Float property fBegPayMax=5.0 auto Hidden Conditional
 Float property fBegPayMin=1.0 auto Hidden Conditional
@@ -109,6 +111,7 @@ int function haveSex(Actor akActor, String interface, int vaginalWeight = 50, in
       akActor.setAngle(0.0, 0.0, bed.getAngleZ())
       Utility.wait(1.0)
       blackScreen.PopTo(fadeIn)
+      Utility.wait(5.0)
     endif
   endif
   if interface == "sexlab"
@@ -151,15 +154,15 @@ Int function minInt(Int var1, Int var2)
   return var2
 endfunction
 
-function payBegger(Actor begger)
-  Int minBonus = maxInt(0, ((begger.getActorValue("Speechcraft") * fMinSpeechBegBonusMult) As Int) + 1)
-  Int maxBonus = maxInt(0, ((begger.getActorValue("Speechcraft") * fMaxSpeechBegBonusMult) As Int) + 1)
+function payBeggar(Actor beggar)
+  Int minBonus = maxInt(0, ((beggar.getActorValue("Speechcraft") * fMinSpeechBegBonusMult) As Int) + 1)
+  Int maxBonus = maxInt(0, ((beggar.getActorValue("Speechcraft") * fMaxSpeechBegBonusMult) As Int) + 1)
   minBonus = minInt(minBonus,maxBonus)
   maxBonus = maxInt(minBonus,maxBonus)
   int begPayMin = minInt(fBegPayMin As Int, fBegPayMax As Int)
   int begPayMax = maxInt(fBegPayMin As Int, fBegPayMax As Int)
   Int totalPay = maxInt(0, Utility.randomInt(begPayMin, BegPayMax) + Utility.randomInt(minBonus, maxBonus))
-  begger.Additem(gold, maxInt(0, totalPay))
+  beggar.Additem(gold, maxInt(0, totalPay))
 endfunction
 
 function payDibel(Actor Dibel, int position)
@@ -198,10 +201,10 @@ endfunction
 
 function playerBegTo(Actor akActor, Bool bPay=True)
   if akActor
-    customerBeggerSpell.Cast(akActor, akActor)
+    customerBeggarSpell.Cast(akActor, akActor)
   endif
   if bPay
-    payBegger(player)
+    payBeggar(player)
   endif
   setChance()
 endfunction
@@ -233,7 +236,7 @@ endfunction
 function setChance()
   WhoreFailureChance.SetValueInt(maxInt(0, 16 * MCMScript.iWhoreSpeechDifficulty))
   DibelFailureChance.SetValueInt(maxInt(0, 16 * MCMScript.iDibelSpeechDifficulty))
-  BeggerFailureChance.SetValueInt(maxInt(0, 16 * MCMScript.iBeggerSpeechDifficulty))
+  BeggarFailureChance.SetValueInt(maxInt(0, 16 * MCMScript.iBeggarSpeechDifficulty))
 endfunction
 
 

@@ -5,7 +5,7 @@ zzzmrt_sp_main_qst_script property MainScript auto
 Int property iAnimInterface auto Hidden
 Int Property iWhoreSpeechDifficulty=3 Auto Hidden
 Int Property iDibelSpeechDifficulty=2 Auto Hidden
-Int Property iBeggerSpeechDifficulty=4 Auto Hidden
+Int Property iBeggarSpeechDifficulty=4 Auto Hidden
 
 Int flag
 
@@ -76,11 +76,13 @@ event OnPageReset(String page)
       flag = OPTION_FLAG_DISABLED
     endif
     AddToggleOptionST("BEGGING_CLOTHING_TOGGLE", "$MRT_SP_BEGGING_CLOTHING_TOGGLE", MainScript.bBeggingClothing, flag)
+    AddToggleOptionST("BEG_POOR_HELP_TOGGLE", "$MRT_SP_BEG_POOR_HELP_TOGGLE", MainScript.bPoorHelpBeggar, flag)
+    AddToggleOptionST("BEG_GUARD_HELP_TOGGLE", "$MRT_SP_BEG_GUARD_HELP_TOGGLE", MainScript.bGuardHelpBeggar, flag)
     AddSliderOptionST("BEG_PAY_MIN_SLIDER", "$MRT_SP_BEG_PAY_MIN_SLIDER1", MainScript.fBegPayMin, "$MRT_SP_BEG_PAY_MIN_SLIDER2", flag)
     AddSliderOptionST("BEG_PAY_MAX_SLIDER", "$MRT_SP_BEG_PAY_MAX_SLIDER1", MainScript.fBegPayMax, "$MRT_SP_BEG_PAY_MAX_SLIDER2", flag)
     AddSliderOptionST("SPEECH_BEG_BONUS_MIN_MULT_SLIDER", "$MRT_SP_SPEECH_BEG_BONUS_MIN_MULT_SLIDER1", MainScript.fMinSpeechBegBonusMult, "$MRT_SP_SPEECH_BEG_BONUS_MIN_MULT_SLIDER2", flag)
     AddSliderOptionST("SPEECH_BEG_BONUS_MAX_MULT_SLIDER", "$MRT_SP_SPEECH_BEG_BONUS_MAX_MULT_SLIDER1", MainScript.fMaxSpeechBegBonusMult, "$MRT_SP_SPEECH_BEG_BONUS_MAX_MULT_SLIDER2", flag)
-    AddMenuOptionST("BEG_ACCEPT_DIFFICULTY_MENU", "$MRT_SP_BEG_ACCEPT_DIFFICULTY_MENU", sGetSpeechDifficultyArr()[iBeggerSpeechDifficulty], flag)
+    AddMenuOptionST("BEG_ACCEPT_DIFFICULTY_MENU", "$MRT_SP_BEG_ACCEPT_DIFFICULTY_MENU", sGetSpeechDifficultyArr()[iBeggarSpeechDifficulty], flag)
   elseif (page == "$MRT_SP_PAGE_PROSTITUTION")
     SetTitleText("$MRT_SP_PAGE_PROSTITUTION")
     AddHeaderOption("$MRT_SP_HEAD_WHORE")
@@ -242,13 +244,13 @@ state BEG_ACCEPT_DIFFICULTY_MENU
   endevent
 
   event OnMenuAcceptST(int index)
-    iBeggerSpeechDifficulty = index
-    SetMenuOptionValueST(sGetSpeechDifficultyArr()[iBeggerSpeechDifficulty], True)
+    iBeggarSpeechDifficulty = index
+    SetMenuOptionValueST(sGetSpeechDifficultyArr()[iBeggarSpeechDifficulty], True)
     MainScript.setChance()
   endevent
 
   event OnMenuOpenST()
-    SetMenuDialogStartIndex(iBeggerSpeechDifficulty)
+    SetMenuDialogStartIndex(iBeggarSpeechDifficulty)
     SetMenuDialogDefaultIndex(4)
     SetMenuDialogOptions(sGetSpeechDifficultyArr())
   endevent
@@ -287,6 +289,38 @@ state BEGGING_CLOTHING_TOGGLE
 
   event OnSelectST()
     MainScript.bBeggingClothing = !MainScript.bBeggingClothing
+    ForcePageReset()
+  endevent
+endstate
+
+state BEG_POOR_HELP_TOGGLE
+  event OnDefaultST()
+    MainScript.bPoorHelpBeggar = True
+    ForcePageReset()
+  endevent
+
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_BEG_POOR_HELP_TOGGLE")
+  endevent
+
+  event OnSelectST()
+    MainScript.bPoorHelpBeggar = !MainScript.bPoorHelpBeggar
+    ForcePageReset()
+  endevent
+endstate
+
+state BEG_GUARD_HELP_TOGGLE
+  event OnDefaultST()
+    MainScript.bGuardHelpBeggar = False
+    ForcePageReset()
+  endevent
+
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_BEG_GUARD_HELP_TOGGLE")
+  endevent
+
+  event OnSelectST()
+    MainScript.bGuardHelpBeggar = !MainScript.bGuardHelpBeggar
     ForcePageReset()
   endevent
 endstate
