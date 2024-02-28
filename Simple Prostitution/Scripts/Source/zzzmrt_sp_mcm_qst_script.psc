@@ -32,17 +32,17 @@ event OnPageReset(String page)
   SetCursorFillMode(TOP_TO_BOTTOM)
   if (page == "$MRT_SP_PAGE_DEBUG")
     SetTitleText("$MRT_SP_PAGE_DEBUG")
-    AddHeaderOption("$MRT_SP_HEAD_DEBUG")
-    AddToggleOptionST("MOD_TOGGLE", "$MRT_SP_MOD_TOGGLE", MainScript.bModEnabled)
+    _AddHeaderOption("$MRT_SP_HEAD_DEBUG")
+    _AddToggleOptionST("MOD_TOGGLE", "$MRT_SP_MOD_TOGGLE", MainScript.bModEnabled)
     SetCursorPosition(3)
     flag = OPTION_FLAG_DISABLED
-    AddTextOptionST("DEBUG_MOD_VERSION_TXT", "Simple Prostitution v" + MainScript.getCurrentVersion(), "", flag)
-    AddTextOptionST("DEBUG_SEXLAB_CHECK_TXT", "$sexlab", MainScript.bIsSexlabActive As String, flag)
-    AddTextOptionST("DEBUG_FLOWERGIRLS_CHECK_TXT", "$flowergirls", MainScript.bIsFlowerGirlsActive As String, flag)
-    AddTextOptionST("DEBUG_LICENSES_CHECK_TXT", "$licenses", MainScript.bIsLicensesActive() As String, flag)
+    _AddTextOptionST("DEBUG_MOD_VERSION_TXT", "Simple Prostitution v" + MainScript.getCurrentVersion(), "", flag)
+    _AddTextOptionST("DEBUG_SEXLAB_CHECK_TXT", "$sexlab", MainScript.bIsSexlabActive As String, flag)
+    _AddTextOptionST("DEBUG_FLOWERGIRLS_CHECK_TXT", "$flowergirls", MainScript.bIsFlowerGirlsActive As String, flag)
+    _AddTextOptionST("DEBUG_LICENSES_CHECK_TXT", "$licenses", MainScript.bIsLicensesActive() As String, flag)
   elseif (page == "$MRT_SP_PAGE_INTEGRATION")
     SetTitleText("$MRT_SP_PAGE_INTEGRATION")
-    AddHeaderOption("$MRT_SP_HEAD_INTEGRATION")
+    _AddHeaderOption("$MRT_SP_HEAD_INTEGRATION")
     if MainScript.bModEnabled && MainScript.bBeggingEnabled && (iGetCurAnimInterface() > -1)
       flag = OPTION_FLAG_NONE
     else
@@ -54,30 +54,30 @@ event OnPageReset(String page)
     else
       flag = OPTION_FLAG_DISABLED
     endif
-    AddToggleOptionST("WHORE_NEED_LICENSE_TOGGLE", "$MRT_SP_WHORE_NEED_LICENSE_TOGGLE", MainScript.bWhoreNeedLicense, flag)
+    _AddToggleOptionST("WHORE_NEED_LICENSE_TOGGLE", "$MRT_SP_WHORE_NEED_LICENSE_TOGGLE", MainScript.bWhoreNeedLicense, flag)
     if MainScript.bModEnabled && MainScript.bDibelEnabled
       flag = OPTION_FLAG_NONE
     else
       flag = OPTION_FLAG_DISABLED
     endif
-    AddToggleOptionST("DIBEL_NEED_LICENSE_TOGGLE", "$MRT_SP_DIBEL_NEED_LICENSE_TOGGLE", MainScript.bDibelNeedLicense, flag)
+    _AddToggleOptionST("DIBEL_NEED_LICENSE_TOGGLE", "$MRT_SP_DIBEL_NEED_LICENSE_TOGGLE", MainScript.bDibelNeedLicense, flag)
   elseif (page== "$MRT_SP_PAGE_BEGGING")
     SetTitleText("$MRT_SP_PAGE_BEGGING")
-    AddHeaderOption("$MRT_SP_HEAD_BEG")
+    _AddHeaderOption("$MRT_SP_HEAD_BEG")
     if (MainScript.bModEnabled)
       flag = OPTION_FLAG_NONE
     else
       flag = OPTION_FLAG_DISABLED
     endif
-    AddToggleOptionST("BEGGING_TOGGLE", "$MRT_SP_BEGGING_TOGGLE", MainScript.bBeggingEnabled, flag)
+    _AddToggleOptionST("BEGGING_TOGGLE", "$MRT_SP_BEGGING_TOGGLE", MainScript.bBeggingEnabled, flag)
     if (MainScript.bModEnabled && MainScript.bBeggingEnabled)
       flag = OPTION_FLAG_NONE
     else
       flag = OPTION_FLAG_DISABLED
     endif
-    AddToggleOptionST("BEGGING_CLOTHING_TOGGLE", "$MRT_SP_BEGGING_CLOTHING_TOGGLE", MainScript.bBeggingClothing, flag)
-    AddToggleOptionST("BEG_POOR_HELP_TOGGLE", "$MRT_SP_BEG_POOR_HELP_TOGGLE", MainScript.bPoorHelpBeggar, flag)
-    AddToggleOptionST("BEG_GUARD_HELP_TOGGLE", "$MRT_SP_BEG_GUARD_HELP_TOGGLE", MainScript.bGuardHelpBeggar, flag)
+    _AddToggleOptionST("BEGGING_CLOTHING_TOGGLE", "$MRT_SP_BEGGING_CLOTHING_TOGGLE", MainScript.bBeggingClothing, flag)
+    _AddToggleOptionST("BEG_POOR_HELP_TOGGLE", "$MRT_SP_BEG_POOR_HELP_TOGGLE", MainScript.bPoorHelpBeggar, flag)
+    _AddToggleOptionST("BEG_GUARD_HELP_TOGGLE", "$MRT_SP_BEG_GUARD_HELP_TOGGLE", MainScript.bGuardHelpBeggar, flag)
     AddSliderOptionST("BEG_PAY_MIN_SLIDER", "$MRT_SP_BEG_PAY_MIN_SLIDER1", MainScript.fBegPayMin, "$MRT_SP_BEG_PAY_MIN_SLIDER2", flag)
     AddSliderOptionST("BEG_PAY_MAX_SLIDER", "$MRT_SP_BEG_PAY_MAX_SLIDER1", MainScript.fBegPayMax, "$MRT_SP_BEG_PAY_MAX_SLIDER2", flag)
     AddSliderOptionST("SPEECH_BEG_BONUS_MIN_MULT_SLIDER", "$MRT_SP_SPEECH_BEG_BONUS_MIN_MULT_SLIDER1", MainScript.fMinSpeechBegBonusMult, "$MRT_SP_SPEECH_BEG_BONUS_MIN_MULT_SLIDER2", flag)
@@ -85,20 +85,20 @@ event OnPageReset(String page)
     AddMenuOptionST("BEG_ACCEPT_DIFFICULTY_MENU", "$MRT_SP_BEG_ACCEPT_DIFFICULTY_MENU", sGetSpeechDifficultyArr()[iBeggarSpeechDifficulty], flag)
   elseif (page == "$MRT_SP_PAGE_PROSTITUTION")
     SetTitleText("$MRT_SP_PAGE_PROSTITUTION")
-    AddHeaderOption("$MRT_SP_HEAD_WHORE")
+    _AddHeaderOption("$MRT_SP_HEAD_WHORE")
     if (MainScript.bModEnabled)
       flag = OPTION_FLAG_NONE
     else
       flag = OPTION_FLAG_DISABLED
     endif
-    AddToggleOptionST("WHORE_TOGGLE", "$MRT_SP_WHORE_TOGGLE", MainScript.bWhoreEnabled, flag)
+    _AddToggleOptionST("WHORE_TOGGLE", "$MRT_SP_WHORE_TOGGLE", MainScript.bWhoreEnabled, flag)
     if (MainScript.bModEnabled && MainScript.bWhoreEnabled)
       flag = OPTION_FLAG_NONE
     else
       flag = OPTION_FLAG_DISABLED
     endif
-    AddToggleOptionST("WHORE_CLOTHING_TOGGLE", "$MRT_SP_WHORE_CLOTHING_TOGGLE", MainScript.bWhoreClothing, flag)
-    AddToggleOptionST("BED_TELEPORT_TOGGLE", "$MRT_SP_BED_TELEPORT_TOGGLE", MainScript.bTeleportToBed, flag)
+    _AddToggleOptionST("WHORE_CLOTHING_TOGGLE", "$MRT_SP_WHORE_CLOTHING_TOGGLE", MainScript.bWhoreClothing, flag)
+    _AddToggleOptionST("BED_TELEPORT_TOGGLE", "$MRT_SP_BED_TELEPORT_TOGGLE", MainScript.bTeleportToBed, flag)
     AddSliderOptionST("WHORE_ORAL_CHANCE_SLIDER", "$MRT_SP_WHORE_ORAL_CHANCE_SLIDER1", MainScript.fWhoreOralChance, "$MRT_SP_WHORE_ORAL_CHANCE_SLIDER2", flag)
     AddSliderOptionST("WHORE_ANAL_CHANCE_SLIDER", "$MRT_SP_WHORE_ANAL_CHANCE_SLIDER1", MainScript.fWhoreAnalChance, "$MRT_SP_WHORE_ANAL_CHANCE_SLIDER2", flag)
     AddSliderOptionST("WHORE_VAG_CHANCE_SLIDER", "$MRT_SP_WHORE_VAG_CHANCE_SLIDER1", MainScript.fWhoreVagChance, "$MRT_SP_WHORE_VAG_CHANCE_SLIDER2", flag)
@@ -109,21 +109,21 @@ event OnPageReset(String page)
     AddSliderOptionST("SPEECH_WHORE_BONUS_MAX_MULT_SLIDER", "$MRT_SP_SPEECH_WHORE_BONUS_MAX_MULT_SLIDER1", MainScript.fMaxSpeechWhoreBonusMult, "$MRT_SP_SPEECH_WHORE_BONUS_MAX_MULT_SLIDER2", flag)
     AddMenuOptionST("WHORE_ACCEPT_DIFFICULTY_MENU", "$MRT_SP_WHORE_ACCEPT_DIFFICULTY_MENU", sGetSpeechDifficultyArr()[iWhoreSpeechDifficulty], flag)
     SetCursorPosition(1)
-    AddHeaderOption("$MRT_SP_HEAD_DIBEL")
+    _AddHeaderOption("$MRT_SP_HEAD_DIBEL")
     if (MainScript.bModEnabled)
       flag = OPTION_FLAG_NONE
     else
       flag = OPTION_FLAG_DISABLED
     endif
-    AddToggleOptionST("DIBEL_TOGGLE", "$MRT_SP_DIBEL_TOGGLE", MainScript.bDibelEnabled, flag)
+    _AddToggleOptionST("DIBEL_TOGGLE", "$MRT_SP_DIBEL_TOGGLE", MainScript.bDibelEnabled, flag)
     if (MainScript.bModEnabled && MainScript.bDibelEnabled)
       flag = OPTION_FLAG_NONE
     else
       flag = OPTION_FLAG_DISABLED
     endif
-    AddToggleOptionST("DIBEL_AGENT_TOGGLE", "$MRT_SP_DIBEL_AGENT_TOGGLE", MainScript.bDibelAgent, flag)
-    AddToggleOptionST("DIBEL_CROWN_TOGGLE", "$MRT_SP_DIBEL_CROWN_TOGGLE", MainScript.bDibelCrown, flag)
-    AddToggleOptionST("DIBEL_NAKED_TOGGLE", "$MRT_SP_DIBEL_NAKED_TOGGLE", MainScript.bDibelNaked, flag)
+    _AddToggleOptionST("DIBEL_AGENT_TOGGLE", "$MRT_SP_DIBEL_AGENT_TOGGLE", MainScript.bDibelAgent, flag)
+    _AddToggleOptionST("DIBEL_CROWN_TOGGLE", "$MRT_SP_DIBEL_CROWN_TOGGLE", MainScript.bDibelCrown, flag)
+    _AddToggleOptionST("DIBEL_NAKED_TOGGLE", "$MRT_SP_DIBEL_NAKED_TOGGLE", MainScript.bDibelNaked, flag)
     AddSliderOptionST("DIBEL_ORAL_CHANCE_SLIDER", "$MRT_SP_DIBEL_ORAL_CHANCE_SLIDER1", MainScript.fDibelOralPay, "$MRT_SP_DIBEL_ORAL_CHANCE_SLIDER2", flag)
     AddSliderOptionST("DIBEL_ANAL_CHANCE_SLIDER", "$MRT_SP_DIBEL_ANAL_CHANCE_SLIDER1", MainScript.fDibelAnalChance, "$MRT_SP_DIBEL_ANAL_CHANCE_SLIDER2", flag)
     AddSliderOptionST("DIBEL_VAG_CHANCE_SLIDER", "$MRT_SP_DIBEL_VAG_CHANCE_SLIDER1", MainScript.fDibelVagChance, "$MRT_SP_DIBEL_VAG_CHANCE_SLIDER2", flag)
@@ -205,7 +205,7 @@ state ANIM_INTERFACE_MENU
 
   event OnMenuAcceptST(int index)
     iAnimInterface = index
-    SetMenuOptionValueST(sGetAnimInerfaceArr()[iAnimInterface], True)
+    _SetMenuOptionValueST(sGetAnimInerfaceArr()[iAnimInterface], True)
   endevent
 
   event OnMenuOpenST()
@@ -224,7 +224,7 @@ state WHORE_ACCEPT_DIFFICULTY_MENU
 
   event OnMenuAcceptST(int index)
     iWhoreSpeechDifficulty = index
-    SetMenuOptionValueST(sGetSpeechDifficultyArr()[iWhoreSpeechDifficulty], True)
+    _SetMenuOptionValueST(sGetSpeechDifficultyArr()[iWhoreSpeechDifficulty], True)
     MainScript.setChance()
   endevent
 
@@ -245,7 +245,7 @@ state BEG_ACCEPT_DIFFICULTY_MENU
 
   event OnMenuAcceptST(int index)
     iBeggarSpeechDifficulty = index
-    SetMenuOptionValueST(sGetSpeechDifficultyArr()[iBeggarSpeechDifficulty], True)
+    _SetMenuOptionValueST(sGetSpeechDifficultyArr()[iBeggarSpeechDifficulty], True)
     MainScript.setChance()
   endevent
 
@@ -266,7 +266,7 @@ state DIBEL_ACCEPT_DIFFICULTY_MENU
 
   event OnMenuAcceptST(int index)
     iDibelSpeechDifficulty = index
-    SetMenuOptionValueST(sGetSpeechDifficultyArr()[iDibelSpeechDifficulty], True)
+    _SetMenuOptionValueST(sGetSpeechDifficultyArr()[iDibelSpeechDifficulty], True)
     MainScript.setChance()
   endevent
 
@@ -351,7 +351,7 @@ state BEG_PAY_MAX_SLIDER
 
   event OnSliderAcceptST(float value)
     MainScript.fBegPayMin = value
-    SetSliderOptionValueST(MainScript.fBegPayMax, "$MRT_SP_BEG_PAY_MAX_SLIDER2")
+    _SetSliderOptionValueST(MainScript.fBegPayMax, "$MRT_SP_BEG_PAY_MAX_SLIDER2")
   endevent
 	
 	event OnSliderOpenST()
@@ -373,7 +373,7 @@ state BEG_PAY_MIN_SLIDER
 
   event OnSliderAcceptST(float value)
     MainScript.fBegPayMin = value
-    SetSliderOptionValueST(MainScript.fBegPayMin, "$MRT_SP_BEG_PAY_MIN_SLIDER2")
+    _SetSliderOptionValueST(MainScript.fBegPayMin, "$MRT_SP_BEG_PAY_MIN_SLIDER2")
   endevent
 
   event OnSliderOpenST()
@@ -410,7 +410,7 @@ state DIBEL_ANAL_PAY_SLIDER
 
   event OnSliderAcceptST(float value)
     MainScript.fDibelAnalPay = value
-    SetSliderOptionValueST(MainScript.fDibelAnalPay, "$MRT_SP_DIBEL_ANAL_PAY_SLIDER2")
+    _SetSliderOptionValueST(MainScript.fDibelAnalPay, "$MRT_SP_DIBEL_ANAL_PAY_SLIDER2")
   endevent
 
   event OnSliderOpenST()
@@ -431,7 +431,7 @@ state DIBEL_ANAL_CHANCE_SLIDER
 
   event OnSliderAcceptST(float value)
     MainScript.fDibelAnalChance = value
-    SetSliderOptionValueST(MainScript.fDibelAnalChance, "$MRT_SP_DIBEL_ANAL_CHANCE_SLIDER2")
+    _SetSliderOptionValueST(MainScript.fDibelAnalChance, "$MRT_SP_DIBEL_ANAL_CHANCE_SLIDER2")
   endevent
 
   event OnSliderOpenST()
@@ -484,7 +484,7 @@ state DIBEL_ORAL_PAY_SLIDER
 
   event OnSliderAcceptST(float value)
     MainScript.fDibelOralPay = value
-    SetSliderOptionValueST(MainScript.fDibelOralPay, "$MRT_SP_DIBEL_ORAL_PAY_SLIDER2")
+    _SetSliderOptionValueST(MainScript.fDibelOralPay, "$MRT_SP_DIBEL_ORAL_PAY_SLIDER2")
   endevent
 
   event OnSliderOpenST()
@@ -505,7 +505,7 @@ state DIBEL_ORAL_CHANCE_SLIDER
 
   event OnSliderAcceptST(float value)
     MainScript.fDibelOralChance = value
-    SetSliderOptionValueST(MainScript.fDibelOralChance, "$MRT_SP_DIBEL_ORAL_CHANCE_SLIDER2")
+    _SetSliderOptionValueST(MainScript.fDibelOralChance, "$MRT_SP_DIBEL_ORAL_CHANCE_SLIDER2")
   endevent
 
   event OnSliderOpenST()
@@ -542,7 +542,7 @@ state DIBEL_VAG_PAY_SLIDER
 
   event OnSliderAcceptST(float value)
     MainScript.fDibelAnalPay = value
-    SetSliderOptionValueST(MainScript.fDibelVagPay, "$MRT_SP_DIBEL_VAG_PAY_SLIDER2")
+    _SetSliderOptionValueST(MainScript.fDibelVagPay, "$MRT_SP_DIBEL_VAG_PAY_SLIDER2")
   endevent
 
   event OnSliderOpenST()
@@ -563,7 +563,7 @@ state DIBEL_VAG_CHANCE_SLIDER
 
   event OnSliderAcceptST(float value)
     MainScript.fDibelVagChance = value
-    SetSliderOptionValueST(MainScript.fDibelVagChance, "$MRT_SP_DIBEL_VAG_CHANCE_SLIDER2")
+    _SetSliderOptionValueST(MainScript.fDibelVagChance, "$MRT_SP_DIBEL_VAG_CHANCE_SLIDER2")
   endevent
 
   event OnSliderOpenST()
@@ -598,7 +598,7 @@ state SPEECH_BEG_BONUS_MAX_MULT_SLIDER
 
   event OnSliderAcceptST(float value)
     MainScript.fMaxSpeechBegBonusMult = value
-    SetSliderOptionValueST(MainScript.fMaxSpeechBegBonusMult, "$MRT_SP_SPEECH_BEG_BONUS_MAX_MULT_SLIDER2")
+    _SetSliderOptionValueST(MainScript.fMaxSpeechBegBonusMult, "$MRT_SP_SPEECH_BEG_BONUS_MAX_MULT_SLIDER2")
   endevent
  
   event OnSliderOpenST()
@@ -619,7 +619,7 @@ state SPEECH_BEG_BONUS_MIN_MULT_SLIDER
 
   event OnSliderAcceptST(float value)
     MainScript.fMinSpeechBegBonusMult = value
-    SetSliderOptionValueST(MainScript.fMinSpeechBegBonusMult, "$MRT_SP_SPEECH_BEG_BONUS_MIN_MULT_SLIDER2")
+    _SetSliderOptionValueST(MainScript.fMinSpeechBegBonusMult, "$MRT_SP_SPEECH_BEG_BONUS_MIN_MULT_SLIDER2")
   endevent
 
   event OnSliderOpenST()
@@ -640,7 +640,7 @@ state SPEECH_DIBEL_BONUS_MAX_MULT_SLIDER
 
   event OnSliderAcceptST(float value)
     MainScript.fMaxSpeechDibelBonusMult = value
-    SetSliderOptionValueST(MainScript.fMaxSpeechDibelBonusMult, "$MRT_SP_SPEECH_DIBEL_BONUS_MAX_MULT_SLIDER2")
+    _SetSliderOptionValueST(MainScript.fMaxSpeechDibelBonusMult, "$MRT_SP_SPEECH_DIBEL_BONUS_MAX_MULT_SLIDER2")
   endevent
 
   event OnSliderOpenST()
@@ -661,7 +661,7 @@ state SPEECH_DIBEL_BONUS_MIN_MULT_SLIDER
 
   event OnSliderAcceptST(float value)
     MainScript.fMinSpeechDibelBonusMult = value
-    SetSliderOptionValueST(MainScript.fMinSpeechDibelBonusMult, "$MRT_SP_SPEECH_DIBEL_BONUS_MIN_MULT_SLIDER2")
+    _SetSliderOptionValueST(MainScript.fMinSpeechDibelBonusMult, "$MRT_SP_SPEECH_DIBEL_BONUS_MIN_MULT_SLIDER2")
   endevent
 
   event OnSliderOpenST()
@@ -682,7 +682,7 @@ state SPEECH_WHORE_BONUS_MAX_MULT_SLIDER
 
   event OnSliderAcceptST(float value)
     MainScript.fMaxSpeechWhoreBonusMult = value
-    SetSliderOptionValueST(MainScript.fMaxSpeechWhoreBonusMult, "$MRT_SP_SPEECH_WHORE_BONUS_MAX_MULT_SLIDER2")
+    _SetSliderOptionValueST(MainScript.fMaxSpeechWhoreBonusMult, "$MRT_SP_SPEECH_WHORE_BONUS_MAX_MULT_SLIDER2")
   endevent
 
   event OnSliderOpenST()
@@ -703,7 +703,7 @@ state SPEECH_WHORE_BONUS_MIN_MULT_SLIDER
 
   event OnSliderAcceptST(float value)
     MainScript.fMinSpeechWhoreBonusMult = value
-    SetSliderOptionValueST(MainScript.fMinSpeechWhoreBonusMult, "$MRT_SP_SPEECH_WHORE_BONUS_MIN_MULT_SLIDER2")
+    _SetSliderOptionValueST(MainScript.fMinSpeechWhoreBonusMult, "$MRT_SP_SPEECH_WHORE_BONUS_MIN_MULT_SLIDER2")
   endevent
 
   event OnSliderOpenST()
@@ -724,7 +724,7 @@ state WHORE_ANAL_PAY_SLIDER
 
   event OnSliderAcceptST(float value)
     MainScript.fWhoreAnalPay = value
-    SetSliderOptionValueST(MainScript.fWhoreAnalPay, "$MRT_SP_WHORE_ANAL_PAY_SLIDER2")
+    _SetSliderOptionValueST(MainScript.fWhoreAnalPay, "$MRT_SP_WHORE_ANAL_PAY_SLIDER2")
   endevent
 
   event OnSliderOpenST()
@@ -745,7 +745,7 @@ state WHORE_ANAL_CHANCE_SLIDER
 
   event OnSliderAcceptST(float value)
     MainScript.fWhoreAnalChance = value
-    SetSliderOptionValueST(MainScript.fWhoreAnalChance, "$MRT_SP_WHORE_ANAL_CHANCE_SLIDER2")
+    _SetSliderOptionValueST(MainScript.fWhoreAnalChance, "$MRT_SP_WHORE_ANAL_CHANCE_SLIDER2")
   endevent
 
   event OnSliderOpenST()
@@ -830,7 +830,7 @@ state WHORE_ORAL_PAY_SLIDER
 
   event OnSliderAcceptST(float value)
     MainScript.fWhoreOralPay = value
-    SetSliderOptionValueST(MainScript.fWhoreOralPay, "$MRT_SP_WHORE_ORAL_PAY_SLIDER2")
+    _SetSliderOptionValueST(MainScript.fWhoreOralPay, "$MRT_SP_WHORE_ORAL_PAY_SLIDER2")
   endevent
 
   event OnSliderOpenST()
@@ -851,7 +851,7 @@ state WHORE_ORAL_CHANCE_SLIDER
 
   event OnSliderAcceptST(float value)
     MainScript.fWhoreOralChance = value
-    SetSliderOptionValueST(MainScript.fWhoreOralChance, "$MRT_SP_WHORE_ORAL_CHANCE_SLIDER2")
+    _SetSliderOptionValueST(MainScript.fWhoreOralChance, "$MRT_SP_WHORE_ORAL_CHANCE_SLIDER2")
   endevent
 
   event OnSliderOpenST()
@@ -888,7 +888,7 @@ state WHORE_VAG_PAY_SLIDER
 
   event OnSliderAcceptST(float value)
     MainScript.fWhoreVagPay = value
-    SetSliderOptionValueST(MainScript.fWhoreVagPay, "$MRT_SP_WHORE_VAG_PAY_SLIDER2")
+    _SetSliderOptionValueST(MainScript.fWhoreVagPay, "$MRT_SP_WHORE_VAG_PAY_SLIDER2")
   endevent
 
   event OnSliderOpenST()
@@ -909,7 +909,7 @@ state WHORE_VAG_CHANCE_SLIDER
 
   event OnSliderAcceptST(float value)
     MainScript.fWhoreVagChance = value
-    SetSliderOptionValueST(MainScript.fWhoreVagChance, "$MRT_SP_WHORE_VAG_CHANCE_SLIDER2")
+    _SetSliderOptionValueST(MainScript.fWhoreVagChance, "$MRT_SP_WHORE_VAG_CHANCE_SLIDER2")
   endevent
 
   event OnSliderOpenST()
@@ -931,3 +931,31 @@ endstate
 
 State DEBUG_LICENSES_CHECK_TXT
 endstate
+
+function _AddHeaderOption(string a_text, int a_flags=0)
+  AddHeaderOption(a_text, a_flags)
+endfunction
+
+function _AddTextOptionST(string stateName, string text, string value, int flags = 0)
+  AddTextOptionST(stateName, text, value, flags)
+endfunction
+
+function _SetMenuOptionValueST(string value, bool noUpdate = false, string stateName = "")
+  SetMenuOptionValueST(value, noUpdate, stateName)
+endfunction
+
+function _SetOptionFlagsST(int flags, bool noUpdate = false, string stateName = "")
+  SetOptionFlagsST(flags, noUpdate, stateName)
+endfunction
+
+function  _SetSliderOptionValueST(float value, string formatString = "{0}", bool noUpdate = false, string stateName = "")
+  SetSliderOptionValueST(value, formatString, noUpdate, stateName)
+endfunction
+
+function _SetTextOptionValueST(string value, bool noUpdate = false, string stateName = "")
+  SetTextOptionValueST(value, noUpdate, stateName)
+endfunction
+
+function _AddToggleOptionST(string stateName, string text, bool checked, int flags = 0)
+  AddToggleOptionST(stateName, text, checked, flags)
+endFunction
