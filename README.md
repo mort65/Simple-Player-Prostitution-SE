@@ -12,7 +12,8 @@ If Game version < 1.6.1130: [Backported Extended ESL Support](https://www.nexusm
 Or
 Sexlab
 
-Optional: 
+
+**Optional:** 
 
 [Licenses - Player Oppression](https://www.nexusmods.com/skyrimspecialedition/mods/110418?tab=description)
  
