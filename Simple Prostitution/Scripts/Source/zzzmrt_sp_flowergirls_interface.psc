@@ -14,14 +14,6 @@ Bool function GetIsInterfaceActive()
   return false
 endfunction
 
-;returns and function parameterss should not be a type that doesn't exist without the optional mod like dxSceneThread!!!
-;event OnInit()
-;  Debug.trace("Simple Prostitution: OnInit() trigged for " + self)
-;  RegisterForModEvent("MOA_Int_PlayerLoadsGame", "On_MOA_Int_PlayerLoadsGame")
-;endevent
-;event On_MOA_Int_PlayerLoadsGame(string eventName, string strArg, float numArg, Form sender)
-;  PlayerLoadsGame()
-;endevent
 function PlayerLoadsGame()
   Debug.trace("Simple Prostitution: PlayerLoadsGame() triggered for " + self)
 

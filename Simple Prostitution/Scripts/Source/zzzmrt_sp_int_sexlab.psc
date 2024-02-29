@@ -13,7 +13,6 @@ int function haveSexWithPlayerSL(Quest SexLabQuestFramework, Actor Partner, Int 
   sslBaseAnimation[] anims
   actor[] sexActors = new actor[2]
   actor player = Game.GetPlayer()
-  int playerSex = player.GetActorBase().GetSex()
   if player.GetActorBase().GetSex() == 1
     sexActors[0] = player
     sexActors[1] = Partner
