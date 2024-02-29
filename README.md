@@ -11,6 +11,8 @@ If Game version < 1.6.1130: [Backported Extended ESL Support](https://www.nexusm
 [Flower Girls](https://www.nexusmods.com/skyrimspecialedition/mods/5941)
 Or
 Sexlab
+
+Optional: [Licenses - Player Oppression](https://www.nexusmods.com/skyrimspecialedition/mods/110418?tab=description)
  
 
 **Recommended Mods:**
