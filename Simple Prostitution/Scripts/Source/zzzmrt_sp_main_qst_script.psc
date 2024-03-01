@@ -89,7 +89,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-  return getBaseVersion() + 0.05
+  return getBaseVersion() + 0.06
 endfunction
 
 int function haveSex(Actor akActor, String interface, int vaginalWeight = 50, int analWeight=50, int oralWeight = 50)
