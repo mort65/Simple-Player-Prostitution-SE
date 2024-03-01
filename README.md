@@ -1,7 +1,7 @@
 # Simple-Player-Prostitution-SE
 
-You can make money in the temple of Dibella or Taverns after renting a room and asking permission from the Innkeeper or by begging.
-The chance of agreeing and the payment that you could receive increases based on your Speech skill.
+You can make money in the temple of Dibella or Taverns as a prostitute, after renting a room and asking permission from Innkeepers,
+or everywhere as a dibellan or a beggar. The payment that you could receive increases based on your Speech skill. 
 
 
 **Requirements:**      
