@@ -23,6 +23,7 @@ Bool property bTeleportToBed=False auto Hidden Conditional
 Bool property bWhoreClothing=False auto Hidden Conditional
 Bool property bWhoreEnabled=True auto Hidden Conditional
 Bool property bWhoreNeedLicense=True auto Hidden Conditional
+Bool Property bIsPapyrusUtilActive=False Auto Hidden
 ImageSpaceModifier property blackScreen auto
 Formlist property currentAllowedLocations auto
 Spell property customerBeggarSpell auto
@@ -89,7 +90,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-  return getBaseVersion() + 0.06
+  return getBaseVersion() + 0.07
 endfunction
 
 int function haveSex(Actor akActor, String interface, int vaginalWeight = 50, int analWeight=50, int oralWeight = 50)
@@ -244,7 +245,7 @@ Bool Function bIsLicensesActive()
   return Game.IsPluginInstalled("Licenses.esp")
 endfunction
 
-int function positionChooser(int vaginalWeight = 50, int AnalWeight = 50, int oralWeight = 50)
+Int function positionChooser(int vaginalWeight = 50, int AnalWeight = 50, int oralWeight = 50)
   if (vaginalWeight < 1) && (AnalWeight < 1) && (oralWeight < 1)
     return -1
   endif
@@ -267,3 +268,7 @@ int function positionChooser(int vaginalWeight = 50, int AnalWeight = 50, int or
   endWhile
   return -1
 endfunction
+
+Bool Function bCheckPapyrusUtil()
+  return papyrusutil.GetVersion() > 31
+EndFunction

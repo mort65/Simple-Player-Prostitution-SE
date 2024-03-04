@@ -2,7 +2,7 @@ Scriptname zzzmrt_sp_int_sexlab Hidden
 
 int function haveSexWithPlayerSL(Quest SexLabQuestFramework, Actor Partner, Int Position, ObjectReference CenterOn=none, bool AllowBed=true, string Hook="") Global
   if position < 0
-	return -1
+	  return -1
   endif
   SexLabFramework SexLab = SexLabQuestFramework As SexLabFramework
   if !SexLab.Enabled

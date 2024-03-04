@@ -7,11 +7,14 @@ Int Property iWhoreSpeechDifficulty=3 Auto Hidden
 Int Property iDibelSpeechDifficulty=2 Auto Hidden
 Int Property iBeggarSpeechDifficulty=4 Auto Hidden
 
+String settings_path = "..\\simple-prostitution\\user-settings"
+
 Int flag
 
 event OnConfigInit()
   ModName = "Simple Prostitution"
   initPages()
+  loadSettingsAtStart()
 endevent
 
 function initPages()
@@ -34,9 +37,23 @@ event OnPageReset(String page)
     SetTitleText("$MRT_SP_PAGE_DEBUG")
     _AddHeaderOption("$MRT_SP_HEAD_DEBUG")
     _AddToggleOptionST("MOD_TOGGLE", "$MRT_SP_MOD_TOGGLE", MainScript.bModEnabled)
-    SetCursorPosition(3)
+    if MainScript.bIsPapyrusUtilActive && jsonutil.JsonExists(settings_path)
+      flag = OPTION_FLAG_NONE
+    else
+      flag = OPTION_FLAG_DISABLED
+    endIf
+    _AddTextOptionST("LOAD_USER_SETTINGS_TXT", "Load Settings", "Go", flag)
+    if MainScript.bIsPapyrusUtilActive
+      flag = OPTION_FLAG_NONE
+    else
+      flag = OPTION_FLAG_DISABLED
+    endIf
+    _AddTextOptionST("SAVE_USER_SETTINGS_TXT", "Save Settings", "Go", flag)    
+    SetCursorPosition(1)
     flag = OPTION_FLAG_DISABLED
     _AddTextOptionST("DEBUG_MOD_VERSION_TXT", "Simple Prostitution v" + MainScript.getCurrentVersion(), "", flag)
+    addEmptyOption()
+    _AddTextOptionST("DEBUG_PAPYRUSUTIL_CHECK_TXT", "$papyrusutil", MainScript.bIsPapyrusUtilActive As String, flag)
     _AddTextOptionST("DEBUG_SEXLAB_CHECK_TXT", "$sexlab", MainScript.bIsSexlabActive As String, flag)
     _AddTextOptionST("DEBUG_FLOWERGIRLS_CHECK_TXT", "$flowergirls", MainScript.bIsFlowerGirlsActive As String, flag)
     _AddTextOptionST("DEBUG_LICENSES_CHECK_TXT", "$licenses", MainScript.bIsLicensesActive() As String, flag)
@@ -931,6 +948,153 @@ endstate
 
 State DEBUG_LICENSES_CHECK_TXT
 endstate
+
+state SAVE_USER_SETTINGS_TXT
+  function OnSelectST()
+    if jsonutil.JsonExists(settings_path)
+      if !ShowMessage("Do you want to overwrite existing user settings?", true, "$Accept", "$Cancel")
+        return 
+      endIf
+    endIf
+    if saveUserSettingsPapyrus()
+      ShowMessage("User settings saved successfully.", false, "$Accept", "$Cancel")
+    else
+      ShowMessage("Failed to save user settings.", false, "$Accept", "$Cancel")
+    endIf
+    ForcePageReset()
+  endFunction
+
+  function OnHighlightST()
+    SetInfoText("Save user settings")
+  endFunction
+endState
+
+state LOAD_USER_SETTINGS_TXT
+  function OnSelectST()
+    if ShowMessage("Do you want to load user settings?", true, "$Accept", "$Cancel")
+      if loadUserSettingsPapyrus()
+        ShowMessage("User settings loaded successfully.", false, "$Accept", "$Cancel")
+      else
+        ShowMessage("Failed to load user settings.", false, "$Accept", "$Cancel")
+      endIf
+    endIf
+  endFunction
+
+  function OnHighlightST()
+    if jsonutil.JsonExists(settings_path)
+      SetInfoText("Load user settings.")
+    else
+      SetInfoText("User settings do not exist.")
+    endIf
+  endFunction
+endState
+
+Bool function loadUserSettingsPapyrus()
+  if !jsonutil.IsGood(settings_path)
+    ShowMessage("AMOT: Can't load User Settings. Errors: {" + jsonutil.getErrors(settings_path) + "}", true, "$Accept", "$Cancel")
+    return false
+  endIf
+  MainScript.bWhoreNeedLicense = jsonutil.GetPathIntValue(settings_path, "bWhoreNeedLicense", MainScript.bWhoreNeedLicense as Int)
+  MainScript.bDibelNeedLicense = jsonutil.GetPathIntValue(settings_path, "bDibelNeedLicense", MainScript.bDibelNeedLicense as Int)
+  MainScript.bBeggingEnabled = jsonutil.GetPathIntValue(settings_path, "bBeggingEnabled", MainScript.bBeggingEnabled as Int)
+  MainScript.bBeggingClothing = jsonutil.GetPathIntValue(settings_path, "bBeggingClothing", MainScript.bBeggingClothing as Int)
+  MainScript.bPoorHelpBeggar = jsonutil.GetPathIntValue(settings_path, "bPoorHelpBeggar", MainScript.bPoorHelpBeggar as Int)
+  MainScript.bGuardHelpBeggar = jsonutil.GetPathIntValue(settings_path, "bGuardHelpBeggar", MainScript.bGuardHelpBeggar as Int)
+  MainScript.bWhoreEnabled = jsonutil.GetPathIntValue(settings_path, "bWhoreEnabled", MainScript.bWhoreEnabled as Int)
+  MainScript.bWhoreClothing = jsonutil.GetPathIntValue(settings_path, "bWhoreClothing", MainScript.bWhoreClothing as Int)
+  MainScript.bTeleportToBed = jsonutil.GetPathIntValue(settings_path, "bTeleportToBed", MainScript.bTeleportToBed as Int)
+  MainScript.bDibelAgent = jsonutil.GetPathIntValue(settings_path, "bDibelAgent", MainScript.bDibelAgent as Int)
+  MainScript.bDibelCrown = jsonutil.GetPathIntValue(settings_path, "bDibelCrown", MainScript.bDibelCrown as Int)
+  MainScript.bDibelNaked = jsonutil.GetPathIntValue(settings_path, "bDibelNaked", MainScript.bDibelNaked as Int)
+
+  iBeggarSpeechDifficulty = jsonutil.GetPathIntValue(settings_path, "iBeggarSpeechDifficulty", iBeggarSpeechDifficulty)
+  iWhoreSpeechDifficulty = jsonutil.GetPathIntValue(settings_path, "iWhoreSpeechDifficulty", iWhoreSpeechDifficulty)
+  iDibelSpeechDifficulty = jsonutil.GetPathIntValue(settings_path, "iDibelSpeechDifficulty", iDibelSpeechDifficulty)
+
+  MainScript.fBegPayMin = jsonutil.GetPathFloatValue(settings_path, "fBegPayMin", MainScript.fBegPayMin)
+  MainScript.fBegPayMax = jsonutil.GetPathFloatValue(settings_path, "fBegPayMax", MainScript.fBegPayMax)
+  MainScript.fWhoreOralPay = jsonutil.GetPathFloatValue(settings_path, "fWhoreOralPay", MainScript.fWhoreOralPay)
+  MainScript.fWhoreAnalPay = jsonutil.GetPathFloatValue(settings_path, "fWhoreAnalPay", MainScript.fWhoreAnalPay)
+  MainScript.fWhoreVagPay = jsonutil.GetPathFloatValue(settings_path, "fWhoreVagPay", MainScript.fWhoreVagPay)
+  MainScript.fDibelOralPay = jsonutil.GetPathFloatValue(settings_path, "fDibelOralPay", MainScript.fDibelOralPay)
+  MainScript.fDibelAnalPay = jsonutil.GetPathFloatValue(settings_path, "fDibelAnalPay", MainScript.fDibelAnalPay)
+  MainScript.fDibelVagPay = jsonutil.GetPathFloatValue(settings_path, "fDibelVagPay", MainScript.fDibelVagPay)
+  MainScript.fWhoreOralChance = jsonutil.GetPathFloatValue(settings_path, "fWhoreOralChance", MainScript.fWhoreOralChance)
+  MainScript.fWhoreAnalChance = jsonutil.GetPathFloatValue(settings_path, "fWhoreAnalChance", MainScript.fWhoreAnalChance)
+  MainScript.fWhoreVagChance = jsonutil.GetPathFloatValue(settings_path, "fWhoreVagChance", MainScript.fWhoreVagChance)
+  MainScript.fDibelOralChance = jsonutil.GetPathFloatValue(settings_path, "fDibelOralChance", MainScript.fDibelOralChance)
+  MainScript.fDibelAnalChance = jsonutil.GetPathFloatValue(settings_path, "fDibelAnalChance", MainScript.fDibelAnalChance)
+  MainScript.fDibelVagChance = jsonutil.GetPathFloatValue(settings_path, "fDibelVagChance", MainScript.fDibelVagChance)
+  MainScript.fMinSpeechBegBonusMult = jsonutil.GetPathFloatValue(settings_path, "fMinSpeechBegBonusMult", MainScript.fMinSpeechBegBonusMult)
+  MainScript.fMaxSpeechBegBonusMult = jsonutil.GetPathFloatValue(settings_path, "fMaxSpeechBegBonusMult", MainScript.fMaxSpeechBegBonusMult)
+  MainScript.fMinSpeechWhoreBonusMult = jsonutil.GetPathFloatValue(settings_path, "fMinSpeechWhoreBonusMult", MainScript.fMinSpeechWhoreBonusMult)
+  MainScript.fMaxSpeechWhoreBonusMult = jsonutil.GetPathFloatValue(settings_path, "fMaxSpeechWhoreBonusMult", MainScript.fMaxSpeechWhoreBonusMult)
+  MainScript.fMinSpeechDibelBonusMult = jsonutil.GetPathFloatValue(settings_path, "fMinSpeechDibelBonusMult", MainScript.fMinSpeechDibelBonusMult)
+  MainScript.fMaxSpeechDibelBonusMult = jsonutil.GetPathFloatValue(settings_path, "fMaxSpeechDibelBonusMult", MainScript.fMaxSpeechDibelBonusMult)
+
+  ForcePageReset()
+  return true
+
+endFunction
+
+Bool function saveUserSettingsPapyrus()
+  jsonutil.SetPathIntValue(settings_path, "bWhoreNeedLicense", MainScript.bWhoreNeedLicense as Int)
+  jsonutil.SetPathIntValue(settings_path, "bDibelNeedLicense", MainScript.bDibelNeedLicense as Int)
+  jsonutil.SetPathIntValue(settings_path, "bBeggingEnabled", MainScript.bBeggingEnabled as Int)
+  jsonutil.SetPathIntValue(settings_path, "bBeggingClothing", MainScript.bBeggingClothing as Int)
+  jsonutil.SetPathIntValue(settings_path, "bPoorHelpBeggar", MainScript.bPoorHelpBeggar as Int)
+  jsonutil.SetPathIntValue(settings_path, "bGuardHelpBeggar", MainScript.bGuardHelpBeggar as Int)
+  jsonutil.SetPathIntValue(settings_path, "bWhoreEnabled", MainScript.bWhoreEnabled as Int)
+  jsonutil.SetPathIntValue(settings_path, "bWhoreClothing", MainScript.bWhoreClothing as Int)
+  jsonutil.SetPathIntValue(settings_path, "bTeleportToBed", MainScript.bTeleportToBed as Int)
+  jsonutil.SetPathIntValue(settings_path, "bDibelAgent", MainScript.bDibelAgent as Int)
+  jsonutil.SetPathIntValue(settings_path, "bDibelCrown", MainScript.bDibelCrown as Int)
+  jsonutil.SetPathIntValue(settings_path, "bDibelNaked", MainScript.bDibelNaked as Int)
+    
+  
+  jsonutil.SetPathIntValue(settings_path, "iBeggarSpeechDifficulty", iBeggarSpeechDifficulty)
+  jsonutil.SetPathIntValue(settings_path, "iWhoreSpeechDifficulty", iWhoreSpeechDifficulty)
+  jsonutil.SetPathIntValue(settings_path, "iDibelSpeechDifficulty", iDibelSpeechDifficulty)
+  
+
+  jsonutil.SetPathFloatValue(settings_path, "fBegPayMin", MainScript.fBegPayMin)
+  jsonutil.SetPathFloatValue(settings_path, "fBegPayMax", MainScript.fBegPayMax)
+  jsonutil.SetPathFloatValue(settings_path, "fWhoreOralPay", MainScript.fWhoreOralPay)
+  jsonutil.SetPathFloatValue(settings_path, "fWhoreAnalPay", MainScript.fWhoreAnalPay)
+  jsonutil.SetPathFloatValue(settings_path, "fWhoreVagPay", MainScript.fWhoreVagPay)
+  jsonutil.SetPathFloatValue(settings_path, "fDibelOralPay", MainScript.fDibelOralPay)
+  jsonutil.SetPathFloatValue(settings_path, "fDibelAnalPay", MainScript.fDibelAnalPay)
+  jsonutil.SetPathFloatValue(settings_path, "fDibelVagPay", MainScript.fDibelVagPay)
+  jsonutil.SetPathFloatValue(settings_path, "fWhoreOralChance", MainScript.fWhoreOralChance)
+  jsonutil.SetPathFloatValue(settings_path, "fWhoreAnalChance", MainScript.fWhoreAnalChance)
+  jsonutil.SetPathFloatValue(settings_path, "fWhoreVagChance", MainScript.fWhoreVagChance)
+  jsonutil.SetPathFloatValue(settings_path, "fDibelOralChance", MainScript.fDibelOralChance)
+  jsonutil.SetPathFloatValue(settings_path, "fDibelAnalChance", MainScript.fDibelAnalChance)
+  jsonutil.SetPathFloatValue(settings_path, "fDibelVagChance", MainScript.fDibelVagChance)
+  jsonutil.SetPathFloatValue(settings_path, "fMinSpeechBegBonusMult", MainScript.fMinSpeechBegBonusMult)
+  jsonutil.SetPathFloatValue(settings_path, "fMaxSpeechBegBonusMult", MainScript.fMaxSpeechBegBonusMult)
+  jsonutil.SetPathFloatValue(settings_path, "fMinSpeechWhoreBonusMult", MainScript.fMinSpeechWhoreBonusMult)
+  jsonutil.SetPathFloatValue(settings_path, "fMaxSpeechWhoreBonusMult", MainScript.fMaxSpeechWhoreBonusMult)
+  jsonutil.SetPathFloatValue(settings_path, "fMinSpeechDibelBonusMult", MainScript.fMinSpeechDibelBonusMult)
+  jsonutil.SetPathFloatValue(settings_path, "fMaxSpeechDibelBonusMult", MainScript.fMaxSpeechDibelBonusMult)
+
+
+  if !jsonutil.Save(settings_path, false)
+    debug.Trace("SimpleProstitution: Error saving user settings.", 0)
+    return false
+  endIf
+  return true
+endFunction
+
+function loadSettingsAtStart()
+  MainScript.bIsPapyrusUtilActive = MainScript.bCheckPapyrusUtil()
+  if MainScript.bIsPapyrusUtilActive
+    if jsonutil.JsonExists(settings_path)
+      loadUserSettingsPapyrus()
+      return 
+    endIf
+  endIf
+endFunction
 
 function _AddHeaderOption(string a_text, int a_flags=0)
   AddHeaderOption(a_text, a_flags)

@@ -2,7 +2,7 @@ Scriptname zzzmrt_sp_int_flowergirls Hidden
 
 Int function haveSexWithPlayerFG(Quest FlowerGirls, Actor partner, Int Position) Global
   if Position < 0
-    return Position
+    return -1
   endif
   dxFlowerGirlsScript FGScript = FlowerGirls as dxFlowerGirlsScript
   if FGScript.ThreadManager.GetActiveThreadForActor(partner as ObjectReference) != None

@@ -23,6 +23,7 @@ function setVars()
   bBusy = True
   MainScript.SexLabInterface.PlayerLoadsGame()
   MainScript.FlowerGirlsInterface.PlayerLoadsGame()
+  MainScript.bIsPapyrusUtilActive = MainScript.bCheckPapyrusUtil()
   Utility.Wait(10.0)
   MainScript.bIsSexlabActive = MainScript.SexLabInterface.GetIsInterfaceActive()
   MainScript.bIsFlowerGirlsActive = MainScript.FlowerGirlsInterface.GetIsInterfaceActive()
