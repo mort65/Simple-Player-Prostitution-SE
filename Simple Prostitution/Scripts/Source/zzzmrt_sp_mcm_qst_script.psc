@@ -991,7 +991,7 @@ endState
 
 Bool function loadUserSettingsPapyrus()
   if !jsonutil.IsGood(settings_path)
-    ShowMessage("AMOT: Can't load User Settings. Errors: {" + jsonutil.getErrors(settings_path) + "}", true, "$Accept", "$Cancel")
+    ShowMessage("SimpleProstitution: Can't load User Settings. Errors: {" + jsonutil.getErrors(settings_path) + "}", true, "$Accept", "$Cancel")
     return false
   endIf
   MainScript.bWhoreNeedLicense = jsonutil.GetPathIntValue(settings_path, "bWhoreNeedLicense", MainScript.bWhoreNeedLicense as Int)
