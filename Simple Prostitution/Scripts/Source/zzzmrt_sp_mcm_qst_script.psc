@@ -42,13 +42,13 @@ event OnPageReset(String page)
     else
       flag = OPTION_FLAG_DISABLED
     endIf
-    _AddTextOptionST("LOAD_USER_SETTINGS_TXT", "Load Settings", "Go", flag)
+    _AddTextOptionST("LOAD_USER_SETTING_TXT", "$MRT_SP_LOAD_SETTING", "$go", flag)
     if MainScript.bIsPapyrusUtilActive
       flag = OPTION_FLAG_NONE
     else
       flag = OPTION_FLAG_DISABLED
     endIf
-    _AddTextOptionST("SAVE_USER_SETTINGS_TXT", "Save Settings", "Go", flag)    
+    _AddTextOptionST("SAVE_USER_SETTING_TXT", "$MRT_SP_Save_SETTING", "$go", flag)    
     SetCursorPosition(1)
     flag = OPTION_FLAG_DISABLED
     _AddTextOptionST("DEBUG_MOD_VERSION_TXT", "Simple Prostitution v" + MainScript.getCurrentVersion(), "", flag)
@@ -949,7 +949,7 @@ endstate
 State DEBUG_LICENSES_CHECK_TXT
 endstate
 
-state SAVE_USER_SETTINGS_TXT
+state SAVE_USER_SETTING_TXT
   function OnSelectST()
     if jsonutil.JsonExists(settings_path)
       if !ShowMessage("Do you want to overwrite existing user settings?", true, "$Accept", "$Cancel")
@@ -965,11 +965,11 @@ state SAVE_USER_SETTINGS_TXT
   endFunction
 
   function OnHighlightST()
-    SetInfoText("Save user settings")
+    SetInfoText("$MRT_SP_DESC_SAVE_SETTING")
   endFunction
 endState
 
-state LOAD_USER_SETTINGS_TXT
+state LOAD_USER_SETTING_TXT
   function OnSelectST()
     if ShowMessage("Do you want to load user settings?", true, "$Accept", "$Cancel")
       if loadUserSettingsPapyrus()
@@ -982,9 +982,9 @@ state LOAD_USER_SETTINGS_TXT
 
   function OnHighlightST()
     if jsonutil.JsonExists(settings_path)
-      SetInfoText("Load user settings.")
+      SetInfoText("$MRT_SP_DESC_LOAD_SETTING_ON")
     else
-      SetInfoText("User settings do not exist.")
+      SetInfoText("$MRT_SP_DESC_LOAD_SETTING_OFF")
     endIf
   endFunction
 endState
@@ -1003,6 +1003,7 @@ Bool function loadUserSettingsPapyrus()
   MainScript.bWhoreEnabled = jsonutil.GetPathIntValue(settings_path, "bWhoreEnabled", MainScript.bWhoreEnabled as Int)
   MainScript.bWhoreClothing = jsonutil.GetPathIntValue(settings_path, "bWhoreClothing", MainScript.bWhoreClothing as Int)
   MainScript.bTeleportToBed = jsonutil.GetPathIntValue(settings_path, "bTeleportToBed", MainScript.bTeleportToBed as Int)
+  MainScript.bDibelEnabled = jsonutil.GetPathIntValue(settings_path, "bDibelEnabled", MainScript.bDibelEnabled as Int)
   MainScript.bDibelAgent = jsonutil.GetPathIntValue(settings_path, "bDibelAgent", MainScript.bDibelAgent as Int)
   MainScript.bDibelCrown = jsonutil.GetPathIntValue(settings_path, "bDibelCrown", MainScript.bDibelCrown as Int)
   MainScript.bDibelNaked = jsonutil.GetPathIntValue(settings_path, "bDibelNaked", MainScript.bDibelNaked as Int)
@@ -1047,6 +1048,7 @@ Bool function saveUserSettingsPapyrus()
   jsonutil.SetPathIntValue(settings_path, "bWhoreEnabled", MainScript.bWhoreEnabled as Int)
   jsonutil.SetPathIntValue(settings_path, "bWhoreClothing", MainScript.bWhoreClothing as Int)
   jsonutil.SetPathIntValue(settings_path, "bTeleportToBed", MainScript.bTeleportToBed as Int)
+  jsonutil.SetPathIntValue(settings_path, "bDibelEnabled", MainScript.bDibelEnabled as Int)
   jsonutil.SetPathIntValue(settings_path, "bDibelAgent", MainScript.bDibelAgent as Int)
   jsonutil.SetPathIntValue(settings_path, "bDibelCrown", MainScript.bDibelCrown as Int)
   jsonutil.SetPathIntValue(settings_path, "bDibelNaked", MainScript.bDibelNaked as Int)
