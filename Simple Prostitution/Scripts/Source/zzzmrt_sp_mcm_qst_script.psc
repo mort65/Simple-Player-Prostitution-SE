@@ -6,6 +6,7 @@ Int property iAnimInterface auto Hidden
 Int Property iWhoreSpeechDifficulty=3 Auto Hidden
 Int Property iDibelSpeechDifficulty=2 Auto Hidden
 Int Property iBeggarSpeechDifficulty=4 Auto Hidden
+Int Property iAnimInterfaceMethod = 0 Auto Hidden
 
 String settings_path = "..\\simple-prostitution\\user-settings"
 
@@ -54,18 +55,32 @@ event OnPageReset(String page)
     _AddTextOptionST("DEBUG_MOD_VERSION_TXT", "Simple Prostitution v" + MainScript.getCurrentVersion(), "", flag)
     addEmptyOption()
     _AddTextOptionST("DEBUG_PAPYRUSUTIL_CHECK_TXT", "$papyrusutil", MainScript.bIsPapyrusUtilActive As String, flag)
+    _AddTextOptionST("DEBUG_OSTIM_CHECK_TXT", "$ostim", MainScript.bIsOstimActive As String, flag)
     _AddTextOptionST("DEBUG_SEXLAB_CHECK_TXT", "$sexlab", MainScript.bIsSexlabActive As String, flag)
     _AddTextOptionST("DEBUG_FLOWERGIRLS_CHECK_TXT", "$flowergirls", MainScript.bIsFlowerGirlsActive As String, flag)
     _AddTextOptionST("DEBUG_LICENSES_CHECK_TXT", "$licenses", MainScript.bIsLicensesActive() As String, flag)
   elseif (page == "$MRT_SP_PAGE_INTEGRATION")
     SetTitleText("$MRT_SP_PAGE_INTEGRATION")
     _AddHeaderOption("$MRT_SP_HEAD_INTEGRATION")
-    if MainScript.bModEnabled && MainScript.bBeggingEnabled && (iGetCurAnimInterface() > -1)
+    if MainScript.bModEnabled && (MainScript.iGetCurTotalAnimInterfaces() > 1)
+      flag = OPTION_FLAG_NONE
+    else
+      flag = OPTION_FLAG_DISABLED
+    endif
+    AddMenuOptionST("ANIM_INTERFACE_METHOD_MENU", "$MRT_SP_ANIM_INTERFACE_METHOD_MENU", sGetAnimInerfaceMethodArr()[iAnimInterfaceMethod], flag)
+    if MainScript.bModEnabled && (MainScript.iGetCurTotalAnimInterfaces() > 0) && (iAnimInterfaceMethod == 0)
       flag = OPTION_FLAG_NONE
     else
       flag = OPTION_FLAG_DISABLED
     endif
     AddMenuOptionST("ANIM_INTERFACE_MENU", "$MRT_SP_ANIM_INTERFACE_MENU", sGetAnimInerfaceArr()[iAnimInterface], flag)
+    if MainScript.bModEnabled && (MainScript.iGetCurTotalAnimInterfaces() > 0)
+      flag = OPTION_FLAG_NONE
+    else
+      flag = OPTION_FLAG_DISABLED
+    endif
+    _AddToggleOptionST("TRY_ALL_INTERFACES_TOGGLE", "$MRT_SP_TRY_ALL_INTERFACES_TOGGLE", MainScript.bTryAllInterfaces, flag)
+    SetCursorPosition(3)
     if MainScript.bModEnabled && MainScript.bWhoreEnabled
       flag = OPTION_FLAG_NONE
     else
@@ -116,6 +131,8 @@ event OnPageReset(String page)
     endif
     _AddToggleOptionST("WHORE_CLOTHING_TOGGLE", "$MRT_SP_WHORE_CLOTHING_TOGGLE", MainScript.bWhoreClothing, flag)
     _AddToggleOptionST("BED_TELEPORT_TOGGLE", "$MRT_SP_BED_TELEPORT_TOGGLE", MainScript.bTeleportToBed, flag)
+    _AddToggleOptionST("WHORE_ALLOW_AGGRESSIVE_TOGGLE", "$MRT_SP_WHORE_ALLOW_AGGRESSIVE_TOGGLE", MainScript.bWhoreAllowAggressive, flag)
+    AddSliderOptionST("WHORE_OWNER_SHARE_SLIDER", "$MRT_SP_WHORE_OWNER_SHARE_SLIDER1", MainScript.fWhoreOwnerShare, "$MRT_SP_WHORE_OWNER_SHARE_SLIDER2", flag)
     AddSliderOptionST("WHORE_ORAL_CHANCE_SLIDER", "$MRT_SP_WHORE_ORAL_CHANCE_SLIDER1", MainScript.fWhoreOralChance, "$MRT_SP_WHORE_ORAL_CHANCE_SLIDER2", flag)
     AddSliderOptionST("WHORE_ANAL_CHANCE_SLIDER", "$MRT_SP_WHORE_ANAL_CHANCE_SLIDER1", MainScript.fWhoreAnalChance, "$MRT_SP_WHORE_ANAL_CHANCE_SLIDER2", flag)
     AddSliderOptionST("WHORE_VAG_CHANCE_SLIDER", "$MRT_SP_WHORE_VAG_CHANCE_SLIDER1", MainScript.fWhoreVagChance, "$MRT_SP_WHORE_VAG_CHANCE_SLIDER2", flag)
@@ -140,6 +157,7 @@ event OnPageReset(String page)
     endif
     _AddToggleOptionST("DIBEL_AGENT_TOGGLE", "$MRT_SP_DIBEL_AGENT_TOGGLE", MainScript.bDibelAgent, flag)
     _AddToggleOptionST("DIBEL_CROWN_TOGGLE", "$MRT_SP_DIBEL_CROWN_TOGGLE", MainScript.bDibelCrown, flag)
+    _AddToggleOptionST("DIBEL_ALLOW_AGGRESSIVE_TOGGLE", "$MRT_SP_DIBEL_ALLOW_AGGRESSIVE_TOGGLE", MainScript.bDIBELAllowAggressive, flag)
     _AddToggleOptionST("DIBEL_NAKED_TOGGLE", "$MRT_SP_DIBEL_NAKED_TOGGLE", MainScript.bDibelNaked, flag)
     AddSliderOptionST("DIBEL_ORAL_CHANCE_SLIDER", "$MRT_SP_DIBEL_ORAL_CHANCE_SLIDER1", MainScript.fDibelOralChance, "$MRT_SP_DIBEL_ORAL_CHANCE_SLIDER2", flag)
     AddSliderOptionST("DIBEL_ANAL_CHANCE_SLIDER", "$MRT_SP_DIBEL_ANAL_CHANCE_SLIDER1", MainScript.fDibelAnalChance, "$MRT_SP_DIBEL_ANAL_CHANCE_SLIDER2", flag)
@@ -159,9 +177,20 @@ event OnVersionUpdate(Int version)
   endif
 endevent
 
+String[] function sGetAnimInerfaceMethodArr()
+  String[] sAnimInterfaceMethods = new String[3]
+  sAnimInterfaceMethods[0] = "$menu"
+  sAnimInterfaceMethods[1] = "$ask"
+  sAnimInterfaceMethods[2] = "$random"
+  return sAnimInterfaceMethods
+endFunction
+
 String[] function sGetAnimInerfaceArr()
   Int i = 0
   String[] sAnimInterfaces
+  if MainScript.bIsOstimActive
+    i += 1
+  endif
   if MainScript.bIsSexlabActive
     i += 1
   endif
@@ -176,6 +205,10 @@ String[] function sGetAnimInerfaceArr()
   endif
   sAnimInterfaces = Utility.CreateStringArray(i)
   i = 0
+  if MainScript.bIsOstimActive
+    sAnimInterfaces[i] = "$ostim"
+    i += 1
+  endif
   if MainScript.bIsSexlabActive
     sAnimInterfaces[i] = "$sexlab"
     i += 1
@@ -204,10 +237,12 @@ EndFunction
 
 Int function iGetCurAnimInterface()
   String[] interfs = sGetAnimInerfaceArr()
-  if interfs[iAnimInterface] == "$sexlab"
+  if interfs[iAnimInterface] == "$ostim"
     return 0
-  elseif interfs[iAnimInterface] == "$flowergirls"
+  elseif interfs[iAnimInterface] == "$sexlab"
     return 1
+  elseif interfs[iAnimInterface] == "$flowergirls"
+    return 2
   endif
   return -1
 endfunction
@@ -230,6 +265,27 @@ state ANIM_INTERFACE_MENU
     SetMenuDialogOptions(sGetAnimInerfaceArr())
   endevent
 endstate
+
+state ANIM_INTERFACE_METHOD_MENU
+  event OnDefaultST()
+  endevent
+
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_ANIM_INTERFACE_METHOD_MENU")
+  endevent
+
+  event OnMenuAcceptST(int index)
+    iAnimInterfaceMethod = index
+    _SetMenuOptionValueST(sGetAnimInerfaceMethodArr()[iAnimInterfaceMethod], True)
+    ForcePageReset()
+  endevent
+
+  event OnMenuOpenST()
+    SetMenuDialogStartIndex(iAnimInterfaceMethod)
+    SetMenuDialogOptions(sGetAnimInerfaceMethodArr())
+  endevent
+endstate
+
 
 state WHORE_ACCEPT_DIFFICULTY_MENU
   event OnDefaultST()
@@ -601,6 +657,9 @@ state MOD_TOGGLE
 
   event OnSelectST()
     MainScript.bModEnabled = !MainScript.bModEnabled
+	if !MainScript.bModEnabled
+		MainScript.ShutDown()
+	endif
     ForcePageReset()
   endevent
 endstate
@@ -789,6 +848,55 @@ state WHORE_CLOTHING_TOGGLE
   endevent
 endstate
 
+state WHORE_ALLOW_AGGRESSIVE_TOGGLE
+  event OnDefaultST()
+    MainScript.bWhoreAllowAggressive = True
+    ForcePageReset()
+  endevent
+
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_WHORE_ALLOW_AGGRESSIVE_TOGGLE")
+  endevent
+
+  event OnSelectST()
+    MainScript.bWhoreAllowAggressive = !MainScript.bWhoreAllowAggressive
+    ForcePageReset()
+  endevent
+endstate
+
+state Dibel_ALLOW_AGGRESSIVE_TOGGLE
+  event OnDefaultST()
+    MainScript.bDibelAllowAggressive = True
+    ForcePageReset()
+  endevent
+
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_Dibel_ALLOW_AGGRESSIVE_TOGGLE")
+  endevent
+
+  event OnSelectST()
+    MainScript.bDibelAllowAggressive = !MainScript.bDibelAllowAggressive
+    ForcePageReset()
+  endevent
+endstate
+
+
+state TRY_ALL_INTERFACES_TOGGLE
+  event OnDefaultST()
+    MainScript.bTryAllInterfaces = True
+    ForcePageReset()
+  endevent
+
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_TRY_ALL_INTERFACES_TOGGLE")
+  endevent
+
+  event OnSelectST()
+    MainScript.bTryAllInterfaces = !MainScript.bTryAllInterfaces
+    ForcePageReset()
+  endevent
+endstate
+
 State WHORE_NEED_LICENSE_TOGGLE
   event OnDefaultST()
     MainScript.bWhoreNeedLicense = True
@@ -856,6 +964,27 @@ state WHORE_ORAL_PAY_SLIDER
 		SetSliderDialogRange(0, 1000)
 		SetSliderDialogInterval(1)
 	endEvent
+endstate
+
+state WHORE_OWNER_SHARE_SLIDER
+  event OnDefaultST()
+  endevent
+
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_WHORE_OWNER_SHARE_SLIDER")
+  endevent
+
+  event OnSliderAcceptST(float value)
+    MainScript.fWhoreOwnerShare = value
+    _SetSliderOptionValueST(MainScript.fWhoreOwnerShare, "$MRT_SP_WHORE_OWNER_SHARE_SLIDER2")
+  endevent
+
+  event OnSliderOpenST()
+    SetSliderDialogStartValue(MainScript.fWhoreOwnerShare)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(1)
+  endEvent
 endstate
 
 state WHORE_ORAL_CHANCE_SLIDER
@@ -949,6 +1078,9 @@ endstate
 State DEBUG_LICENSES_CHECK_TXT
 endstate
 
+State DEBUG_OSTIM_CHECK_TXT
+endState
+
 state SAVE_USER_SETTING_TXT
   function OnSelectST()
     if jsonutil.JsonExists(settings_path)
@@ -1007,11 +1139,16 @@ Bool function loadUserSettingsPapyrus()
   MainScript.bDibelAgent = jsonutil.GetPathIntValue(settings_path, "bDibelAgent", MainScript.bDibelAgent as Int)
   MainScript.bDibelCrown = jsonutil.GetPathIntValue(settings_path, "bDibelCrown", MainScript.bDibelCrown as Int)
   MainScript.bDibelNaked = jsonutil.GetPathIntValue(settings_path, "bDibelNaked", MainScript.bDibelNaked as Int)
+  MainScript.bWhoreAllowAggressive = jsonutil.GetPathIntValue(settings_path, "bWhoreAllowAggressive", MainScript.bWhoreAllowAggressive as Int)
+  MainScript.bDibelAllowAggressive = jsonutil.GetPathIntValue(settings_path, "bDibelAllowAggressive", MainScript.bDibelAllowAggressive as Int)
+  MainScript.bTryAllInterfaces = jsonutil.GetPathIntValue(settings_path, "bTryAllInterfaces", MainScript.bTryAllInterfaces as Int)
 
   iBeggarSpeechDifficulty = jsonutil.GetPathIntValue(settings_path, "iBeggarSpeechDifficulty", iBeggarSpeechDifficulty)
   iWhoreSpeechDifficulty = jsonutil.GetPathIntValue(settings_path, "iWhoreSpeechDifficulty", iWhoreSpeechDifficulty)
   iDibelSpeechDifficulty = jsonutil.GetPathIntValue(settings_path, "iDibelSpeechDifficulty", iDibelSpeechDifficulty)
+  iAnimInterfaceMethod = jsonutil.GetPathIntValue(settings_path, "iAnimInterfaceMethod", iAnimInterfaceMethod)
 
+  MainScript.fWhoreOwnerShare = jsonutil.GetPathFloatValue(settings_path, "fWhoreOwnerShare", MainScript.fWhoreOwnerShare)
   MainScript.fBegPayMin = jsonutil.GetPathFloatValue(settings_path, "fBegPayMin", MainScript.fBegPayMin)
   MainScript.fBegPayMax = jsonutil.GetPathFloatValue(settings_path, "fBegPayMax", MainScript.fBegPayMax)
   MainScript.fWhoreOralPay = jsonutil.GetPathFloatValue(settings_path, "fWhoreOralPay", MainScript.fWhoreOralPay)
@@ -1052,13 +1189,16 @@ Bool function saveUserSettingsPapyrus()
   jsonutil.SetPathIntValue(settings_path, "bDibelAgent", MainScript.bDibelAgent as Int)
   jsonutil.SetPathIntValue(settings_path, "bDibelCrown", MainScript.bDibelCrown as Int)
   jsonutil.SetPathIntValue(settings_path, "bDibelNaked", MainScript.bDibelNaked as Int)
-    
+  jsonutil.SetPathIntValue(settings_path, "bWhoreAllowAggressive", MainScript.bWhoreAllowAggressive as Int)
+  jsonutil.SetPathIntValue(settings_path, "bDibelAllowAggressive", MainScript.bDibelAllowAggressive as Int)
+  jsonutil.SetPathIntValue(settings_path, "bTryAllInterfaces", MainScript.bTryAllInterfaces as Int)
   
   jsonutil.SetPathIntValue(settings_path, "iBeggarSpeechDifficulty", iBeggarSpeechDifficulty)
   jsonutil.SetPathIntValue(settings_path, "iWhoreSpeechDifficulty", iWhoreSpeechDifficulty)
   jsonutil.SetPathIntValue(settings_path, "iDibelSpeechDifficulty", iDibelSpeechDifficulty)
+  jsonutil.SetPathIntValue(settings_path, "iAnimInterfaceMethod", iAnimInterfaceMethod)
   
-
+  jsonutil.SetPathFloatValue(settings_path, "fWhoreOwnerShare", MainScript.fWhoreOwnerShare)
   jsonutil.SetPathFloatValue(settings_path, "fBegPayMin", MainScript.fBegPayMin)
   jsonutil.SetPathFloatValue(settings_path, "fBegPayMax", MainScript.fBegPayMax)
   jsonutil.SetPathFloatValue(settings_path, "fWhoreOralPay", MainScript.fWhoreOralPay)

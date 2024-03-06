@@ -21,11 +21,22 @@ function setVars()
     return
   endif
   bBusy = True
+  if !MainScript.SexLabInterface
+    MainScript.SexLabInterface = MainScript.SexLabInterfaceQst as zzzmrt_sp_sexlab_interface 
+  endif
+  if !MainScript.OStimInterface
+    MainScript.OStimInterface = MainScript.OStimInterfaceQst as zzzmrt_sp_ostim_interface 
+  endif
+  if !MainScript.FlowerGirlsInterface
+    MainScript.FlowerGirlsInterface = MainScript.FlowerGirlsInterfaceQst as zzzmrt_sp_flowergirls_interface 
+  endif
   MainScript.SexLabInterface.PlayerLoadsGame()
+  MainScript.OStimInterface.PlayerLoadsGame()
   MainScript.FlowerGirlsInterface.PlayerLoadsGame()
   MainScript.bIsPapyrusUtilActive = MainScript.bCheckPapyrusUtil()
   Utility.Wait(10.0)
   MainScript.bIsSexlabActive = MainScript.SexLabInterface.GetIsInterfaceActive()
+  MainScript.bIsOStimActive = MainScript.OStimInterface.GetIsInterfaceActive()
   MainScript.bIsFlowerGirlsActive = MainScript.FlowerGirlsInterface.GetIsInterfaceActive()
   bBusy = False
 endfunction
