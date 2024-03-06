@@ -19,7 +19,8 @@ Or
 
 [PapyrusUtil SE](https://www.nexusmods.com/skyrimspecialedition/mods/13048) for saving/loading MCM settings. 
 
-[Licenses - Player Oppression](https://www.nexusmods.com/skyrimspecialedition/mods/110418?tab=description)
+[Licenses - Player Oppression](https://www.nexusmods.com/skyrimspecialedition/mods/110418?tab=description):
+With the patch installed, the player must buy a license from the guards to work in the Inn. 
  
 
 **Recommended Mods:**
