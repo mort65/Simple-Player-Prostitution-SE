@@ -55,13 +55,13 @@ event OnPageReset(String page)
     _AddTextOptionST("DEBUG_MOD_VERSION_TXT", "Simple Prostitution v" + MainScript.getCurrentVersion(), "", flag)
     addEmptyOption()
     _AddTextOptionST("DEBUG_PAPYRUSUTIL_CHECK_TXT", "$papyrusutil", MainScript.bIsPapyrusUtilActive As String, flag)
-    _AddTextOptionST("DEBUG_OSTIM_CHECK_TXT", "$ostim", MainScript.bIsOstimActive As String, flag)
     _AddTextOptionST("DEBUG_SEXLAB_CHECK_TXT", "$sexlab", MainScript.bIsSexlabActive As String, flag)
     _AddTextOptionST("DEBUG_FLOWERGIRLS_CHECK_TXT", "$flowergirls", MainScript.bIsFlowerGirlsActive As String, flag)
+    _AddTextOptionST("DEBUG_OSTIM_CHECK_TXT", "$ostim_sa", MainScript.bIsOstimActive As String, flag)
     _AddTextOptionST("DEBUG_LICENSES_CHECK_TXT", "$licenses", MainScript.bIsLicensesActive() As String, flag)
   elseif (page == "$MRT_SP_PAGE_INTEGRATION")
     SetTitleText("$MRT_SP_PAGE_INTEGRATION")
-    _AddHeaderOption("$MRT_SP_HEAD_INTEGRATION")
+    _AddHeaderOption("$MRT_SP_HEAD_INTEGRATION_INTERFACE")
     if MainScript.bModEnabled && (MainScript.iGetCurTotalAnimInterfaces() > 1)
       flag = OPTION_FLAG_NONE
     else
@@ -80,7 +80,8 @@ event OnPageReset(String page)
       flag = OPTION_FLAG_DISABLED
     endif
     _AddToggleOptionST("TRY_ALL_INTERFACES_TOGGLE", "$MRT_SP_TRY_ALL_INTERFACES_TOGGLE", MainScript.bTryAllInterfaces, flag)
-    SetCursorPosition(3)
+    SetCursorPosition(1)
+    _AddHeaderOption("$MRT_SP_HEAD_INTEGRATION_LICENSE")
     if MainScript.bModEnabled && MainScript.bWhoreEnabled
       flag = OPTION_FLAG_NONE
     else
@@ -206,7 +207,7 @@ String[] function sGetAnimInerfaceArr()
   sAnimInterfaces = Utility.CreateStringArray(i)
   i = 0
   if MainScript.bIsOstimActive
-    sAnimInterfaces[i] = "$ostim"
+    sAnimInterfaces[i] = "$ostim_sa"
     i += 1
   endif
   if MainScript.bIsSexlabActive
@@ -237,7 +238,7 @@ EndFunction
 
 Int function iGetCurAnimInterface()
   String[] interfs = sGetAnimInerfaceArr()
-  if interfs[iAnimInterface] == "$ostim"
+  if interfs[iAnimInterface] == "$ostim_sa"
     return 0
   elseif interfs[iAnimInterface] == "$sexlab"
     return 1

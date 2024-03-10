@@ -390,22 +390,17 @@ Int function positionChooser(int vaginalWeight = 50, int AnalWeight = 50, int or
   if (vaginalWeight < 1) && (AnalWeight < 1) && (oralWeight < 1)
     return -1
   endif
-  int[] cumulWeight = Utility.createIntArray(4)
-  Bool[] positionFlag = Utility.createBoolArray(3)
-  positionFlag[0] = (vaginalWeight > 0)
-  positionFlag[1] = (AnalWeight > 0)
-  positionFlag[2] = (oralWeight > 0)
-  cumulWeight[0] = 0
-  cumulWeight[1] = vaginalWeight
-  cumulWeight[2] = AnalWeight + vaginalWeight
-  cumulWeight[3] = oralWeight + AnalWeight + vaginalWeight
-  int x = utility.randomInt(0,cumulWeight[3])
+  int[] cumulWeight = Utility.createIntArray(3)
+  cumulWeight[0] = vaginalWeight
+  cumulWeight[1] = AnalWeight + vaginalWeight
+  cumulWeight[2] = oralWeight + AnalWeight + vaginalWeight
+  int x = utility.randomInt(1,cumulWeight[2])
   int i = 0
   while i < cumulWeight.Length
-    i = i + 1
-    if positionFlag[i - 1] && (x <= cumulWeight[i])
-      return (i - 1)
+    if x <= cumulWeight[i]
+      return i
     endIf
+    i += 1
   endWhile
   return -1
 endfunction
