@@ -62,6 +62,42 @@ Float Property fWhoreOwnerShare = 0.0 auto Hidden Conditional
 Int Property iCurrentOwnerSeptims = 0 Auto Hidden Conditional
 GlobalVariable property currentOwnerSeptimDisplay auto Conditional
 
+String Property sExtraTags_SL_Oral_MF = "" auto Hidden Conditional
+String Property sExtraTags_SL_Oral_MM = "" auto Hidden Conditional
+String Property sExtraTags_SL_Oral_FF = "" auto Hidden Conditional
+String Property sExtraTags_SL_Anal_MF = "" auto Hidden Conditional
+String Property sExtraTags_SL_Anal_MM = "" auto Hidden Conditional
+String Property sExtraTags_SL_Anal_FF = "" auto Hidden Conditional
+String Property sExtraTags_SL_Vaginal_MF = "" auto Hidden Conditional
+String Property sExtraTags_SL_Vaginal_FF = "" auto Hidden Conditional
+
+String Property sExtraTags_OS_Oral_MF = "" auto Hidden Conditional
+String Property sExtraTags_OS_Oral_MM = "" auto Hidden Conditional
+String Property sExtraTags_OS_Oral_FF = "" auto Hidden Conditional
+String Property sExtraTags_OS_Anal_MF = "" auto Hidden Conditional
+String Property sExtraTags_OS_Anal_MM = "" auto Hidden Conditional
+String Property sExtraTags_OS_Anal_FF = "" auto Hidden Conditional
+String Property sExtraTags_OS_Vaginal_MF = "" auto Hidden Conditional
+String Property sExtraTags_OS_Vaginal_FF = "" auto Hidden Conditional
+
+Bool Property bExtraTags_SL_Oral_MF_ALL = false auto Hidden Conditional
+Bool Property bExtraTags_SL_Oral_MM_ALL = false auto Hidden Conditional
+Bool Property bExtraTags_SL_Oral_FF_ALL = false auto Hidden Conditional
+Bool Property bExtraTags_SL_Anal_MF_ALL = false auto Hidden Conditional
+Bool Property bExtraTags_SL_Anal_MM_ALL = false auto Hidden Conditional
+Bool Property bExtraTags_SL_Anal_FF_ALL = false auto Hidden Conditional
+Bool Property bExtraTags_SL_Vaginal_MF_ALL = false auto Hidden Conditional
+Bool Property bExtraTags_SL_Vaginal_FF_ALL = false auto Hidden Conditional
+
+Bool Property bExtraTags_OS_Oral_MF_ALL = false auto Hidden Conditional
+Bool Property bExtraTags_OS_Oral_MM_ALL = false auto Hidden Conditional
+Bool Property bExtraTags_OS_Oral_FF_ALL = false auto Hidden Conditional
+Bool Property bExtraTags_OS_Anal_MF_ALL = false auto Hidden Conditional
+Bool Property bExtraTags_OS_Anal_MM_ALL = false auto Hidden Conditional
+Bool Property bExtraTags_OS_Anal_FF_ALL = false auto Hidden Conditional
+Bool Property bExtraTags_OS_Vaginal_MF_ALL = false auto Hidden Conditional
+Bool Property bExtraTags_OS_Vaginal_FF_ALL = false auto Hidden Conditional
+
 ImageSpaceModifier property fadeIn auto
 ImageSpaceModifier property fadeOut auto
 ImageSpaceModifier property fastFadeOut auto
@@ -112,7 +148,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-  return getBaseVersion() + 0.07
+  return getBaseVersion() + 0.08
 endfunction
 
 int function haveSex(Actor akActor, String interface, int vaginalWeight = 50, int analWeight=50, int oralWeight = 50, Bool bAllowAggressive = False, Bool bAllowAll = False)
@@ -184,7 +220,7 @@ int Function playerSexSL(Actor akActor, int vaginalWeight = 50, int analWeight=5
   else
     position = positionChooser(vaginalWeight, analWeight, oralWeight)
   endif
-  return SexLabInterface.haveSexWithPlayer(akActor, position, bAllowAggressive, bAllowAll)
+  return SexLabInterface.haveSexWithPlayer(akActor, position, sGetExtraTagsArr("sexlab"), bGetRegAllTagsArr("sexlab"), bAllowAggressive, bAllowAll)
 EndFunction
 
 int Function playerSexOS(Actor akActor, int vaginalWeight = 50, int analWeight=50, int oralWeight = 50, Bool bAllowAggressive= False, Bool bAllowAll = False)
@@ -197,7 +233,7 @@ int Function playerSexOS(Actor akActor, int vaginalWeight = 50, int analWeight=5
   else
     position = positionChooser(vaginalWeight, analWeight, oralWeight)
   endif
-  return OStimInterface.haveSexWithPlayer(akActor, position, bAllowAggressive, bAllowAll)
+  return OStimInterface.haveSexWithPlayer(akActor, position, sGetExtraTagsArr("ostim"), bGetRegAllTagsArr("ostim"), bAllowAggressive, bAllowAll)
 EndFunction
 
 int Function playerSexFG(Actor akActor, int vaginalWeight = 50, int analWeight=50, int oralWeight = 50)
@@ -411,4 +447,53 @@ EndFunction
 
 Bool Function bAllPosAllowed(Float fVagChance, Float fAnalChance, Float fOralChance)
   return ((fVagChance > 0.0) && (fAnalChance > 0.0) && (fOralChance > 0.0))
+EndFunction
+
+
+bool[] Function bGetRegAllTagsArr(String sInterface)
+  bool[] bReqAllArr = Utility.createBoolArray(8)
+  if sInterface == "sexlab"
+    bReqAllArr[0] = bExtraTags_SL_Oral_MF_ALL
+    bReqAllArr[1] = bExtraTags_SL_Oral_FF_ALL
+    bReqAllArr[2] = bExtraTags_SL_Oral_MM_ALL    
+    bReqAllArr[3] = bExtraTags_SL_Anal_MF_ALL
+    bReqAllArr[4] = bExtraTags_SL_Anal_FF_ALL
+    bReqAllArr[5] = bExtraTags_SL_Anal_MM_ALL
+    bReqAllArr[6] = bExtraTags_SL_Vaginal_MF_ALL
+    bReqAllArr[7] = bExtraTags_SL_Vaginal_FF_ALL
+  elseif sInterface == "ostim"
+    bReqAllArr[0] = bExtraTags_OS_Oral_MF_ALL
+    bReqAllArr[1] = bExtraTags_OS_Oral_FF_ALL
+    bReqAllArr[2] = bExtraTags_OS_Oral_MM_ALL    
+    bReqAllArr[3] = bExtraTags_OS_Anal_MF_ALL
+    bReqAllArr[4] = bExtraTags_OS_Anal_FF_ALL
+    bReqAllArr[5] = bExtraTags_OS_Anal_MM_ALL
+    bReqAllArr[6] = bExtraTags_OS_Vaginal_MF_ALL
+    bReqAllArr[7] = bExtraTags_OS_Vaginal_FF_ALL
+  endif
+  return bReqAllArr
+EndFunction
+
+string[] Function sGetExtraTagsArr(String sInterface)
+  string[] sTagsArr = Utility.createStringArray(8)
+  if sInterface == "sexlab"
+    sTagsArr[0] = sExtraTags_SL_Oral_MF
+    sTagsArr[1] = sExtraTags_SL_Oral_FF
+    sTagsArr[2] = sExtraTags_SL_Oral_MM
+    sTagsArr[3] = sExtraTags_SL_Anal_MF
+    sTagsArr[4] = sExtraTags_SL_Anal_FF
+    sTagsArr[5] = sExtraTags_SL_Anal_MM
+    sTagsArr[6] = sExtraTags_SL_Vaginal_MF
+    sTagsArr[7] = sExtraTags_SL_Vaginal_FF
+  elseif sInterface == "ostim"
+    sTagsArr[0] = sExtraTags_OS_Oral_MF
+    sTagsArr[1] = sExtraTags_OS_Oral_FF
+    sTagsArr[2] = sExtraTags_OS_Oral_MM
+    sTagsArr[3] = sExtraTags_OS_Anal_MF
+    sTagsArr[4] = sExtraTags_OS_Anal_FF
+    sTagsArr[5] = sExtraTags_OS_Anal_MM
+    sTagsArr[6] = sExtraTags_OS_Vaginal_MF
+    sTagsArr[7] = sExtraTags_OS_Vaginal_FF
+  endif
+  return sTagsArr
 EndFunction

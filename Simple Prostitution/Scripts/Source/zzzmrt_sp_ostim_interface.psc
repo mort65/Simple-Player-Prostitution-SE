@@ -29,12 +29,12 @@ function PlayerLoadsGame()
   endif
 endfunction
 
-int function haveSexWithPlayer(Actor Partner, Int Position, Bool bAllowAggressive = False, Bool bAllowAll = False)
+int function haveSexWithPlayer(Actor Partner, Int Position, String[] sExtraTags, Bool[] bRequireAllTags, Bool bAllowAggressive = False, Bool bAllowAll = False)
   return -1
 endfunction
 
 state Installed
-  int function haveSexWithPlayer(Actor Partner, Int Position, Bool bAllowAggressive = False, Bool bAllowAll = False)
-    return zzzmrt_sp_int_ostim.haveSexWithPlayerOS(OSexIntegrationMainQuest, Partner, Position, bAllowAggressive, bAllowAll)
+  int function haveSexWithPlayer(Actor Partner, Int Position, String[] sExtraTags, Bool[] bRequireAllTags, Bool bAllowAggressive = False, Bool bAllowAll = False)
+    return zzzmrt_sp_int_ostim.haveSexWithPlayerOS(OSexIntegrationMainQuest, Partner, Position, sExtraTags, bRequireAllTags, bAllowAggressive, bAllowAll)
   endfunction
 endstate

@@ -1,32 +1,52 @@
 Scriptname zzzmrt_sp_int_ostim Hidden
 
-int function haveSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor partner, Int Position, Bool bAllowAggressive = False, Bool bAllowAll =False) Global
+int function haveSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor partner, Int Position, String[] sExtraTags, Bool[] bRequireAllTags, Bool bAllowAggressive = False, Bool bAllowAll =False) Global
 	if Position < 0
 	  return -1
 	endif
 	string anim = ""
+	string anim2 = ""
 	actor[] actors = new actor[2]
+	string sGenders = ""
     actor player = Game.GetPlayer()
 	Bool isPlayerFemale = player.GetActorBase().GetSex()
 	Bool isPartnerFemale = Partner.GetLeveledActorBase().GetSex()
 	if isPlayerFemale && !isPartnerFemale
+		sGenders = "MF"
 		actors[0] = partner
 		actors[1] = Game.GetPlayer()
 	elseif !isPlayerFemale && isPartnerFemale
-		actors[0] = Game.GetPlayer()
-		actors[1] = partner
-	elseif Utility.randomInt(0,1)
+		sGenders = "MF"
 		actors[0] = Game.GetPlayer()
 		actors[1] = partner
 	else
-		actors[0] = partner
-		actors[1] = Game.GetPlayer()
+		if isPlayerFemale
+			sGenders = "FF"
+		else
+			sGenders = "MM"
+		endif
+		if Utility.randomInt(0,1)
+			actors[0] = Game.GetPlayer()
+			actors[1] = partner
+		else
+			actors[0] = partner
+			actors[1] = Game.GetPlayer()
+		endif
+	endif
+	Int iExtraTagsIndex = iGetExtraTagsIndex(Position, sGenders)
+	if (iExtraTagsIndex > -1) && sExtraTags[iExtraTagsIndex]
+		if bRequireAllTags[iExtraTagsIndex]
+			anim2 = getRandomAnimationWithAllTags(actors, sExtraTags[iExtraTagsIndex] + ",")
+		else
+			anim2 = getRandomAnimation(actors, sExtraTags[iExtraTagsIndex] + ",")
+		endif
 	endif
 	int i = 20
 	while !anim && i > 0
 		i-=1
 		if Position == 0
 			Anim = getRandomAnimation(actors, "vaginalsex,doggystyle,missionary,cowgirl,")
+
 		elseif Position == 1
 			Anim = getRandomAnimation(actors, "analsex,")
 		else
@@ -40,15 +60,25 @@ int function haveSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor partner, 
 			endif
 		endif
     endwhile
-	if anim
-		OThread.QuickStart(actors, StartingAnimation = anim)
+    string myAnim = ""
+    if anim2
+    	if anim && Utility.randomInt(0,1)
+    		myAnim = anim
+    	else
+    		myAnim = anim2
+    	endif
+    else
+    	myAnim = anim
+    endif
+	if myAnim
+		OThread.QuickStart(actors, StartingAnimation = myAnim)
 		return Position
 	else
 		Debug.trace("SimpleProstitution: couldn't find suitable OStim animation.")
 		if bAllowAll
-			anim = OLibrary.GetRandomScene(actors)
-			if anim
-				OThread.QuickStart(actors, StartingAnimation = anim)
+			myAnim = OLibrary.GetRandomScene(actors)
+			if myAnim
+				OThread.QuickStart(actors, StartingAnimation = myAnim)
 				return Position
 			endif
 			Debug.trace("SimpleProstitution: couldn't find any OStim animation.")
@@ -75,7 +105,45 @@ String Function getRandomAnimation(actor[] actors, string tagCSV, string exclusi
         anim = OLibrary.GetRandomSceneWithAnySceneTagCSV(actors, tagCSV)
     EndIf
     If (anim == "")
-        anim = OLibrary.GetRandomSceneSuperloadCSV(actors, AnyActionType = tagCSV, AnySceneTag = tagCSV, AnyActorTagForAny = tagCSV, ActionBlacklistTypes = exclusion, SceneTagBlacklist = exclusion);
+        anim = OLibrary.GetRandomSceneSuperloadCSV(actors, AnySceneTag = tagCSV, AnyActionType = tagCSV, AnyActorTagForAny = tagCSV, ActionBlacklistTypes = exclusion, SceneTagBlacklist = exclusion);
     EndIf
     Return  anim
 EndFunction
+
+String Function getRandomAnimationWithAllTags(actor[] actors, string tagCSV, string exclusion = "") Global	
+	string anim = OLibrary.GetRandomSceneWithAllActionsCSV(actors, tagCSV);
+    If (anim == "")
+        anim = OLibrary.GetRandomSceneWithAllSceneTagsCSV(actors, tagCSV)
+    EndIf
+    If (anim == "")
+        anim = OLibrary.GetRandomSceneSuperloadCSV(actors, AllSceneTags = tagCSV, AllActionTypes = tagCSV, AllActorTagsForAny = tagCSV, ActionBlacklistTypes = exclusion, SceneTagBlacklist = exclusion);
+    EndIf
+    Return  anim
+EndFunction
+
+int Function iGetExtraTagsIndex(string iPos, string sGenders) Global
+  if iPos == 0
+    if sGenders == "MF"
+      return 6
+    elseif sGenders == "FF"
+      return 7
+    endif
+  elseif iPos == 1
+    if sGenders == "MF"
+      return 3
+    elseif sGenders == "FF"
+      return 4
+    elseif sGenders == "MM"
+      return 5
+    endif
+  elseif iPos == 2
+    if sGenders == "MF"
+      return 0
+    elseif sGenders == "FF"
+      return 1
+    elseif sGenders == "MM"
+      return 2
+    endif
+  endif
+  return -1
+endfunction

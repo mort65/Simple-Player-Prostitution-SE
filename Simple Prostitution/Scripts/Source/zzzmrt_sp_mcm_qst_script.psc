@@ -80,6 +80,32 @@ event OnPageReset(String page)
       flag = OPTION_FLAG_DISABLED
     endif
     _AddToggleOptionST("TRY_ALL_INTERFACES_TOGGLE", "$MRT_SP_TRY_ALL_INTERFACES_TOGGLE", MainScript.bTryAllInterfaces, flag)
+    addEmptyOption()
+    _AddHeaderOption("$MRT_SP_HEAD_EXTRATAGS_SEXLAB")
+    if MainScript.bModEnabled
+      flag = OPTION_FLAG_NONE
+    else
+      flag = OPTION_FLAG_DISABLED
+    endif
+    AddInputOptionST("EXTRATAGS_SEXLAB_ORAL_MF_INPUT", "$MRT_SP_EXTRATAGS_SEXLAB_ORAL_MF_INPUT", shortenString(MainScript.sExtraTags_SL_Oral_MF, 13) + " RequireAll=" + BoolAsIntToStr(MainScript.bExtraTags_SL_Oral_MF_All), flag)
+    AddInputOptionST("EXTRATAGS_SEXLAB_ORAL_FF_INPUT", "$MRT_SP_EXTRATAGS_SEXLAB_ORAL_FF_INPUT", shortenString(MainScript.sExtraTags_SL_Oral_FF, 13) + " RequireAll=" + BoolAsIntToStr(MainScript.bExtraTags_SL_Oral_FF_All), flag)
+    AddInputOptionST("EXTRATAGS_SEXLAB_ORAL_MM_INPUT", "$MRT_SP_EXTRATAGS_SEXLAB_ORAL_MM_INPUT", shortenString(MainScript.sExtraTags_SL_Oral_MM, 13) + " RequireAll=" + BoolAsIntToStr(MainScript.bExtraTags_SL_Oral_MM_All), flag)
+    AddInputOptionST("EXTRATAGS_SEXLAB_ANAL_MF_INPUT", "$MRT_SP_EXTRATAGS_SEXLAB_ANAL_MF_INPUT", shortenString(MainScript.sExtraTags_SL_ANAL_MF, 13) + " RequireAll=" + BoolAsIntToStr(MainScript.bExtraTags_SL_ANAL_MF_All), flag)
+    AddInputOptionST("EXTRATAGS_SEXLAB_ANAL_FF_INPUT", "$MRT_SP_EXTRATAGS_SEXLAB_ANAL_FF_INPUT", shortenString(MainScript.sExtraTags_SL_ANAL_FF, 13) + " RequireAll=" + BoolAsIntToStr(MainScript.bExtraTags_SL_ANAL_FF_All), flag)
+    AddInputOptionST("EXTRATAGS_SEXLAB_ANAL_MM_INPUT", "$MRT_SP_EXTRATAGS_SEXLAB_ANAL_MM_INPUT", shortenString(MainScript.sExtraTags_SL_ANAL_MM, 13) + " RequireAll=" + BoolAsIntToStr(MainScript.bExtraTags_SL_ANAL_MM_All), flag)
+    AddInputOptionST("EXTRATAGS_SEXLAB_VAGINAL_MF_INPUT", "$MRT_SP_EXTRATAGS_SEXLAB_VAGINAL_MF_INPUT", shortenString(MainScript.sExtraTags_SL_VAGINAL_MF, 13) + " RequireAll=" + BoolAsIntToStr(MainScript.bExtraTags_SL_VAGINAL_MF_All), flag)
+    AddInputOptionST("EXTRATAGS_SEXLAB_VAGINAL_FF_INPUT", "$MRT_SP_EXTRATAGS_SEXLAB_VAGINAL_FF_INPUT", shortenString(MainScript.sExtraTags_SL_VAGINAL_FF, 13) + " RequireAll=" + BoolAsIntToStr(MainScript.bExtraTags_SL_VAGINAL_FF_All), flag)   
+    addEmptyOption()
+    _AddHeaderOption("$MRT_SP_HEAD_EXTRATAGS_OSTIM")
+    AddInputOptionST("EXTRATAGS_OSTIM_ORAL_MF_INPUT", "$MRT_SP_EXTRATAGS_OSTIM_ORAL_MF_INPUT", shortenString(MainScript.sExtraTags_OS_Oral_MF, 13) + " RequireAll=" + BoolAsIntToStr(MainScript.bExtraTags_OS_Oral_MF_All), flag)
+    AddInputOptionST("EXTRATAGS_OSTIM_ORAL_FF_INPUT", "$MRT_SP_EXTRATAGS_OSTIM_ORAL_FF_INPUT", shortenString(MainScript.sExtraTags_OS_Oral_FF, 13) + " RequireAll=" + BoolAsIntToStr(MainScript.bExtraTags_OS_Oral_FF_All), flag)
+    AddInputOptionST("EXTRATAGS_OSTIM_ORAL_MM_INPUT", "$MRT_SP_EXTRATAGS_OSTIM_ORAL_MM_INPUT", shortenString(MainScript.sExtraTags_OS_Oral_MM, 13) + " RequireAll=" + BoolAsIntToStr(MainScript.bExtraTags_OS_Oral_MM_All), flag)
+    AddInputOptionST("EXTRATAGS_OSTIM_ANAL_MF_INPUT", "$MRT_SP_EXTRATAGS_OSTIM_ANAL_MF_INPUT", shortenString(MainScript.sExtraTags_OS_ANAL_MF, 13) + " RequireAll=" + BoolAsIntToStr(MainScript.bExtraTags_OS_Anal_MF_All), flag)
+    AddInputOptionST("EXTRATAGS_OSTIM_ANAL_FF_INPUT", "$MRT_SP_EXTRATAGS_OSTIM_ANAL_FF_INPUT", shortenString(MainScript.sExtraTags_OS_ANAL_FF, 13) + " RequireAll=" + BoolAsIntToStr(MainScript.bExtraTags_OS_Anal_FF_All), flag)
+    AddInputOptionST("EXTRATAGS_OSTIM_ANAL_MM_INPUT", "$MRT_SP_EXTRATAGS_OSTIM_ANAL_MM_INPUT", shortenString(MainScript.sExtraTags_OS_ANAL_MM, 13) + " RequireAll=" + BoolAsIntToStr(MainScript.bExtraTags_OS_Anal_MM_All), flag)
+    AddInputOptionST("EXTRATAGS_OSTIM_VAGINAL_MF_INPUT", "$MRT_SP_EXTRATAGS_OSTIM_VAGINAL_MF_INPUT", shortenString(MainScript.sExtraTags_OS_VAGINAL_MF, 13) + " RequireAll=" + BoolAsIntToStr(MainScript.bExtraTags_OS_VAGINAL_MF_All), flag)
+    AddInputOptionST("EXTRATAGS_OSTIM_VAGINAL_FF_INPUT", "$MRT_SP_EXTRATAGS_OSTIM_VAGINAL_FF_INPUT", shortenString(MainScript.sExtraTags_OS_VAGINAL_FF, 13) + " RequireAll=" + BoolAsIntToStr(MainScript.bExtraTags_OS_VAGINAL_FF_All), flag)
+    addEmptyOption()
     SetCursorPosition(1)
     _AddHeaderOption("$MRT_SP_HEAD_INTEGRATION_LICENSE")
     if MainScript.bModEnabled && MainScript.bWhoreEnabled
@@ -1067,6 +1093,406 @@ state WHORE_VAG_CHANCE_SLIDER
   endEvent
 endstate
 
+State EXTRATAGS_SEXLAB_ORAL_MF_INPUT
+  event OnInputOpenST()
+    SetInputDialogStartText(MainScript.sExtraTags_SL_Oral_MF)
+  endEvent
+
+  event OnInputAcceptST(string Text)
+    String str = sTrimString(Text)
+    If StringUtil.GetLength(str) > 30
+      ShowMessage("Text is too long, 30 Characters Maximum", false)
+    else
+      MainScript.sExtraTags_SL_Oral_MF = str
+      if str && ShowMessage("All tags required?", true, "$Yes", "$No")
+        MainScript.bExtraTags_SL_Oral_MF_ALL = true
+      else
+        MainScript.bExtraTags_SL_Oral_MF_ALL = False
+      endIf
+      ForcePageReset()
+    endif
+  endEvent
+  
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_EXTRATAGS_SEXLAB_ORAL_MF_INPUT")
+  endevent
+EndState
+
+State EXTRATAGS_SEXLAB_ORAL_MM_INPUT
+  event OnInputOpenST()
+    SetInputDialogStartText(MainScript.sExtraTags_SL_Oral_MM)
+  endEvent
+
+  event OnInputAcceptST(string Text)
+    String str = sTrimString(Text)
+    If StringUtil.GetLength(str) > 30
+      ShowMessage("Text is too long, 30 Characters Maximum", false)
+    else
+      MainScript.sExtraTags_SL_Oral_MM = str
+      if str && ShowMessage("All tags required?", true, "$Yes", "$No")
+        MainScript.bExtraTags_SL_Oral_MM_ALL = true
+      else
+        MainScript.bExtraTags_SL_Oral_MM_ALL = False
+      endIf
+      ForcePageReset()
+    endif
+  endEvent
+  
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_EXTRATAGS_SEXLAB_ORAL_MM_INPUT")
+  endevent
+EndState
+
+State EXTRATAGS_SEXLAB_ORAL_FF_INPUT
+  event OnInputOpenST()
+    SetInputDialogStartText(MainScript.sExtraTags_SL_Oral_FF)
+  endEvent
+
+  event OnInputAcceptST(string Text)
+    String str = sTrimString(Text)
+    If StringUtil.GetLength(str) > 30
+      ShowMessage("Text is too long, 30 Characters Maximum", false)
+    else
+      MainScript.sExtraTags_SL_Oral_FF = str
+      if str && ShowMessage("All tags required?", true, "$Yes", "$No")
+        MainScript.bExtraTags_SL_Oral_FF_ALL = true
+      else
+        MainScript.bExtraTags_SL_Oral_FF_ALL = False
+      endIf
+      ForcePageReset()
+    endif
+  endEvent
+  
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_EXTRATAGS_SEXLAB_ORAL_FF_INPUT")
+  endevent
+EndState
+
+State EXTRATAGS_SEXLAB_ANAL_MF_INPUT
+  event OnInputOpenST()
+    SetInputDialogStartText(MainScript.sExtraTags_SL_Anal_MF)
+  endEvent
+
+  event OnInputAcceptST(string Text)
+    String str = sTrimString(Text)
+    If StringUtil.GetLength(str) > 30
+      ShowMessage("Text is too long, 30 Characters Maximum", false)
+    else
+      MainScript.sExtraTags_SL_Anal_MF = str
+      if str && ShowMessage("All tags required?", true, "$Yes", "$No")
+        MainScript.bExtraTags_SL_Anal_MF_ALL = true
+      else
+        MainScript.bExtraTags_SL_Anal_MF_ALL = False
+      endIf
+      ForcePageReset()
+    endif
+  endEvent
+  
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_EXTRATAGS_SEXLAB_ANAL_MF_INPUT")
+  endevent
+EndState
+
+State EXTRATAGS_SEXLAB_ANAL_FF_INPUT
+  event OnInputOpenST()
+    SetInputDialogStartText(MainScript.sExtraTags_SL_ANAL_FF)
+  endEvent
+
+  event OnInputAcceptST(string Text)
+    String str = sTrimString(Text)
+    If StringUtil.GetLength(str) > 30
+      ShowMessage("Text is too long, 30 Characters Maximum", false)
+    else
+      MainScript.sExtraTags_SL_ANAL_FF = str
+      if str && ShowMessage("All tags required?", true, "$Yes", "$No")
+        MainScript.bExtraTags_SL_Anal_FF_ALL = true
+      else
+        MainScript.bExtraTags_SL_Anal_FF_ALL = False
+      endIf
+      ForcePageReset()
+    endif
+  endEvent
+  
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_EXTRATAGS_SEXLAB_ANAL_FF_INPUT")
+  endevent
+EndState
+
+State EXTRATAGS_SEXLAB_ANAL_MM_INPUT
+  event OnInputOpenST()
+    SetInputDialogStartText(MainScript.sExtraTags_SL_Anal_MM)
+  endEvent
+
+  event OnInputAcceptST(string Text)
+    String str = sTrimString(Text)
+    If StringUtil.GetLength(str) > 30
+      ShowMessage("Text is too long, 30 Characters Maximum", false)
+    else
+      MainScript.sExtraTags_SL_Anal_MM = str
+      if str && ShowMessage("All tags required?", true, "$Yes", "$No")
+        MainScript.bExtraTags_SL_Anal_MM_ALL = true
+      else
+        MainScript.bExtraTags_SL_Anal_MM_ALL = False
+      endIf      
+      ForcePageReset()
+    endif
+  endEvent
+  
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_EXTRATAGS_SEXLAB_ANAL_MM_INPUT")
+  endevent
+EndState
+
+State EXTRATAGS_SEXLAB_VAGINAL_MF_INPUT
+  event OnInputOpenST()
+    SetInputDialogStartText(MainScript.sExtraTags_SL_Vaginal_MF)
+  endEvent
+
+  event OnInputAcceptST(string Text)
+    String str = sTrimString(Text)
+    If StringUtil.GetLength(str) > 30
+      ShowMessage("Text is too long, 30 Characters Maximum", false)
+    else
+      MainScript.sExtraTags_SL_Vaginal_MF = str
+      if str && ShowMessage("All tags required?", true, "$Yes", "$No")
+        MainScript.bExtraTags_SL_VAGINAL_MF_ALL = true
+      else
+        MainScript.bExtraTags_SL_VAGINAL_MF_ALL = False
+      endIf   
+      ForcePageReset()
+    endif
+  endEvent
+  
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_EXTRATAGS_SEXLAB_VAGINAL_MF_INPUT")
+  endevent
+EndState
+
+State EXTRATAGS_SEXLAB_VAGINAL_FF_INPUT
+  event OnInputOpenST()
+    SetInputDialogStartText(MainScript.sExtraTags_SL_Vaginal_FF)
+  endEvent
+
+  event OnInputAcceptST(string Text)
+    String str = sTrimString(Text)
+    If StringUtil.GetLength(str) > 30
+      ShowMessage("Text is too long, 30 Characters Maximum", false)
+    else
+      MainScript.sExtraTags_SL_Vaginal_FF = str
+      if str && ShowMessage("All tags required?", true, "$Yes", "$No")
+        MainScript.bExtraTags_SL_Vaginal_FF_ALL = true
+      else
+        MainScript.bExtraTags_SL_Vaginal_FF_ALL = False
+      endIf  
+      ForcePageReset()
+    endif
+  endEvent
+  
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_EXTRATAGS_SEXLAB_VAGINAL_FF_INPUT")
+  endevent
+EndState
+
+State EXTRATAGS_OSTIM_ORAL_MF_INPUT
+  event OnInputOpenST()
+    SetInputDialogStartText(MainScript.sExtraTags_OS_Oral_MF)
+  endEvent
+
+  event OnInputAcceptST(string Text)
+    String str = sTrimString(Text)
+    If StringUtil.GetLength(str) > 30
+      ShowMessage("Text is too long, 30 Characters Maximum", false)
+    else
+      MainScript.sExtraTags_OS_Oral_MF = str
+      if str && ShowMessage("All tags required?", true, "$Yes", "$No")
+        MainScript.bExtraTags_OS_Oral_MF_ALL = true
+      else
+        MainScript.bExtraTags_OS_Oral_MF_ALL = False
+      endIf  
+      ForcePageReset()
+    endif
+  endEvent
+  
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_EXTRATAGS_OSTIM_ORAL_MF_INPUT")
+  endevent
+EndState
+
+State EXTRATAGS_OSTIM_ORAL_MM_INPUT
+  event OnInputOpenST()
+    SetInputDialogStartText(MainScript.sExtraTags_OS_Oral_MM)
+  endEvent
+
+  event OnInputAcceptST(string Text)
+    String str = sTrimString(Text)
+    If StringUtil.GetLength(str) > 30
+      ShowMessage("Text is too long, 30 Characters Maximum", false)
+    else
+      MainScript.sExtraTags_OS_Oral_MM = str
+      if str && ShowMessage("All tags required?", true, "$Yes", "$No")
+        MainScript.bExtraTags_OS_Oral_MM_ALL = true
+      else
+        MainScript.bExtraTags_OS_Oral_MM_ALL = False
+      endif
+      ForcePageReset()
+    endif
+  endEvent
+  
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_EXTRATAGS_OSTIM_ORAL_MM_INPUT")
+  endevent
+EndState
+
+State EXTRATAGS_OSTIM_ORAL_FF_INPUT
+  event OnInputOpenST()
+    SetInputDialogStartText(MainScript.sExtraTags_OS_Oral_FF)
+  endEvent
+
+  event OnInputAcceptST(string Text)
+    String str = sTrimString(Text)
+    If StringUtil.GetLength(str) > 30
+      ShowMessage("Text is too long, 30 Characters Maximum", false)
+    else
+      MainScript.sExtraTags_OS_Oral_FF = str
+      if str && ShowMessage("All tags required?", true, "$Yes", "$No")
+        MainScript.bExtraTags_OS_Oral_FF_ALL = true
+      else
+        MainScript.bExtraTags_OS_Oral_FF_ALL = False
+      endif
+      ForcePageReset()
+    endif
+  endEvent
+  
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_EXTRATAGS_OSTIM_ORAL_FF_INPUT")
+  endevent
+EndState
+
+State EXTRATAGS_OSTIM_ANAL_MF_INPUT
+  event OnInputOpenST()
+    SetInputDialogStartText(MainScript.sExtraTags_OS_ANAL_MF)
+  endEvent
+
+  event OnInputAcceptST(string Text)
+    String str = sTrimString(Text)
+    If StringUtil.GetLength(str) > 30
+      ShowMessage("Text is too long, 30 Characters Maximum", false)
+    else
+      MainScript.sExtraTags_OS_Anal_MF = str
+      if str && ShowMessage("All tags required?", true, "$Yes", "$No")
+        MainScript.bExtraTags_OS_Anal_MF_ALL = true
+      else
+        MainScript.bExtraTags_OS_Anal_MF_ALL = False
+      endif
+      ForcePageReset()
+    endif
+  endEvent
+  
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_EXTRATAGS_OSTIM_ANAL_MF_INPUT")
+  endevent
+EndState
+
+State EXTRATAGS_OSTIM_ANAL_FF_INPUT
+  event OnInputOpenST()
+    SetInputDialogStartText(MainScript.sExtraTags_OS_Anal_FF)
+  endEvent
+
+  event OnInputAcceptST(string Text)
+    String str = sTrimString(Text)
+    If StringUtil.GetLength(str) > 30
+      ShowMessage("Text is too long, 30 Characters Maximum", false)
+    else
+      MainScript.sExtraTags_OS_Anal_FF = str
+      if str && ShowMessage("All tags required?", true, "$Yes", "$No")
+        MainScript.bExtraTags_OS_Anal_FF_ALL = true
+      else
+        MainScript.bExtraTags_OS_Anal_FF_ALL = False
+      endif
+      ForcePageReset()
+    endif
+  endEvent
+  
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_EXTRATAGS_OSTIM_ANAL_FF_INPUT")
+  endevent
+EndState
+
+State EXTRATAGS_OSTIM_ANAL_MM_INPUT
+  event OnInputOpenST()
+    SetInputDialogStartText(MainScript.sExtraTags_OS_Anal_MM)
+  endEvent
+
+  event OnInputAcceptST(string Text)
+    String str = sTrimString(Text)
+    If StringUtil.GetLength(str) > 30
+      ShowMessage("Text is too long, 30 Characters Maximum", false)
+    else
+      MainScript.sExtraTags_OS_Anal_MM = str
+      if str && ShowMessage("All tags required?", true, "$Yes", "$No")
+        MainScript.bExtraTags_OS_Anal_MM_ALL = true
+      else
+        MainScript.bExtraTags_OS_Anal_MM_ALL = False
+      endif
+      ForcePageReset()
+    endif
+  endEvent
+  
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_EXTRATAGS_OSTIM_ANAL_MM_INPUT")
+  endevent
+EndState
+
+State EXTRATAGS_OSTIM_VAGINAL_MF_INPUT
+  event OnInputOpenST()
+    SetInputDialogStartText(MainScript.sExtraTags_OS_Vaginal_MF)
+  endEvent
+
+  event OnInputAcceptST(string Text)
+    String str = sTrimString(Text)
+    If StringUtil.GetLength(str) > 30
+      ShowMessage("Text is too long, 30 Characters Maximum", false)
+    else
+      MainScript.sExtraTags_OS_Vaginal_MF = str
+      if Text && ShowMessage("All tags required?", true, "$Yes", "$No")
+        MainScript.bExtraTags_OS_Vaginal_MF_ALL = true
+      else
+        MainScript.bExtraTags_OS_Vaginal_MF_ALL = False
+      endif
+      ForcePageReset()
+    endif
+  endEvent
+  
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_EXTRATAGS_OSTIM_VAGINAL_MF_INPUT")
+  endevent
+EndState
+
+State EXTRATAGS_OSTIM_VAGINAL_FF_INPUT
+  event OnInputOpenST()
+    SetInputDialogStartText(MainScript.sExtraTags_OS_VAGINAL_FF)
+  endEvent
+
+  event OnInputAcceptST(string Text)
+    String str = sTrimString(Text)
+    If StringUtil.GetLength(str) > 30
+      ShowMessage("Text is too long, 30 Characters Maximum", false)
+    else
+      MainScript.sExtraTags_OS_VAGINAL_FF = str
+      if Text && ShowMessage("All tags required?", true, "$Yes", "$No")
+        MainScript.bExtraTags_OS_Vaginal_FF_ALL = true
+      else
+        MainScript.bExtraTags_OS_Vaginal_FF_ALL = False
+      endif
+      ForcePageReset()
+    endif
+  endEvent
+  
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_EXTRATAGS_OSTIM_VAGINAL_FF_INPUT")
+  endevent
+EndState
+
 State DEBUG_MOD_VERSION_TXT
 endstate
 
@@ -1143,7 +1569,23 @@ Bool function loadUserSettingsPapyrus()
   MainScript.bWhoreAllowAggressive = jsonutil.GetPathIntValue(settings_path, "bWhoreAllowAggressive", MainScript.bWhoreAllowAggressive as Int)
   MainScript.bDibelAllowAggressive = jsonutil.GetPathIntValue(settings_path, "bDibelAllowAggressive", MainScript.bDibelAllowAggressive as Int)
   MainScript.bTryAllInterfaces = jsonutil.GetPathIntValue(settings_path, "bTryAllInterfaces", MainScript.bTryAllInterfaces as Int)
-
+  MainScript.bExtraTags_SL_Oral_MF_ALL = jsonutil.GetPathIntValue(settings_path, "bExtraTags_SL_Oral_MF_ALL", MainScript.bExtraTags_SL_Oral_MF_ALL as Int)
+  MainScript.bExtraTags_SL_Oral_FF_ALL = jsonutil.GetPathIntValue(settings_path, "bExtraTags_SL_Oral_FF_ALL", MainScript.bExtraTags_SL_Oral_FF_ALL as Int)
+  MainScript.bExtraTags_SL_Oral_MM_ALL = jsonutil.GetPathIntValue(settings_path, "bExtraTags_SL_Oral_MM_ALL", MainScript.bExtraTags_SL_Oral_MM_ALL as Int)
+  MainScript.bExtraTags_SL_Anal_MF_ALL = jsonutil.GetPathIntValue(settings_path, "bExtraTags_SL_Anal_MF_ALL", MainScript.bExtraTags_SL_Anal_MF_ALL as Int)
+  MainScript.bExtraTags_SL_Anal_FF_ALL = jsonutil.GetPathIntValue(settings_path, "bExtraTags_SL_Anal_FF_ALL", MainScript.bExtraTags_SL_Anal_FF_ALL as Int)
+  MainScript.bExtraTags_SL_Anal_MM_ALL = jsonutil.GetPathIntValue(settings_path, "bExtraTags_SL_Anal_MM_ALL", MainScript.bExtraTags_SL_Anal_MM_ALL as Int) 
+  MainScript.bExtraTags_SL_Vaginal_MF_ALL = jsonutil.GetPathIntValue(settings_path, "bExtraTags_SL_Vaginal_MF_ALL", MainScript.bExtraTags_SL_Vaginal_MF_ALL as Int)
+  MainScript.bExtraTags_SL_Vaginal_FF_ALL = jsonutil.GetPathIntValue(settings_path, "bExtraTags_SL_Vaginal_FF_ALL", MainScript.bExtraTags_SL_Vaginal_FF_ALL as Int)
+  MainScript.bExtraTags_OS_Oral_MF_ALL = jsonutil.GetPathIntValue(settings_path, "bExtraTags_OS_Oral_MF_ALL", MainScript.bExtraTags_OS_Oral_MF_ALL as Int)
+  MainScript.bExtraTags_OS_Oral_FF_ALL = jsonutil.GetPathIntValue(settings_path, "bExtraTags_OS_Oral_FF_ALL", MainScript.bExtraTags_OS_Oral_FF_ALL as Int)
+  MainScript.bExtraTags_OS_Oral_MM_ALL = jsonutil.GetPathIntValue(settings_path, "bExtraTags_OS_Oral_MM_ALL", MainScript.bExtraTags_OS_Oral_MM_ALL as Int)
+  MainScript.bExtraTags_OS_Anal_MF_ALL = jsonutil.GetPathIntValue(settings_path, "bExtraTags_OS_Anal_MF_ALL", MainScript.bExtraTags_OS_Anal_MF_ALL as Int)
+  MainScript.bExtraTags_OS_Anal_FF_ALL = jsonutil.GetPathIntValue(settings_path, "bExtraTags_OS_Anal_FF_ALL", MainScript.bExtraTags_OS_Anal_FF_ALL as Int)
+  MainScript.bExtraTags_OS_Anal_MM_ALL = jsonutil.GetPathIntValue(settings_path, "bExtraTags_OS_Anal_MM_ALL", MainScript.bExtraTags_OS_Anal_MM_ALL as Int) 
+  MainScript.bExtraTags_OS_Vaginal_MF_ALL = jsonutil.GetPathIntValue(settings_path, "bExtraTags_OS_Vaginal_MF_ALL", MainScript.bExtraTags_OS_Vaginal_MF_ALL as Int)
+  MainScript.bExtraTags_OS_Vaginal_FF_ALL = jsonutil.GetPathIntValue(settings_path, "bExtraTags_OS_Vaginal_FF_ALL", MainScript.bExtraTags_OS_Vaginal_FF_ALL as Int)
+  
   iBeggarSpeechDifficulty = jsonutil.GetPathIntValue(settings_path, "iBeggarSpeechDifficulty", iBeggarSpeechDifficulty)
   iWhoreSpeechDifficulty = jsonutil.GetPathIntValue(settings_path, "iWhoreSpeechDifficulty", iWhoreSpeechDifficulty)
   iDibelSpeechDifficulty = jsonutil.GetPathIntValue(settings_path, "iDibelSpeechDifficulty", iDibelSpeechDifficulty)
@@ -1170,6 +1612,24 @@ Bool function loadUserSettingsPapyrus()
   MainScript.fMaxSpeechWhoreBonusMult = jsonutil.GetPathFloatValue(settings_path, "fMaxSpeechWhoreBonusMult", MainScript.fMaxSpeechWhoreBonusMult)
   MainScript.fMinSpeechDibelBonusMult = jsonutil.GetPathFloatValue(settings_path, "fMinSpeechDibelBonusMult", MainScript.fMinSpeechDibelBonusMult)
   MainScript.fMaxSpeechDibelBonusMult = jsonutil.GetPathFloatValue(settings_path, "fMaxSpeechDibelBonusMult", MainScript.fMaxSpeechDibelBonusMult)
+
+  MainScript.sExtraTags_SL_Oral_MF = jsonutil.GetPathStringValue(settings_path, "sExtraTags_SL_Oral_MF", MainScript.sExtraTags_SL_Oral_MF)
+  MainScript.sExtraTags_SL_Oral_FF = jsonutil.GetPathStringValue(settings_path, "sExtraTags_SL_Oral_FF", MainScript.sExtraTags_SL_Oral_FF)
+  MainScript.sExtraTags_SL_Oral_MM = jsonutil.GetPathStringValue(settings_path, "sExtraTags_SL_Oral_MM", MainScript.sExtraTags_SL_Oral_MM)
+  MainScript.sExtraTags_SL_Anal_MF = jsonutil.GetPathStringValue(settings_path, "sExtraTags_SL_Anal_MF", MainScript.sExtraTags_SL_Anal_MF)
+  MainScript.sExtraTags_SL_Anal_FF = jsonutil.GetPathStringValue(settings_path, "sExtraTags_SL_Anal_FF", MainScript.sExtraTags_SL_Anal_FF)
+  MainScript.sExtraTags_SL_Anal_MM = jsonutil.GetPathStringValue(settings_path, "sExtraTags_SL_Anal_MM", MainScript.sExtraTags_SL_Anal_MM)
+  MainScript.sExtraTags_SL_Vaginal_MF = jsonutil.GetPathStringValue(settings_path, "sExtraTags_SL_Vaginal_MF", MainScript.sExtraTags_SL_Vaginal_MF)
+  MainScript.sExtraTags_SL_Vaginal_FF = jsonutil.GetPathStringValue(settings_path, "sExtraTags_SL_Vaginal_FF", MainScript.sExtraTags_SL_Vaginal_FF) 
+  MainScript.sExtraTags_OS_Oral_MF = jsonutil.GetPathStringValue(settings_path, "sExtraTags_OS_Oral_MF", MainScript.sExtraTags_OS_Oral_MF)
+  MainScript.sExtraTags_OS_Oral_FF = jsonutil.GetPathStringValue(settings_path, "sExtraTags_OS_Oral_FF", MainScript.sExtraTags_OS_Oral_FF)
+  MainScript.sExtraTags_OS_Oral_MM = jsonutil.GetPathStringValue(settings_path, "sExtraTags_OS_Oral_MM", MainScript.sExtraTags_OS_Oral_MM)
+  MainScript.sExtraTags_OS_Anal_MF = jsonutil.GetPathStringValue(settings_path, "sExtraTags_OS_Anal_MF", MainScript.sExtraTags_OS_Anal_MF)
+  MainScript.sExtraTags_OS_Anal_FF = jsonutil.GetPathStringValue(settings_path, "sExtraTags_OS_Anal_FF", MainScript.sExtraTags_OS_Anal_FF)
+  MainScript.sExtraTags_OS_Anal_MM = jsonutil.GetPathStringValue(settings_path, "sExtraTags_OS_Anal_MM", MainScript.sExtraTags_OS_Anal_MM)
+  MainScript.sExtraTags_OS_Vaginal_MF = jsonutil.GetPathStringValue(settings_path, "sExtraTags_OS_Vaginal_MF", MainScript.sExtraTags_OS_Vaginal_MF)
+  MainScript.sExtraTags_OS_Vaginal_FF = jsonutil.GetPathStringValue(settings_path, "sExtraTags_OS_Vaginal_FF", MainScript.sExtraTags_OS_Vaginal_FF)
+
   MainScript.setChance()
   ForcePageReset()
   return true
@@ -1193,7 +1653,23 @@ Bool function saveUserSettingsPapyrus()
   jsonutil.SetPathIntValue(settings_path, "bWhoreAllowAggressive", MainScript.bWhoreAllowAggressive as Int)
   jsonutil.SetPathIntValue(settings_path, "bDibelAllowAggressive", MainScript.bDibelAllowAggressive as Int)
   jsonutil.SetPathIntValue(settings_path, "bTryAllInterfaces", MainScript.bTryAllInterfaces as Int)
-  
+  jsonutil.SetPathIntValue(settings_path, "bExtraTags_SL_Oral_MF_ALL", MainScript.bExtraTags_SL_Oral_MF_ALL as Int)
+  jsonutil.SetPathIntValue(settings_path, "bExtraTags_SL_Oral_FF_ALL", MainScript.bExtraTags_SL_Oral_FF_ALL as Int)
+  jsonutil.SetPathIntValue(settings_path, "bExtraTags_SL_Oral_MM_ALL", MainScript.bExtraTags_SL_Oral_MM_ALL as Int)
+  jsonutil.SetPathIntValue(settings_path, "bExtraTags_SL_Anal_MF_ALL", MainScript.bExtraTags_SL_Anal_MF_ALL as Int)
+  jsonutil.SetPathIntValue(settings_path, "bExtraTags_SL_Anal_FF_ALL", MainScript.bExtraTags_SL_Anal_FF_ALL as Int)
+  jsonutil.SetPathIntValue(settings_path, "bExtraTags_SL_Anal_MM_ALL", MainScript.bExtraTags_SL_Anal_MM_ALL as Int)
+  jsonutil.SetPathIntValue(settings_path, "bExtraTags_SL_Vaginal_MF_ALL", MainScript.bExtraTags_SL_Vaginal_MF_ALL as Int)
+  jsonutil.SetPathIntValue(settings_path, "bExtraTags_SL_Vaginal_FF_ALL", MainScript.bExtraTags_SL_Vaginal_FF_ALL as Int)
+  jsonutil.SetPathIntValue(settings_path, "bExtraTags_OS_Oral_MF_ALL", MainScript.bExtraTags_OS_Oral_MF_ALL as Int)
+  jsonutil.SetPathIntValue(settings_path, "bExtraTags_OS_Oral_FF_ALL", MainScript.bExtraTags_OS_Oral_FF_ALL as Int)
+  jsonutil.SetPathIntValue(settings_path, "bExtraTags_OS_Oral_MM_ALL", MainScript.bExtraTags_OS_Oral_MM_ALL as Int)
+  jsonutil.SetPathIntValue(settings_path, "bExtraTags_OS_Anal_MF_ALL", MainScript.bExtraTags_OS_Anal_MF_ALL as Int)
+  jsonutil.SetPathIntValue(settings_path, "bExtraTags_OS_Anal_FF_ALL", MainScript.bExtraTags_OS_Anal_FF_ALL as Int)
+  jsonutil.SetPathIntValue(settings_path, "bExtraTags_OS_Anal_MM_ALL", MainScript.bExtraTags_OS_Anal_MM_ALL as Int)
+  jsonutil.SetPathIntValue(settings_path, "bExtraTags_OS_Vaginal_MF_ALL", MainScript.bExtraTags_OS_Vaginal_MF_ALL as Int)
+  jsonutil.SetPathIntValue(settings_path, "bExtraTags_OS_Vaginal_FF_ALL", MainScript.bExtraTags_OS_Vaginal_FF_ALL as Int)
+ 
   jsonutil.SetPathIntValue(settings_path, "iBeggarSpeechDifficulty", iBeggarSpeechDifficulty)
   jsonutil.SetPathIntValue(settings_path, "iWhoreSpeechDifficulty", iWhoreSpeechDifficulty)
   jsonutil.SetPathIntValue(settings_path, "iDibelSpeechDifficulty", iDibelSpeechDifficulty)
@@ -1221,6 +1697,22 @@ Bool function saveUserSettingsPapyrus()
   jsonutil.SetPathFloatValue(settings_path, "fMinSpeechDibelBonusMult", MainScript.fMinSpeechDibelBonusMult)
   jsonutil.SetPathFloatValue(settings_path, "fMaxSpeechDibelBonusMult", MainScript.fMaxSpeechDibelBonusMult)
 
+  jsonutil.SetPathStringValue(settings_path, "sExtraTags_SL_Oral_MF", MainScript.sExtraTags_SL_Oral_MF)
+  jsonutil.SetPathStringValue(settings_path, "sExtraTags_SL_Oral_FF", MainScript.sExtraTags_SL_Oral_FF)
+  jsonutil.SetPathStringValue(settings_path, "sExtraTags_SL_Oral_MM", MainScript.sExtraTags_SL_Oral_MM)
+  jsonutil.SetPathStringValue(settings_path, "sExtraTags_SL_Anal_MF", MainScript.sExtraTags_SL_Anal_MF)
+  jsonutil.SetPathStringValue(settings_path, "sExtraTags_SL_Anal_FF", MainScript.sExtraTags_SL_Anal_FF)
+  jsonutil.SetPathStringValue(settings_path, "sExtraTags_SL_Anal_MM", MainScript.sExtraTags_SL_Anal_MM)
+  jsonutil.SetPathStringValue(settings_path, "sExtraTags_SL_Vaginal_MF", MainScript.sExtraTags_SL_Vaginal_MF)
+  jsonutil.SetPathStringValue(settings_path, "sExtraTags_SL_Vaginal_FF", MainScript.sExtraTags_SL_Vaginal_FF)
+  jsonutil.SetPathStringValue(settings_path, "sExtraTags_OS_Oral_MF", MainScript.sExtraTags_OS_Oral_MF)
+  jsonutil.SetPathStringValue(settings_path, "sExtraTags_OS_Oral_FF", MainScript.sExtraTags_OS_Oral_FF)
+  jsonutil.SetPathStringValue(settings_path, "sExtraTags_OS_Oral_MM", MainScript.sExtraTags_OS_Oral_MM)
+  jsonutil.SetPathStringValue(settings_path, "sExtraTags_OS_Anal_MF", MainScript.sExtraTags_OS_Anal_MF)
+  jsonutil.SetPathStringValue(settings_path, "sExtraTags_OS_Anal_FF", MainScript.sExtraTags_OS_Anal_FF)
+  jsonutil.SetPathStringValue(settings_path, "sExtraTags_OS_Anal_MM", MainScript.sExtraTags_OS_Anal_MM)
+  jsonutil.SetPathStringValue(settings_path, "sExtraTags_OS_Vaginal_MF", MainScript.sExtraTags_OS_Vaginal_MF)
+  jsonutil.SetPathStringValue(settings_path, "sExtraTags_OS_Vaginal_FF", MainScript.sExtraTags_OS_Vaginal_FF)
 
   if !jsonutil.Save(settings_path, false)
     debug.Trace("SimpleProstitution: Error saving user settings.", 0)
@@ -1238,6 +1730,25 @@ function loadSettingsAtStart()
     endIf
   endIf
 endFunction
+
+String function shortenString(String sString, Int iLimit) Global
+  Int iLen = StringUtil.GetLength(sString)
+  if iLimit < 4
+    if iLimit < 1
+      return sString
+    endif
+    if iLen > iLimit
+      return StringUtil.Substring(sString, 0, iLimit)
+    endif
+    return sString
+  elseif iLen < 4
+    return sString
+  endif
+  if iLen > iLimit
+    return StringUtil.Substring(sString, 0, len=iLimit - 3) + "..."
+  endif
+  return sString
+endfunction
 
 function _AddHeaderOption(string a_text, int a_flags=0)
   AddHeaderOption(a_text, a_flags)
@@ -1265,4 +1776,40 @@ endfunction
 
 function _AddToggleOptionST(string stateName, string text, bool checked, int flags = 0)
   AddToggleOptionST(stateName, text, checked, flags)
+endFunction
+
+
+String Function sTrimString(string StrInput)
+  int i = 0
+  String strOutput = ""
+  string sChar = ""
+  while i < stringUtil.GetLength(StrInput)
+    sChar = stringUtil.GetNthChar(StrInput, i)
+    if (sChar == ",") || (sChar == ";") || (sChar == " ")
+      if i > 0
+        if (stringUtil.GetNthChar(StrInput, i - 1) != ";") && (stringUtil.GetNthChar(StrInput, i - 1) != ",") && (stringUtil.GetNthChar(StrInput, i - 1) != " ")
+          strOutput += ","
+        endif
+      endif
+    else
+      strOutput += sChar
+    endif
+    i += 1
+  endWhile
+  if stringUtil.GetLength(strOutput) > 0
+    While (stringUtil.GetLength(strOutput) > 0) && (stringUtil.GetNthChar(strOutput, 0) == ",")
+      strOutput = stringUtil.Substring(strOutput,1)
+    endWhile 
+    While (stringUtil.GetLength(strOutput) > 0) && (stringUtil.GetNthChar(strOutput, stringUtil.GetLength(strOutput) - 1) == ",")
+      strOutput = stringUtil.Substring(strOutput, 0, stringUtil.GetLength(strOutput) - 1)
+    endWhile  
+  endif
+  if strOutput == ","
+    strOutput == ""
+  endif
+  return strOutput
+endFunction
+
+String Function BoolAsIntToStr(Bool bBool)
+  return (bBool As Int) As String
 endFunction
