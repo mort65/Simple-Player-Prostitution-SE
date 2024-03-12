@@ -450,7 +450,7 @@ state BEG_PAY_MAX_SLIDER
   endevent
 
   event OnSliderAcceptST(float value)
-    MainScript.fBegPayMin = value
+    MainScript.fBegPayMax = value
     _SetSliderOptionValueST(MainScript.fBegPayMax, "$MRT_SP_BEG_PAY_MAX_SLIDER2")
   endevent
 	
