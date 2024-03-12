@@ -87,24 +87,24 @@ event OnPageReset(String page)
     else
       flag = OPTION_FLAG_DISABLED
     endif
-    AddInputOptionST("EXTRATAGS_SEXLAB_ORAL_MF_INPUT", "$MRT_SP_EXTRATAGS_SEXLAB_ORAL_MF_INPUT", shortenString(MainScript.sExtraTags_SL_Oral_MF, 13) + " RequireAll=" + BoolAsIntToStr(MainScript.bExtraTags_SL_Oral_MF_All), flag)
-    AddInputOptionST("EXTRATAGS_SEXLAB_ORAL_FF_INPUT", "$MRT_SP_EXTRATAGS_SEXLAB_ORAL_FF_INPUT", shortenString(MainScript.sExtraTags_SL_Oral_FF, 13) + " RequireAll=" + BoolAsIntToStr(MainScript.bExtraTags_SL_Oral_FF_All), flag)
-    AddInputOptionST("EXTRATAGS_SEXLAB_ORAL_MM_INPUT", "$MRT_SP_EXTRATAGS_SEXLAB_ORAL_MM_INPUT", shortenString(MainScript.sExtraTags_SL_Oral_MM, 13) + " RequireAll=" + BoolAsIntToStr(MainScript.bExtraTags_SL_Oral_MM_All), flag)
-    AddInputOptionST("EXTRATAGS_SEXLAB_ANAL_MF_INPUT", "$MRT_SP_EXTRATAGS_SEXLAB_ANAL_MF_INPUT", shortenString(MainScript.sExtraTags_SL_ANAL_MF, 13) + " RequireAll=" + BoolAsIntToStr(MainScript.bExtraTags_SL_ANAL_MF_All), flag)
-    AddInputOptionST("EXTRATAGS_SEXLAB_ANAL_FF_INPUT", "$MRT_SP_EXTRATAGS_SEXLAB_ANAL_FF_INPUT", shortenString(MainScript.sExtraTags_SL_ANAL_FF, 13) + " RequireAll=" + BoolAsIntToStr(MainScript.bExtraTags_SL_ANAL_FF_All), flag)
-    AddInputOptionST("EXTRATAGS_SEXLAB_ANAL_MM_INPUT", "$MRT_SP_EXTRATAGS_SEXLAB_ANAL_MM_INPUT", shortenString(MainScript.sExtraTags_SL_ANAL_MM, 13) + " RequireAll=" + BoolAsIntToStr(MainScript.bExtraTags_SL_ANAL_MM_All), flag)
-    AddInputOptionST("EXTRATAGS_SEXLAB_VAGINAL_MF_INPUT", "$MRT_SP_EXTRATAGS_SEXLAB_VAGINAL_MF_INPUT", shortenString(MainScript.sExtraTags_SL_VAGINAL_MF, 13) + " RequireAll=" + BoolAsIntToStr(MainScript.bExtraTags_SL_VAGINAL_MF_All), flag)
-    AddInputOptionST("EXTRATAGS_SEXLAB_VAGINAL_FF_INPUT", "$MRT_SP_EXTRATAGS_SEXLAB_VAGINAL_FF_INPUT", shortenString(MainScript.sExtraTags_SL_VAGINAL_FF, 13) + " RequireAll=" + BoolAsIntToStr(MainScript.bExtraTags_SL_VAGINAL_FF_All), flag)   
+    AddInputOptionST("EXTRATAGS_SEXLAB_ORAL_MF_INPUT", "$MRT_SP_EXTRATAGS_SEXLAB_ORAL_MF_INPUT", getInputTags(MainScript.sExtraTags_SL_Oral_MF, MainScript.bExtraTags_SL_Oral_MF_All, 13), flag)
+    AddInputOptionST("EXTRATAGS_SEXLAB_ORAL_FF_INPUT", "$MRT_SP_EXTRATAGS_SEXLAB_ORAL_FF_INPUT", getInputTags(MainScript.sExtraTags_SL_Oral_FF, MainScript.bExtraTags_SL_Oral_FF_All, 13), flag)
+    AddInputOptionST("EXTRATAGS_SEXLAB_ORAL_MM_INPUT", "$MRT_SP_EXTRATAGS_SEXLAB_ORAL_MM_INPUT", getInputTags(MainScript.sExtraTags_SL_Oral_MM, MainScript.bExtraTags_SL_Oral_MM_All, 13), flag)
+    AddInputOptionST("EXTRATAGS_SEXLAB_ANAL_MF_INPUT", "$MRT_SP_EXTRATAGS_SEXLAB_ANAL_MF_INPUT", getInputTags(MainScript.sExtraTags_SL_ANAL_MF, MainScript.bExtraTags_SL_ANAL_MF_All, 13), flag)
+    AddInputOptionST("EXTRATAGS_SEXLAB_ANAL_FF_INPUT", "$MRT_SP_EXTRATAGS_SEXLAB_ANAL_FF_INPUT", getInputTags(MainScript.sExtraTags_SL_ANAL_FF, MainScript.bExtraTags_SL_ANAL_FF_All, 13), flag)
+    AddInputOptionST("EXTRATAGS_SEXLAB_ANAL_MM_INPUT", "$MRT_SP_EXTRATAGS_SEXLAB_ANAL_MM_INPUT", getInputTags(MainScript.sExtraTags_SL_ANAL_MM, MainScript.bExtraTags_SL_ANAL_MM_All, 13), flag)
+    AddInputOptionST("EXTRATAGS_SEXLAB_VAGINAL_MF_INPUT", "$MRT_SP_EXTRATAGS_SEXLAB_VAGINAL_MF_INPUT", getInputTags(MainScript.sExtraTags_SL_VAGINAL_MF, MainScript.bExtraTags_SL_VAGINAL_MF_All, 13), flag)
+    AddInputOptionST("EXTRATAGS_SEXLAB_VAGINAL_FF_INPUT", "$MRT_SP_EXTRATAGS_SEXLAB_VAGINAL_FF_INPUT", getInputTags(MainScript.sExtraTags_SL_VAGINAL_FF, MainScript.bExtraTags_SL_VAGINAL_FF_All, 13), flag)   
     addEmptyOption()
     _AddHeaderOption("$MRT_SP_HEAD_EXTRATAGS_OSTIM")
-    AddInputOptionST("EXTRATAGS_OSTIM_ORAL_MF_INPUT", "$MRT_SP_EXTRATAGS_OSTIM_ORAL_MF_INPUT", shortenString(MainScript.sExtraTags_OS_Oral_MF, 13) + " RequireAll=" + BoolAsIntToStr(MainScript.bExtraTags_OS_Oral_MF_All), flag)
-    AddInputOptionST("EXTRATAGS_OSTIM_ORAL_FF_INPUT", "$MRT_SP_EXTRATAGS_OSTIM_ORAL_FF_INPUT", shortenString(MainScript.sExtraTags_OS_Oral_FF, 13) + " RequireAll=" + BoolAsIntToStr(MainScript.bExtraTags_OS_Oral_FF_All), flag)
-    AddInputOptionST("EXTRATAGS_OSTIM_ORAL_MM_INPUT", "$MRT_SP_EXTRATAGS_OSTIM_ORAL_MM_INPUT", shortenString(MainScript.sExtraTags_OS_Oral_MM, 13) + " RequireAll=" + BoolAsIntToStr(MainScript.bExtraTags_OS_Oral_MM_All), flag)
-    AddInputOptionST("EXTRATAGS_OSTIM_ANAL_MF_INPUT", "$MRT_SP_EXTRATAGS_OSTIM_ANAL_MF_INPUT", shortenString(MainScript.sExtraTags_OS_ANAL_MF, 13) + " RequireAll=" + BoolAsIntToStr(MainScript.bExtraTags_OS_Anal_MF_All), flag)
-    AddInputOptionST("EXTRATAGS_OSTIM_ANAL_FF_INPUT", "$MRT_SP_EXTRATAGS_OSTIM_ANAL_FF_INPUT", shortenString(MainScript.sExtraTags_OS_ANAL_FF, 13) + " RequireAll=" + BoolAsIntToStr(MainScript.bExtraTags_OS_Anal_FF_All), flag)
-    AddInputOptionST("EXTRATAGS_OSTIM_ANAL_MM_INPUT", "$MRT_SP_EXTRATAGS_OSTIM_ANAL_MM_INPUT", shortenString(MainScript.sExtraTags_OS_ANAL_MM, 13) + " RequireAll=" + BoolAsIntToStr(MainScript.bExtraTags_OS_Anal_MM_All), flag)
-    AddInputOptionST("EXTRATAGS_OSTIM_VAGINAL_MF_INPUT", "$MRT_SP_EXTRATAGS_OSTIM_VAGINAL_MF_INPUT", shortenString(MainScript.sExtraTags_OS_VAGINAL_MF, 13) + " RequireAll=" + BoolAsIntToStr(MainScript.bExtraTags_OS_VAGINAL_MF_All), flag)
-    AddInputOptionST("EXTRATAGS_OSTIM_VAGINAL_FF_INPUT", "$MRT_SP_EXTRATAGS_OSTIM_VAGINAL_FF_INPUT", shortenString(MainScript.sExtraTags_OS_VAGINAL_FF, 13) + " RequireAll=" + BoolAsIntToStr(MainScript.bExtraTags_OS_VAGINAL_FF_All), flag)
+    AddInputOptionST("EXTRATAGS_OSTIM_ORAL_MF_INPUT", "$MRT_SP_EXTRATAGS_OSTIM_ORAL_MF_INPUT", getInputTags(MainScript.sExtraTags_OS_Oral_MF, MainScript.bExtraTags_OS_Oral_MF_All, 13), flag)
+    AddInputOptionST("EXTRATAGS_OSTIM_ORAL_FF_INPUT", "$MRT_SP_EXTRATAGS_OSTIM_ORAL_FF_INPUT", getInputTags(MainScript.sExtraTags_OS_Oral_FF, MainScript.bExtraTags_OS_Oral_FF_All, 13), flag)
+    AddInputOptionST("EXTRATAGS_OSTIM_ORAL_MM_INPUT", "$MRT_SP_EXTRATAGS_OSTIM_ORAL_MM_INPUT", getInputTags(MainScript.sExtraTags_OS_Oral_MM, MainScript.bExtraTags_OS_Oral_MM_All, 13), flag)
+    AddInputOptionST("EXTRATAGS_OSTIM_ANAL_MF_INPUT", "$MRT_SP_EXTRATAGS_OSTIM_ANAL_MF_INPUT", getInputTags(MainScript.sExtraTags_OS_Anal_MF, MainScript.bExtraTags_OS_Anal_MF_All, 13), flag)
+    AddInputOptionST("EXTRATAGS_OSTIM_ANAL_FF_INPUT", "$MRT_SP_EXTRATAGS_OSTIM_ANAL_FF_INPUT", getInputTags(MainScript.sExtraTags_OS_Anal_FF, MainScript.bExtraTags_OS_Anal_FF_All, 13), flag)
+    AddInputOptionST("EXTRATAGS_OSTIM_ANAL_MM_INPUT", "$MRT_SP_EXTRATAGS_OSTIM_ANAL_MM_INPUT", getInputTags(MainScript.sExtraTags_OS_Anal_MM, MainScript.bExtraTags_OS_Anal_MM_All, 13), flag)
+    AddInputOptionST("EXTRATAGS_OSTIM_VAGINAL_MF_INPUT", "$MRT_SP_EXTRATAGS_OSTIM_VAGINAL_MF_INPUT", getInputTags(MainScript.sExtraTags_OS_VAGINAL_MF, MainScript.bExtraTags_OS_VAGINAL_MF_All, 13), flag)
+    AddInputOptionST("EXTRATAGS_OSTIM_VAGINAL_FF_INPUT", "$MRT_SP_EXTRATAGS_OSTIM_VAGINAL_FF_INPUT", getInputTags(MainScript.sExtraTags_OS_VAGINAL_FF, MainScript.bExtraTags_OS_VAGINAL_FF_All, 13), flag)
     addEmptyOption()
     SetCursorPosition(1)
     _AddHeaderOption("$MRT_SP_HEAD_INTEGRATION_LICENSE")
@@ -1099,7 +1099,7 @@ State EXTRATAGS_SEXLAB_ORAL_MF_INPUT
   endEvent
 
   event OnInputAcceptST(string Text)
-    String str = sTrimString(Text)
+    String str = sTrimTags(Text)
     If StringUtil.GetLength(str) > 30
       ShowMessage("Text is too long, 30 Characters Maximum", false)
     else
@@ -1124,7 +1124,7 @@ State EXTRATAGS_SEXLAB_ORAL_MM_INPUT
   endEvent
 
   event OnInputAcceptST(string Text)
-    String str = sTrimString(Text)
+    String str = sTrimTags(Text)
     If StringUtil.GetLength(str) > 30
       ShowMessage("Text is too long, 30 Characters Maximum", false)
     else
@@ -1149,7 +1149,7 @@ State EXTRATAGS_SEXLAB_ORAL_FF_INPUT
   endEvent
 
   event OnInputAcceptST(string Text)
-    String str = sTrimString(Text)
+    String str = sTrimTags(Text)
     If StringUtil.GetLength(str) > 30
       ShowMessage("Text is too long, 30 Characters Maximum", false)
     else
@@ -1174,7 +1174,7 @@ State EXTRATAGS_SEXLAB_ANAL_MF_INPUT
   endEvent
 
   event OnInputAcceptST(string Text)
-    String str = sTrimString(Text)
+    String str = sTrimTags(Text)
     If StringUtil.GetLength(str) > 30
       ShowMessage("Text is too long, 30 Characters Maximum", false)
     else
@@ -1199,7 +1199,7 @@ State EXTRATAGS_SEXLAB_ANAL_FF_INPUT
   endEvent
 
   event OnInputAcceptST(string Text)
-    String str = sTrimString(Text)
+    String str = sTrimTags(Text)
     If StringUtil.GetLength(str) > 30
       ShowMessage("Text is too long, 30 Characters Maximum", false)
     else
@@ -1224,7 +1224,7 @@ State EXTRATAGS_SEXLAB_ANAL_MM_INPUT
   endEvent
 
   event OnInputAcceptST(string Text)
-    String str = sTrimString(Text)
+    String str = sTrimTags(Text)
     If StringUtil.GetLength(str) > 30
       ShowMessage("Text is too long, 30 Characters Maximum", false)
     else
@@ -1249,7 +1249,7 @@ State EXTRATAGS_SEXLAB_VAGINAL_MF_INPUT
   endEvent
 
   event OnInputAcceptST(string Text)
-    String str = sTrimString(Text)
+    String str = sTrimTags(Text)
     If StringUtil.GetLength(str) > 30
       ShowMessage("Text is too long, 30 Characters Maximum", false)
     else
@@ -1274,7 +1274,7 @@ State EXTRATAGS_SEXLAB_VAGINAL_FF_INPUT
   endEvent
 
   event OnInputAcceptST(string Text)
-    String str = sTrimString(Text)
+    String str = sTrimTags(Text)
     If StringUtil.GetLength(str) > 30
       ShowMessage("Text is too long, 30 Characters Maximum", false)
     else
@@ -1299,7 +1299,7 @@ State EXTRATAGS_OSTIM_ORAL_MF_INPUT
   endEvent
 
   event OnInputAcceptST(string Text)
-    String str = sTrimString(Text)
+    String str = sTrimTags(Text)
     If StringUtil.GetLength(str) > 30
       ShowMessage("Text is too long, 30 Characters Maximum", false)
     else
@@ -1324,7 +1324,7 @@ State EXTRATAGS_OSTIM_ORAL_MM_INPUT
   endEvent
 
   event OnInputAcceptST(string Text)
-    String str = sTrimString(Text)
+    String str = sTrimTags(Text)
     If StringUtil.GetLength(str) > 30
       ShowMessage("Text is too long, 30 Characters Maximum", false)
     else
@@ -1349,7 +1349,7 @@ State EXTRATAGS_OSTIM_ORAL_FF_INPUT
   endEvent
 
   event OnInputAcceptST(string Text)
-    String str = sTrimString(Text)
+    String str = sTrimTags(Text)
     If StringUtil.GetLength(str) > 30
       ShowMessage("Text is too long, 30 Characters Maximum", false)
     else
@@ -1374,7 +1374,7 @@ State EXTRATAGS_OSTIM_ANAL_MF_INPUT
   endEvent
 
   event OnInputAcceptST(string Text)
-    String str = sTrimString(Text)
+    String str = sTrimTags(Text)
     If StringUtil.GetLength(str) > 30
       ShowMessage("Text is too long, 30 Characters Maximum", false)
     else
@@ -1399,7 +1399,7 @@ State EXTRATAGS_OSTIM_ANAL_FF_INPUT
   endEvent
 
   event OnInputAcceptST(string Text)
-    String str = sTrimString(Text)
+    String str = sTrimTags(Text)
     If StringUtil.GetLength(str) > 30
       ShowMessage("Text is too long, 30 Characters Maximum", false)
     else
@@ -1424,7 +1424,7 @@ State EXTRATAGS_OSTIM_ANAL_MM_INPUT
   endEvent
 
   event OnInputAcceptST(string Text)
-    String str = sTrimString(Text)
+    String str = sTrimTags(Text)
     If StringUtil.GetLength(str) > 30
       ShowMessage("Text is too long, 30 Characters Maximum", false)
     else
@@ -1449,7 +1449,7 @@ State EXTRATAGS_OSTIM_VAGINAL_MF_INPUT
   endEvent
 
   event OnInputAcceptST(string Text)
-    String str = sTrimString(Text)
+    String str = sTrimTags(Text)
     If StringUtil.GetLength(str) > 30
       ShowMessage("Text is too long, 30 Characters Maximum", false)
     else
@@ -1474,7 +1474,7 @@ State EXTRATAGS_OSTIM_VAGINAL_FF_INPUT
   endEvent
 
   event OnInputAcceptST(string Text)
-    String str = sTrimString(Text)
+    String str = sTrimTags(Text)
     If StringUtil.GetLength(str) > 30
       ShowMessage("Text is too long, 30 Characters Maximum", false)
     else
@@ -1779,7 +1779,7 @@ function _AddToggleOptionST(string stateName, string text, bool checked, int fla
 endFunction
 
 
-String Function sTrimString(string StrInput)
+String Function sTrimTags(string StrInput)
   int i = 0
   String strOutput = ""
   string sChar = ""
@@ -1812,4 +1812,11 @@ endFunction
 
 String Function BoolAsIntToStr(Bool bBool)
   return (bBool As Int) As String
+endFunction
+
+string Function getInputTags(string sTags, Bool bReqAll, int iMaxLen = 10)
+  if sTags
+    return shortenString(sTags, iMaxLen) + " RequireAll=" + BoolAsIntToStr(bReqAll)
+  endif
+  return ""
 endFunction
