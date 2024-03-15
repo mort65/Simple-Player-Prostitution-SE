@@ -336,7 +336,7 @@ Function ownerPayWhore(Actor whore)
     currentOwnerSeptimDisplay.SetValueInt(0)
     UpdateCurrentInstanceGlobal(currentOwnerSeptimDisplay)
   endIf
-  ;Owner.ForceRefTo(None)
+  ;Owner.clear()
   currentAllowedLocations.Revert()
 EndFunction
 
