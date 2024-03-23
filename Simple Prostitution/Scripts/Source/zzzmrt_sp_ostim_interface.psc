@@ -1,10 +1,14 @@
 Scriptname zzzmrt_sp_ostim_interface extends Quest
 
 Quest OSexIntegrationMainQuest
+Bool property bChecked = False Auto Hidden
 
 event OnEndState()
   Utility.Wait(5.0) ; Wait before entering active state to help avoid making function calls to scripts that may not have initialized yet.
   OSexIntegrationMainQuest = Game.GetFormFromFile(0x000801, "OStim.esp") as Quest
+  if OSexIntegrationMainQuest != None
+    Debug.Notification("Simple Prostitution: OStim detected.")
+  endif
 endevent
 
 Bool function GetIsInterfaceActive()
@@ -27,6 +31,7 @@ function PlayerLoadsGame()
       GoToState("")
     endif
   endif
+  bChecked = True
 endfunction
 
 int function haveSexWithPlayer(Actor Partner, Int Position, String[] sExtraTags, Bool[] bRequireAllTags, Bool bAllowAggressive = False, Bool bAllowAll = False)

@@ -10,6 +10,8 @@ Quest Property FlowerGirlsInterfaceQst Auto
 Quest Property SexLabInterfaceQst Auto
 zzzmrt_sp_mcm_qst_script property MCMScript auto
 ReferenceAlias property Owner auto
+ReferenceAlias property whoreCustomerAlias auto
+ReferenceAlias property dibelCustomerAlias auto
 GlobalVariable property WhoreFailureChance auto
 Message property InterfaceMenu auto
 Bool property bBeggingClothing=True auto Hidden Conditional
@@ -25,7 +27,6 @@ Bool property bIsFlowerGirlsActive=False auto Hidden Conditional
 Bool property bIsSexlabActive=False auto Hidden Conditional
 Bool property bIsOStimActive=False auto Hidden Conditional
 Bool property bModEnabled=True auto Hidden Conditional
-Bool property bTeleportToBed=False auto Hidden Conditional
 Bool property bWhoreClothing=False auto Hidden Conditional
 Bool property bWhoreEnabled=True auto Hidden Conditional
 Bool property bWhoreNeedLicense=True auto Hidden Conditional
@@ -98,6 +99,8 @@ Bool Property bExtraTags_OS_Anal_FF_ALL = false auto Hidden Conditional
 Bool Property bExtraTags_OS_Vaginal_MF_ALL = false auto Hidden Conditional
 Bool Property bExtraTags_OS_Vaginal_FF_ALL = false auto Hidden Conditional
 
+Int Property iPosition = -1 Auto Hidden Conditional
+
 ImageSpaceModifier property fadeIn auto
 ImageSpaceModifier property fadeOut auto
 ImageSpaceModifier property fastFadeOut auto
@@ -108,7 +111,31 @@ Faction property whoreFaction auto
 function shutDown()
   currentAllowedLocations.Revert()
   player.removeFromFaction(whoreFaction)
+  owner.clear()
+  clearWhoreCustomer()
+  clearDibelCustomer()
+  iPosition = -1
 EndFunction
+
+Function SetVars()
+  if bWhoreEnabled
+    player.AddToFaction(whoreFaction)
+  else
+    player.RemoveFromFaction(whoreFaction)
+  endif
+  setChance()
+EndFunction
+
+Event OnInit()
+  registerForSingleUpdate(3.0) 
+EndEvent
+
+event onUpdate()
+  While (!FlowerGirlsInterface.bChecked || !SexLabInterface.bChecked || !OStimInterface.bChecked)
+    utility.wait(0.2)
+  endWhile
+  Debug.Notification("Simple Prostitution started.")
+EndEvent
 
 function AllowProstitution(Actor akOwner)
   if akOwner && akOwner.GetCurrentLocation()
@@ -125,7 +152,7 @@ function AllowProstitution(Actor akOwner)
     Owner.ForceRefTo(akOwner)
     setChance()
     SetStage(10)
-    Debug.Trace("SimpleProstitution: Work allowed in " + currentAllowedLocations.GetAt(0) + " that's owned by " + akOwner)
+    Debug.Trace("Simple Player Prostitution: Work allowed in " + currentAllowedLocations.GetAt(0) + " that's owned by " + akOwner)
   endif
 endfunction
 
@@ -136,11 +163,10 @@ function ProstitutePlayerTo(Actor akCustomer, bool bAccept=true)
     if !bAccept
       return
     endif
-    Int position = haveSex(akCustomer, sGetCurAnimInteface(), fWhoreVagChance As Int, fWhoreAnalChance As Int, fWhoreOralChance As Int, bWhoreAllowAggressive, bAllPosAllowed(fWhoreVagChance, fWhoreAnalChance, fWhoreOralChance))
-    if position > -1
-      payWhore(player, position)
-    endif
+    clearWhoreCustomer()
+    haveSex(akCustomer, sGetCurAnimInteface(), bWhoreAllowAggressive, bAllPosAllowed(fWhoreVagChance, fWhoreAnalChance, fWhoreOralChance))
   endif
+  iPosition = -1
 endfunction
 
 Float function getBaseVersion()
@@ -148,105 +174,126 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-  return getBaseVersion() + 0.08
+  return getBaseVersion() + 0.09
 endfunction
 
-int function haveSex(Actor akActor, String interface, int vaginalWeight = 50, int analWeight=50, int oralWeight = 50, Bool bAllowAggressive = False, Bool bAllowAll = False)
+int function haveSex(Actor akActor, String interface, Bool bAllowAggressive = False, Bool bAllowAll = False)
   if !akActor
     return -1
   endif
-  if bTeleportToBed && Owner.getActorReference()
-    ObjectReference bed = (Owner.getActorReference() as RentRoomScript).Bed as ObjectReference
-    if bed.getParentCell() == Player.getParentCell()
-      fastFadeOut.Apply()
-      Utility.Wait(1.0)
-      fadeOut.PopTo(blackScreen)
-      Player.setPosition(bed.getPositionX(), bed.getPositiony(), bed.getPositionz() + 50.0)
-      player.setAngle(0.0, 0.0, 0.0)
-      player.setAngle(0.0, 0.0, bed.getAngleZ())
-      akActor.setPosition(bed.getPositionX(), bed.getPositiony(), bed.getPositionz() + 50.0)
-      akActor.setAngle(0.0, 0.0, 0.0)
-      akActor.setAngle(0.0, 0.0, bed.getAngleZ())
-      Utility.wait(1.0)
-      blackScreen.PopTo(fadeIn)
-      Utility.wait(5.0)
-    endif
-  endif
   int result = -1
   if interface == "sexlab"
-    result = playerSexSL(akActor, vaginalWeight, analWeight, oralWeight, bAllowAggressive, bAllowAll)
+    result = playerSexSL(akActor, bAllowAggressive, bAllowAll)
   elseif interface == "ostim"
-    result = playerSexOS(akActor, vaginalWeight, analWeight, oralWeight, bAllowAggressive, bAllowAll)
+    result = playerSexOS(akActor, bAllowAggressive, bAllowAll)
   elseif interface == "flowergirls"
-    result = playerSexFG(akActor, vaginalWeight, analWeight, oralWeight)
+    result = playerSexFG(akActor)
   else
-    result = haveSexSFW(vaginalWeight, analWeight, oralWeight)
+    result = haveSexSFW()
   endif
   if (result < 0)
     if bTryAllInterfaces && iGetCurTotalAnimInterfaces() > 1
       Debug.trace("SimpleProstitution: retrying with other interfaces.")
       if interface == "sexlab"
-        result = playerSexOS(akActor, vaginalWeight, analWeight, oralWeight, bAllowAggressive, bAllowAll)
+        result = playerSexOS(akActor, bAllowAggressive, bAllowAll)
         if result < 0
-          result = playerSexFG(akActor, vaginalWeight, analWeight, oralWeight)
+          result = playerSexFG(akActor)
         endif
       elseIf interface == "ostim"
-        result = playerSexSL(akActor, vaginalWeight, analWeight, oralWeight, bAllowAggressive, bAllowAll)
+        result = playerSexSL(akActor, bAllowAggressive, bAllowAll)
         if result < 0
-          result = playerSexFG(akActor, vaginalWeight, analWeight, oralWeight)
+          result = playerSexFG(akActor)
         endif
       elseif interface == "flowergirls"
-        result = playerSexOS(akActor, vaginalWeight, analWeight, oralWeight, bAllowAggressive, bAllowAll)
+        result = playerSexOS(akActor, bAllowAggressive, bAllowAll)
         if result < 0
-          result = playerSexSL(akActor, vaginalWeight, analWeight, oralWeight, bAllowAggressive, bAllowAll)
+          result = playerSexSL(akActor, bAllowAggressive, bAllowAll)
         endif
       endif
     endif
     if result < 0
       Debug.trace("SimpleProstitution: couldn't find any suitable animation.")
-      result = haveSexSFW(vaginalWeight, analWeight, oralWeight)
+      result = haveSexSFW()
     endIf
   endif
   return result
 endfunction
 
-int Function playerSexSL(Actor akActor, int vaginalWeight = 50, int analWeight=50, int oralWeight = 50, Bool bAllowAggressive= False, Bool bAllowAll = False)
-  if !bIsSexlabActive
-    return -1
+Function setWhoreCustomer(Actor akActor, Bool bPay = False)
+  customerSpell.Cast(akActor, akActor)
+  if bPay
+    if !player.GetActorBase().GetSex() && !akActor.GetLeveledActorBase().GetSex()
+      iPosition = positionChooser(0, fWhoreAnalChance as Int, fWhoreOralChance as Int)
+    else
+      iPosition = positionChooser(fWhoreVagChance as Int, fWhoreAnalChance as Int, fWhoreOralChance as Int)
+    endif
+    if iPosition > -1
+      payWhore(player, iPosition)
+    endif
+  endIf
+  if iPosition > -1
+    whoreCustomerAlias.ForceRefTo(akActor)
+    akActor.EvaluatePackage()
   endif
-  int position
-  if !player.GetActorBase().GetSex() && !akActor.GetLeveledActorBase().GetSex()
-    position = positionChooser(0, analWeight, oralWeight)
-  else
-    position = positionChooser(vaginalWeight, analWeight, oralWeight)
-  endif
-  return SexLabInterface.haveSexWithPlayer(akActor, position, sGetExtraTagsArr("sexlab"), bGetRegAllTagsArr("sexlab"), bAllowAggressive, bAllowAll)
 EndFunction
 
-int Function playerSexOS(Actor akActor, int vaginalWeight = 50, int analWeight=50, int oralWeight = 50, Bool bAllowAggressive= False, Bool bAllowAll = False)
-  if !bIsOstimActive
-    return -1
+Function setDibelCustomer(Actor akActor, bool bPay = true )
+  customerSpell.Cast(akActor, akActor)
+  if bPay
+    if !player.GetActorBase().GetSex() && !akActor.GetLeveledActorBase().GetSex()
+      iPosition = positionChooser(0, fDibelAnalChance as Int, fDibelOralChance as Int)
+    else
+      iPosition = positionChooser(fDibelVagChance as Int, fDibelAnalChance as Int, fDibelOralChance as Int)
+    endif
+    if iPosition > -1
+      payDibel(player, iPosition)
+    endif
+  endIf
+  if iPosition > -1
+    dibelCustomerAlias.ForceRefTo(akActor)
+    akActor.EvaluatePackage()
   endif
-  int position
-  if !player.GetActorBase().GetSex() && !akActor.GetLeveledActorBase().GetSex()
-    position = positionChooser(0, analWeight, oralWeight)
-  else
-    position = positionChooser(vaginalWeight, analWeight, oralWeight)
-  endif
-  return OStimInterface.haveSexWithPlayer(akActor, position, sGetExtraTagsArr("ostim"), bGetRegAllTagsArr("ostim"), bAllowAggressive, bAllowAll)
 EndFunction
 
-int Function playerSexFG(Actor akActor, int vaginalWeight = 50, int analWeight=50, int oralWeight = 50)
-  if !bIsFlowerGirlsActive
-    return -1
+Function clearWhoreCustomer()
+  Actor whoreCustomer = whoreCustomerAlias.getActorReference()
+  if whoreCustomer
+    whoreCustomerAlias.Clear()
+    whoreCustomer.EvaluatePackage()
   endif
-  int position = positionChooser(vaginalWeight, analWeight, oralWeight)
-  return FlowerGirlsInterface.haveSexWithPlayer(akActor, position)
 EndFunction
 
-int function haveSexSFW(int vaginalWeight = 50, int analWeight=50, int oralWeight = 50)
-  int position = positionChooser(vaginalWeight, analWeight, oralWeight)
-  if position < 0
+Function clearDibelCustomer()
+  Actor dibelCustomer = dibelCustomerAlias.getActorReference()
+  if dibelCustomer
+    dibelCustomerAlias.Clear()
+    dibelCustomer.EvaluatePackage()
+  endif
+EndFunction
+
+int Function playerSexSL(Actor akActor, Bool bAllowAggressive= False, Bool bAllowAll = False)
+  if !bIsSexlabActive || (iPosition < 0)
+    return -1
+  endif
+  return SexLabInterface.haveSexWithPlayer(akActor, iPosition, sGetExtraTagsArr("sexlab"), bGetRegAllTagsArr("sexlab"), bAllowAggressive, bAllowAll)
+EndFunction
+
+int Function playerSexOS(Actor akActor, Bool bAllowAggressive= False, Bool bAllowAll = False)
+  if !bIsOstimActive || (iPosition < 0)
+    return -1
+  endif
+  return OStimInterface.haveSexWithPlayer(akActor, iPosition, sGetExtraTagsArr("ostim"), bGetRegAllTagsArr("ostim"), bAllowAggressive, bAllowAll)
+EndFunction
+
+int Function playerSexFG(Actor akActor)
+  if !bIsFlowerGirlsActive || (iPosition < 0)
+    return -1
+  endif
+  return FlowerGirlsInterface.haveSexWithPlayer(akActor, iPosition)
+EndFunction
+
+int function haveSexSFW()
+  if iPosition < 0
     return -1
   endif
   Game.DisablePlayerControls(abMovement=True, abFighting=True, abCamSwitch=False, abLooking=False, abSneaking=True, abMenu=True, abActivate=True, abJournalTabs=False, aiDisablePOVType=0)
@@ -256,7 +303,7 @@ int function haveSexSFW(int vaginalWeight = 50, int analWeight=50, int oralWeigh
   Utility.Wait(5.0)
   BlackScreen.PopTo(FadeIn)
   Game.EnablePlayerControls()
-  return position
+  return iPosition
 endfunction
 
 Int function maxInt(Int var1, Int var2)
@@ -336,7 +383,9 @@ Function ownerPayWhore(Actor whore)
     currentOwnerSeptimDisplay.SetValueInt(0)
     UpdateCurrentInstanceGlobal(currentOwnerSeptimDisplay)
   endIf
-  ;Owner.clear()
+  Owner.clear()
+  clearWhoreCustomer()
+  clearDibelCustomer()
   currentAllowedLocations.Revert()
 EndFunction
 
@@ -357,11 +406,10 @@ function playerPracticeDibelArtWith(Actor akActor, bool bAccept=true)
     if !bAccept
       return
     endif
-    Int position = haveSex(akActor, sGetCurAnimInteface(), fDibelVagChance As Int, fDibelAnalChance As Int, fDibelOralChance As Int, bDibelAllowAggressive, bAllPosAllowed(fDibelVagChance,fDibelAnalChance,fDibelOralChance))
-    if position > -1
-      payDibel(player, position)
-    endif
+    clearDibelCustomer()
+    haveSex(akActor, sGetCurAnimInteface(), bDibelAllowAggressive, bAllPosAllowed(fDibelVagChance,fDibelAnalChance,fDibelOralChance))
   endif
+  iPosition = -1
 endfunction
 
 String function sGetCurAnimInteface()

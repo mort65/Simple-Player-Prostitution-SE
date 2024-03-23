@@ -16,6 +16,11 @@ event OnUpdate()
   setVars()
 endevent
 
+Event OnLocationChange(Location akOldLoc, Location akNewLoc)
+  ;MainScript.clearWhoreCustomer()
+  ;MainScript.clearDibelCustomer()
+EndEvent
+
 function setVars()
   if bBusy
     return

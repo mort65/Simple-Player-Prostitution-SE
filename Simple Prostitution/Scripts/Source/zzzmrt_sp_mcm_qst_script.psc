@@ -16,6 +16,7 @@ event OnConfigInit()
   ModName = "Simple Prostitution"
   initPages()
   loadSettingsAtStart()
+  Mainscript.setVars()
 endevent
 
 function initPages()
@@ -157,7 +158,6 @@ event OnPageReset(String page)
       flag = OPTION_FLAG_DISABLED
     endif
     _AddToggleOptionST("WHORE_CLOTHING_TOGGLE", "$MRT_SP_WHORE_CLOTHING_TOGGLE", MainScript.bWhoreClothing, flag)
-    _AddToggleOptionST("BED_TELEPORT_TOGGLE", "$MRT_SP_BED_TELEPORT_TOGGLE", MainScript.bTeleportToBed, flag)
     _AddToggleOptionST("WHORE_ALLOW_AGGRESSIVE_TOGGLE", "$MRT_SP_WHORE_ALLOW_AGGRESSIVE_TOGGLE", MainScript.bWhoreAllowAggressive, flag)
     AddSliderOptionST("WHORE_OWNER_SHARE_SLIDER", "$MRT_SP_WHORE_OWNER_SHARE_SLIDER1", MainScript.fWhoreOwnerShare, "$MRT_SP_WHORE_OWNER_SHARE_SLIDER2", flag)
     AddSliderOptionST("WHORE_ORAL_CHANCE_SLIDER", "$MRT_SP_WHORE_ORAL_CHANCE_SLIDER1", MainScript.fWhoreOralChance, "$MRT_SP_WHORE_ORAL_CHANCE_SLIDER2", flag)
@@ -684,8 +684,16 @@ state MOD_TOGGLE
 
   event OnSelectST()
     MainScript.bModEnabled = !MainScript.bModEnabled
-	if !MainScript.bModEnabled
-		MainScript.ShutDown()
+	if MainScript.bModEnabled
+      ShowMessage("Please close the MCM menu.", False)
+      Utility.wait(0.5)
+      MainQuest.Start()
+      loadSettingsAtStart()
+      Mainscript.setVars()
+      Debug.Notification("Simple Prostitution enabled.")
+	else
+	  MainScript.ShutDown()
+	  MainQuest.Stop()
 	endif
     ForcePageReset()
   endevent
@@ -956,22 +964,6 @@ State DIBEL_NEED_LICENSE_TOGGLE
   endevent
 EndState
 
-state BED_TELEPORT_TOGGLE
-  event OnDefaultST()
-    MainScript.bTeleportToBed = False
-    ForcePageReset()
-  endevent
-
-  event OnHighlightST()
-    SetInfoText("$MRT_SP_DESC_BED_TELEPORT_TOGGLE")
-  endevent
-
-  event OnSelectST()
-    MainScript.bTeleportToBed = !MainScript.bTeleportToBed
-    ForcePageReset()
-  endevent
-endstate
-
 state WHORE_ORAL_PAY_SLIDER
   event OnDefaultST()
   endevent
@@ -1038,6 +1030,7 @@ endstate
 state WHORE_TOGGLE
   event OnDefaultST()
     MainScript.bWhoreEnabled = True
+    Mainscript.player.AddToFaction(Mainscript.whoreFaction)
     ForcePageReset()
   endevent
 
@@ -1047,6 +1040,11 @@ state WHORE_TOGGLE
 
   event OnSelectST()
     MainScript.bWhoreEnabled = !MainScript.bWhoreEnabled
+    if MainScript.bWhoreEnabled
+      Mainscript.player.AddToFaction(Mainscript.whoreFaction)
+    else
+      Mainscript.player.RemoveFromFaction(Mainscript.whoreFaction)
+    endif
     ForcePageReset()
   endevent
 endstate
@@ -1532,6 +1530,8 @@ state LOAD_USER_SETTING_TXT
   function OnSelectST()
     if ShowMessage("Do you want to load user settings?", true, "$Accept", "$Cancel")
       if loadUserSettingsPapyrus()
+        Mainscript.setVars()
+		    ForcePageReset()
         ShowMessage("User settings loaded successfully.", false, "$Accept", "$Cancel")
       else
         ShowMessage("Failed to load user settings.", false, "$Accept", "$Cancel")
@@ -1561,7 +1561,6 @@ Bool function loadUserSettingsPapyrus()
   MainScript.bGuardHelpBeggar = jsonutil.GetPathIntValue(settings_path, "bGuardHelpBeggar", MainScript.bGuardHelpBeggar as Int)
   MainScript.bWhoreEnabled = jsonutil.GetPathIntValue(settings_path, "bWhoreEnabled", MainScript.bWhoreEnabled as Int)
   MainScript.bWhoreClothing = jsonutil.GetPathIntValue(settings_path, "bWhoreClothing", MainScript.bWhoreClothing as Int)
-  MainScript.bTeleportToBed = jsonutil.GetPathIntValue(settings_path, "bTeleportToBed", MainScript.bTeleportToBed as Int)
   MainScript.bDibelEnabled = jsonutil.GetPathIntValue(settings_path, "bDibelEnabled", MainScript.bDibelEnabled as Int)
   MainScript.bDibelAgent = jsonutil.GetPathIntValue(settings_path, "bDibelAgent", MainScript.bDibelAgent as Int)
   MainScript.bDibelCrown = jsonutil.GetPathIntValue(settings_path, "bDibelCrown", MainScript.bDibelCrown as Int)
@@ -1629,9 +1628,7 @@ Bool function loadUserSettingsPapyrus()
   MainScript.sExtraTags_OS_Anal_MM = jsonutil.GetPathStringValue(settings_path, "sExtraTags_OS_Anal_MM", MainScript.sExtraTags_OS_Anal_MM)
   MainScript.sExtraTags_OS_Vaginal_MF = jsonutil.GetPathStringValue(settings_path, "sExtraTags_OS_Vaginal_MF", MainScript.sExtraTags_OS_Vaginal_MF)
   MainScript.sExtraTags_OS_Vaginal_FF = jsonutil.GetPathStringValue(settings_path, "sExtraTags_OS_Vaginal_FF", MainScript.sExtraTags_OS_Vaginal_FF)
-
-  MainScript.setChance()
-  ForcePageReset()
+  
   return true
 
 endFunction
@@ -1645,7 +1642,6 @@ Bool function saveUserSettingsPapyrus()
   jsonutil.SetPathIntValue(settings_path, "bGuardHelpBeggar", MainScript.bGuardHelpBeggar as Int)
   jsonutil.SetPathIntValue(settings_path, "bWhoreEnabled", MainScript.bWhoreEnabled as Int)
   jsonutil.SetPathIntValue(settings_path, "bWhoreClothing", MainScript.bWhoreClothing as Int)
-  jsonutil.SetPathIntValue(settings_path, "bTeleportToBed", MainScript.bTeleportToBed as Int)
   jsonutil.SetPathIntValue(settings_path, "bDibelEnabled", MainScript.bDibelEnabled as Int)
   jsonutil.SetPathIntValue(settings_path, "bDibelAgent", MainScript.bDibelAgent as Int)
   jsonutil.SetPathIntValue(settings_path, "bDibelCrown", MainScript.bDibelCrown as Int)

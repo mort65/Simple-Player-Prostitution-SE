@@ -1,10 +1,14 @@
 Scriptname zzzmrt_sp_sexlab_interface extends Quest
 
 Quest SexLabQuestFramework
+Bool property bChecked = False Auto Hidden
 
 event OnEndState()
   Utility.Wait(5.0) ; Wait before entering active state to help avoid making function calls to scripts that may not have initialized yet.
   SexLabQuestFramework = Game.GetFormFromFile(0x000d62, "SexLab.esm") as Quest ; Get quest now
+  if SexLabQuestFramework != None
+    Debug.Notification("Simple Prostitution: SexLab detected.")
+  endif
 endevent
 
 Bool function GetIsInterfaceActive()
@@ -27,6 +31,7 @@ function PlayerLoadsGame()
       GoToState("")
     endif
   endif
+  bChecked = True
 endfunction
 
 int function haveSexWithPlayer(Actor Partner, Int Position, String[] sExtraTags, Bool[] bRequireAllTags, Bool bAllowAggressive = False, Bool bAllowAll = False)

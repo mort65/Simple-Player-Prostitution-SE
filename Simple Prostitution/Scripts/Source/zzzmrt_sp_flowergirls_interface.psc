@@ -1,10 +1,14 @@
 Scriptname zzzmrt_sp_flowergirls_interface extends Quest
 
 Quest FlowerGirls
+Bool property bChecked = False Auto Hidden
 
 event OnEndState()
   Utility.Wait(5.0) ; Wait before entering active state to help avoid making function calls to scripts that may not have initialized yet.
   FlowerGirls = Game.GetFormFromFile(0x0012C5, "FlowerGirls SE.esm") as Quest ; Get quest now
+  if FlowerGirls != None
+    Debug.Notification("Simple Prostitution: FlowerGirls detected.")
+  endif
 endevent
 
 Bool function GetIsInterfaceActive()
@@ -27,6 +31,7 @@ function PlayerLoadsGame()
       GoToState("")
     endif
   endif
+  bChecked = True
 endfunction
 
 Int function haveSexWithPlayer(Actor Partner, Int Position)
