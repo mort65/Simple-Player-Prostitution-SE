@@ -59,7 +59,7 @@ event OnPageReset(String page)
     _AddTextOptionST("DEBUG_SEXLAB_CHECK_TXT", "$sexlab", MainScript.bIsSexlabActive As String, flag)
     _AddTextOptionST("DEBUG_FLOWERGIRLS_CHECK_TXT", "$flowergirls", MainScript.bIsFlowerGirlsActive As String, flag)
     _AddTextOptionST("DEBUG_OSTIM_CHECK_TXT", "$ostim_sa", MainScript.bIsOstimActive As String, flag)
-    _AddTextOptionST("DEBUG_LICENSES_CHECK_TXT", "$licenses", MainScript.bIsLicensesActive() As String, flag)
+    _AddTextOptionST("DEBUG_LICENSES_CHECK_TXT", "$licenses", MainScript.bIsLicensesActive As String, flag)
   elseif (page == "$MRT_SP_PAGE_INTEGRATION")
     SetTitleText("$MRT_SP_PAGE_INTEGRATION")
     _AddHeaderOption("$MRT_SP_HEAD_INTEGRATION_INTERFACE")
@@ -121,6 +121,13 @@ event OnPageReset(String page)
       flag = OPTION_FLAG_DISABLED
     endif
     _AddToggleOptionST("DIBEL_NEED_LICENSE_TOGGLE", "$MRT_SP_DIBEL_NEED_LICENSE_TOGGLE", MainScript.bDibelNeedLicense, flag)
+    if MainScript.bModEnabled && (MainScript.bDibelEnabled || MainScript.bWhoreEnabled) 
+      flag = OPTION_FLAG_NONE
+    else
+      flag = OPTION_FLAG_DISABLED
+    endif
+    AddSliderOptionST("CITIZEN_REPORT_CHANCE_SLIDER", "$MRT_SP_CITIZEN_REPORT_CHANCE_SLIDER1", MainScript.fCitizenReportChance, "$MRT_SP_CITIZEN_REPORT_CHANCE_SLIDER2", flag)
+    AddSliderOptionST("GUARD_REPORT_CHANCE_SLIDER", "$MRT_SP_GUARD_REPORT_CHANCE_SLIDER1", MainScript.fGuardReportChance, "$MRT_SP_GUARD_REPORT_CHANCE_SLIDER2", flag)
   elseif (page== "$MRT_SP_PAGE_BEGGING")
     SetTitleText("$MRT_SP_PAGE_BEGGING")
     _AddHeaderOption("$MRT_SP_HEAD_BEG")
@@ -483,6 +490,40 @@ state BEG_PAY_MIN_SLIDER
 		SetSliderDialogInterval(1)
 	endEvent
 endstate
+
+State CITIZEN_REPORT_CHANCE_SLIDER
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_CITIZEN_REPORT_CHANCE_SLIDER")
+  endevent
+  event OnSliderAcceptST(float value)
+    MainScript.fCitizenReportChance = value
+    _SetSliderOptionValueST(MainScript.fCitizenReportChance, "$MRT_SP_CITIZEN_REPORT_CHANCE_SLIDER2")
+  endevent
+
+  event OnSliderOpenST()
+    SetSliderDialogStartValue(MainScript.fCitizenReportChance)
+    SetSliderDialogDefaultValue(10.0)
+    SetSliderDialogRange(1, 100)
+    SetSliderDialogInterval(1)
+  endEvent
+EndState
+
+State GUARD_REPORT_CHANCE_SLIDER
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_GUARD_REPORT_CHANCE_SLIDER")
+  endevent
+  event OnSliderAcceptST(float value)
+    MainScript.fGuardReportChance = value
+    _SetSliderOptionValueST(MainScript.fGuardReportChance, "$MRT_SP_GUARD_REPORT_CHANCE_SLIDER2")
+  endevent
+
+  event OnSliderOpenST()
+    SetSliderDialogStartValue(MainScript.fGuardReportChance)
+    SetSliderDialogDefaultValue(90.0)
+    SetSliderDialogRange(1, 100)
+    SetSliderDialogInterval(1)
+  endEvent
+EndState
 
 state DIBEL_AGENT_TOGGLE
   event OnDefaultST()
@@ -1611,6 +1652,8 @@ Bool function loadUserSettingsPapyrus()
   MainScript.fMaxSpeechWhoreBonusMult = jsonutil.GetPathFloatValue(settings_path, "fMaxSpeechWhoreBonusMult", MainScript.fMaxSpeechWhoreBonusMult)
   MainScript.fMinSpeechDibelBonusMult = jsonutil.GetPathFloatValue(settings_path, "fMinSpeechDibelBonusMult", MainScript.fMinSpeechDibelBonusMult)
   MainScript.fMaxSpeechDibelBonusMult = jsonutil.GetPathFloatValue(settings_path, "fMaxSpeechDibelBonusMult", MainScript.fMaxSpeechDibelBonusMult)
+  MainScript.fCitizenReportChance = jsonutil.GetPathFloatValue(settings_path, "fCitizenReportChance", MainScript.fCitizenReportChance)
+  MainScript.fGuardReportChance = jsonutil.GetPathFloatValue(settings_path, "fGuardReportChance", MainScript.fGuardReportChance)
 
   MainScript.sExtraTags_SL_Oral_MF = jsonutil.GetPathStringValue(settings_path, "sExtraTags_SL_Oral_MF", MainScript.sExtraTags_SL_Oral_MF)
   MainScript.sExtraTags_SL_Oral_FF = jsonutil.GetPathStringValue(settings_path, "sExtraTags_SL_Oral_FF", MainScript.sExtraTags_SL_Oral_FF)
@@ -1692,6 +1735,8 @@ Bool function saveUserSettingsPapyrus()
   jsonutil.SetPathFloatValue(settings_path, "fMaxSpeechWhoreBonusMult", MainScript.fMaxSpeechWhoreBonusMult)
   jsonutil.SetPathFloatValue(settings_path, "fMinSpeechDibelBonusMult", MainScript.fMinSpeechDibelBonusMult)
   jsonutil.SetPathFloatValue(settings_path, "fMaxSpeechDibelBonusMult", MainScript.fMaxSpeechDibelBonusMult)
+  jsonutil.SetPathFloatValue(settings_path, "fCitizenReportChance", MainScript.fCitizenReportChance)
+  jsonutil.SetPathFloatValue(settings_path, "fGuardReportChance", MainScript.fGuardReportChance)
 
   jsonutil.SetPathStringValue(settings_path, "sExtraTags_SL_Oral_MF", MainScript.sExtraTags_SL_Oral_MF)
   jsonutil.SetPathStringValue(settings_path, "sExtraTags_SL_Oral_FF", MainScript.sExtraTags_SL_Oral_FF)

@@ -101,8 +101,7 @@ int function haveSexWithPlayerSL(Quest SexLabQuestFramework, Actor Partner, Int 
   endif
   sexActors = SexLab.SortActors(sexActors, true)
 
-  ;RegisterForModEvent("AnimationEnd", "zzzDibSex_End")
-  if SexLab.StartSex(sexActors, myAnims, none, none, true, "") > -1
+  if SexLab.StartSex(sexActors, myAnims, none, none, true, "AnimationEnding,AnimationEnd") > -1
     return Position
   endif
   Debug.trace("SimpleProstitution: couldn't start Sexlab animation.")
