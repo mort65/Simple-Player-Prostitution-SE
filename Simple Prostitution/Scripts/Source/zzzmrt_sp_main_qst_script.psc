@@ -166,7 +166,7 @@ event onUpdate()
 EndEvent
 
 Event OnUpdateGameTime()
-  Debug.trace("Simple Prostitution: OnUpdateGameTime triggered.")
+  ;Debug.trace("Simple Prostitution: OnUpdateGameTime triggered.")
   if !bFindingSnitch
     snitch()
   endif
@@ -174,7 +174,7 @@ endEvent
 
 event on_spp_sexlab_Sex_End(int tid, bool HasPlayer)
   if HasPlayer && bSceneRunning
-    Debug.trace("Simple Prostitution: on_spp_sexlab_Sex_End triggered.")
+    ;Debug.trace("Simple Prostitution: on_spp_sexlab_Sex_End triggered.")
     if bFindingSnitch
       stopSnitchFinder()
     endif
@@ -184,7 +184,7 @@ EndEvent
 
 Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, form sender)
   if bSceneRunning
-    Debug.trace("Simple Prostitution: on_spp_ostim_Sex_End triggered.")
+    ;Debug.trace("Simple Prostitution: on_spp_ostim_Sex_End triggered.")
     if bFindingSnitch
       stopSnitchFinder()
     endif
@@ -240,7 +240,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-  return getBaseVersion() + 0.09
+  return getBaseVersion() + 0.10
 endfunction
 
 int function haveSex(Actor akActor, String interface, Bool bAllowAggressive = False, Bool bAllowAll = False)
@@ -658,14 +658,14 @@ Bool Function checkDibelSnitch(Actor npc, Bool bCompleteCheck = False)
     if utility.RandomInt(1,100) <=  fGuardReportChance as int
       if bCanSnitch(npc, bCompleteCheck)
         dibelSnitch = npc
-        Debug.Trace("Simple Prostitution: " + npc.GetBaseObject().GetName() + " wants to snitch on player for dibellan arts.")
+        Debug.Trace("Simple Prostitution: " + npc.GetBaseObject().GetName() + " (" + npc + ") wants to snitch on player for dibellan arts.")
         Return True
       endif
     endif
   elseif (utility.RandomInt(1,100) <=  fCitizenReportChance as int)
   	if bCanSnitch(npc, bCompleteCheck)
       dibelSnitch = npc
-      Debug.Trace("Simple Prostitution: " + npc.GetBaseObject().GetName() + " wants to snitch on player for dibellan arts.")
+      Debug.Trace("Simple Prostitution: " + npc.GetBaseObject().GetName() + " (" + npc + ") wants to snitch on player for dibellan arts.")
       Return True
   	endif
   endif
@@ -685,7 +685,7 @@ Bool Function checkWhoreSnitch(Actor npc, Bool bCompleteCheck = False)
     if utility.RandomInt(1,100) <=  fGuardReportChance as int
       if bCanSnitch(npc, bCompleteCheck)
         whoreSnitch = npc
-        Debug.Trace("Simple Prostitution: " + npc.GetBaseObject().GetName() + " wants to snitch on player for prostituton.")
+        Debug.Trace("Simple Prostitution: " + npc.GetBaseObject().GetName() + " (" + npc + ") wants to snitch on player for prostituton.")
         RegisterForSingleUpdateGameTime(Utility.RandomInt(8,14) As Float)
         return True
       endif
@@ -693,7 +693,7 @@ Bool Function checkWhoreSnitch(Actor npc, Bool bCompleteCheck = False)
   elseif (utility.RandomInt(1,100) <=  fCitizenReportChance as int)
     if bCanSnitch(npc, bCompleteCheck)
       whoreSnitch = npc
-      Debug.Trace("Simple Prostitution: " + npc.GetBaseObject().GetName() + " wants to snitch on player for prostituton.")
+      Debug.Trace("Simple Prostitution: " + npc.GetBaseObject().GetName() + " (" + npc + ") wants to snitch on player for prostituton.")
       RegisterForSingleUpdateGameTime(Utility.RandomInt(8,14) As Float)
       return True
     endif
@@ -806,8 +806,8 @@ function snitch()
     else
       msg = "Simple Prostitution: Someone reported you."
     endif
-    Debug.Trace(msg)
-    ;Debug.Notification(msg)
+    Debug.Trace(msg + " (" + snitch + ")")
+    Debug.Notification(msg)
     LicensesInterface.setWhoreViolation()
   endif
 endfunction

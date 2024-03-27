@@ -39,12 +39,12 @@ EndEvent
 Event OnLocationChange(Location akOldLoc, Location akNewLoc)
   MainScript.bFindingSnitch = False
   if MainScript.whoreSnitch || MainScript.dibelSnitch
-    RegisterForSingleUpdate(utility.randomFloat(15.0,150.0)) 
+    RegisterForSingleUpdate(utility.randomFloat(15.0,60.0)) 
   endif
 endevent
 
 Event OnStartFindSnitch(Form sender, Bool bCheckDibel)
-  Debug.Trace("Simple Prostitution: OnStartFindSnitch triggered.")
+  ;Debug.Trace("Simple Prostitution: OnStartFindSnitch triggered.")
   MainScript.snitchers.revert()
   if !MainScript.bFindingSnitch
     MainScript.bFindingSnitch = True
