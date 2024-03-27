@@ -20,7 +20,7 @@ Or
 [PapyrusUtil SE](https://www.nexusmods.com/skyrimspecialedition/mods/13048) for saving/loading MCM settings. 
 
 [Licenses - Player Oppression](https://www.nexusmods.com/skyrimspecialedition/mods/110418?tab=description):
-With the patch installed, the player must buy a license from the guards to work in Inns. 
+If the option enabled on both mods the player must buy a license from the guards to work or NPCs may report to the guards.
 
 [FormList Manipulator - FLM](https://www.nexusmods.com/skyrimspecialedition/mods/74037) or [SkyPatcher](https://www.nexusmods.com/skyrimspecialedition/mods/106659) are needed for INI version of [The Naked Dragon](https://www.nexusmods.com/skyrimspecialedition/mods/94940) Patch, plugin version doesn't need anything.
  
