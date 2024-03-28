@@ -10,13 +10,13 @@ event OnInit()
   bInit = True
   bCheckVars = True
   RegisterForModEvent("SPP_StartFindSnitch", "OnStartFindSnitch")
-  RegisterForSingleUpdate(1.0)
+  RegisterForSingleUpdate(3.0)
 endevent
 
 event OnPlayerLoadGame()
   bCheckVars = True
   RegisterForModEvent("SPP_StartFindSnitch", "OnStartFindSnitch")
-  RegisterForSingleUpdate(1.0)
+  RegisterForSingleUpdate(3.0)
 endevent
 
 event OnUpdate()
@@ -26,6 +26,9 @@ event OnUpdate()
   endif
   if !bInit && !MainScript.bFindingSnitch
     MainScript.snitch()
+  endif
+  if !MainScript.DibellaMerchantNPC.IsInFaction(MainScript.DibellaMerchant)
+    MainScript.DibellaMerchantNPC.AddToFaction(MainScript.DibellaMerchant)
   endif
   if bInit
     bInit = false

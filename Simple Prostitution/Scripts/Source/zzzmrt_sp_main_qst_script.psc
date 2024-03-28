@@ -102,6 +102,7 @@ Bool Property bExtraTags_OS_Anal_FF_ALL = false auto Hidden Conditional
 Bool Property bExtraTags_OS_Vaginal_MF_ALL = false auto Hidden Conditional
 Bool Property bExtraTags_OS_Vaginal_FF_ALL = false auto Hidden Conditional
 Formlist property snitchers auto 
+Formlist property extraOwners auto 
 Actor Property currentPartner Auto Hidden Conditional
 
 Quest Property SnitchDetector Auto 
@@ -119,6 +120,8 @@ ImageSpaceModifier property fastFadeOut auto
 MiscObject property gold auto
 Actor property player auto
 Faction property whoreFaction auto
+Faction Property DibellaMerchant Auto
+Actor Property DibellaMerchantNPC Auto
 
 Bool Property bFindingSnitch = False Auto Hidden Conditional
 Bool Property bSceneRunning = False Auto Hidden Conditional
@@ -148,7 +151,7 @@ Function SetVars()
 EndFunction
 
 Event OnInit()
-  registerForSingleUpdate(3.0) 
+  registerForSingleUpdate(5.0) 
 EndEvent
 
 event onUpdate()
@@ -240,7 +243,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-  return getBaseVersion() + 0.10
+  return getBaseVersion() + 0.11
 endfunction
 
 int function haveSex(Actor akActor, String interface, Bool bAllowAggressive = False, Bool bAllowAll = False)
@@ -718,7 +721,7 @@ Bool function bCanSnitch(Actor npc, Bool bComplete = true)
   if !bComplete
     return True
   endif
-  
+ ;SnitchDetector checks these conditions:
   if !npc.GetCrimeFaction()
     return False
   endif
@@ -726,6 +729,12 @@ Bool function bCanSnitch(Actor npc, Bool bComplete = true)
     return false
   endif
   if !npc.HasKeywordString("actortypenpc")
+    return False
+  endif
+  if npc.HasKeywordString("prostitutemanager_kwd")
+      return False
+  endif
+  if extraOwners.hasform(npc)
     return False
   endif
   if npc.HasFamilyRelationship(player)
@@ -740,7 +749,7 @@ Bool function bCanSnitch(Actor npc, Bool bComplete = true)
   if npc.IsCommandedActor()
     return False
   endif
-  if npc.GetDistance(player) > 500.0 && !npc.HasLos(player)
+  if npc.GetDistance(player) > 384.0 && !npc.HasLos(player)
     return False
   endif
   return True
