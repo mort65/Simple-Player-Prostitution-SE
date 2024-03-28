@@ -28,4 +28,5 @@ If both mods have the license option enabled, the player needs to buy a license 
 **Recommended Mods:**
 
    [Populated Cities Towns Villages SE Edition](https://www.nexusmods.com/skyrimspecialedition/mods/2005)  *-Adds more NPCs to cities.*
+  
    [Lively Inns and Taverns SE](https://www.nexusmods.com/skyrimspecialedition/mods/17036)  *-Adds more NPCs to Inns.*
