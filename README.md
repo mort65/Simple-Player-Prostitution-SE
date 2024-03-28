@@ -6,7 +6,7 @@ or everywhere as a dibellan or a beggar. The payment that you could receive incr
 
 **Requirements:**      
 
-If Game version < 1.6.1130: [Backported Extended ESL Support](https://www.nexusmods.com/skyrimspecialedition/mods/106441) is needed.
+If Game version < 1.6.1130: [Backported Extended ESL Support](https://www.nexusmods.com/skyrimspecialedition/mods/106441) is needed otherwise your game will crash.
 
 [Flower Girls](https://www.nexusmods.com/skyrimspecialedition/mods/5941)
 Or
