@@ -210,7 +210,8 @@ function AllowProstitution(Actor akOwner)
     Owner.ForceRefTo(akOwner)
     setChance()
     SetStage(10)
-    Debug.Trace("Simple Player Prostitution: Work allowed in " + currentAllowedLocations.GetAt(0) + " that's owned by " + akOwner)
+    Debug.Trace("Simple Prostitution: Work allowed in " + currentAllowedLocations.GetAt(0) + " that's owned by " + akOwner)
+    Debug.Notification("Prostitution enabled for current location.")
   endif
 endfunction
 
