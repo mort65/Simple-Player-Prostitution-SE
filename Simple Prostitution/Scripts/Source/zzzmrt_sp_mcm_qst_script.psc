@@ -20,11 +20,12 @@ event OnConfigInit()
 endevent
 
 function initPages()
-  Pages = new String[4]
+  Pages = new String[5]
   pages[0] = "$MRT_SP_PAGE_PROSTITUTION"
   pages[1] = "$MRT_SP_PAGE_BEGGING"
-  pages[2] = "$MRT_SP_PAGE_INTEGRATION"
-  pages[3] = "$MRT_SP_PAGE_DEBUG"
+  pages[2] = "$MRT_SP_PAGE_STD"
+  pages[3] = "$MRT_SP_PAGE_INTEGRATION"
+  pages[4] = "$MRT_SP_PAGE_DEBUG"
 endfunction
 
 event OnGameReload()
@@ -50,12 +51,28 @@ event OnPageReset(String page)
     else
       flag = OPTION_FLAG_DISABLED
     endIf
-    _AddTextOptionST("SAVE_USER_SETTING_TXT", "$MRT_SP_Save_SETTING", "$go", flag)    
+    _AddTextOptionST("SAVE_USER_SETTING_TXT", "$MRT_SP_Save_SETTING", "$go", flag)
+    addEmptyOption()
+    _AddHeaderOption("$MRT_SP_HEAD_DEBUG_CLOTHING")
+    if MainScript.bIsPO3ExtenderActive
+      flag = OPTION_FLAG_NONE
+    else
+      flag = OPTION_FLAG_DISABLED
+    endIf
+    Armor chestArmor = (MainScript.Player.GetWornForm(0x00000004) As Armor)
+    if chestArmor 
+      If chestArmor.HasKeyword(MainScript.ProstituteClothing_kwd)
+        _AddTextOptionST("WHORE_TAG_CHEST_CLOTH_TXT", "$MRT_SP_WHORE_TAG_CHEST_CLOTH_ON", "", flag) 
+      else 
+        _AddTextOptionST("WHORE_TAG_CHEST_CLOTH_TXT", "$MRT_SP_WHORE_TAG_CHEST_CLOTH_OFF", "", flag) 
+      endif
+    endif
     SetCursorPosition(1)
     flag = OPTION_FLAG_DISABLED
     _AddTextOptionST("DEBUG_MOD_VERSION_TXT", "Simple Prostitution v" + MainScript.getCurrentVersion(), "", flag)
     addEmptyOption()
     _AddTextOptionST("DEBUG_PAPYRUSUTIL_CHECK_TXT", "$papyrusutil", MainScript.bIsPapyrusUtilActive As String, flag)
+     _AddTextOptionST("DEBUG_PO3EXTENDER_CHECK_TXT", "$po3extender", MainScript.bIsPO3ExtenderActive As String, flag)
     _AddTextOptionST("DEBUG_SEXLAB_CHECK_TXT", "$sexlab", MainScript.bIsSexlabActive As String, flag)
     _AddTextOptionST("DEBUG_FLOWERGIRLS_CHECK_TXT", "$flowergirls", MainScript.bIsFlowerGirlsActive As String, flag)
     _AddTextOptionST("DEBUG_OSTIM_CHECK_TXT", "$ostim_sa", MainScript.bIsOstimActive As String, flag)
@@ -150,6 +167,34 @@ event OnPageReset(String page)
     AddSliderOptionST("SPEECH_BEG_BONUS_MIN_MULT_SLIDER", "$MRT_SP_SPEECH_BEG_BONUS_MIN_MULT_SLIDER1", MainScript.fMinSpeechBegBonusMult, "$MRT_SP_SPEECH_BEG_BONUS_MIN_MULT_SLIDER2", flag)
     AddSliderOptionST("SPEECH_BEG_BONUS_MAX_MULT_SLIDER", "$MRT_SP_SPEECH_BEG_BONUS_MAX_MULT_SLIDER1", MainScript.fMaxSpeechBegBonusMult, "$MRT_SP_SPEECH_BEG_BONUS_MAX_MULT_SLIDER2", flag)
     AddMenuOptionST("BEG_ACCEPT_DIFFICULTY_MENU", "$MRT_SP_BEG_ACCEPT_DIFFICULTY_MENU", sGetSpeechDifficultyArr()[iBeggarSpeechDifficulty], flag)
+  elseif (page == "$MRT_SP_PAGE_STD")
+    SetTitleText("$MRT_SP_PAGE_STD")
+    _AddHeaderOption("$MRT_SP_HEAD_STD")
+    if (MainScript.bModEnabled)
+      flag = OPTION_FLAG_NONE
+    else
+      flag = OPTION_FLAG_DISABLED
+    endif
+    AddSliderOptionST("CURE_NORMAL_COST_SLIDER", "$MRT_SP_CURE_NORMAL_COST_SLIDER1", MainScript.fCureNormalDiseaseCost, "$MRT_SP_CURE_NORMAL_COST_SLIDER2", flag)
+    AddSliderOptionST("CURE_STDI_COST_SLIDER", "$MRT_SP_CURE_STDI_COST_SLIDER1", MainScript.fCureSTDICost, "$MRT_SP_CURE_STDI_COST_SLIDER2", flag)
+    AddSliderOptionST("CURE_STDII_COST_SLIDER", "$MRT_SP_CURE_STDII_COST_SLIDER1", MainScript.fCureSTDIICost, "$MRT_SP_CURE_STDII_COST_SLIDER2", flag)
+    AddSliderOptionST("CURE_STDIII_COST_SLIDER", "$MRT_SP_CURE_STDIII_COST_SLIDER1", MainScript.fCureSTDIIICost, "$MRT_SP_CURE_STDIII_COST_SLIDER2", flag)
+    AddSliderOptionST("CURE_STDIV_COST_SLIDER", "$MRT_SP_CURE_STDIV_COST_SLIDER1", MainScript.fCureSTDIVCost, "$MRT_SP_CURE_STDIV_COST_SLIDER2", flag)
+    addEmptyOption()
+    _AddHeaderOption("$MRT_SP_HEAD_STD_NORMAL")
+    AddSliderOptionST("NORMAL_STD_INFECT_CHANCE_SLIDER", "$MRT_SP_NORMAL_STD_INFECT_CHANCE_SLIDER1", MainScript.fNormalSTDInfectChance, "$MRT_SP_NORMAL_STD_INFECT_CHANCE_SLIDER2", flag)
+    AddSliderOptionST("NORMAL_STD_PROGRESS_CHANCE_SLIDER", "$MRT_SP_NORMAL_STD_PROGRESS_CHANCE_SLIDER1", MainScript.fNormalSTDProgressChance, "$MRT_SP_NORMAL_STD_PROGRESS_CHANCE_SLIDER2", flag)
+    _AddToggleOptionST("NORMAL_ALLOW_MULTIPLE_STD_TOGGLE", "$MRT_SP_NORMAL_ALLOW_MULTIPLE_STD_TOGGLE", MainScript.bNormalAllowMultipleSTDs, flag)
+    SetCursorPosition(1)
+    _AddHeaderOption("$MRT_SP_HEAD_STD_WHORE")
+    AddSliderOptionST("WHORE_STD_INFECT_CHANCE_SLIDER", "$MRT_SP_WHORE_STD_INFECT_CHANCE_SLIDER1", MainScript.fWhoreSTDInfectChance, "$MRT_SP_WHORE_STD_INFECT_CHANCE_SLIDER2", flag)
+    AddSliderOptionST("WHORE_STD_PROGRESS_CHANCE_SLIDER", "$MRT_SP_WHORE_STD_PROGRESS_CHANCE_SLIDER1", MainScript.fWhoreSTDProgressChance, "$MRT_SP_WHORE_STD_PROGRESS_CHANCE_SLIDER2", flag)
+    _AddToggleOptionST("WHORE_ALLOW_MULTIPLE_STD_TOGGLE", "$MRT_SP_WHORE_ALLOW_MULTIPLE_STD_TOGGLE", MainScript.bWhoreAllowMultipleSTDs, flag)
+    addEmptyOption()
+    _AddHeaderOption("$MRT_SP_HEAD_STD_DIBEL")
+    AddSliderOptionST("DIBEL_STD_INFECT_CHANCE_SLIDER", "$MRT_SP_DIBEL_STD_INFECT_CHANCE_SLIDER1", MainScript.fDibelSTDInfectChance, "$MRT_SP_DIBEL_STD_INFECT_CHANCE_SLIDER2", flag)
+    AddSliderOptionST("DIBEL_STD_PROGRESS_CHANCE_SLIDER", "$MRT_SP_DIBEL_STD_PROGRESS_CHANCE_SLIDER1", MainScript.fDibelSTDProgressChance, "$MRT_SP_DIBEL_STD_PROGRESS_CHANCE_SLIDER2", flag)
+    _AddToggleOptionST("DIBEL_ALLOW_MULTIPLE_STD_TOGGLE", "$MRT_SP_DIBEL_ALLOW_MULTIPLE_STD_TOGGLE", MainScript.bDibelAllowMultipleSTDs, flag)
   elseif (page == "$MRT_SP_PAGE_PROSTITUTION")
     SetTitleText("$MRT_SP_PAGE_PROSTITUTION")
     _AddHeaderOption("$MRT_SP_HEAD_WHORE")
@@ -1026,6 +1071,290 @@ state WHORE_ORAL_PAY_SLIDER
 	endEvent
 endstate
 
+state NORMAL_STD_INFECT_CHANCE_SLIDER
+  event OnDefaultST()
+  endevent
+
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_NORMAL_STD_INFECT_CHANCE_SLIDER")
+  endevent
+
+  event OnSliderAcceptST(float value)
+    MainScript.fNormalSTDInfectChance = value
+    _SetSliderOptionValueST(MainScript.fNormalSTDInfectChance, "$MRT_SP_NORMAL_STD_INFECT_CHANCE_SLIDER2")
+  endevent
+
+  event OnSliderOpenST()
+    SetSliderDialogStartValue(MainScript.fNormalSTDInfectChance)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(1)
+  endEvent
+endstate
+
+state NORMAL_STD_PROGRESS_CHANCE_SLIDER
+  event OnDefaultST()
+  endevent
+
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_NORMAL_STD_PROGRESS_CHANCE_SLIDER")
+  endevent
+
+  event OnSliderAcceptST(float value)
+    MainScript.fNormalSTDProgressChance = value
+    _SetSliderOptionValueST(MainScript.fNormalSTDProgressChance, "$MRT_SP_NORMAL_STD_PROGRESS_CHANCE_SLIDER2")
+  endevent
+
+  event OnSliderOpenST()
+    SetSliderDialogStartValue(MainScript.fNormalSTDProgressChance)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(1)
+  endEvent
+endstate
+
+state NORMAL_ALLOW_MULTIPLE_STD_TOGGLE
+  event OnDefaultST()
+    MainScript.bNormalAllowMultipleSTDs = False
+    ForcePageReset()
+  endevent
+
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_NORMAL_ALLOW_MULTIPLE_STD_TOGGLE")
+  endevent
+
+  event OnSelectST()
+    MainScript.bNormalAllowMultipleSTDs = !MainScript.bNormalAllowMultipleSTDs
+    ForcePageReset()
+  endevent
+endstate
+
+state WHORE_STD_INFECT_CHANCE_SLIDER
+  event OnDefaultST()
+  endevent
+
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_WHORE_STD_INFECT_CHANCE_SLIDER")
+  endevent
+
+  event OnSliderAcceptST(float value)
+    MainScript.fWhoreSTDInfectChance = value
+    _SetSliderOptionValueST(MainScript.fWhoreSTDInfectChance, "$MRT_SP_WHORE_STD_INFECT_CHANCE_SLIDER2")
+  endevent
+
+  event OnSliderOpenST()
+    SetSliderDialogStartValue(MainScript.fWhoreSTDInfectChance)
+    SetSliderDialogDefaultValue(5.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(1)
+  endEvent
+endstate
+
+state WHORE_STD_PROGRESS_CHANCE_SLIDER
+  event OnDefaultST()
+  endevent
+
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_WHORE_STD_PROGRESS_CHANCE_SLIDER")
+  endevent
+
+  event OnSliderAcceptST(float value)
+    MainScript.fWhoreSTDProgressChance = value
+    _SetSliderOptionValueST(MainScript.fWhoreSTDProgressChance, "$MRT_SP_WHORE_STD_PROGRESS_CHANCE_SLIDER2")
+  endevent
+
+  event OnSliderOpenST()
+    SetSliderDialogStartValue(MainScript.fWhoreSTDProgressChance)
+    SetSliderDialogDefaultValue(25.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(1)
+  endEvent
+endstate
+
+state DIBEL_STD_INFECT_CHANCE_SLIDER
+  event OnDefaultST()
+  endevent
+
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_DIBEL_STD_INFECT_CHANCE_SLIDER")
+  endevent
+
+  event OnSliderAcceptST(float value)
+    MainScript.fDibelSTDInfectChance = value
+    _SetSliderOptionValueST(MainScript.fDibelSTDInfectChance, "$MRT_SP_DIBEL_STD_INFECT_CHANCE_SLIDER2")
+  endevent
+
+  event OnSliderOpenST()
+    SetSliderDialogStartValue(MainScript.fDibelSTDInfectChance)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(1)
+  endEvent
+endstate
+
+state DIBEL_STD_PROGRESS_CHANCE_SLIDER
+  event OnDefaultST()
+  endevent
+
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_DIBEL_STD_PROGRESS_CHANCE_SLIDER")
+  endevent
+
+  event OnSliderAcceptST(float value)
+    MainScript.fDibelSTDProgressChance = value
+    _SetSliderOptionValueST(MainScript.fDibelSTDProgressChance, "$MRT_SP_DIBEL_STD_PROGRESS_CHANCE_SLIDER2")
+  endevent
+
+  event OnSliderOpenST()
+    SetSliderDialogStartValue(MainScript.fDibelSTDProgressChance)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(1)
+  endEvent
+endstate
+
+state WHORE_ALLOW_MULTIPLE_STD_TOGGLE
+  event OnDefaultST()
+    MainScript.bWhoreAllowMultipleSTDs = False
+    ForcePageReset()
+  endevent
+
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_WHORE_ALLOW_MULTIPLE_STD_TOGGLE")
+  endevent
+
+  event OnSelectST()
+    MainScript.bWhoreAllowMultipleSTDs = !MainScript.bWhoreAllowMultipleSTDs
+    ForcePageReset()
+  endevent
+endstate
+
+state DIBEL_ALLOW_MULTIPLE_STD_TOGGLE
+  event OnDefaultST()
+    MainScript.bDibelAllowMultipleSTDs = False
+    ForcePageReset()
+  endevent
+
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_DIBEL_ALLOW_MULTIPLE_STD_TOGGLE")
+  endevent
+
+  event OnSelectST()
+    MainScript.bDibelAllowMultipleSTDs = !MainScript.bDibelAllowMultipleSTDs
+    ForcePageReset()
+  endevent
+endstate
+
+state CURE_NORMAL_COST_SLIDER
+  event OnDefaultST()
+  endevent
+
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_CURE_NORMAL_COST_SLIDER")
+  endevent
+
+  event OnSliderAcceptST(float value)
+    MainScript.fCureNormalDiseaseCost = value
+    _SetSliderOptionValueST(MainScript.fCureNormalDiseaseCost, "$MRT_SP_CURE_NORMAL_COST_SLIDER2")
+    Mainscript.startCalcSTDCurePrice()
+  endevent
+
+  event OnSliderOpenST()
+    SetSliderDialogStartValue(MainScript.fCureNormalDiseaseCost)
+    SetSliderDialogDefaultValue(100.0)
+    SetSliderDialogRange(0, 1000)
+    SetSliderDialogInterval(10)
+  endEvent
+endstate
+
+state CURE_STDI_COST_SLIDER
+  event OnDefaultST()
+  endevent
+
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_CURE_STDI_COST_SLIDER")
+  endevent
+
+  event OnSliderAcceptST(float value)
+    MainScript.fCureSTDICost = value
+    _SetSliderOptionValueST(MainScript.fCureSTDICost, "$MRT_SP_CURE_STDI_COST_SLIDER2")
+    Mainscript.startCalcSTDCurePrice()
+  endevent
+
+  event OnSliderOpenST()
+    SetSliderDialogStartValue(MainScript.fCureSTDICost)
+    SetSliderDialogDefaultValue(100.0)
+    SetSliderDialogRange(0, 1000)
+    SetSliderDialogInterval(10)
+  endEvent
+endstate
+
+state CURE_STDII_COST_SLIDER
+  event OnDefaultST()
+  endevent
+
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_CURE_STDII_COST_SLIDER")
+  endevent
+
+  event OnSliderAcceptST(float value)
+    MainScript.fCureSTDIICost = value
+    _SetSliderOptionValueST(MainScript.fCureSTDIICost, "$MRT_SP_CURE_STDII_COST_SLIDER2")
+    Mainscript.startCalcSTDCurePrice()
+  endevent
+
+  event OnSliderOpenST()
+    SetSliderDialogStartValue(MainScript.fCureSTDIICost)
+    SetSliderDialogDefaultValue(150.0)
+    SetSliderDialogRange(0, 1000)
+    SetSliderDialogInterval(10)
+  endEvent
+endstate
+
+state CURE_STDIII_COST_SLIDER
+  event OnDefaultST()
+  endevent
+
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_CURE_STDIII_COST_SLIDER")
+  endevent
+
+  event OnSliderAcceptST(float value)
+    MainScript.fCureSTDIIICost = value
+    _SetSliderOptionValueST(MainScript.fCureSTDIIICost, "$MRT_SP_CURE_STDIII_COST_SLIDER2")
+    Mainscript.startCalcSTDCurePrice()
+  endevent
+
+  event OnSliderOpenST()
+    SetSliderDialogStartValue(MainScript.fCureSTDIIICost)
+    SetSliderDialogDefaultValue(200.0)
+    SetSliderDialogRange(0, 1000)
+    SetSliderDialogInterval(10)
+  endEvent
+endstate
+
+state CURE_STDIV_COST_SLIDER
+  event OnDefaultST()
+  endevent
+
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_CURE_STDIV_COST_SLIDER")
+  endevent
+
+  event OnSliderAcceptST(float value)
+    MainScript.fCureSTDIVCost = value
+    _SetSliderOptionValueST(MainScript.fCureSTDIVCost, "$MRT_SP_CURE_STDIV_COST_SLIDER2")
+    Mainscript.startCalcSTDCurePrice()
+  endevent
+
+  event OnSliderOpenST()
+    SetSliderDialogStartValue(MainScript.fCureSTDIVCost)
+    SetSliderDialogDefaultValue(300.0)
+    SetSliderDialogRange(0, 1000)
+    SetSliderDialogInterval(10)
+  endEvent
+endstate
+
 state WHORE_OWNER_SHARE_SLIDER
   event OnDefaultST()
   endevent
@@ -1547,6 +1876,26 @@ endstate
 State DEBUG_OSTIM_CHECK_TXT
 endState
 
+State WHORE_TAG_CHEST_CLOTH_TXT
+  function OnSelectST()
+    if MainScript.bIsPO3ExtenderActive
+      Armor chestArmor = (MainScript.Player.GetWornForm(0x00000004) As Armor)
+      if chestArmor 
+        if chestArmor.HasKeyword(MainScript.ProstituteClothing_kwd)
+          PO3_SKSEFunctions.RemoveKeywordOnForm(chestArmor, MainScript.ProstituteClothing_kwd)
+        else
+          PO3_SKSEFunctions.AddKeywordToForm(chestArmor, MainScript.ProstituteClothing_kwd)
+        endif
+        ForcePageReset()
+	  endif	
+    endif
+  endFunction
+
+  function OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_WHORE_TAG_CHEST_CLOTH_TXT")
+  endFunction
+EndState
+
 state SAVE_USER_SETTING_TXT
   function OnSelectST()
     if jsonutil.JsonExists(settings_path)
@@ -1625,6 +1974,10 @@ Bool function loadUserSettingsPapyrus()
   MainScript.bExtraTags_OS_Anal_MM_ALL = jsonutil.GetPathIntValue(settings_path, "bExtraTags_OS_Anal_MM_ALL", MainScript.bExtraTags_OS_Anal_MM_ALL as Int) 
   MainScript.bExtraTags_OS_Vaginal_MF_ALL = jsonutil.GetPathIntValue(settings_path, "bExtraTags_OS_Vaginal_MF_ALL", MainScript.bExtraTags_OS_Vaginal_MF_ALL as Int)
   MainScript.bExtraTags_OS_Vaginal_FF_ALL = jsonutil.GetPathIntValue(settings_path, "bExtraTags_OS_Vaginal_FF_ALL", MainScript.bExtraTags_OS_Vaginal_FF_ALL as Int)
+  MainScript.bDibelAllowMultipleSTDs = jsonutil.GetPathIntValue(settings_path, "bDibelAllowMultipleSTDs", MainScript.bDibelAllowMultipleSTDs as Int)
+  MainScript.bWhoreAllowMultipleSTDs = jsonutil.GetPathIntValue(settings_path, "bWhoreAllowMultipleSTDs", MainScript.bWhoreAllowMultipleSTDs as Int)
+  MainScript.bNormalAllowMultipleSTDs = jsonutil.GetPathIntValue(settings_path, "bNormalAllowMultipleSTDs", MainScript.bNormalAllowMultipleSTDs as Int)
+
   
   iBeggarSpeechDifficulty = jsonutil.GetPathIntValue(settings_path, "iBeggarSpeechDifficulty", iBeggarSpeechDifficulty)
   iWhoreSpeechDifficulty = jsonutil.GetPathIntValue(settings_path, "iWhoreSpeechDifficulty", iWhoreSpeechDifficulty)
@@ -1654,6 +2007,19 @@ Bool function loadUserSettingsPapyrus()
   MainScript.fMaxSpeechDibelBonusMult = jsonutil.GetPathFloatValue(settings_path, "fMaxSpeechDibelBonusMult", MainScript.fMaxSpeechDibelBonusMult)
   MainScript.fCitizenReportChance = jsonutil.GetPathFloatValue(settings_path, "fCitizenReportChance", MainScript.fCitizenReportChance)
   MainScript.fGuardReportChance = jsonutil.GetPathFloatValue(settings_path, "fGuardReportChance", MainScript.fGuardReportChance)
+  
+  MainScript.fCureNormalDiseaseCost = jsonutil.GetPathFloatValue(settings_path, "fCureNormalDiseaseCost", MainScript.fCureNormalDiseaseCost) 
+  MainScript.fCureSTDICost = jsonutil.GetPathFloatValue(settings_path, "fCureSTDICost", MainScript.fCureSTDICost)
+  MainScript.fCureSTDIICost = jsonutil.GetPathFloatValue(settings_path, "fCureSTDIICost", MainScript.fCureSTDIICost)
+  MainScript.fCureSTDIIICost = jsonutil.GetPathFloatValue(settings_path, "fCureSTDIIICost", MainScript.fCureSTDIIICost)
+  MainScript.fCureSTDIVCost = jsonutil.GetPathFloatValue(settings_path, "fCureSTDIVCost", MainScript.fCureSTDIVCost)
+  
+  MainScript.fWhoreSTDProgressChance = jsonutil.GetPathFloatValue(settings_path, "fWhoreSTDProgressChance", MainScript.fWhoreSTDProgressChance)
+  MainScript.fDibelSTDProgressChance = jsonutil.GetPathFloatValue(settings_path, "fDibelSTDProgressChance", MainScript.fDibelSTDProgressChance)
+  MainScript.fNormalSTDProgressChance = jsonutil.GetPathFloatValue(settings_path, "fNormalSTDProgressChance", MainScript.fNormalSTDProgressChance)
+  MainScript.fWhoreSTDInfectChance = jsonutil.GetPathFloatValue(settings_path, "fWhoreSTDInfectChance", MainScript.fWhoreSTDInfectChance)
+  MainScript.fDibelSTDInfectChance = jsonutil.GetPathFloatValue(settings_path, "fDibelSTDInfectChance", MainScript.fDibelSTDInfectChance)
+  MainScript.fNormalSTDInfectChance = jsonutil.GetPathFloatValue(settings_path, "fNormalSTDInfectChance", MainScript.fNormalSTDInfectChance)
 
   MainScript.sExtraTags_SL_Oral_MF = jsonutil.GetPathStringValue(settings_path, "sExtraTags_SL_Oral_MF", MainScript.sExtraTags_SL_Oral_MF)
   MainScript.sExtraTags_SL_Oral_FF = jsonutil.GetPathStringValue(settings_path, "sExtraTags_SL_Oral_FF", MainScript.sExtraTags_SL_Oral_FF)
@@ -1708,6 +2074,9 @@ Bool function saveUserSettingsPapyrus()
   jsonutil.SetPathIntValue(settings_path, "bExtraTags_OS_Anal_MM_ALL", MainScript.bExtraTags_OS_Anal_MM_ALL as Int)
   jsonutil.SetPathIntValue(settings_path, "bExtraTags_OS_Vaginal_MF_ALL", MainScript.bExtraTags_OS_Vaginal_MF_ALL as Int)
   jsonutil.SetPathIntValue(settings_path, "bExtraTags_OS_Vaginal_FF_ALL", MainScript.bExtraTags_OS_Vaginal_FF_ALL as Int)
+  jsonutil.SetPathIntValue(settings_path, "bDibelAllowMultipleSTDs", MainScript.bDibelAllowMultipleSTDs as Int)
+  jsonutil.SetPathIntValue(settings_path, "bWhoreAllowMultipleSTDs", MainScript.bWhoreAllowMultipleSTDs as Int)
+  jsonutil.SetPathIntValue(settings_path, "bNormalAllowMultipleSTDs", MainScript.bNormalAllowMultipleSTDs as Int)
  
   jsonutil.SetPathIntValue(settings_path, "iBeggarSpeechDifficulty", iBeggarSpeechDifficulty)
   jsonutil.SetPathIntValue(settings_path, "iWhoreSpeechDifficulty", iWhoreSpeechDifficulty)
@@ -1737,7 +2106,19 @@ Bool function saveUserSettingsPapyrus()
   jsonutil.SetPathFloatValue(settings_path, "fMaxSpeechDibelBonusMult", MainScript.fMaxSpeechDibelBonusMult)
   jsonutil.SetPathFloatValue(settings_path, "fCitizenReportChance", MainScript.fCitizenReportChance)
   jsonutil.SetPathFloatValue(settings_path, "fGuardReportChance", MainScript.fGuardReportChance)
-
+  
+  jsonutil.SetPathFloatValue(settings_path, "fCureNormalDiseaseCost", MainScript.fCureNormalDiseaseCost)
+  jsonutil.SetPathFloatValue(settings_path, "fCureSTDICost", MainScript.fCureSTDICost)
+  jsonutil.SetPathFloatValue(settings_path, "fCureSTDIICost", MainScript.fCureSTDIICost)
+  jsonutil.SetPathFloatValue(settings_path, "fCureSTDIIICost", MainScript.fCureSTDIIICost)
+  jsonutil.SetPathFloatValue(settings_path, "fCureSTDIVCost", MainScript.fCureSTDIVCost)
+  jsonutil.SetPathFloatValue(settings_path, "fWhoreSTDProgressChance", MainScript.fWhoreSTDProgressChance)
+  jsonutil.SetPathFloatValue(settings_path, "fDibelSTDProgressChance", MainScript.fDibelSTDProgressChance)
+  jsonutil.SetPathFloatValue(settings_path, "fNormalSTDProgressChance", MainScript.fNormalSTDProgressChance)
+  jsonutil.SetPathFloatValue(settings_path, "fWhoreSTDInfectChance", MainScript.fWhoreSTDInfectChance)
+  jsonutil.SetPathFloatValue(settings_path, "fDibelSTDInfectChance", MainScript.fDibelSTDInfectChance)
+  jsonutil.SetPathFloatValue(settings_path, "fNormalSTDInfectChance", MainScript.fNormalSTDInfectChance)
+  
   jsonutil.SetPathStringValue(settings_path, "sExtraTags_SL_Oral_MF", MainScript.sExtraTags_SL_Oral_MF)
   jsonutil.SetPathStringValue(settings_path, "sExtraTags_SL_Oral_FF", MainScript.sExtraTags_SL_Oral_FF)
   jsonutil.SetPathStringValue(settings_path, "sExtraTags_SL_Oral_MM", MainScript.sExtraTags_SL_Oral_MM)

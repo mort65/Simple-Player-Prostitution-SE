@@ -38,8 +38,19 @@ int function haveSexWithPlayer(Actor Partner, Int Position, String[] sExtraTags,
   return -1
 endfunction
 
+Actor[] function getActors()
+  Actor[] actors
+  return actors
+endfunction
+
 state Installed
+  
   int function haveSexWithPlayer(Actor Partner, Int Position, String[] sExtraTags, Bool[] bRequireAllTags, Bool bAllowAggressive = False, Bool bAllowAll = False)
     return zzzmrt_sp_int_ostim.haveSexWithPlayerOS(OSexIntegrationMainQuest, Partner, Position, sExtraTags, bRequireAllTags, bAllowAggressive, bAllowAll)
   endfunction
+
+  Actor[] function getActors()
+    return zzzmrt_sp_int_ostim.getActorsOS(OSexIntegrationMainQuest)
+  endfunction
+
 endstate

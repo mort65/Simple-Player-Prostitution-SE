@@ -1,5 +1,10 @@
 Scriptname zzzmrt_sp_int_ostim Hidden
 
+Actor[] function getActorsOS(Quest OSexIntegrationMainQuest) Global
+	OSexIntegrationMain ostim = OSexIntegrationMainQuest as OSexIntegrationMain
+	return ostim.getActors()
+EndFunction
+
 int function haveSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor partner, Int Position, String[] sExtraTags, Bool[] bRequireAllTags, Bool bAllowAggressive = False, Bool bAllowAll =False) Global
 	if Position < 0
 	  return -1

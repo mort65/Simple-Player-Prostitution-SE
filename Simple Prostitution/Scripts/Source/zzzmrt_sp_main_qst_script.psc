@@ -34,6 +34,7 @@ Bool property bWhoreClothing=False auto Hidden Conditional
 Bool property bWhoreEnabled=True auto Hidden Conditional
 Bool property bWhoreNeedLicense=True auto Hidden Conditional
 Bool Property bIsPapyrusUtilActive=False Auto Hidden Conditional
+Bool Property bIsPO3ExtenderActive=False Auto Hidden Conditional
 Bool Property bDibelAllowAggressive=True Auto Hidden Conditional
 Bool Property bWhoreAllowAggressive=True Auto Hidden Conditional
 Bool Property bTryAllInterfaces=True Auto Hidden Conditional
@@ -41,6 +42,20 @@ ImageSpaceModifier property blackScreen auto
 Formlist property currentAllowedLocations auto
 Spell property customerBeggarSpell auto
 Spell property customerSpell auto
+Float Property fCureNormalDiseaseCost = 100.0 Auto Hidden Conditional
+Float Property fCureSTDICost = 100.0 Auto Hidden Conditional
+Float Property fCureSTDIICost = 150.0 Auto Hidden Conditional
+Float Property fCureSTDIIICost = 200.0 Auto Hidden Conditional
+Float Property fCureSTDIVCost = 300.0 Auto Hidden Conditional
+Float Property fWhoreSTDProgressChance = 25.0 Auto Hidden Conditional
+Float Property fWhoreSTDInfectChance = 5.0 Auto Hidden Conditional
+Bool Property bWhoreAllowMultipleSTDs = false Auto Hidden Conditional
+Float Property fDibelSTDProgressChance = 0.0 Auto Hidden Conditional
+Float Property fDibelSTDInfectChance = 0.0 Auto Hidden Conditional
+Bool Property bDibelAllowMultipleSTDs = false Auto Hidden Conditional
+Float Property fNormalSTDProgressChance = 0.0 Auto Hidden Conditional
+Float Property fNormalSTDInfectChance = 0.0 Auto Hidden Conditional
+Bool Property bNormalAllowMultipleSTDs = false Auto Hidden Conditional
 Float property fBegPayMax=5.0 auto Hidden Conditional
 Float property fBegPayMin=1.0 auto Hidden Conditional
 Float property fDibelAnalPay=15.0 auto Hidden Conditional
@@ -123,20 +138,23 @@ Faction property whoreFaction auto
 Faction Property DibellaMerchant Auto
 Actor Property DibellaMerchantNPC Auto
 
-Bool Property bFindingSnitch = False Auto Hidden Conditional
-Bool Property bSceneRunning = False Auto Hidden Conditional
 Int Property iPosition = -1 Auto Hidden Conditional
+Quest property STD_Quest Auto
+zzzmrt_sp_std_qst_script property STD_Script Auto
+Keyword Property ProstituteClothing_kwd Auto
+
+associationType Property spouse  auto
+Bool bBusy = false
 
 function shutDown()
-  stopSnitchFinder()
   snitchDetector.stop()
+  STD_Script.cureActorSTDs(player)
+  STD_Quest.Stop()
   currentAllowedLocations.Revert()
   player.removeFromFaction(whoreFaction)
   owner.clear()
-  clearWhoreCustomer()
-  clearDibelCustomer()
+  clearCustomer()
   iPosition = -1
-  bSceneRunning = False
   dibelSnitch = None
   whoreSnitch = None
 EndFunction
@@ -148,52 +166,86 @@ Function SetVars()
     player.RemoveFromFaction(whoreFaction)
   endif
   setChance()
+  startCalcSTDCurePrice()
 EndFunction
 
 Event OnInit()
-  registerForSingleUpdate(5.0) 
 EndEvent
 
 event onUpdate()
-  if bSceneRunning
-    if bFindingSnitch
-      stopSnitchFinder()
-    endif
-    bSceneRunning = false
-    return
-  endif
-  While (!FlowerGirlsInterface.bChecked || !SexLabInterface.bChecked || !OStimInterface.bChecked || !LicensesInterface.bChecked)
-    utility.wait(0.2)
-  endWhile
-  Debug.Notification("Simple Prostitution started.")
 EndEvent
 
 Event OnUpdateGameTime()
   ;Debug.trace("Simple Prostitution: OnUpdateGameTime triggered.")
-  if !bFindingSnitch
-    snitch()
-  endif
+  snitch()
 endEvent
 
-event on_spp_sexlab_Sex_End(int tid, bool HasPlayer)
-  if HasPlayer && bSceneRunning
-    ;Debug.trace("Simple Prostitution: on_spp_sexlab_Sex_End triggered.")
-    if bFindingSnitch
-      stopSnitchFinder()
+Function RegisterForEvents()
+  RegisterForModEvent("AnimationEnding", "on_spp_sexlab_Sex_Ending")
+  RegisterForModEvent("HookAnimationEnd", "on_spp_sexlab_Sex_End")
+  RegisterForModEvent("ostim_end", "on_spp_ostim_Sex_End")
+EndFunction
+
+Event on_spp_sexlab_Sex_Ending(string eventName, string argString, float argNum, form sender)
+  ;Debug.trace("Simple Prostitution: on_spp_sexlab_Sex_Ending triggered. state=" + getState())
+  actor[] actorList = SexLabInterface.HookActors(argString)
+  Bool hasplayer = SexLabInterface.HasPlayer(argString)
+  if hasplayer && actorList.Length > 1
+    if actorList.Length == 2 && player.hasAssociation(spouse)
+      int i = 2
+      while i > 0
+        i -= 1
+        if actorList[i] && (actorList[i] != player) && player.HasAssociation(spouse, actorList[i])
+          return
+        endif
+      endWhile
     endif
-    bSceneRunning = false
+    startInfectingPlayer(getState())
   endif
 EndEvent
 
+event on_spp_sexlab_Sex_End(int tid, bool HasPlayer)
+  ;Debug.trace("Simple Prostitution: on_spp_sexlab_Sex_End triggered. state=" + getState())
+EndEvent
+
 Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, form sender)
-  if bSceneRunning
-    ;Debug.trace("Simple Prostitution: on_spp_ostim_Sex_End triggered.")
-    if bFindingSnitch
-      stopSnitchFinder()
+  ;Debug.trace("Simple Prostitution: on_spp_ostim_Sex_End triggered. state=" + getState())
+  actor[] actorList = OStimInterface.getActors()
+  if actorList.Length > 1
+    Bool hasPlayer = False
+    Bool hasSpouse = False
+    int i = actorList.Length
+    while i > 0
+      i -= 1
+      if actorList[i]
+        if actorList[i] == player
+          hasPlayer = true
+        elseif player.HasAssociation(spouse, actorList[i])
+          hasSpouse = true
+        endif
+      endif
+    endWhile
+    if hasPlayer
+      if actorList.Length == 2 && hasSpouse
+        return
+      endif
+      StartInfectingplayer(getState())
     endif
-    bSceneRunning = false
   endif
 endEvent
+
+function startInfectingPlayer(String curState)
+  int handle = ModEvent.Create("SPP_InfectPlayerWithSTD")
+  ModEvent.PushForm(handle, self as Quest)
+  ModEvent.PushString(handle, curState)
+  ModEvent.Send(Handle)
+EndFunction
+
+function startCalcSTDCurePrice()
+  int handle = ModEvent.Create("SPP_CalcSTDCurePrice")
+  ModEvent.PushForm(handle, self as Quest)
+  ModEvent.Send(Handle)
+EndFunction
 
 function AllowProstitution(Actor akOwner)
   if akOwner && akOwner.GetCurrentLocation()
@@ -220,23 +272,33 @@ function ProstitutePlayerTo(Actor akCustomer, bool bAccept=true)
   if akCustomer
     customerSpell.Cast(akCustomer, akCustomer)
     if !bAccept
-      if isSnitchOK(whoreSnitch)
-        stopSnitchFinder()
-      elseif !playerHasWhoreLicense()
-        checkWhoreSnitch(akCustomer)
+      if !isSnitchOK(whoreSnitch) && !playerHasWhoreLicense()
+        checkSnitch(akCustomer, false, false)
       endif
       return
     endif
     currentPartner = akCustomer
-    if isSnitchOK(whoreSnitch)
-      stopSnitchFinder()
-    elseif !playerHasWhoreLicense()
-      startSnitchFinder(false)
-    endif
-    clearWhoreCustomer()
-    haveSex(akCustomer, sGetCurAnimInteface(), bWhoreAllowAggressive, bAllPosAllowed(fWhoreVagChance, fWhoreAnalChance, fWhoreOralChance))
+    GoToState("Whoring")
+  else
+    iPosition = -1
   endif
-  iPosition = -1
+endfunction
+
+function playerPracticeDibelArtWith(Actor akActor, bool bAccept=true)
+  setChance()
+  if akActor
+    customerSpell.Cast(akActor, akActor)
+    if !bAccept
+      if !isSnitchOK(dibelSnitch) && !playerHasDibelLicence()
+        checkSnitch(akActor)
+      endif
+      return
+    endif
+    currentPartner = akActor
+    GoToState("Dibeling")
+  else
+    iPosition = -1
+  endif
 endfunction
 
 Float function getBaseVersion()
@@ -244,7 +306,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-  return getBaseVersion() + 0.11
+  return getBaseVersion() + 0.12
 endfunction
 
 int function haveSex(Actor akActor, String interface, Bool bAllowAggressive = False, Bool bAllowAll = False)
@@ -296,10 +358,6 @@ function startSnitchFinder(Bool bCheckDibel)
   ModEvent.Send(Handle)
 EndFunction
 
-function stopSnitchFinder()
-  bFindingSnitch = False
-EndFunction
-
 Function setWhoreCustomer(Actor akActor, Bool bPay = False)
   customerSpell.Cast(akActor, akActor)
   if bPay
@@ -336,21 +394,19 @@ Function setDibelCustomer(Actor akActor, bool bPay = true )
   endif
 EndFunction
 
-Function clearWhoreCustomer()
-  Actor whoreCustomer = whoreCustomerAlias.getActorReference()
-  if whoreCustomer
+Function clearCustomer()
+  Actor Customer = dibelCustomerAlias.getActorReference()
+  if Customer
+    dibelCustomerAlias.Clear()
+    Customer.EvaluatePackage()
+  endif
+  Customer = whoreCustomerAlias.getActorReference()
+  if Customer
     whoreCustomerAlias.Clear()
-    whoreCustomer.EvaluatePackage()
+    Customer.EvaluatePackage()
   endif
 EndFunction
 
-Function clearDibelCustomer()
-  Actor dibelCustomer = dibelCustomerAlias.getActorReference()
-  if dibelCustomer
-    dibelCustomerAlias.Clear()
-    dibelCustomer.EvaluatePackage()
-  endif
-EndFunction
 
 int Function playerSexSL(Actor akActor, Bool bAllowAggressive= False, Bool bAllowAll = False)
   if !bIsSexlabActive || (iPosition < 0)
@@ -358,7 +414,7 @@ int Function playerSexSL(Actor akActor, Bool bAllowAggressive= False, Bool bAllo
   endif
   int result = SexLabInterface.haveSexWithPlayer(akActor, iPosition, sGetExtraTagsArr("sexlab"), bGetRegAllTagsArr("sexlab"), bAllowAggressive, bAllowAll)
   if result > -1
-     bSceneRunning = true
+     RegisterForModEvent("AnimationEnding", "on_spp_sexlab_Sex_Ending")
      RegisterForModEvent("HookAnimationEnd", "on_spp_sexlab_Sex_End")
   endif
   return result
@@ -370,7 +426,6 @@ int Function playerSexOS(Actor akActor, Bool bAllowAggressive= False, Bool bAllo
   endif
   int result = OStimInterface.haveSexWithPlayer(akActor, iPosition, sGetExtraTagsArr("ostim"), bGetRegAllTagsArr("ostim"), bAllowAggressive, bAllowAll)
   if result > -1
-    bSceneRunning = true
     RegisterForModEvent("ostim_end", "on_spp_ostim_Sex_End")
   endif
   return result
@@ -382,7 +437,6 @@ int Function playerSexFG(Actor akActor)
   endif
   int result = FlowerGirlsInterface.haveSexWithPlayer(akActor, iPosition)
   if result > -1
-    bSceneRunning = true
     registerForSingleUpdate(60.0)
   endif
   return result
@@ -399,6 +453,7 @@ int function haveSexSFW()
   Utility.Wait(5.0)
   BlackScreen.PopTo(FadeIn)
   Game.EnablePlayerControls()
+  registerForSingleUpdate(5.0)
   return iPosition
 endfunction
 
@@ -480,8 +535,7 @@ Function ownerPayWhore(Actor whore)
     UpdateCurrentInstanceGlobal(currentOwnerSeptimDisplay)
   endIf
   Owner.clear()
-  clearWhoreCustomer()
-  clearDibelCustomer()
+  clearCustomer()
   currentAllowedLocations.Revert()
 EndFunction
 
@@ -493,30 +547,6 @@ function playerBegTo(Actor akActor, Bool bPay=True)
     payBeggar(player)
   endif
   setChance()
-endfunction
-
-function playerPracticeDibelArtWith(Actor akActor, bool bAccept=true)
-  setChance()
-  if akActor
-    customerSpell.Cast(akActor, akActor)
-    if !bAccept
-      if isSnitchOK(dibelSnitch)
-        stopSnitchFinder()
-      elseif !playerHasDibelLicence()
-        checkDibelSnitch(akActor)
-      endif
-      return
-    endif
-    clearDibelCustomer()
-    currentPartner = akActor
-    if isSnitchOK(dibelSnitch)
-      stopSnitchFinder()
-    elseif !playerHasDibelLicence()
-      startSnitchFinder(true)
-    endif
-    haveSex(akActor, sGetCurAnimInteface(), bDibelAllowAggressive, bAllPosAllowed(fDibelVagChance,fDibelAnalChance,fDibelOralChance))
-  endif
-  iPosition = -1
 endfunction
 
 String function sGetCurAnimInteface()
@@ -595,6 +625,14 @@ Bool Function bCheckPapyrusUtil()
   return papyrusutil.GetVersion() > 31
 EndFunction
 
+Bool Function bCheckPO3Extender()
+  int[] version = PO3_SKSEFunctions.GetPapyrusExtenderVersion()
+  if version || PO3_SKSEFunctions.GenerateRandomInt(1, 2)
+    return True
+  endif
+  return false
+EndFunction
+
 Bool Function bAllPosAllowed(Float fVagChance, Float fAnalChance, Float fOralChance)
   return ((fVagChance > 0.0) && (fAnalChance > 0.0) && (fOralChance > 0.0))
 EndFunction
@@ -649,60 +687,43 @@ string[] Function sGetExtraTagsArr(String sInterface)
 EndFunction
 
 
-Bool Function checkDibelSnitch(Actor npc, Bool bCompleteCheck = False)
-  if playerHasDibelLicence()
-    dibelSnitch = None
-    stopSnitchFinder()
-    return False
-  endif
-  if !npc || (npc == player) || (dibelSnitch && !dibelSnitch.isDead())
+
+Bool Function checkSnitch(Actor npc, Bool bCompleteCheck = False, Bool bDibel = False)
+  Actor Snitch
+  if bDibel
+    if playerHasDibelLicence()
+      dibelSnitch = None
+      return True
+    endif
+    Snitch = dibelSnitch
+  else
+    if playerHasWhoreLicense()
+      whoreSnitch = None
+      return True
+    endif
+    Snitch = whoreSnitch
+  Endif
+
+  if !npc || (npc == player) || (Snitch && !Snitch.isDead())
     Return False
   endif
+  
   if npc.isGuard()
     if utility.RandomInt(1,100) <=  fGuardReportChance as int
       if bCanSnitch(npc, bCompleteCheck)
-        dibelSnitch = npc
-        Debug.Trace("Simple Prostitution: " + npc.GetBaseObject().GetName() + " (" + npc + ") wants to snitch on player for dibellan arts.")
+        Snitch = npc
+        Debug.Trace("Simple Prostitution: " + npc.GetBaseObject().GetName() + " (" + npc + ") wants to snitch on player.")
         Return True
       endif
     endif
   elseif (utility.RandomInt(1,100) <=  fCitizenReportChance as int)
-  	if bCanSnitch(npc, bCompleteCheck)
-      dibelSnitch = npc
-      Debug.Trace("Simple Prostitution: " + npc.GetBaseObject().GetName() + " (" + npc + ") wants to snitch on player for dibellan arts.")
+    if bCanSnitch(npc, bCompleteCheck)
+      Snitch = npc
+      Debug.Trace("Simple Prostitution: " + npc.GetBaseObject().GetName() + " (" + npc + ") wants to snitch on player.")
       Return True
-  	endif
+    endif
   endif
   Return False
-EndFunction
-
-Bool Function checkWhoreSnitch(Actor npc, Bool bCompleteCheck = False)
-  if playerHasWhoreLicense()
-    whoreSnitch = None
-    stopSnitchFinder()
-    return False
-  endif
-  if !npc || (npc == player) || (whoreSnitch && !whoreSnitch.isDead())
-    Return False
-  endif
-  if npc.isGuard()
-    if utility.RandomInt(1,100) <=  fGuardReportChance as int
-      if bCanSnitch(npc, bCompleteCheck)
-        whoreSnitch = npc
-        Debug.Trace("Simple Prostitution: " + npc.GetBaseObject().GetName() + " (" + npc + ") wants to snitch on player for prostituton.")
-        RegisterForSingleUpdateGameTime(Utility.RandomInt(8,14) As Float)
-        return True
-      endif
-    endif
-  elseif (utility.RandomInt(1,100) <=  fCitizenReportChance as int)
-    if bCanSnitch(npc, bCompleteCheck)
-      whoreSnitch = npc
-      Debug.Trace("Simple Prostitution: " + npc.GetBaseObject().GetName() + " (" + npc + ") wants to snitch on player for prostituton.")
-      RegisterForSingleUpdateGameTime(Utility.RandomInt(8,14) As Float)
-      return True
-    endif
-  endif
-  return False
 EndFunction
 
 Bool function bCanSnitch(Actor npc, Bool bComplete = true)
@@ -824,33 +845,22 @@ endfunction
 
 
 Function findSnitch(Bool bCheckDibel = False)
+  Bool bSnitchFound = false
   SnitchDetector.start()
   If bIsPapyrusUtilActive
     Actor[] actors = MiscUtil.ScanCellNPCs(player, radius = 3000.0, HasKeyword = none, IgnoreDead = true)
     actor npc = None
     int iIndex = 0
-    while bFindingSnitch && (iIndex < actors.Length)
+    while (GetState() != "") && (iIndex < actors.Length) && !bSnitchFound
       npc = actors[iIndex]
-      if bCheckDibel
-        bFindingSnitch = !checkDibelSnitch(npc, true)
-      else
-        bFindingSnitch = !checkWhoreSnitch(npc, true)
-      endif
+      bSnitchFound = checkSnitch(npc, true, bCheckDibel)
       actors[iIndex] && snitchers.addform(actors[iIndex])
-      if bFindingSnitch && snitchRef1.GetActorReference()
-        if bCheckDibel
-          bFindingSnitch = !checkDibelSnitch(snitchRef1.GetActorReference(), false)
-        else
-          bFindingSnitch = !checkWhoreSnitch(snitchRef1.GetActorReference(), false)
-        endif
-      snitchRef1.GetActorReference() && snitchers.addform(snitchRef1.GetActorReference())
+      if !bSnitchFound && snitchRef1.GetActorReference()
+        bSnitchFound = checkSnitch(snitchRef1.GetActorReference(), false, bCheckDibel)
+        snitchRef1.GetActorReference() && snitchers.addform(snitchRef1.GetActorReference())
       endif
-      if bFindingSnitch && snitchRef2.GetActorReference()
-        if bCheckDibel
-          bFindingSnitch = !checkDibelSnitch(snitchRef2.GetActorReference(), false)
-        else
-          bFindingSnitch = !checkWhoreSnitch(snitchRef2.GetActorReference(), false)
-        endif
+      if !bSnitchFound && snitchRef2.GetActorReference()
+        bSnitchFound = checkSnitch(snitchRef2.GetActorReference(), false, bCheckDibel)
         snitchRef2.GetActorReference() && snitchers.addform(snitchRef2.GetActorReference())
       endif
       iIndex += 1
@@ -862,24 +872,138 @@ Function findSnitch(Bool bCheckDibel = False)
     utility.wait(0.2)
   endWhile
   if snitchRef1.GetActorReference()
-    if bFindingSnitch
-      if bCheckDibel
-        bFindingSnitch = !checkDibelSnitch(snitchRef1.GetActorReference(), false)
-      else
-        bFindingSnitch = !checkWhoreSnitch(snitchRef1.GetActorReference(), false)
-      endif
+    if !bSnitchFound
+      bSnitchFound = checkSnitch(snitchRef1.GetActorReference(), false, bCheckDibel)
       snitchRef1.GetActorReference() && snitchers.addform(snitchRef1.GetActorReference())
     endif
   endif
   if snitchRef2.GetActorReference()
-    if bFindingSnitch
-      if bCheckDibel
-        bFindingSnitch = !checkDibelSnitch(snitchRef2.GetActorReference(), false)
-      else
-        bFindingSnitch = !checkWhoreSnitch(snitchRef2.GetActorReference(), false)
-      endif
+    if !bSnitchFound
+      bSnitchFound = checkSnitch(snitchRef2.GetActorReference(), false, bCheckDibel)
       snitchRef2.GetActorReference() && snitchers.addform(snitchRef2.GetActorReference())
     endif
   endif
   snitchDetector.stop()
 endfunction
+
+
+State Dibeling
+  Event OnBeginState()
+    int result = -1
+    clearCustomer()
+    if !isSnitchOK(dibelSnitch) && !playerHasDibelLicence()
+      startSnitchFinder(true)
+    endif
+    result = haveSex(currentPartner, sGetCurAnimInteface(), bDibelAllowAggressive, bAllPosAllowed(fDibelVagChance,fDibelAnalChance,fDibelOralChance))
+    iPosition = -1
+    if result < 0
+      GoToState("")
+    endif
+  EndEvent
+
+  Event on_spp_sexlab_Sex_Ending(string eventName, string argString, float argNum, form sender)
+  EndEvent
+  
+  event on_spp_sexlab_Sex_End(int tid, bool HasPlayer)
+    if HasPlayer
+      startInfectingPlayer(GetState())
+      GoToState("")
+    endif
+  endEvent
+  
+  Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, form sender)
+    startInfectingPlayer(GetState())
+    GoToState("")
+  EndEvent
+  
+  event onUpdate()
+      startInfectingPlayer(GetState())
+      GoToState("")
+  endEvent
+  
+  event OnUpdateGameTime()
+    RegisterForSingleUpdateGameTime(1.0)
+  endEvent
+  
+  function snitch()
+  EndFunction
+
+EndState
+
+State Whoring
+  Event OnBeginState()
+    int result = -1
+    if !isSnitchOK(whoreSnitch) && !playerHasWhoreLicense()
+      startSnitchFinder(false)
+    endif
+    clearCustomer()
+    result = haveSex(currentPartner, sGetCurAnimInteface(), bWhoreAllowAggressive, bAllPosAllowed(fWhoreVagChance, fWhoreAnalChance, fWhoreOralChance))
+    iPosition = -1
+    if result < 0
+      GoToState("")
+    endif
+  EndEvent
+
+  Event on_spp_sexlab_Sex_Ending(string eventName, string argString, float argNum, form sender)
+  EndEvent
+  
+  event on_spp_sexlab_Sex_End(int tid, bool HasPlayer)
+    if HasPlayer
+      startInfectingPlayer(GetState())
+      GoToState("")
+    endif
+  endEvent
+  
+  Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, form sender)
+    startInfectingPlayer(GetState())
+    GoToState("")
+  EndEvent
+  
+  event onUpdate()
+      startInfectingPlayer(GetState())
+      GoToState("")
+  endEvent
+  
+  event OnUpdateGameTime()
+    RegisterForSingleUpdateGameTime(1.0)
+  endEvent
+  
+  function snitch()
+  EndFunction
+
+EndState
+
+Auto State Init
+  Event on_spp_sexlab_Sex_Ending(string eventName, string argString, float argNum, form sender)
+  EndEvent
+  
+  event on_spp_sexlab_Sex_End(int tid, bool HasPlayer)
+  endEvent
+  
+  Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, form sender)
+  EndEvent
+
+  Event onInit()
+    registerForSingleUpdate(5.0) 
+  EndEvent
+
+  event onUpdate()
+    if bBusy
+      return
+    endif
+    bBusy = true
+    GoToState("")
+    bBusy = false
+  endEvent
+  
+  event OnEndState()
+    While (!FlowerGirlsInterface.bChecked || !SexLabInterface.bChecked || !OStimInterface.bChecked || !LicensesInterface.bChecked)
+      Utility.wait(0.2)
+    endWhile
+    Debug.Trace("Simple Prostitution started.")
+    Debug.Notification("Simple Prostitution started.")
+  endevent
+
+  function snitch()
+  EndFunction
+EndState

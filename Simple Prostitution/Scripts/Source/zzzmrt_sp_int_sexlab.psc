@@ -1,5 +1,15 @@
 Scriptname zzzmrt_sp_int_sexlab Hidden
 
+Actor[] Function hookActorsSL(Quest SexLabQuestFramework, String argString) Global
+  SexLabFramework SexLab = SexLabQuestFramework As SexLabFramework
+  return SexLab.ThreadSlots.GetController(argString as int).Positions
+endfunction
+
+Bool Function hasPlayerSL(Quest SexLabQuestFramework, String argString) Global
+  SexLabFramework SexLab = SexLabQuestFramework As SexLabFramework
+  return SexLab.ThreadSlots.GetController(argString as int).HasPlayer
+endfunction
+
 int function haveSexWithPlayerSL(Quest SexLabQuestFramework, Actor Partner, Int Position, String[] sExtraTags, Bool[] bRequireAllTags, Bool bAllowAggressive = False, Bool bAllowAll = False) Global
   if position < 0
 	  return -1

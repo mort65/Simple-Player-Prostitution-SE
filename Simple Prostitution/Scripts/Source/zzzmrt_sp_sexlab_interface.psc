@@ -38,8 +38,25 @@ int function haveSexWithPlayer(Actor Partner, Int Position, String[] sExtraTags,
   return -1
 endfunction
 
+Bool Function hasPlayer(string argStr)
+  return False
+endfunction
+
+Actor[] Function hookActors(string argStr)
+  Actor[] Actors
+  return Actors
+endfunction
+
 state Installed
   int function haveSexWithPlayer(Actor Partner, Int Position, String[] sExtraTags, Bool[] bRequireAllTags, Bool bAllowAggressive = False, Bool bAllowAll = False)
     return zzzmrt_sp_int_sexlab.haveSexWithPlayerSL(SexLabQuestFramework, Partner, Position, sExtraTags, bRequireAllTags, bAllowAggressive, bAllowAll)
+  endfunction
+
+  Actor[] Function hookActors(string argStr)
+    return zzzmrt_sp_int_sexlab.HookActorsSL(SexLabQuestFramework, argStr)
+  endfunction
+
+  Bool Function hasPlayer(string argStr)
+    return zzzmrt_sp_int_sexlab.hasPlayerSL(SexLabQuestFramework, argStr)
   endfunction
 endstate

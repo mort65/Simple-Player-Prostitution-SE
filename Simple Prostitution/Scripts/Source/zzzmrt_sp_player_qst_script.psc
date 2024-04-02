@@ -4,43 +4,45 @@ zzzmrt_sp_main_qst_script property MainScript auto
 
 Bool bBusy = False
 Bool bCheckVars = False
-Bool bInit = False
 
 event OnInit()
-  bInit = True
   bCheckVars = True
-  RegisterForModEvent("SPP_StartFindSnitch", "OnStartFindSnitch")
   RegisterForSingleUpdate(3.0)
 endevent
 
 event OnPlayerLoadGame()
   bCheckVars = True
-  RegisterForModEvent("SPP_StartFindSnitch", "OnStartFindSnitch")
   RegisterForSingleUpdate(3.0)
 endevent
 
+Function RegisterForEvents()
+  RegisterForModEvent("SPP_StartFindSnitch", "OnStartFindSnitch")
+endfunction
+
 event OnUpdate()
+  if !MainScript.STD_Quest.isRunning()
+    MainScript.STD_Quest.Start()
+  endIf
+  RegisterForEvents()
+  MainScript.RegisterForEvents()
+  MainScript.STD_Script.registerForEvents()
+  if !MainScript.DibellaMerchantNPC.IsInFaction(MainScript.DibellaMerchant)
+    MainScript.DibellaMerchantNPC.AddToFaction(MainScript.DibellaMerchant)
+  endif
   if bCheckVars
     setVars()
     bCheckVars = False
   endif
-  if !bInit && !MainScript.bFindingSnitch
-    MainScript.snitch()
-  endif
-  if !MainScript.DibellaMerchantNPC.IsInFaction(MainScript.DibellaMerchant)
-    MainScript.DibellaMerchantNPC.AddToFaction(MainScript.DibellaMerchant)
-  endif
-  if bInit
-    bInit = false
-  endif
+  MainScript.snitch()
 endevent
 
 Event OnCellLoad()
-  MainScript.bFindingSnitch = False
+  MainScript.GoToState("")
 EndEvent
 
 Event OnLocationChange(Location akOldLoc, Location akNewLoc)
-  MainScript.bFindingSnitch = False
+  MainScript.GoToState("")
+  MainScript.startCalcSTDCurePrice()
   if MainScript.whoreSnitch || MainScript.dibelSnitch
     RegisterForSingleUpdate(utility.randomFloat(15.0,60.0)) 
   endif
@@ -49,13 +51,11 @@ endevent
 Event OnStartFindSnitch(Form sender, Bool bCheckDibel)
   ;Debug.Trace("Simple Prostitution: OnStartFindSnitch triggered.")
   MainScript.snitchers.revert()
-  if !MainScript.bFindingSnitch
-    MainScript.bFindingSnitch = True
-    while MainScript.bFindingSnitch
+  if !MainScript.GetState() == ""
+    while MainScript.GetState() != ""
       MainScript.findSnitch(bCheckDibel)
       utility.wait(1.0)
     endWhile
-    MainScript.bFindingSnitch = False
   endif
 EndEvent
 
@@ -81,6 +81,7 @@ function setVars()
   MainScript.FlowerGirlsInterface.PlayerLoadsGame()
   MainScript.LicensesInterface.PlayerLoadsGame()
   MainScript.bIsPapyrusUtilActive = MainScript.bCheckPapyrusUtil()
+  MainScript.bIsPO3ExtenderActive = MainScript.bCheckPO3Extender()
   Utility.Wait(10.0)
   MainScript.bIsSexlabActive = MainScript.SexLabInterface.GetIsInterfaceActive()
   MainScript.bIsOStimActive = MainScript.OStimInterface.GetIsInterfaceActive()
