@@ -52,8 +52,9 @@ Event OnStartFindSnitch(Form sender, Bool bCheckDibel)
   ;Debug.Trace("Simple Prostitution: OnStartFindSnitch triggered.")
   MainScript.snitchers.revert()
   if !MainScript.GetState() == ""
-    while MainScript.GetState() != ""
-      MainScript.findSnitch(bCheckDibel)
+    Bool bFound = False
+    while !bFound && (MainScript.GetState() != "")
+      bFound = MainScript.findSnitch(bCheckDibel)
       utility.wait(1.0)
     endWhile
   endif

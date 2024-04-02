@@ -705,20 +705,28 @@ Bool Function checkSnitch(Actor npc, Bool bCompleteCheck = False, Bool bDibel = 
   Endif
 
   if !npc || (npc == player) || (Snitch && !Snitch.isDead())
-    Return False
+    Return True
   endif
   
   if npc.isGuard()
     if utility.RandomInt(1,100) <=  fGuardReportChance as int
       if bCanSnitch(npc, bCompleteCheck)
-        Snitch = npc
+        if bDibel
+          dibelSnitch = npc
+        else
+          whoreSnitch = npc
+        endif
         Debug.Trace("Simple Prostitution: " + npc.GetBaseObject().GetName() + " (" + npc + ") wants to snitch on player.")
         Return True
       endif
     endif
   elseif (utility.RandomInt(1,100) <=  fCitizenReportChance as int)
     if bCanSnitch(npc, bCompleteCheck)
-      Snitch = npc
+      if bDibel
+        dibelSnitch = npc
+      else
+        whoreSnitch = npc
+      endif
       Debug.Trace("Simple Prostitution: " + npc.GetBaseObject().GetName() + " (" + npc + ") wants to snitch on player.")
       Return True
     endif
@@ -844,7 +852,7 @@ function snitch()
 endfunction
 
 
-Function findSnitch(Bool bCheckDibel = False)
+Bool Function findSnitch(Bool bCheckDibel = False)
   Bool bSnitchFound = false
   SnitchDetector.start()
   If bIsPapyrusUtilActive
@@ -884,6 +892,7 @@ Function findSnitch(Bool bCheckDibel = False)
     endif
   endif
   snitchDetector.stop()
+  return bSnitchFound
 endfunction
 
 
