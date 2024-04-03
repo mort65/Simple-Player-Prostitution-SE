@@ -1,7 +1,9 @@
 # Simple-Player-Prostitution-SE
 
 You can make money in the temple of Dibella or Taverns as a prostitute, after renting a room and asking permission from Innkeepers, 
-or everywhere as a dibellan or a beggar. The payment that you could receive increases based on your Speech skill. 
+or everywhere as a dibellan or a beggar. The payment that you could receive increases based on your Speech skills. 
+ You could contract STDs while working, which are like Vanilla diseases, but only healers (Alchemy shop owners and some other NPCs) could cure them.
+In the first stage of STDs, they could be cured by using potions for minor STDs. 
 
 
 **Requirements:**      
@@ -22,7 +24,9 @@ Or
 [Licenses - Player Oppression](https://www.nexusmods.com/skyrimspecialedition/mods/110418?tab=description):
 If both mods have the license option enabled, the player needs to buy a license from the guards to work. Otherwise, NPCs may report it as a crime.
 
-[FormList Manipulator - FLM](https://www.nexusmods.com/skyrimspecialedition/mods/74037) or [SkyPatcher](https://www.nexusmods.com/skyrimspecialedition/mods/106659) are needed for INI version of [The Naked Dragon](https://www.nexusmods.com/skyrimspecialedition/mods/94940) Patch, plugin version doesn't need anything.
+[SkyPatcher](https://www.nexusmods.com/skyrimspecialedition/mods/106659) is needed for patching other mods like [The Naked Dragon](https://www.nexusmods.com/skyrimspecialedition/mods/94940), editing Level lists,... plugin version doesn't need anything.
+
+[Powerofthree's Papyrus Extender](https://www.nexusmods.com/skyrimspecialedition/mods/22854) for adding keywords to clothing. 
  
 
 **Recommended Mods:**
