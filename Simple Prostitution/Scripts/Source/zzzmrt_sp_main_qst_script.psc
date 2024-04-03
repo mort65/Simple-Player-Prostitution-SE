@@ -116,19 +116,17 @@ Bool Property bExtraTags_OS_Anal_MM_ALL = false auto Hidden Conditional
 Bool Property bExtraTags_OS_Anal_FF_ALL = false auto Hidden Conditional
 Bool Property bExtraTags_OS_Vaginal_MF_ALL = false auto Hidden Conditional
 Bool Property bExtraTags_OS_Vaginal_FF_ALL = false auto Hidden Conditional
-Formlist property snitchers auto 
+
+Formlist property snitchers auto
 Formlist property extraOwners auto 
 Actor Property currentPartner Auto Hidden Conditional
-
 Quest Property SnitchDetector Auto 
 ReferenceAlias property SnitchRef1 auto
 ReferenceAlias property SnitchRef2 auto
-
 Actor Property whoreSnitch Auto Hidden Conditional
 Actor Property dibelSnitch Auto Hidden Conditional
 Float Property fCitizenReportChance = 10.0 Auto Hidden Conditional
 Float Property fGuardReportChance = 90.0 Auto Hidden Conditional
-
 ImageSpaceModifier property fadeIn auto
 ImageSpaceModifier property fadeOut auto
 ImageSpaceModifier property fastFadeOut auto
@@ -137,14 +135,11 @@ Actor property player auto
 Faction property whoreFaction auto
 Faction Property DibellaMerchant Auto
 Actor Property DibellaMerchantNPC Auto
-
 Int Property iPosition = -1 Auto Hidden Conditional
 Quest property STD_Quest Auto
 zzzmrt_sp_std_qst_script property STD_Script Auto
 Keyword Property ProstituteClothing_kwd Auto
-
 associationType Property spouse  auto
-Bool bBusy = false
 
 function shutDown()
   snitchDetector.stop()
@@ -242,7 +237,7 @@ function startInfectingPlayer(String curState)
 EndFunction
 
 function startCalcSTDCurePrice()
-  int handle = ModEvent.Create("SPP_CalcSTDCurePrice")
+  int handle = ModEvent.Create("SPP_CalcPlayerSTDCurePrice")
   ModEvent.PushForm(handle, self as Quest)
   ModEvent.Send(Handle)
 EndFunction
@@ -997,19 +992,14 @@ Auto State Init
   EndEvent
 
   event onUpdate()
-    if bBusy
-      return
-    endif
-    bBusy = true
     GoToState("")
-    bBusy = false
   endEvent
   
   event OnEndState()
     While (!FlowerGirlsInterface.bChecked || !SexLabInterface.bChecked || !OStimInterface.bChecked || !LicensesInterface.bChecked)
       Utility.wait(0.2)
     endWhile
-    Debug.Trace("Simple Prostitution started.")
+    ;Debug.Trace("Simple Prostitution started.")
     Debug.Notification("Simple Prostitution started.")
   endevent
 

@@ -21,33 +21,28 @@ Event OnUpdate()
 	setCureSTDCost(player)
 EndEvent
 
+Event OnInit()
+	registerForSingleUpdate(3.0)
+EndEvent
+
 event OnInfectPlayerWithSTD(Form akSender, String  sMode)
-	if getState() != ""
-		return
-	endif
 	GoToState("Infecting")
 	sexMode = sMode
 	registerForSingleUpdate(5.0)
 endevent
 
-Event OnInit()
-	registerForSingleUpdate(3.0)
-EndEvent
-
-Event OnCalcSTDCurePrice(Form akSender)
-	if GetState() == ""
-		setCureSTDCost(player)
-	endif
+Event OnCalcPlayerSTDCurePrice(Form akSender)
+	setCureSTDCost(player)
 EndEvent
 
 Function registerForEvents()
 	RegisterForModEvent("SPP_InfectPlayerWithSTD", "OnInfectPlayerWithSTD")
-	RegisterForModEvent("SPP_CalcSTDCurePrice", "OnCalcSTDCurePrice")	
+	RegisterForModEvent("SPP_CalcPlayerSTDCurePrice", "OnCalcPlayerSTDCurePrice")	
 EndFunction
 
 Int function actorHasSTD(Actor akActor)
 	if !akActor
-		return 0
+		akActor = player
 	endif
 	int jIndex	
 	Formlist stdList
@@ -68,8 +63,9 @@ Endfunction
 
 Bool function cureActorSTDs(Actor akActor, Bool bPay = true, int maxStage = 0, int maxCures = -1)
 	if !akActor
-		return False
+		akActor = player
 	endif
+	GoToState("Healing")
 	Int[] priceArr = new Int[4]
 	priceArr[0] = MainScript.fCureSTDICost As Int
 	priceArr[1] = MainScript.fCureSTDIICost As Int
@@ -111,12 +107,13 @@ Bool function cureActorSTDs(Actor akActor, Bool bPay = true, int maxStage = 0, i
 		akActor.RemoveItem(Gold001, totalPrice)
 	endif
 	setCureSTDCost(akActor)
+	registerForSingleUpdate(1.0)
 	return bCured
 Endfunction
 
 Int Function setCureSTDCost(Actor akActor)
 	if !akActor
-		return 0
+		akActor = player
 	endif
 	if bBusy
 		return 0
@@ -151,52 +148,12 @@ Int Function setCureSTDCost(Actor akActor)
 	Return totalPrice
 Endfunction
 
-Function infectActor(Actor akActor, Bool bInfect = True, Bool bProgress = True)
-	if bInfect || bProgress
-		nextSTDStages.revert()
-		curSTDStages.revert()
-		possibleNewSTDs.revert()
-		int jIndex
-		int iIndex = (stds.GetAt(0) As FormList).GetSize()
-		Form stdStage
-		Form firstSTDStage
-		while iIndex > 0
-			iIndex -= 1
-			firstSTDStage = (stds.GetAt(0) As FormList).GetAt(iIndex)
-			possibleNewSTDs.addForm(firstSTDStage)
-			jIndex = stds.GetSize()
-			while jIndex > 0
-				jIndex -= 1
-				stdStage = (stds.GetAt(jIndex) As Formlist).getAt(iIndex)
-				if akActor.hasSpell(stdStage As Spell)
-					possibleNewSTDs.removeAddedForm(firstSTDStage)
-					if jIndex < stds.GetSize() - 1 ;not in last stage
-						curSTDStages.addForm(stdStage)
-						nextSTDStages.addForm((stds.GetAt(jIndex + 1) As FormList).GetAt(iIndex))
-					endif
-				endif
-			endWhile
-		endWhile
-		if bProgress && (nextSTDStages.GetSize() > 0)
-			iIndex = utility.randomint(1, nextSTDStages.GetSize()) - 1
-			Spell curSTDStage = curSTDStages.GetAt(iIndex) As Spell
-			Spell nextSTDStage = nextSTDStages.GetAt(iIndex) As Spell
-			akActor.RemoveSpell(curSTDStage)
-			akActor.addSpell(nextSTDStage)
-			Debug.Trace("Simple Prostitution: STD progressed, Infected: " + akActor + ", CurrentStage: " + nextSTDStage.GetName() + ", PreviousStage: " + curSTDStage.GetName())
-		endif
-		if bInfect && (possibleNewSTDs.GetSize() > 0)
-			iIndex = utility.randomint(1, possibleNewSTDs.GetSize()) - 1
-			spell std = possibleNewSTDs.GetAt(iIndex) As Spell
-			akActor.addSpell(std)
-			Debug.Trace("Simple Prostitution: STD transmitted, infected: " + akActor + ", CurrentStage: " + std.GetName())
-		endif
-		setCureSTDCost(akActor)
-	endif
-Endfunction
-
 State Infecting
 	Event OnUpdate()
+		GoToState("")
+	EndEvent
+	
+	Event OnEndState()
 		Bool bInfect
 		Bool bProgress
 		if sexMode == "Dibeling"
@@ -209,9 +166,84 @@ State Infecting
 	        bInfect = (MainScript.bNormalAllowMultipleSTDs || !actorHasSTD(player)) && (MainScript.fNormalSTDInfectChance >= Utility.RandomInt(1,100))
 			bProgress = MainScript.fNormalSTDProgressChance >= Utility.RandomInt(1,100)
 	    endif
-		infectActor(player, bInfect, bProgress)
+	    if bInfect || bProgress
+			nextSTDStages.revert()
+			curSTDStages.revert()
+			possibleNewSTDs.revert()
+			int jIndex
+			int iIndex = (stds.GetAt(0) As FormList).GetSize()
+			Form stdStage
+			Form firstSTDStage
+			while iIndex > 0
+				iIndex -= 1
+				firstSTDStage = (stds.GetAt(0) As FormList).GetAt(iIndex)
+				possibleNewSTDs.addForm(firstSTDStage)
+				jIndex = stds.GetSize()
+				while jIndex > 0
+					jIndex -= 1
+					stdStage = (stds.GetAt(jIndex) As Formlist).getAt(iIndex)
+					if player.hasSpell(stdStage As Spell)
+						possibleNewSTDs.removeAddedForm(firstSTDStage)
+						if jIndex < stds.GetSize() - 1 ;not in last stage
+							curSTDStages.addForm(stdStage)
+							nextSTDStages.addForm((stds.GetAt(jIndex + 1) As FormList).GetAt(iIndex))
+						endif
+					endif
+				endWhile
+			endWhile
+			bProgress = bProgress && (nextSTDStages.GetSize() > 0)
+			bInfect = bInfect && (possibleNewSTDs.GetSize() > 0)
+			if bProgress && bInfect
+				if Utility.randomInt(0,1)
+				  bProgress = false
+				else
+				  bInfect = False
+				endif
+			endif
+			if bProgress
+				iIndex = utility.randomint(0, nextSTDStages.GetSize() - 1)
+				Spell curSTDStage = curSTDStages.GetAt(iIndex) As Spell
+				Spell nextSTDStage = nextSTDStages.GetAt(iIndex) As Spell
+				player.RemoveSpell(curSTDStage)
+				player.addSpell(nextSTDStage)
+				Debug.Trace("Simple Prostitution: STD progressed, Infected: " + player + ", CurrentStage: " + nextSTDStage.GetName() + ", PreviousStage: " + curSTDStage.GetName())
+			endif
+			if bInfect
+				iIndex = utility.randomint(0, possibleNewSTDs.GetSize() - 1)
+				spell std = possibleNewSTDs.GetAt(iIndex) As Spell
+				player.addSpell(std)
+				Debug.Trace("Simple Prostitution: STD transmitted, infected: " + player + ", CurrentStage: " + std.GetName())
+			endif
+			setCureSTDCost(player)
+	    endif		
+	EndEvent
+	
+	Event OnCalcPlayerSTDCurePrice(Form akSender)
+	EndEvent
+
+	event OnInfectPlayerWithSTD(Form akSender, String  sMode)
+	EndEvent
+	
+	Bool function cureActorSTDs(Actor akActor, Bool bPay = true, int maxStage = 0, int maxCures = -1)
+	EndFunction
+
+EndState
+
+
+State Healing
+	Event OnUpdate()
 		GoToState("")
 	EndEvent
+	
+	Event OnCalcPlayerSTDCurePrice(Form akSender)
+	EndEvent
+
+	event OnInfectPlayerWithSTD(Form akSender, String  sMode)
+	EndEvent
+
+	Bool function cureActorSTDs(Actor akActor, Bool bPay = true, int maxStage = 0, int maxCures = -1)
+	EndFunction
+
 EndState
 
 
