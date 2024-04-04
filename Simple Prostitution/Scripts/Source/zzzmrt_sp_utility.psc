@@ -18,7 +18,7 @@ Form[] Function formlistToArr(Formlist flist) Global
 EndFunction
 
 Form[] Function shuffleFormArr(Form[] fArr) Global
-	{Shuffle a formlist array.}
+	{Shuffle a form array.}
 	if !fArr || (fArr.Length < 2)
 		return fArr
 	endif
