@@ -1,5 +1,7 @@
 Scriptname zzzmrt_sp_main_qst_script extends Quest Conditional
 
+import zzzmrt_sp_utility
+
 GlobalVariable property BeggarFailureChance auto
 GlobalVariable property DibelFailureChance auto
 zzzmrt_sp_flowergirls_interface property FlowerGirlsInterface auto
@@ -139,11 +141,12 @@ Int Property iPosition = -1 Auto Hidden Conditional
 Quest property STD_Quest Auto
 zzzmrt_sp_std_qst_script property STD_Script Auto
 Keyword Property ProstituteClothing_kwd Auto
+Keyword Property BeggarClothing_kwd Auto
 associationType Property spouse  auto
 
 function shutDown()
   snitchDetector.stop()
-  STD_Script.cureActorSTDs(player)
+  STD_Script.cureActorSTDs(player, False)
   STD_Quest.Stop()
   currentAllowedLocations.Revert()
   player.removeFromFaction(whoreFaction)
@@ -301,7 +304,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-  return getBaseVersion() + 0.12
+  return getBaseVersion() + 0.13
 endfunction
 
 int function haveSex(Actor akActor, String interface, Bool bAllowAggressive = False, Bool bAllowAll = False)
@@ -450,20 +453,6 @@ int function haveSexSFW()
   Game.EnablePlayerControls()
   registerForSingleUpdate(5.0)
   return iPosition
-endfunction
-
-Int function maxInt(Int var1, Int var2)
-  if var1 > var2
-    return var1
-  endif
-  return var2
-endfunction
-
-Int function minInt(Int var1, Int var2)
-  if var1 < var2
-    return var1
-  endif
-  return var2
 endfunction
 
 function payBeggar(Actor beggar)

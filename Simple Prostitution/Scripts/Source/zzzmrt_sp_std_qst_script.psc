@@ -1,7 +1,10 @@
 Scriptname zzzmrt_sp_std_qst_script extends Quest Conditional
 
+import zzzmrt_sp_utility
+
 zzzmrt_sp_main_qst_script property MainScript auto
-Formlist property stds auto 
+Formlist property stds auto ;stds_ByStage
+Formlist property stds_ByType auto 
 Formlist property stds_I auto 
 Formlist property stds_II auto
 Formlist property stds_III auto
@@ -46,15 +49,15 @@ Int function actorHasSTD(Actor akActor)
 	endif
 	int jIndex	
 	Formlist stdList
-	int iIndex = stds.GetSize()
+	int iIndex = stds_ByType.GetSize()
 	while iIndex > 0
 		iIndex -= 1
-		stdList = stds.GetAt(iIndex) as Formlist
+		stdList = stds_ByType.GetAt(iIndex) as Formlist
 		jIndex = stdList.GetSize()
 		while jIndex > 0
 			jIndex -= 1
 			if akActor.hasSpell(stdList.GetAt(jIndex) As Spell)
-				return (iIndex + 1)
+				return (jIndex + 1)
 			endif
 		endWhile
 	endWhile
@@ -73,24 +76,25 @@ Bool function cureActorSTDs(Actor akActor, Bool bPay = true, int maxStage = 0, i
 	priceArr[3] = MainScript.fCureSTDIVCost As Int
 	Int totalPrice = 0
 	Bool bCured = False
-	int iIndex = maxStage
-	if (iIndex < 1) || (iIndex > stds.GetSize())
-		iIndex = stds.GetSize()
-	endif
-	int jIndex
 	Formlist stdList
 	Spell std
+	Form[] stdArr = shuffleFormArr(formlistToArr(stds_ByType))
+	Int iIndex = stdArr.Length
+	Int jIndex
 	while iIndex > 0
 		iIndex -= 1
-		stdList = stds.GetAt(iIndex) as Formlist
-		jIndex = stdList.GetSize()	
+		stdList = stdArr[iIndex] as Formlist
+		jIndex = maxStage
+		if (jIndex < 1) || (jIndex > stdList.GetSize())
+			jIndex = stdList.GetSize()
+		endif
 		while jIndex > 0
 			jIndex -= 1
 			std = stdList.GetAt(jIndex) As Spell
 			if akActor.hasSpell(std)
 				if (maxCures < 0) || ((maxCures - 1) > -1)
 					akActor.RemoveSpell(std)
-					totalPrice += priceArr[iIndex]
+					totalPrice += priceArr[jIndex]
 					bCured = true
 					maxCures -= 1
 					Debug.trace("Simple Prostitution: " + std.GetName() + " cured.")
@@ -127,15 +131,15 @@ Int Function setCureSTDCost(Actor akActor)
 	Int totalPrice = 0
 	int jIndex
 	Formlist stdList
-	int iIndex = stds.GetSize()
+	int iIndex = stds_ByType.GetSize()
 	while iIndex > 0
 		iIndex -= 1
-		stdList = stds.GetAt(iIndex) as Formlist
+		stdList = stds_ByType.GetAt(iIndex) as Formlist
 		jIndex = stdList.GetSize()	
 		while jIndex > 0
 			jIndex -= 1
 			if akActor.hasSpell(stdList.GetAt(jIndex) As Spell)
-				totalPrice += priceArr[iIndex]
+				totalPrice += priceArr[jIndex]
 			endif
 		endWhile
 	endWhile
@@ -171,22 +175,24 @@ State Infecting
 			curSTDStages.revert()
 			possibleNewSTDs.revert()
 			int jIndex
-			int iIndex = (stds.GetAt(0) As FormList).GetSize()
+			int iIndex = stds_ByType.GetSize()
 			Form stdStage
 			Form firstSTDStage
+			Formlist stdList
 			while iIndex > 0
 				iIndex -= 1
-				firstSTDStage = (stds.GetAt(0) As FormList).GetAt(iIndex)
+				stdList = stds_ByType.GetAt(iIndex) As FormList
+				firstSTDStage = stdList.GetAt(0)
 				possibleNewSTDs.addForm(firstSTDStage)
-				jIndex = stds.GetSize()
+				jIndex = stdList.GetSize()
 				while jIndex > 0
 					jIndex -= 1
-					stdStage = (stds.GetAt(jIndex) As Formlist).getAt(iIndex)
+					stdStage = stdList.getAt(jIndex)
 					if player.hasSpell(stdStage As Spell)
 						possibleNewSTDs.removeAddedForm(firstSTDStage)
-						if jIndex < stds.GetSize() - 1 ;not in last stage
+						if jIndex < stdList.GetSize() - 1 ;not in last stage
 							curSTDStages.addForm(stdStage)
-							nextSTDStages.addForm((stds.GetAt(jIndex + 1) As FormList).GetAt(iIndex))
+							nextSTDStages.addForm(stdList.getAt(jIndex + 1))
 						endif
 					endif
 				endWhile

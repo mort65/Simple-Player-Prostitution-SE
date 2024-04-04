@@ -66,6 +66,11 @@ event OnPageReset(String page)
       else 
         _AddTextOptionST("WHORE_TAG_CHEST_CLOTH_TXT", "$MRT_SP_WHORE_TAG_CHEST_CLOTH_OFF", "", flag) 
       endif
+      If chestArmor.HasKeyword(MainScript.BeggarClothing_kwd)
+        _AddTextOptionST("BEG_TAG_CHEST_CLOTH_TXT", "$MRT_SP_BEG_TAG_CHEST_CLOTH_ON", "", flag) 
+      else 
+        _AddTextOptionST("BEG_TAG_CHEST_CLOTH_TXT", "$MRT_SP_BEG_TAG_CHEST_CLOTH_OFF", "", flag) 
+      endif
     endif
     SetCursorPosition(1)
     flag = OPTION_FLAG_DISABLED
@@ -1893,6 +1898,26 @@ State WHORE_TAG_CHEST_CLOTH_TXT
 
   function OnHighlightST()
     SetInfoText("$MRT_SP_DESC_WHORE_TAG_CHEST_CLOTH_TXT")
+  endFunction
+EndState
+
+State BEG_TAG_CHEST_CLOTH_TXT
+  function OnSelectST()
+    if MainScript.bIsPO3ExtenderActive
+      Armor chestArmor = (MainScript.Player.GetWornForm(0x00000004) As Armor)
+      if chestArmor 
+        if chestArmor.HasKeyword(MainScript.BeggarClothing_kwd)
+          PO3_SKSEFunctions.RemoveKeywordOnForm(chestArmor, MainScript.BeggarClothing_kwd)
+        else
+          PO3_SKSEFunctions.AddKeywordToForm(chestArmor, MainScript.BeggarClothing_kwd)
+        endif
+        ForcePageReset()
+    endif 
+    endif
+  endFunction
+
+  function OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_BEG_TAG_CHEST_CLOTH_TXT")
   endFunction
 EndState
 
