@@ -1,5 +1,7 @@
 Scriptname zzzmrt_sp_mcm_qst_script extends SKI_ConfigBase
 
+import zzzmrt_sp_utility
+
 Quest property MainQuest auto
 zzzmrt_sp_main_qst_script property MainScript auto
 Int property iAnimInterface auto Hidden
@@ -9,6 +11,7 @@ Int Property iBeggarSpeechDifficulty=4 Auto Hidden
 Int Property iAnimInterfaceMethod = 0 Auto Hidden
 
 String settings_path = "..\\simple-prostitution\\user-settings"
+String data_path = "..\\simple-prostitution\\user-data"
 
 Int flag
 
@@ -40,6 +43,7 @@ event OnPageReset(String page)
     SetTitleText("$MRT_SP_PAGE_DEBUG")
     _AddHeaderOption("$MRT_SP_HEAD_DEBUG")
     _AddToggleOptionST("MOD_TOGGLE", "$MRT_SP_MOD_TOGGLE", MainScript.bModEnabled)
+    addEmptyOption()
     if MainScript.bIsPapyrusUtilActive && jsonutil.JsonExists(settings_path)
       flag = OPTION_FLAG_NONE
     else
@@ -52,15 +56,22 @@ event OnPageReset(String page)
       flag = OPTION_FLAG_DISABLED
     endIf
     _AddTextOptionST("SAVE_USER_SETTING_TXT", "$MRT_SP_Save_SETTING", "$go", flag)
-    addEmptyOption()
-    _AddHeaderOption("$MRT_SP_HEAD_DEBUG_CLOTHING")
+    if MainScript.bIsPO3ExtenderActive && Mainscript.bIsPapyrusUtilActive
+      flag = OPTION_FLAG_NONE
+    else
+      flag = OPTION_FLAG_DISABLED
+    endIf
+    _AddTextOptionST("LOAD_USER_DATA_TXT", "$MRT_SP_LOAD_DATA", "$go", flag)
     if MainScript.bIsPO3ExtenderActive
       flag = OPTION_FLAG_NONE
     else
       flag = OPTION_FLAG_DISABLED
     endIf
+    addEmptyOption()
+    _AddHeaderOption("$MRT_SP_HEAD_DEBUG_CLOTHING")
     Armor chestArmor = (MainScript.Player.GetWornForm(0x00000004) As Armor)
-    if chestArmor 
+    if chestArmor
+      _AddTextOptionST("WHORE_TAG_CLOTH_NAME_TXT", shortenString(chestArmor.GetName(), 32), "", OPTION_FLAG_DISABLED) 
       If chestArmor.HasKeyword(MainScript.ProstituteClothing_kwd)
         _AddTextOptionST("WHORE_TAG_CHEST_CLOTH_TXT", "$MRT_SP_WHORE_TAG_CHEST_CLOTH_ON", "", flag) 
       else 
@@ -71,7 +82,59 @@ event OnPageReset(String page)
       else 
         _AddTextOptionST("BEG_TAG_CHEST_CLOTH_TXT", "$MRT_SP_BEG_TAG_CHEST_CLOTH_OFF", "", flag) 
       endif
+    else
+      _addTextOptionST("WHORE_TAG_CHEST_CLOTH_TXT", "$MRT_SP_WHORE_TAG_CHEST_CLOTH_OFF", "", OPTION_FLAG_DISABLED) 
+      _AddTextOptionST("BEG_TAG_CHEST_CLOTH_TXT", "$MRT_SP_BEG_TAG_CHEST_CLOTH_OFF", "", OPTION_FLAG_DISABLED) 
     endif
+    addEmptyOption()
+    _AddHeaderOption("$MRT_SP_HEAD_DEBUG_LOCATION")
+    Cell cel = MainScript.Player.GetParentCell()
+    Location loc = MainScript.Player.GetCurrentLocation()
+    if loc && cel
+      _AddTextOptionST("WHORE_TAG_LOC_NAME_TXT", shortenString(loc.GetName(), 32), "", OPTION_FLAG_DISABLED) 
+      if cel.IsInterior()
+        if loc.HasKeyword(Mainscript.prostituteLocation_KWD)
+          _AddTextOptionST("WHORE_TAG_LOC_TXT", "$MRT_SP_WHORE_TAG_LOC_ON", "", flag) 
+        else
+          _AddTextOptionST("WHORE_TAG_LOC_TXT", "$MRT_SP_WHORE_TAG_LOC_OFF", "", flag) 
+        endif
+      else
+        _AddTextOptionST("WHORE_TAG_LOC_TXT", "$MRT_SP_WHORE_TAG_LOC_ERR", "", OPTION_FLAG_DISABLED) 
+      endif
+    else
+      _AddTextOptionST("WHORE_TAG_LOC_TXT", "$MRT_SP_WHORE_TAG_LOC_OFF", "", OPTION_FLAG_DISABLED) 
+    Endif
+    addEmptyOption()
+    _AddHeaderOption("$MRT_SP_HEAD_DEBUG_NPC")
+    Actor npc = Game.GetCurrentCrosshairRef() As Actor
+    if !npc
+      npc = Game.GetCurrentConsoleRef() As Actor
+    endif
+    if npc && (npc != MainScript.player)
+      _AddTextOptionST("WHORE_TAG_NPC_NAME_TXT", shortenString(npc.GetBaseObject().GetName(), 32), "", OPTION_FLAG_DISABLED) 
+      if Mainscript.bCanPimp(npc)
+        if npc.HasKeyword(Mainscript.prostituteManager_KWD)
+          _AddTextOptionST("WHORE_TAG_OWNER_TXT", "$MRT_SP_WHORE_TAG_OWNER_ON", "", flag) 
+        else
+          _AddTextOptionST("WHORE_TAG_OWNER_TXT", "$MRT_SP_WHORE_TAG_OWNER_OFF", "", flag) 
+        endif
+      else
+        _AddTextOptionST("WHORE_TAG_OWNER_TXT", "$MRT_SP_WHORE_TAG_OWNER_ERR", "", OPTION_FLAG_DISABLED)
+      endif
+      if Mainscript.bCanHeal(npc)
+        if npc.HasKeyword(Mainscript.stdHealer_KWD)
+          _AddTextOptionST("WHORE_TAG_HEALER_TXT", "$MRT_SP_WHORE_TAG_HEALER_ON", "", flag) 
+        else
+          _AddTextOptionST("WHORE_TAG_HEALER_TXT", "$MRT_SP_WHORE_TAG_HEALER_OFF", "", flag) 
+        endif
+      else
+        _AddTextOptionST("WHORE_TAG_HEALER_TXT", "$MRT_SP_WHORE_TAG_HEALER_ERR", "", OPTION_FLAG_DISABLED) 
+      endif
+    else
+      _AddTextOptionST("WHORE_TAG_OWNER_TXT", "$MRT_SP_WHORE_TAG_OWNER_OFF", "", OPTION_FLAG_DISABLED)
+      _AddTextOptionST("WHORE_TAG_HEALER_TXT", "$MRT_SP_WHORE_TAG_HEALER_OFF", "", OPTION_FLAG_DISABLED) 
+    endif
+
     SetCursorPosition(1)
     flag = OPTION_FLAG_DISABLED
     _AddTextOptionST("DEBUG_MOD_VERSION_TXT", "Simple Prostitution v" + MainScript.getCurrentVersion(), "", flag)
@@ -1371,6 +1434,9 @@ state WHORE_OWNER_SHARE_SLIDER
   event OnSliderAcceptST(float value)
     MainScript.fWhoreOwnerShare = value
     _SetSliderOptionValueST(MainScript.fWhoreOwnerShare, "$MRT_SP_WHORE_OWNER_SHARE_SLIDER2")
+    if MainScript.fWhoreOwnerShare > 0.0
+      Mainscript.pimpTracker.start()
+    endif
   endevent
 
   event OnSliderOpenST()
@@ -1888,8 +1954,10 @@ State WHORE_TAG_CHEST_CLOTH_TXT
       if chestArmor 
         if chestArmor.HasKeyword(MainScript.ProstituteClothing_kwd)
           PO3_SKSEFunctions.RemoveKeywordOnForm(chestArmor, MainScript.ProstituteClothing_kwd)
+          deleteData_WhoreClothing_KWD(chestArmor)
         else
           PO3_SKSEFunctions.AddKeywordToForm(chestArmor, MainScript.ProstituteClothing_kwd)
+          saveData_WhoreClothing_KWD(chestArmor)
         endif
         ForcePageReset()
 	  endif	
@@ -1908,16 +1976,92 @@ State BEG_TAG_CHEST_CLOTH_TXT
       if chestArmor 
         if chestArmor.HasKeyword(MainScript.BeggarClothing_kwd)
           PO3_SKSEFunctions.RemoveKeywordOnForm(chestArmor, MainScript.BeggarClothing_kwd)
+          deleteData_BeggarClothing_KWD(chestArmor)
         else
           PO3_SKSEFunctions.AddKeywordToForm(chestArmor, MainScript.BeggarClothing_kwd)
+          saveData_BeggarClothing_KWD(chestArmor)
         endif
         ForcePageReset()
-    endif 
+      endif 
     endif
   endFunction
 
   function OnHighlightST()
     SetInfoText("$MRT_SP_DESC_BEG_TAG_CHEST_CLOTH_TXT")
+  endFunction
+EndState
+
+State WHORE_TAG_LOC_TXT
+  function OnSelectST()
+    if MainScript.bIsPO3ExtenderActive
+      Cell cel = MainScript.Player.GetParentCell()
+      Location loc = MainScript.Player.GetCurrentLocation()
+      if loc && cel && cel.IsInterior()
+        if loc.HasKeyword(Mainscript.prostituteLocation_KWD)
+          PO3_SKSEFunctions.RemoveKeywordOnForm(loc, Mainscript.prostituteLocation_KWD)
+          deleteData_WhoreLocation_KWD(loc)
+        else
+          PO3_SKSEFunctions.AddKeywordToForm(loc, Mainscript.prostituteLocation_KWD)
+          saveData_WhoreLocation_KWD(loc)
+        endif
+        MainScript.checkCurrentLocation()
+        ForcePageReset()
+      endif
+    endif
+  endFunction
+
+  function OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_WHORE_TAG_LOC_TXT")
+  endFunction
+EndState
+
+State WHORE_TAG_OWNER_TXT
+  function OnSelectST()
+    if MainScript.bIsPO3ExtenderActive
+      Actor npc = Game.GetCurrentCrosshairRef() As Actor
+      if !npc
+        npc = Game.GetCurrentConsoleRef() As Actor
+      endif
+      if npc && Mainscript.bCanPimp(npc)
+        if npc.HasKeyword(Mainscript.prostituteManager_KWD)
+          PO3_SKSEFunctions.RemoveKeywordFromRef(npc, Mainscript.prostituteManager_KWD)
+          deleteData_WhoreManager_KWD(npc)
+        else
+          PO3_SKSEFunctions.AddKeywordToRef(npc, Mainscript.prostituteManager_KWD)
+          saveData_WhoreManager_KWD(npc)
+        endif
+        ForcePageReset()
+      endif
+    endif
+  endFunction
+
+  function OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_WHORE_TAG_OWNER_TXT")
+  endFunction
+EndState
+
+State WHORE_TAG_HEALER_TXT
+  function OnSelectST()
+    if MainScript.bIsPO3ExtenderActive
+      Actor npc = Game.GetCurrentCrosshairRef() As Actor
+      if !npc
+        npc = Game.GetCurrentConsoleRef() As Actor
+      endif
+      if npc && Mainscript.bCanHeal(npc)
+        if npc.HasKeyword(Mainscript.stdHealer_KWD)
+          PO3_SKSEFunctions.RemoveKeywordFromRef(npc, Mainscript.stdHealer_KWD)
+          deleteData_STDHealer_KWD(npc)
+        else
+          PO3_SKSEFunctions.AddKeywordToRef(npc, Mainscript.stdHealer_KWD)
+          saveData_STDHealer_KWD(npc)
+        endif
+        ForcePageReset()
+      endif
+    endif
+  endFunction
+
+  function OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_WHORE_TAG_HEALER_TXT")
   endFunction
 EndState
 
@@ -1963,9 +2107,30 @@ state LOAD_USER_SETTING_TXT
   endFunction
 endState
 
-Bool function loadUserSettingsPapyrus()
+state LOAD_USER_DATA_TXT
+  function OnSelectST()
+    if ShowMessage("Do you want to load saved data?", true, "$Accept", "$Cancel")
+      if loadUserDataPapyrus()
+        ForcePageReset()
+        ShowMessage("User data loaded successfully.", false, "$Accept", "$Cancel")
+      else
+        ShowMessage("Failed to load user data.", false, "$Accept", "$Cancel")
+      endIf
+    endIf
+  endFunction
+
+  function OnHighlightST()
+    if jsonutil.JsonExists(settings_path)
+      SetInfoText("$MRT_SP_DESC_LOAD_DATA_ON")
+    else
+      SetInfoText("$MRT_SP_DESC_LOAD_DATA_OFF")
+    endIf
+  endFunction
+endState
+
+Bool function loadUserSettingsPapyrus(Bool bSilence = False)
   if !jsonutil.IsGood(settings_path)
-    ShowMessage("SimpleProstitution: Can't load User Settings. Errors: {" + jsonutil.getErrors(settings_path) + "}", true, "$Accept", "$Cancel")
+    !bSilence && ShowMessage("SimpleProstitution: Can't load User Settings. Errors: {" + jsonutil.getErrors(settings_path) + "}", true, "$Accept", "$Cancel")
     return false
   endIf
   MainScript.bWhoreNeedLicense = jsonutil.GetPathIntValue(settings_path, "bWhoreNeedLicense", MainScript.bWhoreNeedLicense as Int)
@@ -2172,30 +2337,17 @@ function loadSettingsAtStart()
   MainScript.bIsPapyrusUtilActive = MainScript.bCheckPapyrusUtil()
   if MainScript.bIsPapyrusUtilActive
     if jsonutil.JsonExists(settings_path)
-      loadUserSettingsPapyrus()
-      return 
+      loadUserSettingsPapyrus(true)
     endIf
+    Mainscript.bIsPO3ExtenderActive = Mainscript.bCheckPO3Extender()
+    if Mainscript.bIsPO3ExtenderActive
+      if jsonutil.JsonExists(data_path)
+        loadUserDataPapyrus(true)
+      endif
+    endif
+    return 
   endIf
 endFunction
-
-String function shortenString(String sString, Int iLimit) Global
-  Int iLen = StringUtil.GetLength(sString)
-  if iLimit < 4
-    if iLimit < 1
-      return sString
-    endif
-    if iLen > iLimit
-      return StringUtil.Substring(sString, 0, iLimit)
-    endif
-    return sString
-  elseif iLen < 4
-    return sString
-  endif
-  if iLen > iLimit
-    return StringUtil.Substring(sString, 0, len=iLimit - 3) + "..."
-  endif
-  return sString
-endfunction
 
 function _AddHeaderOption(string a_text, int a_flags=0)
   AddHeaderOption(a_text, a_flags)
@@ -2267,3 +2419,133 @@ string Function getInputTags(string sTags, Bool bReqAll, int iMaxLen = 10)
   endif
   return ""
 endFunction
+
+
+Function saveData_WhoreLocation_KWD(Location akLoc)
+  if Mainscript.bIsPapyrusUtilActive
+    JsonUtil.FormListAdd(data_path, "ProstituteLocation_KWD", akLoc, False)
+    JsonUtil.Save(data_path)
+  endif
+EndFunction
+
+Function saveData_WhoreClothing_KWD(Armor akArmor)
+  if Mainscript.bIsPapyrusUtilActive
+    JsonUtil.FormListAdd(data_path, "ProstituteClothing_KWD", akArmor, False)
+    JsonUtil.Save(data_path)
+  endif
+EndFunction
+
+Function saveData_BeggarClothing_KWD(Armor akArmor)
+  if Mainscript.bIsPapyrusUtilActive
+    JsonUtil.FormListAdd(data_path, "BeggarClothing_KWD", akArmor, False)
+    JsonUtil.Save(data_path)
+  endif
+EndFunction
+
+Function saveData_WhoreManager_KWD(Actor akActor)
+  if Mainscript.bIsPapyrusUtilActive
+    JsonUtil.FormListAdd(data_path, "ProstituteManager_KWD", akActor, False)
+    JsonUtil.Save(data_path)
+  endif
+EndFunction
+
+Function saveData_STDHealer_KWD(Actor akActor)
+  if Mainscript.bIsPapyrusUtilActive
+    JsonUtil.FormListAdd(data_path, "STDHealer_KWD", akActor, False)
+    JsonUtil.Save(data_path)
+  endif
+EndFunction
+
+Function deleteData_WhoreLocation_KWD(Location akLoc)
+  if Mainscript.bIsPapyrusUtilActive
+    JsonUtil.FormListRemove(data_path, "ProstituteLocation_KWD", akLoc, True)
+    JsonUtil.Save(data_path)
+  endif
+EndFunction
+
+Function deleteData_WhoreClothing_KWD(Armor akArmor)
+  if Mainscript.bIsPapyrusUtilActive
+    JsonUtil.FormListRemove(data_path, "ProstituteClothing_KWD", akArmor, True)
+    JsonUtil.Save(data_path)
+  endif
+EndFunction
+
+Function deleteData_BeggarClothing_KWD(Armor akArmor)
+  if Mainscript.bIsPapyrusUtilActive
+    JsonUtil.FormListRemove(data_path, "BeggarClothing_KWD", akArmor, True)
+    JsonUtil.Save(data_path)
+  endif
+EndFunction
+
+Function deleteData_WhoreManager_KWD(Actor akActor)
+  if Mainscript.bIsPapyrusUtilActive
+    JsonUtil.FormListRemove(data_path, "ProstituteManager_KWD", akActor, True)
+    JsonUtil.Save(data_path)
+  endif
+EndFunction
+
+Function deleteData_STDHealer_KWD(Actor akActor)
+  if Mainscript.bIsPapyrusUtilActive
+    JsonUtil.FormListRemove(data_path, "STDHealer_KWD", akActor, True)
+    JsonUtil.Save(data_path)
+  endif
+EndFunction
+
+
+Bool Function loadUserDataPapyrus(Bool bSilence = False)
+  if !Mainscript.bIsPapyrusUtilActive || !Mainscript.bIsPO3ExtenderActive
+    return False
+  endif
+  if !jsonutil.JsonExists(data_path)
+    return False
+  endif
+  if !jsonutil.IsGood(data_path)
+    !bSilence && ShowMessage("SimpleProstitution: Can't load data. Errors: {" + jsonutil.getErrors(data_path) + "}", true, "$Accept", "$Cancel")
+    return false
+  endif
+  Form[] arr
+  int iIndex
+  arr = JsonUtil.FormListToArray(data_path, "ProstituteLocation_KWD")
+  iIndex = arr.Length
+  While iIndex > 0
+    iIndex -= 1
+    if arr[iIndex] as Location   
+      PO3_SKSEFunctions.AddKeywordToForm(arr[iIndex], Mainscript.prostituteLocation_KWD)
+    endif
+  endWhile
+  arr = JsonUtil.FormListToArray(data_path, "ProstituteClothing_KWD")
+  iIndex = arr.Length
+  While iIndex > 0
+    iIndex -= 1
+    if arr[iIndex] as Armor   
+      PO3_SKSEFunctions.AddKeywordToForm(arr[iIndex], MainScript.ProstituteClothing_kwd)
+    endif
+  endWhile
+  arr = JsonUtil.FormListToArray(data_path, "BeggarClothing_KWD")
+  iIndex = arr.Length
+  While iIndex > 0
+    iIndex -= 1
+    if arr[iIndex] as Armor   
+      PO3_SKSEFunctions.AddKeywordToForm(arr[iIndex], MainScript.BeggarClothing_kwd)
+    endif
+  endWhile
+  arr = JsonUtil.FormListToArray(data_path, "ProstituteManager_KWD")
+  iIndex = arr.Length
+  While iIndex > 0
+    iIndex -= 1
+    if arr[iIndex] as Actor   
+      PO3_SKSEFunctions.AddKeywordToRef(arr[iIndex] as Actor, MainScript.prostituteManager_KWD)
+    endif
+  endWhile
+  arr = JsonUtil.FormListToArray(data_path, "STDHealer_KWD")
+  iIndex = arr.Length
+  While iIndex > 0
+    iIndex -= 1
+    if arr[iIndex] as Actor   
+      PO3_SKSEFunctions.AddKeywordToRef(arr[iIndex] as Actor, MainScript.stdHealer_KWD)
+    endif
+  endWhile
+  return true
+endFunction
+
+

@@ -20,15 +20,6 @@ Function RegisterForEvents()
 endfunction
 
 event OnUpdate()
-  if !MainScript.STD_Quest.isRunning()
-    MainScript.STD_Quest.Start()
-  endIf
-  RegisterForEvents()
-  MainScript.RegisterForEvents()
-  MainScript.STD_Script.registerForEvents()
-  if !MainScript.DibellaMerchantNPC.IsInFaction(MainScript.DibellaMerchant)
-    MainScript.DibellaMerchantNPC.AddToFaction(MainScript.DibellaMerchant)
-  endif
   if bCheckVars
     setVars()
     bCheckVars = False
@@ -41,6 +32,7 @@ Event OnCellLoad()
 EndEvent
 
 Event OnLocationChange(Location akOldLoc, Location akNewLoc)
+  MainScript.checkCurrentLocation()
   MainScript.GoToState("")
   MainScript.startCalcSTDCurePrice()
   if MainScript.whoreSnitch || MainScript.dibelSnitch
@@ -65,6 +57,25 @@ function setVars()
     return
   endif
   bBusy = True
+  if !MainScript.STD_Quest.isRunning()
+    MainScript.STD_Quest.Start()
+  endIf
+  MainScript.checkCurrentLocation()
+  RegisterForEvents()
+  MainScript.RegisterForEvents()
+  MainScript.STD_Script.registerForEvents()
+  if !MainScript.DibellaMerchantNPC.IsInFaction(MainScript.DibellaMerchant)
+    MainScript.DibellaMerchantNPC.AddToFaction(MainScript.DibellaMerchant)
+  endif
+  if MainScript.bWhoreEnabled
+      if !MainScript.player.IsInFaction(MainScript.whoreFaction)
+        MainScript.player.AddToFaction(MainScript.whoreFaction)
+      endif
+  else
+      if MainScript.player.IsInFaction(MainScript.whoreFaction)
+        MainScript.player.removeFromFaction(MainScript.whoreFaction)
+      endif
+  endif
   if !MainScript.SexLabInterface
     MainScript.SexLabInterface = MainScript.SexLabInterfaceQst as zzzmrt_sp_sexlab_interface 
   endif

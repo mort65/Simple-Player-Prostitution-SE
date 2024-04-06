@@ -42,6 +42,7 @@ Bool Property bWhoreAllowAggressive=True Auto Hidden Conditional
 Bool Property bTryAllInterfaces=True Auto Hidden Conditional
 ImageSpaceModifier property blackScreen auto
 Formlist property currentAllowedLocations auto
+Formlist property alwaysAllowedLocations auto
 Spell property customerBeggarSpell auto
 Spell property customerSpell auto
 Float Property fCureNormalDiseaseCost = 100.0 Auto Hidden Conditional
@@ -129,6 +130,8 @@ Actor Property whoreSnitch Auto Hidden Conditional
 Actor Property dibelSnitch Auto Hidden Conditional
 Float Property fCitizenReportChance = 10.0 Auto Hidden Conditional
 Float Property fGuardReportChance = 90.0 Auto Hidden Conditional
+Bool Property isWhoringAllowedInCurrentLocation = False Auto Hidden Conditional
+Bool Property isWhoringAlwaysAllowedInCurrentLocation = False Auto Hidden Conditional
 ImageSpaceModifier property fadeIn auto
 ImageSpaceModifier property fadeOut auto
 ImageSpaceModifier property fastFadeOut auto
@@ -141,13 +144,20 @@ Int Property iPosition = -1 Auto Hidden Conditional
 Quest property STD_Quest Auto
 zzzmrt_sp_std_qst_script property STD_Script Auto
 Keyword Property ProstituteClothing_kwd Auto
+Keyword Property prostituteManager_KWD Auto
+Keyword Property prostituteLocation_KWD Auto
+Keyword Property stdHealer_KWD Auto
 Keyword Property BeggarClothing_kwd Auto
 associationType Property spouse  auto
+Quest Property pimpTracker Auto
 
 function shutDown()
   snitchDetector.stop()
   STD_Script.cureActorSTDs(player, False)
   STD_Quest.Stop()
+  if pimpTracker.isRunning()
+    pimpTracker.setstage(10)
+  endif
   currentAllowedLocations.Revert()
   player.removeFromFaction(whoreFaction)
   owner.clear()
@@ -164,6 +174,9 @@ Function SetVars()
     player.RemoveFromFaction(whoreFaction)
   endif
   setChance()
+  if fWhoreOwnerShare > 0.0
+    pimpTracker.start()
+  endif
   startCalcSTDCurePrice()
 EndFunction
 
@@ -249,6 +262,7 @@ function AllowProstitution(Actor akOwner)
   if akOwner && akOwner.GetCurrentLocation()
     currentAllowedLocations.Revert()
     currentAllowedLocations.AddForm(akOwner.GetCurrentLocation() As Form)
+    isWhoringAllowedInCurrentLocation = True
     if !player.IsInFaction(whoreFaction)
       player.AddToFaction(whoreFaction)
     endif
@@ -260,6 +274,15 @@ function AllowProstitution(Actor akOwner)
     Owner.ForceRefTo(akOwner)
     setChance()
     SetStage(10)
+    if pimpTracker.isrunning()
+      pimpTracker.setstage(10)
+      while pimpTracker.isRunning()
+        utility.wait(0.2)
+      endwhile
+    endif
+    if fWhoreOwnerShare > 0.0
+      pimpTracker.start()
+    endif
     Debug.Trace("Simple Prostitution: Work allowed in " + currentAllowedLocations.GetAt(0) + " that's owned by " + akOwner)
     Debug.Notification("Prostitution enabled for current location.")
   endif
@@ -304,7 +327,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-  return getBaseVersion() + 0.13
+  return getBaseVersion() + 0.14
 endfunction
 
 int function haveSex(Actor akActor, String interface, Bool bAllowAggressive = False, Bool bAllowAll = False)
@@ -501,7 +524,8 @@ function payWhore(actor whore, int position)
     iCurrentOwnerSeptims = iCurrentOwnerSeptims + totalPay
     currentOwnerSeptimDisplay.SetValueInt(iCurrentOwnerSeptims)
     UpdateCurrentInstanceGlobal(currentOwnerSeptimDisplay)
-    Debug.Notification(totalPay + " septim added to the Inn owner: " + Owner.getActorReference().getLeveledActorBase().getName())
+    pimpTracker.UpdateCurrentInstanceGlobal(currentOwnerSeptimDisplay)
+    Debug.Notification(totalPay + " septim added to " + Owner.getActorReference().getLeveledActorBase().getName())
   else
     whore.Additem(gold, maxInt(0, totalPay))
   endif
@@ -518,6 +542,9 @@ Function ownerPayWhore(Actor whore)
     currentOwnerSeptimDisplay.SetValueInt(0)
     UpdateCurrentInstanceGlobal(currentOwnerSeptimDisplay)
   endIf
+  if pimpTracker.isrunning()
+    pimpTracker.setstage(15)
+  endif
   Owner.clear()
   clearCustomer()
   currentAllowedLocations.Revert()
@@ -995,3 +1022,78 @@ Auto State Init
   function snitch()
   EndFunction
 EndState
+
+
+Bool Function isWhoringAllowedInLocation(Location loc)
+  if !loc
+    return False
+  endif
+  if currentAllowedLocations.hasform(loc)
+    return True
+  endif
+  if isWhoringAlwaysAllowedInLocation(loc)
+    return True
+  endif
+  return false
+EndFunction
+
+Bool Function isWhoringAlwaysAllowedInLocation(Location loc)
+  if !loc
+    return False
+  endif
+  if alwaysAllowedLocations.hasform(loc)
+    return True
+  endif
+  if loc.HasKeyword(prostituteLocation_KWD)
+    return true
+  endif
+  return false
+EndFunction
+
+Function checkCurrentLocation()
+  location loc = player.GetCurrentLocation()
+  isWhoringAlwaysAllowedInCurrentLocation = isWhoringAlwaysAllowedInLocation(loc)
+  isWhoringAllowedInCurrentLocation = isWhoringAllowedInLocation(loc)
+EndFunction
+
+
+Bool Function bCanPimp(Actor npc)
+  if !npc
+    return False
+  endif
+  if npc.ischild()
+    return False
+  endif
+  if npc.isDead()
+    return False
+  endif
+  if !npc.HasKeywordstring("actortypenpc")
+    return False
+  endif
+  if npc == player
+    return false
+  endif
+  if npc.HasFamilyRelationship(player)
+    return False
+  endif
+  return true
+EndFunction
+
+Bool Function bCanHeal(Actor npc)
+  if !npc
+    return False
+  endif
+  if npc.ischild()
+    return False
+  endif
+  if npc.isDead()
+    return False
+  endif
+  if !npc.HasKeywordstring("actortypenpc")
+    return False
+  endif
+  if npc == player
+    return false
+  endif
+  return true
+EndFunction
