@@ -119,6 +119,18 @@ Bool Property bExtraTags_OS_Anal_MM_ALL = false auto Hidden Conditional
 Bool Property bExtraTags_OS_Anal_FF_ALL = false auto Hidden Conditional
 Bool Property bExtraTags_OS_Vaginal_MF_ALL = false auto Hidden Conditional
 Bool Property bExtraTags_OS_Vaginal_FF_ALL = false auto Hidden Conditional
+Int Property iTotalRaces = 11 Auto Hidden Conditional
+Int[] property iWhoreOralStatArr Auto Hidden Conditional
+Int[] property iWhoreAnalStatArr Auto Hidden Conditional
+Int[] property iWhoreVaginalStatArr Auto Hidden Conditional
+Int[] property iDibelOralStatArr Auto Hidden Conditional
+Int[] property iDibelAnalStatArr Auto Hidden Conditional
+Int[] property iDibelVaginalStatArr Auto Hidden Conditional
+Int[] property iTotalWhoreStats Auto Hidden Conditional
+Int[] property iTotalDibelStats Auto Hidden Conditional
+
+Formlist Property raceList Auto
+Formlist Property vampireRacelist Auto
 
 Formlist property snitchers auto
 Formlist property extraOwners auto 
@@ -327,7 +339,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-  return getBaseVersion() + 0.14
+  return getBaseVersion() + 0.15
 endfunction
 
 int function haveSex(Actor akActor, String interface, Bool bAllowAggressive = False, Bool bAllowAll = False)
@@ -915,6 +927,7 @@ State Dibeling
       startSnitchFinder(true)
     endif
     result = haveSex(currentPartner, sGetCurAnimInteface(), bDibelAllowAggressive, bAllPosAllowed(fDibelVagChance,fDibelAnalChance,fDibelOralChance))
+    updateHistory(currentPartner, result, True)
     iPosition = -1
     if result < 0
       GoToState("")
@@ -958,6 +971,7 @@ State Whoring
     endif
     clearCustomer()
     result = haveSex(currentPartner, sGetCurAnimInteface(), bWhoreAllowAggressive, bAllPosAllowed(fWhoreVagChance, fWhoreAnalChance, fWhoreOralChance))
+    updateHistory(currentPartner, result, False)
     iPosition = -1
     if result < 0
       GoToState("")
@@ -1096,4 +1110,95 @@ Bool Function bCanHeal(Actor npc)
     return false
   endif
   return true
+EndFunction
+
+
+Function updateHistory(Actor partner, int iPos, Bool bDibel = False)
+  if !Partner || !Partner.getRace() || (iPos < 0) || (iPos > 2)
+    return
+  endif
+  ;Races: ArgonianRace, BretonRace, DarkElfRace, HighElfRace, ImperialRace, KhajiitRace, NordRace, OrcRace, RedguardRace, WoodElfRace
+  ;Position: Vaginal, Anal, Oral
+  initStatArrs()
+  Race partnerRace = Partner.getRace()
+  if !partnerRace
+    return
+  endif
+  Int raceIndex = iTotalRaces - 1 ;last race is other races
+  int iIndex = raceIndex
+  while (iIndex > 0) && (raceIndex == (iTotalRaces - 1))
+    iIndex -= 1
+    if (partnerRace == raceList.GetAt(iIndex) as Race) || (partnerRace == vampireRacelist.GetAt(iIndex) as Race)
+      raceIndex = iIndex
+    endif
+  endWhile
+  if (raceIndex > -1) && (raceIndex < iTotalRaces)
+    if iPos == 2
+      if bDibel
+        iDibelOralStatArr[raceIndex] = iDibelOralStatArr[raceIndex] + 1
+      else
+        iWhoreOralStatArr[raceIndex] = iWhoreOralStatArr[raceIndex] + 1
+      endif
+    elseif iPos == 1
+      if bDibel
+        iDibelAnalStatArr[raceIndex] = iDibelAnalStatArr[raceIndex] + 1
+      else
+        iWhoreAnalStatArr[raceIndex] = iWhoreAnalStatArr[raceIndex] + 1
+      endif
+    elseif iPos == 0
+      if bDibel
+        iDibelVaginalStatArr[raceIndex] = iDibelVaginalStatArr[raceIndex] + 1
+      else
+        iWhoreVaginalStatArr[raceIndex] = iWhoreVaginalStatArr[raceIndex] + 1
+      endif
+    endif
+    if bDibel
+      iTotalDibelStats[iPos] = iTotalDibelStats[iPos] + 1
+    else
+      iTotalWhoreStats[iPos] = iTotalWhoreStats[iPos] + 1
+    endif
+  endif 
+EndFunction
+
+Function initStatArrs()
+  iWhoreOralStatArr = initIntArray(iWhoreOralStatArr, iTotalRaces)
+  iWhoreAnalStatArr = initIntArray(iWhoreAnalStatArr, iTotalRaces)
+  iWhoreVaginalStatArr = initIntArray(iWhoreVaginalStatArr, iTotalRaces)
+  iDibelOralStatArr = initIntArray(iDibelOralStatArr, iTotalRaces)
+  iDibelAnalStatArr = initIntArray(iDibelAnalStatArr, iTotalRaces)
+  iDibelVaginalStatArr = initIntArray(iDibelVaginalStatArr, iTotalRaces)
+  iTotalWhoreStats = initIntArray(iTotalWhoreStats, 3)
+  iTotalDibelStats = initIntArray(iTotalDibelStats, 3)
+EndFunction
+
+Bool Function bCanReceiveReward(Int iPos, Bool bDibel = False)
+  Int[] arr
+  if bDibel
+    if iPos == 2
+      arr = iDibelOralStatArr
+    elseif iPos == 1
+      arr = iDibelAnalStatArr
+    elseif iPos == 0
+      arr = iDibelVaginalStatArr
+    endif
+  else
+    if iPos == 2
+      arr = iWhoreOralStatArr
+    elseif iPos == 1
+      arr = iWhoreAnalStatArr
+    elseif iPos == 0
+      arr = iWhoreVaginalStatArr
+    endif
+  endif
+  if arr 
+    Int raceIndex = iTotalRaces - 1 ;last race is other races
+    while raceIndex > 0
+      raceIndex -= 1
+      if arr[raceIndex] < 1
+        return False
+      endif
+    endWhile
+    return True
+  endif
+  return False
 EndFunction

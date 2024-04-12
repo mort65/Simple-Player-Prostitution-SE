@@ -71,3 +71,18 @@ String function shortenString(String sString, Int iLimit) Global
   endif
   return sString
 endfunction
+
+Int[] Function initIntArray(Int[] arr, Int len, Int def = 0) Global
+	{Initialize an integer array with Len as its size, while preserving its values.}
+  if (len < 0) || (arr.Length == len)
+    return arr
+  endif
+  Int iIndex
+  Int[] newArr = createIntArray(len, def)
+  iIndex = minInt(arr.Length, newArr.Length)
+  While iIndex > 0
+    iIndex -= 1
+    newArr[iIndex] = arr[iIndex]
+  endWhile
+  return newArr
+EndFunction

@@ -9,6 +9,16 @@ Int Property iWhoreSpeechDifficulty=3 Auto Hidden
 Int Property iDibelSpeechDifficulty=2 Auto Hidden
 Int Property iBeggarSpeechDifficulty=4 Auto Hidden
 Int Property iAnimInterfaceMethod = 0 Auto Hidden
+Int Property iWhoreStatRace = 0 Auto Hidden
+Int Property iDibelStatRace = 0 Auto Hidden
+
+Bool Property bDibelOralPerkRewardReceived = False Auto Hidden
+Bool Property bDibelAnalPerkRewardReceived = False Auto Hidden
+Bool Property bDibelVaginalPerkRewardReceived = False Auto Hidden
+
+Bool Property bWhoreOralPerkRewardReceived = False Auto Hidden
+Bool Property bWhoreAnalPerkRewardReceived = False Auto Hidden
+Bool Property bWhoreVaginalPerkRewardReceived = False Auto Hidden
 
 String settings_path = "..\\simple-prostitution\\user-settings"
 String data_path = "..\\simple-prostitution\\user-data"
@@ -23,12 +33,13 @@ event OnConfigInit()
 endevent
 
 function initPages()
-  Pages = new String[5]
+  Pages = new String[6]
   pages[0] = "$MRT_SP_PAGE_PROSTITUTION"
   pages[1] = "$MRT_SP_PAGE_BEGGING"
   pages[2] = "$MRT_SP_PAGE_STD"
   pages[3] = "$MRT_SP_PAGE_INTEGRATION"
-  pages[4] = "$MRT_SP_PAGE_DEBUG"
+  pages[4] = "$MRT_SP_PAGE_STATS"
+  pages[5] = "$MRT_SP_PAGE_DEBUG"
 endfunction
 
 event OnGameReload()
@@ -145,6 +156,43 @@ event OnPageReset(String page)
     _AddTextOptionST("DEBUG_FLOWERGIRLS_CHECK_TXT", "$flowergirls", MainScript.bIsFlowerGirlsActive As String, flag)
     _AddTextOptionST("DEBUG_OSTIM_CHECK_TXT", "$ostim_sa", MainScript.bIsOstimActive As String, flag)
     _AddTextOptionST("DEBUG_LICENSES_CHECK_TXT", "$licenses", MainScript.bIsLicensesActive As String, flag)
+  elseif (page == "$MRT_SP_PAGE_STATS")
+    Mainscript.initStatArrs()
+    if MainScript.bModEnabled
+      flag = OPTION_FLAG_NONE
+    else
+      flag = OPTION_FLAG_DISABLED
+    endif
+    SetTitleText("$MRT_SP_PAGE_STATS")
+    _AddHeaderOption("$MRT_SP_HEAD_WHORE_TOTAL_STATS")
+    _AddTextOptionST("STAT_WHORE_ORAL_TXT", "$MRT_SP_STAT_ORAL", Mainscript.iTotalWhoreStats[2], flag)
+    _AddTextOptionST("STAT_WHORE_ANAL_TXT", "$MRT_SP_STAT_ANAL",  Mainscript.iTotalWhoreStats[1], flag)
+    _AddTextOptionST("STAT_WHORE_VAGINAL_TXT", "$MRT_SP_STAT_VAGINAL",  Mainscript.iTotalWhoreStats[0], flag)
+    addEmptyOption()
+    _AddHeaderOption("$MRT_SP_HEAD_WHORE_RACE_STATS")
+    AddMenuOptionST("STAT_WHORE_RACE_MENU", "$MRT_SP_WHORE_RACE_STAT_MENU", sGetRaceNameArr()[iWhoreStatRace], flag)
+    _AddTextOptionST("STAT_WHORE_RACE_ORAL_TXT", "$MRT_SP_STAT_ORAL", Mainscript.iWhoreOralStatArr[iWhoreStatRace], flag)
+    _AddTextOptionST("STAT_WHORE_RACE_ANAL_TXT", "$MRT_SP_STAT_ANAL", Mainscript.iWhoreAnalStatArr[iWhoreStatRace], flag)
+    _AddTextOptionST("STAT_WHORE_RACE_VAGINAL_TXT", "$MRT_SP_STAT_VAGINAL", Mainscript.iWhoreVaginalStatArr[iWhoreStatRace], flag)
+    addEmptyOption()
+    _AddTextOptionST("STAT_WHORE_ORAL_PERK_REWARD_TXT", "$MRT_SP_PERK_REWARD_ORAL", sGetStatRewardText(2, False), flag)
+    _AddTextOptionST("STAT_WHORE_ANAL_PERK_REWARD_TXT", "$MRT_SP_PERK_REWARD_ANAL", sGetStatRewardText(1, False), flag)
+    _AddTextOptionST("STAT_WHORE_VAGINAL_PERK_REWARD_TXT", "$MRT_SP_PERK_REWARD_VAGINAL", sGetStatRewardText(0, False), flag)
+    SetCursorPosition(1)
+    _AddHeaderOption("$MRT_SP_HEAD_DIBEL_TOTAL_STATS")
+    _AddTextOptionST("STAT_DIBEL_ORAL_TXT", "$MRT_SP_STAT_ORAL", Mainscript.iTotalDibelStats[2], flag)
+    _AddTextOptionST("STAT_DIBEL_ANAL_TXT", "$MRT_SP_STAT_ANAL", Mainscript.iTotalDibelStats[1], flag)
+    _AddTextOptionST("STAT_DIBEL_VAGINAL_TXT", "$MRT_SP_STAT_VAGINAL", Mainscript.iTotalDibelStats[0], flag)
+    addEmptyOption()
+    _AddHeaderOption("$MRT_SP_HEAD_DIBEL_RACE_STATS")
+    AddMenuOptionST("STAT_DIBEL_RACE_MENU", "$MRT_SP_DIBEL_RACE_STAT_MENU", sGetRaceNameArr()[iDibelStatRace], flag)
+    _AddTextOptionST("STAT_DIBEL_RACE_ORAL_TXT", "$MRT_SP_STAT_ORAL", Mainscript.iDibelOralStatArr[iDibelStatRace], flag)
+    _AddTextOptionST("STAT_DIBEL_RACE_ANAL_TXT", "$MRT_SP_STAT_ANAL", Mainscript.iDibelAnalStatArr[iDibelStatRace], flag)
+    _AddTextOptionST("STAT_DIBEL_RACE_VAGINAL_TXT", "$MRT_SP_STAT_VAGINAL", Mainscript.iDibelVaginalStatArr[iDibelStatRace], flag)
+    addEmptyOption()
+    _AddTextOptionST("STAT_DIBEL_ORAL_PERK_REWARD_TXT", "$MRT_SP_PERK_REWARD_ORAL", sGetStatRewardText(2, True), flag)
+    _AddTextOptionST("STAT_DIBEL_ANAL_PERK_REWARD_TXT", "$MRT_SP_PERK_REWARD_ANAL", sGetStatRewardText(1, True), flag)
+    _AddTextOptionST("STAT_DIBEL_VAGINAL_PERK_REWARD_TXT", "$MRT_SP_PERK_REWARD_VAGINAL", sGetStatRewardText(0, True), flag)
   elseif (page == "$MRT_SP_PAGE_INTEGRATION")
     SetTitleText("$MRT_SP_PAGE_INTEGRATION")
     _AddHeaderOption("$MRT_SP_HEAD_INTEGRATION_INTERFACE")
@@ -370,6 +418,23 @@ String[] function sGetAnimInerfaceArr()
   return sAnimInterfaces
 endfunction
 
+String[] function sGetRaceNameArr()
+  ;Races: ArgonianRace, BretonRace, DarkElfRace, HighElfRace, ImperialRace, KhajiitRace, NordRace, OrcRace, RedguardRace, WoodElfRace, other
+  String[] sRaceNames = Utility.CreateStringArray(11)
+  sRaceNames[0] = "$MRT_SP_RACES_Argonian"
+  sRaceNames[1] = "$MRT_SP_RACES_Breton"
+  sRaceNames[2] = "$MRT_SP_RACES_DarkElf"
+  sRaceNames[3] = "$MRT_SP_RACES_HighElf"
+  sRaceNames[4] = "$MRT_SP_RACES_Imperial"
+  sRaceNames[5] = "$MRT_SP_RACES_Khajiit"
+  sRaceNames[6] = "$MRT_SP_RACES_Nord"
+  sRaceNames[7] = "$MRT_SP_RACES_Orc"
+  sRaceNames[8] = "$MRT_SP_RACES_Redguard"
+  sRaceNames[9] = "$MRT_SP_RACES_WoodElf"
+  sRaceNames[10] = "$MRT_SP_RACES_OTHER"
+  return sRaceNames
+EndFunction
+
 string[] Function sGetSpeechDifficultyArr()
 	String[] sSpeechDifficulties = Utility.CreateStringArray(7)
   sSpeechDifficulties[0] = "$MRT_SP_SpeechDiff_Disabled"
@@ -432,6 +497,46 @@ state ANIM_INTERFACE_METHOD_MENU
     SetMenuDialogOptions(sGetAnimInerfaceMethodArr())
   endevent
 endstate
+
+State STAT_WHORE_RACE_MENU
+  event OnDefaultST()
+  endevent
+
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_STAT_WHORE_RACE_MENU")
+  endevent
+
+  event OnMenuAcceptST(int index)
+    iWhoreStatRace = index
+    _SetMenuOptionValueST(sGetRaceNameArr()[iWhoreStatRace], True)
+    ForcePageReset()
+  endevent
+
+  event OnMenuOpenST()
+    SetMenuDialogStartIndex(iWhoreStatRace)
+    SetMenuDialogOptions(sGetRaceNameArr())
+  endevent
+endState
+
+State STAT_DIBEL_RACE_MENU
+  event OnDefaultST()
+  endevent
+
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_STAT_DIBEL_RACE_MENU")
+  endevent
+
+  event OnMenuAcceptST(int index)
+    iDibelStatRace = index
+    _SetMenuOptionValueST(sGetRaceNameArr()[iDibelStatRace], True)
+    ForcePageReset()
+  endevent
+
+  event OnMenuOpenST()
+    SetMenuDialogStartIndex(iDibelStatRace)
+    SetMenuDialogOptions(sGetRaceNameArr())
+  endevent
+endState
 
 
 state WHORE_ACCEPT_DIFFICULTY_MENU
@@ -838,17 +943,17 @@ state MOD_TOGGLE
 
   event OnSelectST()
     MainScript.bModEnabled = !MainScript.bModEnabled
-	if MainScript.bModEnabled
-      ShowMessage("Please close the MCM menu.", False)
-      Utility.wait(0.5)
+    ShowMessage("Please close the MCM menu.", False)
+    Utility.wait(0.5)
+    if MainScript.bModEnabled
       MainQuest.Start()
       loadSettingsAtStart()
       Mainscript.setVars()
       Debug.Notification("Simple Prostitution enabled.")
-	else
-	  MainScript.ShutDown()
-	  MainQuest.Stop()
-	endif
+    else
+      MainScript.ShutDown()
+      MainQuest.Stop()
+    endif
     ForcePageReset()
   endevent
 endstate
@@ -1947,6 +2052,162 @@ endstate
 State DEBUG_OSTIM_CHECK_TXT
 endState
 
+State STAT_WHORE_ORAL_TXT
+  function OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_STAT_ORAL_TXT")
+  endFunction
+EndState
+
+State STAT_WHORE_ANAL_TXT
+  function OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_STAT_ANAL_TXT")
+  endFunction
+EndState
+
+State STAT_WHORE_VAGINAL_TXT
+  function OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_STAT_VAGINAL_TXT")
+  endFunction
+EndState
+
+State STAT_WHORE_RACE_ORAL_TXT
+  function OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_STAT_RACE_ORAL_TXT")
+  endFunction
+EndState
+
+State STAT_WHORE_RACE_ANAL_TXT
+  function OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_STAT_RACE_ANAL_TXT")
+  endFunction
+EndState
+
+State STAT_WHORE_RACE_VAGINAL_TXT
+  function OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_STAT_RACE_VAGINAL_TXT")
+  endFunction
+EndState
+
+State STAT_DIBEL_ORAL_TXT
+  function OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_STAT_ORAL_TXT")
+  endFunction
+EndState
+
+State STAT_DIBEL_ANAL_TXT
+  function OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_STAT_ANAL_TXT")
+  endFunction
+EndState
+
+State STAT_DIBEL_VAGINAL_TXT
+  function OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_STAT_VAGINAL_TXT")
+  endFunction
+EndState
+
+State STAT_DIBEL_RACE_ORAL_TXT
+  function OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_STAT_RACE_ORAL_TXT")
+  endFunction
+EndState
+
+State STAT_DIBEL_RACE_ANAL_TXT
+  function OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_STAT_RACE_ANAL_TXT")
+  endFunction
+EndState
+
+State STAT_DIBEL_RACE_VAGINAL_TXT
+  function OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_STAT_RACE_VAGINAL_TXT")
+  endFunction
+EndState
+
+State STAT_WHORE_ORAL_PERK_REWARD_TXT
+  function OnSelectST()
+    if !bWhoreOralPerkRewardReceived && MainScript.bCanReceiveReward(2, False)
+      Game.AddPerkPoints(1)
+      bWhoreOralPerkRewardReceived = True
+      ForcePageReset()
+    endif 
+  endFunction
+
+  function OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_STAT_WHORE_ORAL_PERK_REWARD_TXT")
+  endFunction
+EndState
+
+State STAT_WHORE_ANAL_PERK_REWARD_TXT
+  function OnSelectST()
+    if !bWhoreAnalPerkRewardReceived && MainScript.bCanReceiveReward(1, False)
+      Game.AddPerkPoints(1)
+      bWhoreAnalPerkRewardReceived = True
+      ForcePageReset()
+    endif 
+  endFunction
+
+  function OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_STAT_WHORE_ANAL_PERK_REWARD_TXT")
+  endFunction
+EndState
+
+State STAT_WHORE_VAGINAL_PERK_REWARD_TXT
+  function OnSelectST()
+    if !bWhoreVaginalPerkRewardReceived && MainScript.bCanReceiveReward(0, False)
+      Game.AddPerkPoints(1)
+      bWhoreVaginalPerkRewardReceived = True
+      ForcePageReset()
+    endif 
+  endFunction
+
+  function OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_STAT_WHORE_VAGINAL_PERK_REWARD_TXT")
+  endFunction
+EndState
+
+State STAT_DIBEL_ORAL_PERK_REWARD_TXT
+  function OnSelectST()
+    if !bDibelOralPerkRewardReceived && MainScript.bCanReceiveReward(2, True)
+      Game.AddPerkPoints(1)
+      bDibelOralPerkRewardReceived = True
+      ForcePageReset()
+    endif 
+  endFunction
+
+  function OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_STAT_DIBEL_ORAL_PERK_REWARD_TXT")
+  endFunction
+EndState
+
+State STAT_DIBEL_ANAL_PERK_REWARD_TXT
+  function OnSelectST()
+    if !bDibelAnalPerkRewardReceived && MainScript.bCanReceiveReward(1, True)
+      Game.AddPerkPoints(1)
+      bDibelAnalPerkRewardReceived = True
+      ForcePageReset()
+    endif 
+  endFunction
+
+  function OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_STAT_DIBEL_ANAL_PERK_REWARD_TXT")
+  endFunction
+EndState
+
+State STAT_DIBEL_VAGINAL_PERK_REWARD_TXT
+  function OnSelectST()
+    if !bDibelVaginalPerkRewardReceived && MainScript.bCanReceiveReward(0, True)
+      Game.AddPerkPoints(1)
+      bDibelVaginalPerkRewardReceived = True
+      ForcePageReset()
+    endif 
+  endFunction
+
+  function OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_STAT_DIBEL_VAGINAL_PERK_REWARD_TXT")
+  endFunction
+EndState
+
 State WHORE_TAG_CHEST_CLOTH_TXT
   function OnSelectST()
     if MainScript.bIsPO3ExtenderActive
@@ -2547,5 +2808,63 @@ Bool Function loadUserDataPapyrus(Bool bSilence = False)
   endWhile
   return true
 endFunction
+
+String Function sGetStatRewardText(Int iPos, Bool bDibel = False)
+  Bool bCanReceiveReward = Mainscript.bCanReceiveReward(iPos, bDibel)
+  if bDibel
+    if iPos == 2
+      if bDibelOralPerkRewardReceived
+        return "$MRT_SP_PERK_REWARD_END"
+      elseif bCanReceiveReward
+        return "$MRT_SP_PERK_REWARD_ON"
+      else
+        return "$MRT_SP_PERK_REWARD_OFF_ORAL"
+      endif
+    elseif iPos == 1
+      if bDibelAnalPerkRewardReceived
+        return "$MRT_SP_PERK_REWARD_END"
+      elseif bCanReceiveReward
+        return "$MRT_SP_PERK_REWARD_ON"
+      else
+        return "$MRT_SP_PERK_REWARD_OFF_ANAL"
+      endif
+    elseif iPos == 0
+      if bDibelVaginalPerkRewardReceived
+        return "$MRT_SP_PERK_REWARD_END"
+      elseif bCanReceiveReward
+        return "$MRT_SP_PERK_REWARD_ON"
+      else
+        return "$MRT_SP_PERK_REWARD_OFF_VAGINAL"
+      endif
+    endif
+  else
+    if iPos == 2
+      if bWhoreOralPerkRewardReceived
+        return "$MRT_SP_PERK_REWARD_END"
+      elseif bCanReceiveReward
+        return "$MRT_SP_PERK_REWARD_ON"
+      else
+        return "$MRT_SP_PERK_REWARD_OFF_ORAL"
+      endif
+    elseif iPos == 1
+      if bWhoreAnalPerkRewardReceived
+        return "$MRT_SP_PERK_REWARD_END"
+      elseif bCanReceiveReward
+        return "$MRT_SP_PERK_REWARD_ON"
+      else
+        return "$MRT_SP_PERK_REWARD_OFF_ANAL"
+      endif
+    elseif iPos == 0
+      if bWhoreVaginalPerkRewardReceived
+        return "$MRT_SP_PERK_REWARD_END"
+      elseif bCanReceiveReward
+        return "$MRT_SP_PERK_REWARD_ON"
+      else
+        return "$MRT_SP_PERK_REWARD_OFF_VAGINAL"
+      endif
+    endif
+  endif
+
+EndFunction
 
 
