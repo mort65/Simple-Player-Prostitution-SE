@@ -990,8 +990,8 @@ state MOD_TOGGLE
     else
       MainScript.ShutDown()
       MainQuest.Stop()
+      Debug.Notification("Simple Prostitution disabled.")
     endif
-    ForcePageReset()
   endevent
 endstate
 
