@@ -175,10 +175,31 @@ event OnPageReset(String page)
     _AddTextOptionST("STAT_WHORE_RACE_ANAL_TXT", "$MRT_SP_STAT_ANAL", Mainscript.iWhoreAnalStatArr[iWhoreStatRace], flag)
     _AddTextOptionST("STAT_WHORE_RACE_VAGINAL_TXT", "$MRT_SP_STAT_VAGINAL", Mainscript.iWhoreVaginalStatArr[iWhoreStatRace], flag)
     addEmptyOption()
+    _AddHeaderOption("$MRT_SP_HEAD_WHORE_REWARD_STATS")
+    if MainScript.bModEnabled && !bWhoreOralPerkRewardReceived
+      flag = OPTION_FLAG_NONE
+    else
+      flag = OPTION_FLAG_DISABLED
+    endif
     _AddTextOptionST("STAT_WHORE_ORAL_PERK_REWARD_TXT", "$MRT_SP_PERK_REWARD_ORAL", sGetStatRewardText(2, False), flag)
+     if MainScript.bModEnabled && !bWhoreAnalPerkRewardReceived
+      flag = OPTION_FLAG_NONE
+    else
+      flag = OPTION_FLAG_DISABLED
+    endif   
     _AddTextOptionST("STAT_WHORE_ANAL_PERK_REWARD_TXT", "$MRT_SP_PERK_REWARD_ANAL", sGetStatRewardText(1, False), flag)
+     if MainScript.bModEnabled && !bWhoreVaginalPerkRewardReceived
+      flag = OPTION_FLAG_NONE
+    else
+      flag = OPTION_FLAG_DISABLED
+    endif      
     _AddTextOptionST("STAT_WHORE_VAGINAL_PERK_REWARD_TXT", "$MRT_SP_PERK_REWARD_VAGINAL", sGetStatRewardText(0, False), flag)
     SetCursorPosition(1)
+    if MainScript.bModEnabled
+      flag = OPTION_FLAG_NONE
+    else
+      flag = OPTION_FLAG_DISABLED
+    endif
     _AddHeaderOption("$MRT_SP_HEAD_DIBEL_TOTAL_STATS")
     _AddTextOptionST("STAT_DIBEL_ORAL_TXT", "$MRT_SP_STAT_ORAL", Mainscript.iTotalDibelStats[2], flag)
     _AddTextOptionST("STAT_DIBEL_ANAL_TXT", "$MRT_SP_STAT_ANAL", Mainscript.iTotalDibelStats[1], flag)
@@ -190,8 +211,24 @@ event OnPageReset(String page)
     _AddTextOptionST("STAT_DIBEL_RACE_ANAL_TXT", "$MRT_SP_STAT_ANAL", Mainscript.iDibelAnalStatArr[iDibelStatRace], flag)
     _AddTextOptionST("STAT_DIBEL_RACE_VAGINAL_TXT", "$MRT_SP_STAT_VAGINAL", Mainscript.iDibelVaginalStatArr[iDibelStatRace], flag)
     addEmptyOption()
+    _AddHeaderOption("$MRT_SP_HEAD_DIBEL_REWARD_STATS")
+     if MainScript.bModEnabled && !bDibelOralPerkRewardReceived
+      flag = OPTION_FLAG_NONE
+    else
+      flag = OPTION_FLAG_DISABLED
+    endif 
     _AddTextOptionST("STAT_DIBEL_ORAL_PERK_REWARD_TXT", "$MRT_SP_PERK_REWARD_ORAL", sGetStatRewardText(2, True), flag)
+     if MainScript.bModEnabled && !bDibelAnalPerkRewardReceived
+      flag = OPTION_FLAG_NONE
+    else
+      flag = OPTION_FLAG_DISABLED
+    endif 
     _AddTextOptionST("STAT_DIBEL_ANAL_PERK_REWARD_TXT", "$MRT_SP_PERK_REWARD_ANAL", sGetStatRewardText(1, True), flag)
+     if MainScript.bModEnabled && !bDibelVaginalPerkRewardReceived
+      flag = OPTION_FLAG_NONE
+    else
+      flag = OPTION_FLAG_DISABLED
+    endif 
     _AddTextOptionST("STAT_DIBEL_VAGINAL_PERK_REWARD_TXT", "$MRT_SP_PERK_REWARD_VAGINAL", sGetStatRewardText(0, True), flag)
   elseif (page == "$MRT_SP_PAGE_INTEGRATION")
     SetTitleText("$MRT_SP_PAGE_INTEGRATION")
