@@ -278,7 +278,7 @@ function AllowProstitution(Actor akOwner)
     if !player.IsInFaction(whoreFaction)
       player.AddToFaction(whoreFaction)
     endif
-    if Owner.getActorReference() && (Owner.getActorReference().GetCurrentLocation() != akOwner.GetCurrentLocation())
+    if Owner.getActorReference() && (Owner.getActorReference() != akOwner)
       iCurrentOwnerSeptims = 0
       currentOwnerSeptimDisplay.SetValueInt(0)
       UpdateCurrentInstanceGlobal(currentOwnerSeptimDisplay)
@@ -298,6 +298,35 @@ function AllowProstitution(Actor akOwner)
     Debug.Trace("Simple Prostitution: Work allowed in " + currentAllowedLocations.GetAt(0) + " that's owned by " + akOwner)
     Debug.Notification("Prostitution enabled for current location.")
   endif
+endfunction
+
+Function ownerPayWhore(Actor whore)
+  if iCurrentOwnerSeptims > 0
+    int payment = maxInt(0, ((iCurrentOwnerSeptims as float) * ((100.0 - fWhoreOwnerShare) / 100.0)) as int)
+    whore.Additem(gold, payment)
+    if Owner.getActorReference() && (iCurrentOwnerSeptims - payment) > 0
+      Owner.getActorReference().Additem(gold,(iCurrentOwnerSeptims - payment))
+    endIf
+    iCurrentOwnerSeptims = 0
+    currentOwnerSeptimDisplay.SetValueInt(0)
+    UpdateCurrentInstanceGlobal(currentOwnerSeptimDisplay)
+  endIf
+  if pimpTracker.isrunning()
+    pimpTracker.setstage(15)
+  endif
+  Owner.clear()
+  clearCustomer()
+  currentAllowedLocations.Revert()
+EndFunction
+
+function playerBegTo(Actor akActor, Bool bPay=True)
+  if akActor
+    customerBeggarSpell.Cast(akActor, akActor)
+  endif
+  if bPay
+    payBeggar(player)
+  endif
+  setChance()
 endfunction
 
 function ProstitutePlayerTo(Actor akCustomer, bool bAccept=true)
@@ -541,35 +570,6 @@ function payWhore(actor whore, int position)
   else
     whore.Additem(gold, maxInt(0, totalPay))
   endif
-endfunction
-
-Function ownerPayWhore(Actor whore)
-  if iCurrentOwnerSeptims > 0
-    int payment = maxInt(0, ((iCurrentOwnerSeptims as float) * ((100.0 - fWhoreOwnerShare) / 100.0)) as int)
-    whore.Additem(gold, payment)
-    if Owner.getActorReference() && (iCurrentOwnerSeptims - payment) > 0
-      Owner.getActorReference().Additem(gold,(iCurrentOwnerSeptims - payment))
-    endIf
-    iCurrentOwnerSeptims = 0
-    currentOwnerSeptimDisplay.SetValueInt(0)
-    UpdateCurrentInstanceGlobal(currentOwnerSeptimDisplay)
-  endIf
-  if pimpTracker.isrunning()
-    pimpTracker.setstage(15)
-  endif
-  Owner.clear()
-  clearCustomer()
-  currentAllowedLocations.Revert()
-EndFunction
-
-function playerBegTo(Actor akActor, Bool bPay=True)
-  if akActor
-    customerBeggarSpell.Cast(akActor, akActor)
-  endif
-  if bPay
-    payBeggar(player)
-  endif
-  setChance()
 endfunction
 
 String function sGetCurAnimInteface()
