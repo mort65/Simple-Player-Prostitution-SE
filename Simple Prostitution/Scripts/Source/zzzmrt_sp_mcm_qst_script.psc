@@ -320,6 +320,7 @@ event OnPageReset(String page)
     AddSliderOptionST("SPEECH_BEG_BONUS_MIN_MULT_SLIDER", "$MRT_SP_SPEECH_BEG_BONUS_MIN_MULT_SLIDER1", MainScript.fMinSpeechBegBonusMult, "$MRT_SP_SPEECH_BEG_BONUS_MIN_MULT_SLIDER2", flag)
     AddSliderOptionST("SPEECH_BEG_BONUS_MAX_MULT_SLIDER", "$MRT_SP_SPEECH_BEG_BONUS_MAX_MULT_SLIDER1", MainScript.fMaxSpeechBegBonusMult, "$MRT_SP_SPEECH_BEG_BONUS_MAX_MULT_SLIDER2", flag)
     AddMenuOptionST("BEG_ACCEPT_DIFFICULTY_MENU", "$MRT_SP_BEG_ACCEPT_DIFFICULTY_MENU", sGetSpeechDifficultyArr()[iBeggarSpeechDifficulty], flag)
+    AddSliderOptionST("SPEECH_BEG_XP_MULT_SLIDER", "$MRT_SP_SPEECH_BEG_XP_MULT_SLIDER1", MainScript.fBeggarPersuasionXPMult, "$MRT_SP_SPEECH_BEG_XP_MULT_SLIDER2", flag)
   elseif (page == "$MRT_SP_PAGE_STD")
     SetTitleText("$MRT_SP_PAGE_STD")
     _AddHeaderOption("$MRT_SP_HEAD_STD")
@@ -374,6 +375,7 @@ event OnPageReset(String page)
     AddSliderOptionST("SPEECH_WHORE_BONUS_MIN_MULT_SLIDER", "$MRT_SP_SPEECH_WHORE_BONUS_MIN_MULT_SLIDER1", MainScript.fMinSpeechWhoreBonusMult, "$MRT_SP_SPEECH_WHORE_BONUS_MIN_MULT_SLIDER2", flag)
     AddSliderOptionST("SPEECH_WHORE_BONUS_MAX_MULT_SLIDER", "$MRT_SP_SPEECH_WHORE_BONUS_MAX_MULT_SLIDER1", MainScript.fMaxSpeechWhoreBonusMult, "$MRT_SP_SPEECH_WHORE_BONUS_MAX_MULT_SLIDER2", flag)
     AddMenuOptionST("WHORE_ACCEPT_DIFFICULTY_MENU", "$MRT_SP_WHORE_ACCEPT_DIFFICULTY_MENU", sGetSpeechDifficultyArr()[iWhoreSpeechDifficulty], flag)
+    AddSliderOptionST("SPEECH_WHORE_XP_MULT_SLIDER", "$MRT_SP_SPEECH_WHORE_XP_MULT_SLIDER1", MainScript.fWhorePersuasionXPMult, "$MRT_SP_SPEECH_WHORE_XP_MULT_SLIDER2", flag)
     SetCursorPosition(1)
     _AddHeaderOption("$MRT_SP_HEAD_DIBEL")
     if (MainScript.bModEnabled)
@@ -400,6 +402,7 @@ event OnPageReset(String page)
     AddSliderOptionST("SPEECH_DIBEL_BONUS_MIN_MULT_SLIDER", "$MRT_SP_SPEECH_DIBEL_BONUS_MIN_MULT_SLIDER1", MainScript.fMinSpeechDibelBonusMult, "$MRT_SP_SPEECH_DIBEL_BONUS_MIN_MULT_SLIDER2", flag)
     AddSliderOptionST("SPEECH_DIBEL_BONUS_MAX_MULT_SLIDER", "$MRT_SP_SPEECH_DIBEL_BONUS_MAX_MULT_SLIDER1", MainScript.fMaxSpeechDibelBonusMult, "$MRT_SP_SPEECH_DIBEL_BONUS_MAX_MULT_SLIDER2", flag)
     AddMenuOptionST("DIBEL_ACCEPT_DIFFICULTY_MENU", "$MRT_SP_DIBEL_ACCEPT_DIFFICULTY_MENU", sGetSpeechDifficultyArr()[iDibelSpeechDifficulty], flag)
+    AddSliderOptionST("SPEECH_DIBEL_XP_MULT_SLIDER", "$MRT_SP_SPEECH_DIBEL_XP_MULT_SLIDER1", MainScript.fDibelPersuasionXPMult, "$MRT_SP_SPEECH_DIBEL_XP_MULT_SLIDER2", flag)
   endif
 endevent
 
@@ -1035,6 +1038,69 @@ state SPEECH_BEG_BONUS_MIN_MULT_SLIDER
 		SetSliderDialogRange(0, 10)
 		SetSliderDialogInterval(0.1)
 	endEvent
+endstate
+
+state SPEECH_DIBEL_XP_MULT_SLIDER
+  event OnDefaultST()
+  endevent
+
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_SPEECH_DIBEL_XP_MULT_SLIDER")
+  endevent
+
+  event OnSliderAcceptST(float value)
+    MainScript.fDibelPersuasionXPMult = value
+    _SetSliderOptionValueST(MainScript.fDibelPersuasionXPMult, "$MRT_SP_SPEECH_DIBEL_XP_MULT_SLIDER2")
+  endevent
+
+  event OnSliderOpenST()
+    SetSliderDialogStartValue(MainScript.fDibelPersuasionXPMult)
+    SetSliderDialogDefaultValue(0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(1)
+  endEvent
+endstate
+
+state SPEECH_WHORE_XP_MULT_SLIDER
+  event OnDefaultST()
+  endevent
+
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_SPEECH_WHORE_XP_MULT_SLIDER")
+  endevent
+
+  event OnSliderAcceptST(float value)
+    MainScript.fWhorePersuasionXPMult = value
+    _SetSliderOptionValueST(MainScript.fWhorePersuasionXPMult, "$MRT_SP_SPEECH_WHORE_XP_MULT_SLIDER2")
+  endevent
+
+  event OnSliderOpenST()
+    SetSliderDialogStartValue(MainScript.fWhorePersuasionXPMult)
+    SetSliderDialogDefaultValue(0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(1)
+  endEvent
+endstate
+
+state SPEECH_BEG_XP_MULT_SLIDER
+  event OnDefaultST()
+  endevent
+
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_SPEECH_BEG_XP_MULT_SLIDER")
+  endevent
+
+  event OnSliderAcceptST(float value)
+    MainScript.fBeggarPersuasionXPMult = value
+    _SetSliderOptionValueST(MainScript.fBeggarPersuasionXPMult, "$MRT_SP_SPEECH_BEG_XP_MULT_SLIDER2")
+  endevent
+
+  event OnSliderOpenST()
+    SetSliderDialogStartValue(MainScript.fBeggarPersuasionXPMult)
+    SetSliderDialogDefaultValue(0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(1)
+  endEvent
 endstate
 
 state SPEECH_DIBEL_BONUS_MAX_MULT_SLIDER
@@ -2495,7 +2561,10 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
   MainScript.fMaxSpeechDibelBonusMult = jsonutil.GetPathFloatValue(settings_path, "fMaxSpeechDibelBonusMult", MainScript.fMaxSpeechDibelBonusMult)
   MainScript.fCitizenReportChance = jsonutil.GetPathFloatValue(settings_path, "fCitizenReportChance", MainScript.fCitizenReportChance)
   MainScript.fGuardReportChance = jsonutil.GetPathFloatValue(settings_path, "fGuardReportChance", MainScript.fGuardReportChance)
-  
+  Mainscript.fBeggarPersuasionXPMult = jsonutil.GetPathFloatValue(settings_path, "fBeggarPersuasionXPMult", MainScript.fBeggarPersuasionXPMult)
+  Mainscript.fWhorePersuasionXPMult = jsonutil.GetPathFloatValue(settings_path, "fWhorePersuasionXPMult", MainScript.fWhorePersuasionXPMult)
+  Mainscript.fDibelPersuasionXPMult = jsonutil.GetPathFloatValue(settings_path, "fDibelPersuasionXPMult", MainScript.fDibelPersuasionXPMult)
+
   MainScript.fCureNormalDiseaseCost = jsonutil.GetPathFloatValue(settings_path, "fCureNormalDiseaseCost", MainScript.fCureNormalDiseaseCost) 
   MainScript.fCureSTDICost = jsonutil.GetPathFloatValue(settings_path, "fCureSTDICost", MainScript.fCureSTDICost)
   MainScript.fCureSTDIICost = jsonutil.GetPathFloatValue(settings_path, "fCureSTDIICost", MainScript.fCureSTDIICost)
@@ -2594,6 +2663,9 @@ Bool function saveUserSettingsPapyrus()
   jsonutil.SetPathFloatValue(settings_path, "fMaxSpeechDibelBonusMult", MainScript.fMaxSpeechDibelBonusMult)
   jsonutil.SetPathFloatValue(settings_path, "fCitizenReportChance", MainScript.fCitizenReportChance)
   jsonutil.SetPathFloatValue(settings_path, "fGuardReportChance", MainScript.fGuardReportChance)
+  jsonutil.SetPathFloatValue(settings_path, "fBeggarPersuasionXPMult", MainScript.fBeggarPersuasionXPMult)
+  jsonutil.SetPathFloatValue(settings_path, "fWhorePersuasionXPMult", MainScript.fWhorePersuasionXPMult)
+  jsonutil.SetPathFloatValue(settings_path, "fDibelPersuasionXPMult", MainScript.fDibelPersuasionXPMult)
   
   jsonutil.SetPathFloatValue(settings_path, "fCureNormalDiseaseCost", MainScript.fCureNormalDiseaseCost)
   jsonutil.SetPathFloatValue(settings_path, "fCureSTDICost", MainScript.fCureSTDICost)

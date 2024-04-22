@@ -17,6 +17,7 @@ ReferenceAlias property Owner auto
 ReferenceAlias property whoreCustomerAlias auto
 ReferenceAlias property dibelCustomerAlias auto
 GlobalVariable property WhoreFailureChance auto
+;FavorDialogueScript Property DialogueFavorGeneric  Auto 
 Message property InterfaceMenu auto
 Bool property bBeggingClothing=True auto Hidden Conditional
 Bool property bBeggingEnabled=True auto Hidden Conditional
@@ -59,6 +60,9 @@ Bool Property bDibelAllowMultipleSTDs = false Auto Hidden Conditional
 Float Property fNormalSTDProgressChance = 0.0 Auto Hidden Conditional
 Float Property fNormalSTDInfectChance = 0.0 Auto Hidden Conditional
 Bool Property bNormalAllowMultipleSTDs = false Auto Hidden Conditional
+Float Property fBeggarPersuasionXPMult = 0.0 Auto Hidden Conditional
+Float Property fDibelPersuasionXPMult = 0.0 Auto Hidden Conditional
+Float Property fWhorePersuasionXPMult = 0.0 Auto Hidden Conditional
 Float property fBegPayMax=5.0 auto Hidden Conditional
 Float property fBegPayMin=1.0 auto Hidden Conditional
 Float property fDibelAnalPay=15.0 auto Hidden Conditional
@@ -325,6 +329,7 @@ function playerBegTo(Actor akActor, Bool bPay=True)
   endif
   if bPay
     payBeggar(player)
+    persuade(fBeggarPersuasionXPMult)
   endif
   setChance()
 endfunction
@@ -368,8 +373,17 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-  return getBaseVersion() + 0.15
+  return getBaseVersion() + 0.16
 endfunction
+
+Function persuade(Float fSpeechSkillMult)
+  if fSpeechSkillMult <= 0.0
+    return
+  endif
+  float fSkillUsePersuade = fSpeechSkillMult * player.GetAv("Speechcraft")
+  Game.AdvanceSkill("Speechcraft", fSkillUsePersuade)
+  Game.IncrementStat("Persuasions")
+endFunction
 
 int function haveSex(Actor akActor, String interface, Bool bAllowAggressive = False, Bool bAllowAll = False)
   if !akActor
@@ -430,6 +444,7 @@ Function setWhoreCustomer(Actor akActor, Bool bPay = False)
     endif
     if iPosition > -1
       payWhore(player, iPosition)
+      persuade(fWhorePersuasionXPMult)
     endif
   endIf
   if iPosition > -1
@@ -448,6 +463,7 @@ Function setDibelCustomer(Actor akActor, bool bPay = true )
     endif
     if iPosition > -1
       payDibel(player, iPosition)
+      persuade(fDibelPersuasionXPMult)
     endif
   endIf
   if iPosition > -1

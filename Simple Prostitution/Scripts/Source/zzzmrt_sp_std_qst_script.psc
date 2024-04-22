@@ -251,20 +251,3 @@ State Healing
 	EndFunction
 
 EndState
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
