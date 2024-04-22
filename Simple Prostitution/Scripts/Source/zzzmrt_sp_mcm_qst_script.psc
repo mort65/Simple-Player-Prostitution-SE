@@ -1056,7 +1056,7 @@ state SPEECH_DIBEL_XP_MULT_SLIDER
   event OnSliderOpenST()
     SetSliderDialogStartValue(MainScript.fDibelPersuasionXPMult)
     SetSliderDialogDefaultValue(0)
-    SetSliderDialogRange(0, 100)
+    SetSliderDialogRange(0, 200)
     SetSliderDialogInterval(1)
   endEvent
 endstate
@@ -1077,7 +1077,7 @@ state SPEECH_WHORE_XP_MULT_SLIDER
   event OnSliderOpenST()
     SetSliderDialogStartValue(MainScript.fWhorePersuasionXPMult)
     SetSliderDialogDefaultValue(0)
-    SetSliderDialogRange(0, 100)
+    SetSliderDialogRange(0, 200)
     SetSliderDialogInterval(1)
   endEvent
 endstate
@@ -1098,7 +1098,7 @@ state SPEECH_BEG_XP_MULT_SLIDER
   event OnSliderOpenST()
     SetSliderDialogStartValue(MainScript.fBeggarPersuasionXPMult)
     SetSliderDialogDefaultValue(0)
-    SetSliderDialogRange(0, 100)
+    SetSliderDialogRange(0, 200)
     SetSliderDialogInterval(1)
   endEvent
 endstate
