@@ -380,9 +380,8 @@ Function persuade(Float fSpeechSkillMult)
   if fSpeechSkillMult <= 0.0
     return
   endif
-  float fSkillUsePersuade = fSpeechSkillMult * player.GetAv("Speechcraft")
-  Game.AdvanceSkill("Speechcraft", fSkillUsePersuade)
-  Game.IncrementStat("Persuasions")
+  Game.AdvanceSkill("Speechcraft", fSpeechSkillMult * player.GetActorValue("Speechcraft"))
+  ;Game.IncrementStat("Persuasions")
 endFunction
 
 int function haveSex(Actor akActor, String interface, Bool bAllowAggressive = False, Bool bAllowAll = False)
