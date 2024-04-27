@@ -2779,13 +2779,9 @@ String Function sTrimTags(string StrInput)
   return strOutput
 endFunction
 
-String Function BoolAsIntToStr(Bool bBool)
-  return (bBool As Int) As String
-endFunction
-
 string Function getInputTags(string sTags, Bool bReqAll, int iMaxLen = 10)
   if sTags
-    return shortenString(sTags, iMaxLen) + " RequireAll=" + BoolAsIntToStr(bReqAll)
+    return shortenString(sTags, iMaxLen) + " RequireAll=" + ((bReqAll As Int) As String)
   endif
   return ""
 endFunction

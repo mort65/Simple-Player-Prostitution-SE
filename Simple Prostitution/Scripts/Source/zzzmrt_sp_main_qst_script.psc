@@ -196,70 +196,11 @@ Function SetVars()
   startCalcSTDCurePrice()
 EndFunction
 
-Event OnInit()
-EndEvent
-
-event onUpdate()
-EndEvent
-
-Event OnUpdateGameTime()
-  ;Debug.trace("Simple Prostitution: OnUpdateGameTime triggered.")
-  snitch()
-endEvent
-
 Function RegisterForEvents()
   RegisterForModEvent("AnimationEnding", "on_spp_sexlab_Sex_Ending")
   RegisterForModEvent("HookAnimationEnd", "on_spp_sexlab_Sex_End")
   RegisterForModEvent("ostim_end", "on_spp_ostim_Sex_End")
 EndFunction
-
-Event on_spp_sexlab_Sex_Ending(string eventName, string argString, float argNum, form sender)
-  ;Debug.trace("Simple Prostitution: on_spp_sexlab_Sex_Ending triggered. state=" + getState())
-  actor[] actorList = SexLabInterface.HookActors(argString)
-  Bool hasplayer = SexLabInterface.HasPlayer(argString)
-  if hasplayer && actorList.Length > 1
-    if actorList.Length == 2 && player.hasAssociation(spouse)
-      int i = 2
-      while i > 0
-        i -= 1
-        if actorList[i] && (actorList[i] != player) && player.HasAssociation(spouse, actorList[i])
-          return
-        endif
-      endWhile
-    endif
-    startInfectingPlayer(getState())
-  endif
-EndEvent
-
-event on_spp_sexlab_Sex_End(int tid, bool HasPlayer)
-  ;Debug.trace("Simple Prostitution: on_spp_sexlab_Sex_End triggered. state=" + getState())
-EndEvent
-
-Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, form sender)
-  ;Debug.trace("Simple Prostitution: on_spp_ostim_Sex_End triggered. state=" + getState())
-  actor[] actorList = OStimInterface.getActors()
-  if actorList.Length > 1
-    Bool hasPlayer = False
-    Bool hasSpouse = False
-    int i = actorList.Length
-    while i > 0
-      i -= 1
-      if actorList[i]
-        if actorList[i] == player
-          hasPlayer = true
-        elseif player.HasAssociation(spouse, actorList[i])
-          hasSpouse = true
-        endif
-      endif
-    endWhile
-    if hasPlayer
-      if actorList.Length == 2 && hasSpouse
-        return
-      endif
-      StartInfectingplayer(getState())
-    endif
-  endif
-endEvent
 
 function startInfectingPlayer(String curState)
   int handle = ModEvent.Create("SPP_InfectPlayerWithSTD")
@@ -934,125 +875,6 @@ Bool Function findSnitch(Bool bCheckDibel = False)
 endfunction
 
 
-State Dibeling
-  Event OnBeginState()
-    int result = -1
-    clearCustomer()
-    if !isSnitchOK(dibelSnitch) && !playerHasDibelLicence()
-      startSnitchFinder(true)
-    endif
-    result = haveSex(currentPartner, sGetCurAnimInteface(), bDibelAllowAggressive, bAllPosAllowed(fDibelVagChance,fDibelAnalChance,fDibelOralChance))
-    updateHistory(currentPartner, result, True)
-    iPosition = -1
-    if result < 0
-      GoToState("")
-    endif
-  EndEvent
-
-  Event on_spp_sexlab_Sex_Ending(string eventName, string argString, float argNum, form sender)
-  EndEvent
-  
-  event on_spp_sexlab_Sex_End(int tid, bool HasPlayer)
-    if HasPlayer
-      startInfectingPlayer(GetState())
-      GoToState("")
-    endif
-  endEvent
-  
-  Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, form sender)
-    startInfectingPlayer(GetState())
-    GoToState("")
-  EndEvent
-  
-  event onUpdate()
-      startInfectingPlayer(GetState())
-      GoToState("")
-  endEvent
-  
-  event OnUpdateGameTime()
-    RegisterForSingleUpdateGameTime(1.0)
-  endEvent
-  
-  function snitch()
-  EndFunction
-
-EndState
-
-State Whoring
-  Event OnBeginState()
-    int result = -1
-    if !isSnitchOK(whoreSnitch) && !playerHasWhoreLicense()
-      startSnitchFinder(false)
-    endif
-    clearCustomer()
-    result = haveSex(currentPartner, sGetCurAnimInteface(), bWhoreAllowAggressive, bAllPosAllowed(fWhoreVagChance, fWhoreAnalChance, fWhoreOralChance))
-    updateHistory(currentPartner, result, False)
-    iPosition = -1
-    if result < 0
-      GoToState("")
-    endif
-  EndEvent
-
-  Event on_spp_sexlab_Sex_Ending(string eventName, string argString, float argNum, form sender)
-  EndEvent
-  
-  event on_spp_sexlab_Sex_End(int tid, bool HasPlayer)
-    if HasPlayer
-      startInfectingPlayer(GetState())
-      GoToState("")
-    endif
-  endEvent
-  
-  Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, form sender)
-    startInfectingPlayer(GetState())
-    GoToState("")
-  EndEvent
-  
-  event onUpdate()
-      startInfectingPlayer(GetState())
-      GoToState("")
-  endEvent
-  
-  event OnUpdateGameTime()
-    RegisterForSingleUpdateGameTime(1.0)
-  endEvent
-  
-  function snitch()
-  EndFunction
-
-EndState
-
-Auto State Init
-  Event on_spp_sexlab_Sex_Ending(string eventName, string argString, float argNum, form sender)
-  EndEvent
-  
-  event on_spp_sexlab_Sex_End(int tid, bool HasPlayer)
-  endEvent
-  
-  Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, form sender)
-  EndEvent
-
-  Event onInit()
-    registerForSingleUpdate(5.0) 
-  EndEvent
-
-  event onUpdate()
-    GoToState("")
-  endEvent
-  
-  event OnEndState()
-    While (!FlowerGirlsInterface.bChecked || !SexLabInterface.bChecked || !OStimInterface.bChecked || !LicensesInterface.bChecked)
-      Utility.wait(0.2)
-    endWhile
-    ;Debug.Trace("Simple Prostitution started.")
-    Debug.Notification("Simple Prostitution started.")
-  endevent
-
-  function snitch()
-  EndFunction
-EndState
-
-
 Bool Function isWhoringAllowedInLocation(Location loc)
   if !loc
     return False
@@ -1217,3 +1039,180 @@ Bool Function bCanReceiveReward(Int iPos, Bool bDibel = False)
   endif
   return False
 EndFunction
+
+Event OnInit()
+EndEvent
+
+event onUpdate()
+EndEvent
+
+Event OnUpdateGameTime()
+  ;Debug.trace("Simple Prostitution: OnUpdateGameTime triggered.")
+  snitch()
+endEvent
+
+Event on_spp_sexlab_Sex_Ending(string eventName, string argString, float argNum, form sender)
+  ;Debug.trace("Simple Prostitution: on_spp_sexlab_Sex_Ending triggered. state=" + getState())
+  actor[] actorList = SexLabInterface.HookActors(argString)
+  Bool hasplayer = SexLabInterface.HasPlayer(argString)
+  if hasplayer && actorList.Length > 1
+    if actorList.Length == 2 && player.hasAssociation(spouse)
+      int i = 2
+      while i > 0
+        i -= 1
+        if actorList[i] && (actorList[i] != player) && player.HasAssociation(spouse, actorList[i])
+          return
+        endif
+      endWhile
+    endif
+    startInfectingPlayer(getState())
+  endif
+EndEvent
+
+event on_spp_sexlab_Sex_End(int tid, bool HasPlayer)
+  ;Debug.trace("Simple Prostitution: on_spp_sexlab_Sex_End triggered. state=" + getState())
+EndEvent
+
+Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, form sender)
+  ;Debug.trace("Simple Prostitution: on_spp_ostim_Sex_End triggered. state=" + getState())
+  actor[] actorList = OStimInterface.getActors()
+  if actorList.Length > 1
+    Bool hasPlayer = False
+    Bool hasSpouse = False
+    int i = actorList.Length
+    while i > 0
+      i -= 1
+      if actorList[i]
+        if actorList[i] == player
+          hasPlayer = true
+        elseif player.HasAssociation(spouse, actorList[i])
+          hasSpouse = true
+        endif
+      endif
+    endWhile
+    if hasPlayer
+      if actorList.Length == 2 && hasSpouse
+        return
+      endif
+      StartInfectingplayer(getState())
+    endif
+  endif
+endEvent
+
+State Dibeling
+  Event OnBeginState()
+    int result = -1
+    clearCustomer()
+    if !isSnitchOK(dibelSnitch) && !playerHasDibelLicence()
+      startSnitchFinder(true)
+    endif
+    result = haveSex(currentPartner, sGetCurAnimInteface(), bDibelAllowAggressive, bAllPosAllowed(fDibelVagChance,fDibelAnalChance,fDibelOralChance))
+    updateHistory(currentPartner, result, True)
+    iPosition = -1
+    if result < 0
+      GoToState("")
+    endif
+  EndEvent
+
+  Event on_spp_sexlab_Sex_Ending(string eventName, string argString, float argNum, form sender)
+  EndEvent
+  
+  event on_spp_sexlab_Sex_End(int tid, bool HasPlayer)
+    if HasPlayer
+      startInfectingPlayer(GetState())
+      GoToState("")
+    endif
+  endEvent
+  
+  Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, form sender)
+    startInfectingPlayer(GetState())
+    GoToState("")
+  EndEvent
+  
+  event onUpdate()
+      startInfectingPlayer(GetState())
+      GoToState("")
+  endEvent
+  
+  event OnUpdateGameTime()
+    RegisterForSingleUpdateGameTime(1.0)
+  endEvent
+  
+  function snitch()
+  EndFunction
+
+EndState
+
+State Whoring
+  Event OnBeginState()
+    int result = -1
+    if !isSnitchOK(whoreSnitch) && !playerHasWhoreLicense()
+      startSnitchFinder(false)
+    endif
+    clearCustomer()
+    result = haveSex(currentPartner, sGetCurAnimInteface(), bWhoreAllowAggressive, bAllPosAllowed(fWhoreVagChance, fWhoreAnalChance, fWhoreOralChance))
+    updateHistory(currentPartner, result, False)
+    iPosition = -1
+    if result < 0
+      GoToState("")
+    endif
+  EndEvent
+
+  Event on_spp_sexlab_Sex_Ending(string eventName, string argString, float argNum, form sender)
+  EndEvent
+  
+  event on_spp_sexlab_Sex_End(int tid, bool HasPlayer)
+    if HasPlayer
+      startInfectingPlayer(GetState())
+      GoToState("")
+    endif
+  endEvent
+  
+  Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, form sender)
+    startInfectingPlayer(GetState())
+    GoToState("")
+  EndEvent
+  
+  event onUpdate()
+      startInfectingPlayer(GetState())
+      GoToState("")
+  endEvent
+  
+  event OnUpdateGameTime()
+    RegisterForSingleUpdateGameTime(1.0)
+  endEvent
+  
+  function snitch()
+  EndFunction
+
+EndState
+
+Auto State Init
+  Event on_spp_sexlab_Sex_Ending(string eventName, string argString, float argNum, form sender)
+  EndEvent
+  
+  event on_spp_sexlab_Sex_End(int tid, bool HasPlayer)
+  endEvent
+  
+  Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, form sender)
+  EndEvent
+
+  Event onInit()
+    registerForSingleUpdate(5.0) 
+  EndEvent
+
+  event onUpdate()
+    GoToState("")
+  endEvent
+  
+  event OnEndState()
+    While (!FlowerGirlsInterface.bChecked || !SexLabInterface.bChecked || !OStimInterface.bChecked || !LicensesInterface.bChecked)
+      Utility.wait(0.2)
+    endWhile
+    ;Debug.Trace("Simple Prostitution started.")
+    Debug.Notification("Simple Prostitution started.")
+  endevent
+
+  function snitch()
+  EndFunction
+EndState
