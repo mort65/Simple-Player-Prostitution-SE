@@ -688,7 +688,7 @@ Bool Function checkSnitch(Actor npc, Bool bCompleteCheck = False, Bool bDibel = 
   endif
   
   if npc.isGuard()
-    if utility.RandomInt(1,100) <=  fGuardReportChance as int
+    if utility.RandomInt(0,99) < fGuardReportChance as int
       if bCanSnitch(npc, bCompleteCheck)
         if bDibel
           dibelSnitch = npc
@@ -699,7 +699,7 @@ Bool Function checkSnitch(Actor npc, Bool bCompleteCheck = False, Bool bDibel = 
         Return True
       endif
     endif
-  elseif (utility.RandomInt(1,100) <=  fCitizenReportChance as int)
+  elseif (utility.RandomInt(0,99) < fCitizenReportChance as int)
     if bCanSnitch(npc, bCompleteCheck)
       if bDibel
         dibelSnitch = npc

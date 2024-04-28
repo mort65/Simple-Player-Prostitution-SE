@@ -161,14 +161,14 @@ State Infecting
 		Bool bInfect
 		Bool bProgress
 		if sexMode == "Dibeling"
-			bInfect = (MainScript.fDibelSTDInfectChance >= Utility.RandomInt(1,100)) && (MainScript.bDibelAllowMultipleSTDs || !actorHasSTD(player))
-			bProgress = MainScript.fDibelSTDProgressChance >= Utility.RandomInt(1,100)
+			bInfect = (MainScript.fDibelSTDInfectChance > Utility.RandomInt(0, 99)) && (MainScript.bDibelAllowMultipleSTDs || !actorHasSTD(player))
+			bProgress = MainScript.fDibelSTDProgressChance > Utility.RandomInt(0, 99)
 		elseif sexMode == "Whoring"
-			bInfect = (MainScript.fWhoreSTDInfectChance >= Utility.RandomInt(1,100)) && (MainScript.bWhoreAllowMultipleSTDs || !actorHasSTD(player))
-			bProgress =  MainScript.fWhoreSTDProgressChance >= Utility.RandomInt(1,100)
+			bInfect = (MainScript.fWhoreSTDInfectChance > Utility.RandomInt(0, 99)) && (MainScript.bWhoreAllowMultipleSTDs || !actorHasSTD(player))
+			bProgress =  MainScript.fWhoreSTDProgressChance > Utility.RandomInt(0, 99)
 	    elseif sexMode == ""
-	        bInfect = (MainScript.fNormalSTDInfectChance >= Utility.RandomInt(1,100)) && (MainScript.bNormalAllowMultipleSTDs || !actorHasSTD(player))
-			bProgress = MainScript.fNormalSTDProgressChance >= Utility.RandomInt(1,100)
+	        bInfect = (MainScript.fNormalSTDInfectChance > Utility.RandomInt(0, 99)) && (MainScript.bNormalAllowMultipleSTDs || !actorHasSTD(player))
+			bProgress = MainScript.fNormalSTDProgressChance > Utility.RandomInt(0, 99)
 	    endif
 	    if bInfect || bProgress
 			nextSTDStages.revert()
