@@ -165,15 +165,15 @@ event OnPageReset(String page)
     endif
     SetTitleText("$MRT_SP_PAGE_STATS")
     _AddHeaderOption("$MRT_SP_HEAD_WHORE_TOTAL_STATS")
-    _AddTextOptionST("STAT_WHORE_ORAL_TXT", "$MRT_SP_STAT_ORAL", Mainscript.iTotalWhoreStats[2], flag)
-    _AddTextOptionST("STAT_WHORE_ANAL_TXT", "$MRT_SP_STAT_ANAL",  Mainscript.iTotalWhoreStats[1], flag)
-    _AddTextOptionST("STAT_WHORE_VAGINAL_TXT", "$MRT_SP_STAT_VAGINAL",  Mainscript.iTotalWhoreStats[0], flag)
+    _AddTextOptionST("STAT_WHORE_ORAL_TXT", "$MRT_SP_STAT_ORAL",  sGetSexStatText(2, False, False), flag)
+    _AddTextOptionST("STAT_WHORE_ANAL_TXT", "$MRT_SP_STAT_ANAL",  sGetSexStatText(1, False, False), flag)
+    _AddTextOptionST("STAT_WHORE_VAGINAL_TXT", "$MRT_SP_STAT_VAGINAL",  sGetSexStatText(0, False, False), flag)
     addEmptyOption()
     _AddHeaderOption("$MRT_SP_HEAD_WHORE_RACE_STATS")
     AddMenuOptionST("STAT_WHORE_RACE_MENU", "$MRT_SP_WHORE_RACE_STAT_MENU", sGetRaceNameArr()[iWhoreStatRace], flag)
-    _AddTextOptionST("STAT_WHORE_RACE_ORAL_TXT", "$MRT_SP_STAT_ORAL", Mainscript.iWhoreOralStatArr[iWhoreStatRace], flag)
-    _AddTextOptionST("STAT_WHORE_RACE_ANAL_TXT", "$MRT_SP_STAT_ANAL", Mainscript.iWhoreAnalStatArr[iWhoreStatRace], flag)
-    _AddTextOptionST("STAT_WHORE_RACE_VAGINAL_TXT", "$MRT_SP_STAT_VAGINAL", Mainscript.iWhoreVaginalStatArr[iWhoreStatRace], flag)
+    _AddTextOptionST("STAT_WHORE_RACE_ORAL_TXT", "$MRT_SP_STAT_ORAL", sGetSexStatText(2, True, False), flag)
+    _AddTextOptionST("STAT_WHORE_RACE_ANAL_TXT", "$MRT_SP_STAT_ANAL", sGetSexStatText(1, True, False), flag)
+    _AddTextOptionST("STAT_WHORE_RACE_VAGINAL_TXT", "$MRT_SP_STAT_VAGINAL", sGetSexStatText(0, True, False), flag)
     addEmptyOption()
     _AddHeaderOption("$MRT_SP_HEAD_WHORE_REWARD_STATS")
     if MainScript.bModEnabled && !bWhoreOralPerkRewardReceived
@@ -201,15 +201,15 @@ event OnPageReset(String page)
       flag = OPTION_FLAG_DISABLED
     endif
     _AddHeaderOption("$MRT_SP_HEAD_DIBEL_TOTAL_STATS")
-    _AddTextOptionST("STAT_DIBEL_ORAL_TXT", "$MRT_SP_STAT_ORAL", Mainscript.iTotalDibelStats[2], flag)
-    _AddTextOptionST("STAT_DIBEL_ANAL_TXT", "$MRT_SP_STAT_ANAL", Mainscript.iTotalDibelStats[1], flag)
-    _AddTextOptionST("STAT_DIBEL_VAGINAL_TXT", "$MRT_SP_STAT_VAGINAL", Mainscript.iTotalDibelStats[0], flag)
+    _AddTextOptionST("STAT_DIBEL_ORAL_TXT", "$MRT_SP_STAT_ORAL", sGetSexStatText(2, False, True), flag)
+    _AddTextOptionST("STAT_DIBEL_ANAL_TXT", "$MRT_SP_STAT_ANAL",  sGetSexStatText(1, False, True), flag)
+    _AddTextOptionST("STAT_DIBEL_VAGINAL_TXT", "$MRT_SP_STAT_VAGINAL",  sGetSexStatText(0, False, True), flag)
     addEmptyOption()
     _AddHeaderOption("$MRT_SP_HEAD_DIBEL_RACE_STATS")
     AddMenuOptionST("STAT_DIBEL_RACE_MENU", "$MRT_SP_DIBEL_RACE_STAT_MENU", sGetRaceNameArr()[iDibelStatRace], flag)
-    _AddTextOptionST("STAT_DIBEL_RACE_ORAL_TXT", "$MRT_SP_STAT_ORAL", Mainscript.iDibelOralStatArr[iDibelStatRace], flag)
-    _AddTextOptionST("STAT_DIBEL_RACE_ANAL_TXT", "$MRT_SP_STAT_ANAL", Mainscript.iDibelAnalStatArr[iDibelStatRace], flag)
-    _AddTextOptionST("STAT_DIBEL_RACE_VAGINAL_TXT", "$MRT_SP_STAT_VAGINAL", Mainscript.iDibelVaginalStatArr[iDibelStatRace], flag)
+    _AddTextOptionST("STAT_DIBEL_RACE_ORAL_TXT", "$MRT_SP_STAT_ORAL", sGetSexStatText(2, True, True), flag)
+    _AddTextOptionST("STAT_DIBEL_RACE_ANAL_TXT", "$MRT_SP_STAT_ANAL", sGetSexStatText(1, True, True), flag)
+    _AddTextOptionST("STAT_DIBEL_RACE_VAGINAL_TXT", "$MRT_SP_STAT_VAGINAL", sGetSexStatText(0, True, True), flag)
     addEmptyOption()
     _AddHeaderOption("$MRT_SP_HEAD_DIBEL_REWARD_STATS")
      if MainScript.bModEnabled && !bDibelOralPerkRewardReceived
@@ -2914,8 +2914,59 @@ Bool Function loadUserDataPapyrus(Bool bSilence = False)
   return true
 endFunction
 
+String Function sGetSexStatText(Int iPos, Bool bRace, Bool bDibel = False)
+  int iTotal = 0
+  Int iCount = 0
+  if bRace
+    Int[] arr
+    if bDibel
+      if iPos == 0
+        arr = MainScript.iDibelVaginalStatArr 
+        iCount = arr[iDibelStatRace]
+      elseif iPos == 1
+        arr = MainScript.iDibelAnalStatArr
+        iCount = arr[iDibelStatRace]
+      elseif iPos == 2
+        arr = MainScript.iDibelOralStatArr
+        iCount = arr[iDibelStatRace]
+      endif
+    else
+      if iPos == 0
+        arr = MainScript.iWhoreVaginalStatArr 
+        iCount = arr[iWhoreStatRace]
+      elseif iPos == 1
+        arr = MainScript.iWhoreAnalStatArr 
+        iCount = arr[iWhoreStatRace]
+      elseif iPos == 2
+        arr = MainScript.iWhoreOralStatArr
+        iCount = arr[iWhoreStatRace]
+      endif
+      if arr
+        int iIndex = arr.Length
+        while iIndex > 0
+          iIndex -= 1
+          iTotal = iTotal + arr[iIndex]
+        endWhile
+      endif
+    endif
+  else
+    if bDibel
+      iCount = Mainscript.iTotalDibelStats[iPos]
+      iTotal = Mainscript.iTotalDibelStats[0] + Mainscript.iTotalDibelStats[1] + Mainscript.iTotalDibelStats[2]
+    else
+      iCount = Mainscript.iTotalWhoreStats[iPos]
+      iTotal = Mainscript.iTotalWhoreStats[0] + Mainscript.iTotalWhoreStats[1] + Mainscript.iTotalWhoreStats[2]
+    endif
+  endif
+  if iTotal == 0
+    return "0 (0%)"
+  endif
+  return iCount + " (" + (((iCount as Float / iTotal as Float) * 100.0) As Int) + "%)"
+EndFunction
+
 String Function sGetStatRewardText(Int iPos, Bool bDibel = False)
   Bool bCanReceiveReward = Mainscript.bCanReceiveReward(iPos, bDibel)
+  String sProgress = ((Mainscript.iRewardProgress(iPos, bDibel) * 100.0) as Int) + "%"
   if bDibel
     if iPos == 2
       if bDibelOralPerkRewardReceived
@@ -2923,7 +2974,7 @@ String Function sGetStatRewardText(Int iPos, Bool bDibel = False)
       elseif bCanReceiveReward
         return "$MRT_SP_PERK_REWARD_ON"
       else
-        return "$MRT_SP_PERK_REWARD_OFF_ORAL"
+        return sProgress
       endif
     elseif iPos == 1
       if bDibelAnalPerkRewardReceived
@@ -2931,7 +2982,7 @@ String Function sGetStatRewardText(Int iPos, Bool bDibel = False)
       elseif bCanReceiveReward
         return "$MRT_SP_PERK_REWARD_ON"
       else
-        return "$MRT_SP_PERK_REWARD_OFF_ANAL"
+        return sProgress
       endif
     elseif iPos == 0
       if bDibelVaginalPerkRewardReceived
@@ -2939,7 +2990,7 @@ String Function sGetStatRewardText(Int iPos, Bool bDibel = False)
       elseif bCanReceiveReward
         return "$MRT_SP_PERK_REWARD_ON"
       else
-        return "$MRT_SP_PERK_REWARD_OFF_VAGINAL"
+        return sProgress
       endif
     endif
   else
@@ -2949,7 +3000,7 @@ String Function sGetStatRewardText(Int iPos, Bool bDibel = False)
       elseif bCanReceiveReward
         return "$MRT_SP_PERK_REWARD_ON"
       else
-        return "$MRT_SP_PERK_REWARD_OFF_ORAL"
+        return sProgress
       endif
     elseif iPos == 1
       if bWhoreAnalPerkRewardReceived
@@ -2957,7 +3008,7 @@ String Function sGetStatRewardText(Int iPos, Bool bDibel = False)
       elseif bCanReceiveReward
         return "$MRT_SP_PERK_REWARD_ON"
       else
-        return "$MRT_SP_PERK_REWARD_OFF_ANAL"
+        return sProgress
       endif
     elseif iPos == 0
       if bWhoreVaginalPerkRewardReceived
@@ -2965,7 +3016,7 @@ String Function sGetStatRewardText(Int iPos, Bool bDibel = False)
       elseif bCanReceiveReward
         return "$MRT_SP_PERK_REWARD_ON"
       else
-        return "$MRT_SP_PERK_REWARD_OFF_VAGINAL"
+        return sProgress
       endif
     endif
   endif

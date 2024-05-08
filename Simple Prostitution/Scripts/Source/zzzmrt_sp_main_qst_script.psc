@@ -1040,6 +1040,39 @@ Bool Function bCanReceiveReward(Int iPos, Bool bDibel = False)
   return False
 EndFunction
 
+Float Function iRewardProgress(Int iPos, Bool bDibel = False)
+  Int[] arr
+  if bDibel
+    if iPos == 2
+      arr = iDibelOralStatArr
+    elseif iPos == 1
+      arr = iDibelAnalStatArr
+    elseif iPos == 0
+      arr = iDibelVaginalStatArr
+    endif
+  else
+    if iPos == 2
+      arr = iWhoreOralStatArr
+    elseif iPos == 1
+      arr = iWhoreAnalStatArr
+    elseif iPos == 0
+      arr = iWhoreVaginalStatArr
+    endif
+  endif
+  Int count = 0
+  if arr 
+    Int raceIndex = iTotalRaces - 1 ;last race is other races
+    while raceIndex > 0
+      raceIndex -= 1
+      if arr[raceIndex] > 0
+        count += 1
+      endif
+    endWhile
+    return (count as Float / (iTotalRaces - 1) as Float)
+  endif
+  return 0.0
+EndFunction
+
 Event OnInit()
 EndEvent
 
