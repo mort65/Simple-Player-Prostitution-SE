@@ -2966,7 +2966,7 @@ EndFunction
 
 String Function sGetStatRewardText(Int iPos, Bool bDibel = False)
   Bool bCanReceiveReward = Mainscript.bCanReceiveReward(iPos, bDibel)
-  String sProgress = ((Mainscript.iRewardProgress(iPos, bDibel) * 100.0) as Int) + "%"
+  String sProgress = ((Mainscript.iRewardProgress(iPos, bDibel) as Float * 100.0) as Int) + "%"
   if bDibel
     if iPos == 2
       if bDibelOralPerkRewardReceived
