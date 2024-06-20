@@ -314,7 +314,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-  return getBaseVersion() + 0.16
+  return getBaseVersion() + 0.17
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
@@ -764,12 +764,6 @@ Bool function bCanSnitch(Actor npc, Bool bComplete = true)
   return True
 EndFunction
 
-function updateCrimeGold(faction crimeFaction, int crimeFine)
-  if crimeFaction
-    crimeFaction.SetCrimeGoldViolent(crimeFaction.GetCrimeGoldNonViolent() + crimeFine)
-  endif
-endfunction
-
 Bool function isSnitchOK(actor snitch)
   return snitch && !snitch.isDead()
 endfunction
@@ -826,7 +820,13 @@ function snitch()
     endif
     Debug.Trace(msg + " (" + snitch + ")")
     Debug.Notification(msg)
-    LicensesInterface.setWhoreViolation()
+    if !LicensesInterface.bFlagWhoreViolation()
+      if snitch.getcrimefaction()
+        if !player.GetCurrentLocation() || !player.GetCurrentLocation().HasKeywordstring("loctypejail")
+          snitch.getcrimefaction().ModCrimeGold(50)
+        endIf
+      endif
+    endif
   endif
 endfunction
 

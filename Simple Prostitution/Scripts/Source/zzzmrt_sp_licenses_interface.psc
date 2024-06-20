@@ -38,12 +38,20 @@ Bool function bHasWhoreLicense()
   return True
 endfunction
 
+Bool Function bFlagWhoreViolation()
+  return False
+endfunction
+
 Function setWhoreViolation()
 endfunction
 
 state Installed
   Bool function bHasWhoreLicense()
     return zzzmrt_sp_int_licenses.bHasWhoreLicenseBM(BMLicenses)
+  endfunction
+  
+  Bool function bFlagWhoreViolation()
+    return zzzmrt_sp_int_licenses.bFlagWhoreViolationBM(BMLicenses)
   endfunction
   
   Function setWhoreViolation()

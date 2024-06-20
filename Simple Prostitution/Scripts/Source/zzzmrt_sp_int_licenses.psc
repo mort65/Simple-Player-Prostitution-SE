@@ -15,3 +15,11 @@ Function setWhoreViolationBM(Quest BMLicenses) Global
 	endif
 EndFunction
 
+
+Bool Function bFlagWhoreViolationBM(Quest BMLicenses) Global
+	BM_Licenses Licenses = BMLicenses as BM_Licenses
+	if Licenses
+		return Licenses.bmlUtility.FlagViolation(10)
+	endif
+EndFunction
+
