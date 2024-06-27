@@ -145,3 +145,78 @@ int Function iGetExtraTagsIndex(string iPos, string sGenders) Global
   endif
   return -1
 endfunction
+
+
+function haveRandomSexWithPlayerSL(Quest SexLabQuestFramework, Actor Partner, Bool bAggressive = False) Global
+  SexLabFramework SexLab = SexLabQuestFramework As SexLabFramework
+  if !SexLab.Enabled
+    return
+  endif
+  string SuppressTagsForMale = "Lesbian,FF,"
+  String SuppressTagsForNotRough = "Aggressive,Rough,Forced,Bound,"
+  String SuppressedTags = ""
+  if !bAggressive
+    SuppressedTags = "Aggressive,Rough,Forced,Bound,"
+  endif
+  actor[] sexActors = new actor[2]
+  actor player = Game.GetPlayer()
+  Bool isPlayerFemale = player.GetActorBase().GetSex()
+  Bool isPartnerFemale = Partner.GetLeveledActorBase().GetSex()
+  Int iMales = -1
+  Int iFemales = -1
+  String AllowedTags = ""
+  String sGenders = ""
+  if isPlayerFemale && !isPartnerFemale
+      sexActors[0] = player
+      sexActors[1] = Partner
+      sGenders = "MF"
+      iMales = 1
+      iFemales = 1
+      AllowedTags = sGenders + ","
+      SuppressedTags = SuppressedTags + SuppressTagsForMale
+  elseif isPartnerFemale && !isPlayerFemale
+      sexActors[0] = Partner
+      sexActors[1] = player
+      iMales = 1
+      iFemales = 1
+      sGenders = "MF"
+      AllowedTags = sGenders + ","
+      SuppressedTags = SuppressedTags + SuppressTagsForMale
+  else
+    if isPlayerFemale
+      iMales = 0
+      iFemales = 2
+      sGenders = "FF"
+      AllowedTags = sGenders + ","
+    else
+      iMales = 2
+      iFemales = 0
+      sGenders = "MM"
+      AllowedTags = sGenders + ","
+      SuppressedTags = SuppressedTags + SuppressTagsForMale
+    endif
+    if utility.randomInt(0,1)
+        sexActors[0] = player
+        sexActors[1] = Partner
+    else
+        sexActors[0] = Partner
+        sexActors[1] = player
+    endif
+  endif
+  sslBaseAnimation[] anims = SexLab.GetAnimationsByType(2, iMales, iFemales, -1, bAggressive, true)
+  if anims.Length == 0
+    anims = SexLab.GetAnimationsByTags(2, AllowedTags, SuppressedTags, RequireAll=true)
+    if anims.Length == 0
+      anims = SexLab.GetAnimationsByTags(2, AllowedTags, "", RequireAll=true)
+      if anims.Length == 0
+        anims = SexLab.GetAnimationsByTags(2, "MF,", "", RequireAll=true)
+      endif
+      if anims.Length == 0
+        Debug.trace("SimpleProstitution: couldn't find any Sexlab animation.")
+        return
+      endif
+    endif
+  endif
+  sexActors = SexLab.SortActors(sexActors, true)
+  SexLab.StartSex(sexActors, anims, none, none, true, "AnimationEnding,AnimationEnd")
+endfunction

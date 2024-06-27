@@ -38,6 +38,9 @@ int function haveSexWithPlayer(Actor Partner, Int Position, String[] sExtraTags,
   return -1
 endfunction
 
+Function haveRandomSexWithPlayer(Actor Partner, Bool bAggressive = False)
+EndFunction
+
 Actor[] function getActors()
   Actor[] actors
   return actors
@@ -53,4 +56,7 @@ state Installed
     return zzzmrt_sp_int_ostim.getActorsOS(OSexIntegrationMainQuest)
   endfunction
 
+  Function haveRandomSexWithPlayer(Actor Partner, Bool bAggressive = False)
+    zzzmrt_sp_int_ostim.haveRandomSexWithPlayerOS(OSexIntegrationMainQuest, partner, bAggressive)
+  endfunction
 endstate

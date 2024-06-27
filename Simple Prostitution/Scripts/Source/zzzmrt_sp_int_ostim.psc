@@ -13,7 +13,7 @@ int function haveSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor partner, 
 	string anim2 = ""
 	actor[] actors = new actor[2]
 	string sGenders = ""
-    actor player = Game.GetPlayer()
+  actor player = Game.GetPlayer()
 	Bool isPlayerFemale = player.GetActorBase().GetSex()
 	Bool isPartnerFemale = Partner.GetLeveledActorBase().GetSex()
 	if isPlayerFemale && !isPartnerFemale
@@ -97,33 +97,33 @@ Bool Function IsSceneAggressiveOS(String SceneID) Global
     int aiIndex = OMetadata.GetActorCount(SceneID)
     While aiIndex > 0
         aiIndex -= 1
-        If OMetadata.HasActorTag(SceneID, aiIndex, "aggressor")
+        If (OMetadata.HasActorTag(SceneID, aiIndex, "aggressor") || OMetadata.HasActorTag(SceneID, aiIndex, "dominant"))
             Return true
         EndIf
     EndWhile
     Return false
 EndFunction
 
-String Function getRandomAnimation(actor[] actors, string tagCSV, string exclusion = "") Global	
-	string anim = OLibrary.GetRandomSceneWithAnyActionCSV(actors, tagCSV);
-    If (anim == "")
-        anim = OLibrary.GetRandomSceneWithAnySceneTagCSV(actors, tagCSV)
-    EndIf
-    If (anim == "")
-        anim = OLibrary.GetRandomSceneSuperloadCSV(actors, AnySceneTag = tagCSV, AnyActionType = tagCSV, AnyActorTagForAny = tagCSV, ActionBlacklistTypes = exclusion, SceneTagBlacklist = exclusion);
-    EndIf
-    Return  anim
+String Function getRandomAnimation(actor[] actors, string tagCSV, string exclusion = "") Global
+  string anim = OLibrary.GetRandomSceneSuperloadCSV(actors, AnySceneTag = tagCSV, AnyActionType = tagCSV, AnyActorTagForAny = tagCSV, ActionBlacklistTypes = exclusion, SceneTagBlacklist = exclusion);
+  If (anim == "")
+      anim = OLibrary.GetRandomSceneWithAnySceneTagCSV(actors, tagCSV)
+  EndIf
+  If (anim == "")
+      anim = OLibrary.GetRandomSceneWithAnyActionCSV(actors, tagCSV);
+  EndIf
+  Return  anim
 EndFunction
 
 String Function getRandomAnimationWithAllTags(actor[] actors, string tagCSV, string exclusion = "") Global	
-	string anim = OLibrary.GetRandomSceneWithAllActionsCSV(actors, tagCSV);
-    If (anim == "")
-        anim = OLibrary.GetRandomSceneWithAllSceneTagsCSV(actors, tagCSV)
-    EndIf
-    If (anim == "")
-        anim = OLibrary.GetRandomSceneSuperloadCSV(actors, AllSceneTags = tagCSV, AllActionTypes = tagCSV, AllActorTagsForAny = tagCSV, ActionBlacklistTypes = exclusion, SceneTagBlacklist = exclusion);
-    EndIf
-    Return  anim
+	string anim = OLibrary.GetRandomSceneSuperloadCSV(actors, AllSceneTags = tagCSV, AllActionTypes = tagCSV, AllActorTagsForAny = tagCSV, ActionBlacklistTypes = exclusion, SceneTagBlacklist = exclusion);
+  If (anim == "")
+      anim = OLibrary.GetRandomSceneWithAllSceneTagsCSV(actors, tagCSV)
+  EndIf
+  If (anim == "")
+      anim = OLibrary.GetRandomSceneWithAllActionsCSV(actors, tagCSV);
+  EndIf
+  Return  anim
 EndFunction
 
 int Function iGetExtraTagsIndex(string iPos, string sGenders) Global
@@ -151,4 +151,45 @@ int Function iGetExtraTagsIndex(string iPos, string sGenders) Global
     endif
   endif
   return -1
+endfunction
+
+function haveRandomSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor partner, Bool bAggressive = False) Global
+	actor[] actors = new actor[2]
+	actor player = Game.GetPlayer()
+	Bool isPlayerFemale = player.GetActorBase().GetSex()
+	Bool isPartnerFemale = Partner.GetLeveledActorBase().GetSex()
+	if isPlayerFemale && !isPartnerFemale
+		actors[0] = partner
+		actors[1] = player
+	elseif !isPlayerFemale && isPartnerFemale
+		actors[0] = player
+		actors[1] = partner
+	else
+		if Utility.randomInt(0,1)
+			actors[0] = player
+			actors[1] = partner
+		else
+			actors[0] = partner
+			actors[1] = player
+		endif
+	endif
+	String  myAnim
+	if bAggressive
+		myAnim = getRandomAnimation(actors, "dominant,aggressor,", "")
+		if myAnim == ""
+			myAnim = OLibrary.GetRandomScene(actors)
+		endif
+	else
+		myAnim = OLibrary.GetRandomScene(actors)
+	endif
+	Int iIndex = 50
+	While (iIndex > 0) && (IsSceneAggressiveOS(myAnim) != bAggressive)
+		myAnim = OLibrary.GetRandomScene(actors)
+		iIndex -= 1
+	EndWhile
+	if myAnim
+		OThread.QuickStart(actors, StartingAnimation = myAnim)
+		return
+	endif
+	Debug.trace("SimpleProstitution: couldn't find any OStim animation.")
 endfunction

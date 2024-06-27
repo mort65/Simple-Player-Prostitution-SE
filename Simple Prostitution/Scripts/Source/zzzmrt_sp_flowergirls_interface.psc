@@ -38,8 +38,14 @@ Int function haveSexWithPlayer(Actor Partner, Int Position)
   return -1
 endfunction
 
+Function haveRandomSexWithPlayer(Actor Partner)
+endfunction
+
 state Installed
   Int function haveSexWithPlayer(Actor Partner, Int Position)
     return zzzmrt_SP_Int_Flowergirls.haveSexWithPlayerFG(FlowerGirls, Partner, Position)
+  endfunction
+  Function haveRandomSexWithPlayer(Actor Partner)
+    zzzmrt_SP_Int_Flowergirls.haveRandomSexWithPlayerFG(FlowerGirls,Partner)
   endfunction
 endstate

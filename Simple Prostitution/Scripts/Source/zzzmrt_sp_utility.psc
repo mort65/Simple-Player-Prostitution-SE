@@ -52,6 +52,22 @@ Int function minInt(Int var1, Int var2) Global
   return var2
 endfunction
 
+Float function maxFloat(Float var1, Float var2) Global
+	{find maximum of two floats.}
+  if var1 > var2
+    return var1
+  endif
+  return var2
+endfunction
+
+Float function minFloat(Float var1, Float var2) Global
+	{find minimum of two floats.}
+  if var1 < var2
+    return var1
+  endif
+  return var2
+endfunction
+
 String function shortenString(String sString, Int iLimit) Global
 	{Shortens the input string and put ... at the end of it.}
   Int iLen = StringUtil.GetLength(sString)

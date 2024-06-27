@@ -17,8 +17,37 @@ ReferenceAlias property Owner auto
 ReferenceAlias property whoreCustomerAlias auto
 ReferenceAlias property dibelCustomerAlias auto
 GlobalVariable property WhoreFailureChance auto
-;FavorDialogueScript Property DialogueFavorGeneric  Auto 
+GlobalVariable Property WhoreNoTheftChance Auto
+GlobalVariable Property DibelNoTheftChance Auto 
+GlobalVariable Property BeggarNoRapeChance Auto
+GlobalVariable Property BeggarRapistGender Auto
+GlobalVariable Property BeggarRapistMoralMax Auto
+GlobalVariable Property WhoreThieftMoralMax Auto
+GlobalVariable Property DibelThieftMoralMax Auto
+Float Property fBeggarRapistMoralMax = 3.0 Auto Hidden Conditional
+Float Property fWhoreThiefMoralMax = 3.0 Auto Hidden Conditional
+Float Property fDibelThiefMoralMax = 2.0 Auto Hidden Conditional
 Message property InterfaceMenu auto
+Message Property DibelOfferMenu Auto
+Message Property DibelOfferMenu_InsufficientMark Auto
+Message Property DibelOfferMenu_Skills Auto
+Message Property DibelOfferMenu_Skills_Combat Auto
+Message Property DibelOfferMenu_Skills_Magic Auto
+Message Property DibelOfferMenu_Skills_Stealth Auto
+Message Property DibelOfferMenu_Confirm_Skill Auto
+Message Property DibelOfferMenu_Confirm_Health Auto
+Message Property DibelOfferMenu_Confirm_Stamina Auto
+Message Property DibelOfferMenu_Confirm_Magicka Auto
+Message Property DibelOfferMenu_Confirm_Perk Auto
+Message Property DibelOfferMenu_Confirm_CarryWeight Auto
+Message Property DibelOfferMenu_Skill_Changed Auto
+Message Property DibelOfferMenu_Perk_Changed Auto
+Message Property DibelOfferMenu_Health_Changed Auto
+Message Property DibelOfferMenu_Stamina_Changed Auto
+Message Property DibelOfferMenu_Magicka_Changed Auto
+Message Property DibelOfferMenu_CarryWeight_Changed Auto
+Message Property DibelOfferMenu_Attributes Auto
+Message Property Confirm_RemoveDibelRewards_Message Auto
 Bool property bBeggingClothing=True auto Hidden Conditional
 Bool property bBeggingEnabled=True auto Hidden Conditional
 Bool property bPoorHelpBeggar=True auto Hidden Conditional
@@ -148,10 +177,14 @@ Float Property fCitizenReportChance = 10.0 Auto Hidden Conditional
 Float Property fGuardReportChance = 90.0 Auto Hidden Conditional
 Bool Property isWhoringAllowedInCurrentLocation = False Auto Hidden Conditional
 Bool Property isWhoringAlwaysAllowedInCurrentLocation = False Auto Hidden Conditional
+Float Property fBeggarRapeChance = 0.0 Auto Hidden Conditional
+Float Property fWhoreStealChance = 0.0 Auto Hidden Conditional
+Float Property fDibelStealChance = 0.0 Auto Hidden Conditional
 ImageSpaceModifier property fadeIn auto
 ImageSpaceModifier property fadeOut auto
 ImageSpaceModifier property fastFadeOut auto
 MiscObject property gold auto
+MiscObject Property dibelMark Auto
 Actor property player auto
 Faction property whoreFaction auto
 Faction Property DibellaMerchant Auto
@@ -166,6 +199,18 @@ Keyword Property stdHealer_KWD Auto
 Keyword Property BeggarClothing_kwd Auto
 associationType Property spouse  auto
 Quest Property pimpTracker Auto
+Float Property fWhoreMarkChance = 0.0 Auto Hidden Conditional
+Float Property fDibelMarkChance = 1.0 Auto Hidden Conditional
+Float Property fAttributeCost = 1.0 Auto Hidden Conditional
+Float Property fCarryWeightCost = 1.0 Auto Hidden Conditional
+Float Property fAttributeIncrement = 10.0 Auto Hidden Conditional
+Float Property fCarryWeightIncrement = 20.0 Auto Hidden Conditional
+Float Property fSkillLevelCost = 1.0 Auto Hidden Conditional
+Float Property fSkillLevelIncrement = 1.0 Auto Hidden Conditional
+Float Property fPerkPointCost = 5.0 Auto Hidden Conditional
+Float Property fPerkPointIncrement = 1.0 Auto Hidden Conditional
+
+Int iDontInfect = 0
 
 function shutDown()
   snitchDetector.stop()
@@ -189,11 +234,16 @@ Function SetVars()
   else
     player.RemoveFromFaction(whoreFaction)
   endif
-  setChance()
+  if !DibellaMerchantNPC.IsInFaction(DibellaMerchant)
+    DibellaMerchantNPC.AddToFaction(DibellaMerchant)
+  endif
+  setGlobalVaues()
   if fWhoreOwnerShare > 0.0
     pimpTracker.start()
   endif
   startCalcSTDCurePrice()
+  RegisterForEvents()
+  checkCurrentLocation()
 EndFunction
 
 Function RegisterForEvents()
@@ -203,6 +253,13 @@ Function RegisterForEvents()
 EndFunction
 
 function startInfectingPlayer(String curState)
+  if iDontInfect > 0
+    if iDontInfect == 2
+      STD_Script.cureActorSTDs(player, False)
+    endif
+    iDontInfect = 0
+    Return 
+  endif
   int handle = ModEvent.Create("SPP_InfectPlayerWithSTD")
   ModEvent.PushForm(handle, self as Quest)
   ModEvent.PushString(handle, curState)
@@ -229,7 +286,7 @@ function AllowProstitution(Actor akOwner)
       UpdateCurrentInstanceGlobal(currentOwnerSeptimDisplay)
     endIf
     Owner.ForceRefTo(akOwner)
-    setChance()
+    setGlobalVaues()
     SetStage(10)
     if pimpTracker.isrunning()
       pimpTracker.setstage(10)
@@ -272,11 +329,11 @@ function playerBegTo(Actor akActor, Bool bPay=True)
     payBeggar(player)
     persuade(fBeggarPersuasionXPMult)
   endif
-  setChance()
+  setGlobalVaues()
 endfunction
 
 function ProstitutePlayerTo(Actor akCustomer, bool bAccept=true)
-  setChance()
+  setGlobalVaues()
   if akCustomer
     customerSpell.Cast(akCustomer, akCustomer)
     if !bAccept
@@ -292,8 +349,21 @@ function ProstitutePlayerTo(Actor akCustomer, bool bAccept=true)
   endif
 endfunction
 
+Function stealFromProstitutePlayer(Actor akActor)
+    Utility.wait(1.0)
+    player.removeItem(gold, utility.randomInt(1, player.getItemCount(gold)), false, akActor)
+EndFunction
+
+Function rapeBeggarPlayer(Actor akActor)
+  Utility.wait(1.0)
+  if utility.randomint(0,1) && (player.getItemCount(gold) > 0)
+    player.removeItem(gold, utility.randomInt(1, player.getItemCount(gold)), false, akActor)
+  endif
+  randomSexWithPlayer(akActor, True)
+EndFunction
+
 function playerPracticeDibelArtWith(Actor akActor, bool bAccept=true)
-  setChance()
+  setGlobalVaues()
   if akActor
     customerSpell.Cast(akActor, akActor)
     if !bAccept
@@ -314,7 +384,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-  return getBaseVersion() + 0.17
+  return getBaseVersion() + 0.18
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
@@ -323,6 +393,38 @@ Function persuade(Float fSpeechSkillMult)
   endif
   Game.AdvanceSkill("Speechcraft", fSpeechSkillMult * player.GetActorValue("Speechcraft"))
   ;Game.IncrementStat("Persuasions")
+endFunction
+
+
+function randomSexWithPlayer(Actor akActor, Bool bAggressive = False)
+  if !akActor
+    return
+  endif
+  string interface = sGetCurAnimInteface()
+  if interface == "sexlab"
+    if !bIsSexlabActive
+      return
+    endif
+    SexLabInterface.haveRandomSexWithPlayer(akActor, bAggressive)
+  elseif interface == "ostim"
+    if !bIsOstimActive
+      return
+    endif
+    OStimInterface.haveRandomSexWithPlayer(akActor, bAggressive)
+  elseif interface == "flowergirls"
+    if !bIsFlowerGirlsActive
+      return
+    endif
+    FlowerGirlsInterface.haveRandomSexWithPlayer(akActor)
+  else
+    Game.DisablePlayerControls(abMovement=True, abFighting=True, abCamSwitch=False, abLooking=False, abSneaking=True, abMenu=True, abActivate=True, abJournalTabs=False, aiDisablePOVType=0)
+    FastFadeOut.Apply()
+    Utility.Wait(1.0)
+    FastFadeOut.PopTo(BlackScreen)
+    Utility.Wait(5.0)
+    BlackScreen.PopTo(FadeIn)
+    Game.EnablePlayerControls()
+  endif
 endFunction
 
 int function haveSex(Actor akActor, String interface, Bool bAllowAggressive = False, Bool bAllowAll = False)
@@ -475,11 +577,15 @@ int function haveSexSFW()
   return iPosition
 endfunction
 
-function payBeggar(Actor beggar)
-  Int minBonus = maxInt(0, ((beggar.getActorValue("Speechcraft") * fMinSpeechBegBonusMult) As Int) + 1)
-  Int maxBonus = maxInt(0, ((beggar.getActorValue("Speechcraft") * fMaxSpeechBegBonusMult) As Int) + 1)
-  minBonus = minInt(minBonus,maxBonus)
-  maxBonus = maxInt(minBonus,maxBonus)
+function payBeggar(Actor beggar, Bool bBonus = True)
+  Int minBonus = 0
+  Int maxBonus = 0
+  if bBonus
+	minBonus = maxInt(0, ((beggar.getActorValue("Speechcraft") * fMinSpeechBegBonusMult) As Int) + 1)
+	maxBonus = maxInt(0, ((beggar.getActorValue("Speechcraft") * fMaxSpeechBegBonusMult) As Int) + 1)
+	minBonus = minInt(minBonus,maxBonus)
+	maxBonus = maxInt(minBonus,maxBonus)
+  endif
   int begPayMin = minInt(fBegPayMin As Int, fBegPayMax As Int)
   int begPayMax = maxInt(fBegPayMin As Int, fBegPayMax As Int)
   Int totalPay = maxInt(0, Utility.randomInt(begPayMin, BegPayMax) + Utility.randomInt(minBonus, maxBonus))
@@ -575,10 +681,17 @@ Int function iGetCurTotalAnimInterfaces()
   return num
 endfunction
 
-function setChance()
+function setGlobalVaues()
   WhoreFailureChance.SetValueInt(maxInt(0, 16 * MCMScript.iWhoreSpeechDifficulty))
   DibelFailureChance.SetValueInt(maxInt(0, 16 * MCMScript.iDibelSpeechDifficulty))
   BeggarFailureChance.SetValueInt(maxInt(0, 16 * MCMScript.iBeggarSpeechDifficulty))
+  WhoreNoTheftChance.SetValueInt(100 - fWhoreStealChance as Int)
+  DibelNoTheftChance.SetValueInt(100 - fDibelStealChance as Int)
+  BeggarNoRapeChance.SetValueInt(100 - fBeggarRapeChance as Int)
+  BeggarRapistGender.SetValueInt(MCMScript.iBeggarRapistGender)
+  BeggarRapistMoralMax.SetValueInt(fBeggarRapistMoralMax as Int)
+  WhoreThieftMoralMax.SetValueInt(fWhoreThiefMoralMax as Int)
+  DibelThieftMoralMax.SetValueInt(fDibelThiefMoralMax as Int)
 endfunction
 
 Int function positionChooser(int vaginalWeight = 50, int AnalWeight = 50, int oralWeight = 50)
@@ -1152,19 +1265,28 @@ State Dibeling
   
   event on_spp_sexlab_Sex_End(int tid, bool HasPlayer)
     if HasPlayer
+      if utility.randomInt(0,99) < fDibelMarkChance as Int
+        player.Additem(dibelMark, 1)
+      endif
       startInfectingPlayer(GetState())
       GoToState("")
     endif
   endEvent
   
   Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, form sender)
+    if utility.randomInt(0,99) < fDibelMarkChance as Int
+      player.Additem(dibelMark, 1)
+    endif
     startInfectingPlayer(GetState())
     GoToState("")
   EndEvent
   
   event onUpdate()
-      startInfectingPlayer(GetState())
-      GoToState("")
+    if utility.randomInt(0,99) < fDibelMarkChance as Int
+      player.Additem(dibelMark, 1)
+    endif
+    startInfectingPlayer(GetState())
+    GoToState("")
   endEvent
   
   event OnUpdateGameTime()
@@ -1196,17 +1318,26 @@ State Whoring
   
   event on_spp_sexlab_Sex_End(int tid, bool HasPlayer)
     if HasPlayer
+      if utility.randomInt(0,99) < fWhoreMarkChance as Int
+        player.Additem(dibelMark, 1)
+      endif
       startInfectingPlayer(GetState())
       GoToState("")
     endif
   endEvent
   
   Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, form sender)
+    if utility.randomInt(0,99) < fWhoreMarkChance as Int
+      player.Additem(dibelMark, 1)
+    endif
     startInfectingPlayer(GetState())
     GoToState("")
   EndEvent
   
   event onUpdate()
+      if utility.randomInt(0,99) < fWhoreMarkChance as Int
+        player.Additem(dibelMark, 1)
+      endif
       startInfectingPlayer(GetState())
       GoToState("")
   endEvent
@@ -1249,3 +1380,258 @@ Auto State Init
   function snitch()
   EndFunction
 EndState
+
+Bool function GetDibellanRewards(Int aiMessage=0, Int aiButton=0)
+  int iMarkCount = player.getItemCount(dibelMark)
+  Bool bTraded = False
+  While true
+    if aiButton == -1
+    elseif aiMessage == 0 ;Top
+      aiButton = DibelOfferMenu.Show(iMarkCount, player.GetActorValue("CarryWeight") as Int)
+      if aiButton == -1
+      elseif aiButton == 0 ;Attribute
+        if iMarkCount < fAttributeCost as Int
+          DibelOfferMenu_InsufficientMark.Show(fAttributeCost as Int, iMarkCount)
+          aiMessage = 0
+        else
+          aiMessage = 1
+        endif
+      elseif aiButton == 1 ;CarryWeight
+        if iMarkCount < fCarryWeightCost as Int
+          DibelOfferMenu_InsufficientMark.Show(fCarryWeightCost as Int, iMarkCount)
+          aiMessage = 0
+        elseif DibelOfferMenu_Confirm_CarryWeight.Show(fCarryWeightCost as Int, fCarryWeightIncrement as Int) == 0
+          player.ModActorValue("CarryWeight", fCarryWeightIncrement as Int)
+          MCMScript.iTotalCarryWeightRecieved += fCarryWeightIncrement as Int
+          player.removeItem(dibelMark, fCarryWeightCost as Int)
+          MCMScript.iTotalRefundableOfferedMarks += fCarryWeightCost as Int
+          MCMScript.iTotalOfferedMarks += fCarryWeightCost as Int
+          iMarkCount = player.getItemCount(dibelMark)
+          DibelOfferMenu_CarryWeight_Changed.Show(fCarryWeightIncrement as Int)
+          bTraded = True
+          if iMarkCount < fCarryWeightCost as Int
+            aiMessage = 0
+          endif
+        endif
+      elseif aiButton == 2 ;skill level
+        if iMarkCount < fSkillLevelCost as Int
+          DibelOfferMenu_InsufficientMark.Show(fSkillLevelCost as Int, iMarkCount)
+          aiMessage = 0
+        else
+          aiMessage = 2
+        endif
+      elseif aiButton == 3 ;perk point
+        if iMarkCount < fPerkPointCost as Int
+          DibelOfferMenu_InsufficientMark.Show(fPerkPointCost as Int, iMarkCount)
+          aiMessage = 0
+        elseif DibelOfferMenu_Confirm_Perk.Show(fPerkPointCost as Int, fPerkPointIncrement as Int) == 0
+          Game.AddPerkPoints(fPerkPointIncrement as Int)
+          MCMScript.iTotalPerkPointRecieved += fPerkPointIncrement as Int
+          player.removeItem(dibelMark, fPerkPointCost as Int)
+          ;MCMScript.iTotalRefundableOfferedMarks += fPerkPointCost as Int
+          MCMScript.iTotalOfferedMarks += fPerkPointCost as Int
+          iMarkCount = player.getItemCount(dibelMark)
+          DibelOfferMenu_Perk_Changed.Show(fPerkPointIncrement as Int)
+          bTraded = True
+          if iMarkCount < fPerkPointCost as Int
+            aiMessage = 0
+          endif
+        endif
+      elseif aiButton == 4 ;Exit
+        return bTraded
+      endif
+    elseif aiMessage == 1 ;Attribute Menu
+      aiButton = DibelOfferMenu_Attributes.Show(player.GetActorValue("Health") as Int, player.GetActorValue("Magicka") as Int, player.GetActorValue("Stamina") as Int)
+      if aiButton == -1
+      elseif (aiButton == 0) || (aiButton == 1) || (aiButton == 2)
+         if iMarkCount < fAttributeCost as Int
+          DibelOfferMenu_InsufficientMark.Show(fAttributeCost as Int, iMarkCount)
+          aiMessage = 0 ;Top
+        elseif aiButton == 0 ;Health
+          if DibelOfferMenu_Confirm_Health.Show(fAttributeCost as Int, fAttributeIncrement as Int) == 0
+            player.SetActorValue("Health", player.GetBaseActorValue("Health") + fAttributeIncrement as Int)
+            MCMScript.iTotalHealthRecieved += fAttributeIncrement as Int
+            player.removeItem(dibelMark, fAttributeCost as Int)
+            MCMScript.iTotalRefundableOfferedMarks += fAttributeCost as Int
+            MCMScript.iTotalOfferedMarks += fAttributeCost as Int
+            iMarkCount = player.getItemCount(dibelMark)
+            DibelOfferMenu_Health_Changed.Show(fAttributeIncrement as Int)
+            bTraded = True
+            if iMarkCount < fAttributeCost as Int
+              aiMessage = 0
+            endif
+          endif
+        elseif aiButton == 1 ;Magicka
+          if DibelOfferMenu_Confirm_Magicka.Show(fAttributeCost as Int, fAttributeIncrement as Int) == 0
+            player.SetActorValue("Magicka", player.GetBaseActorValue("Magicka") + fAttributeIncrement as Int)
+            MCMScript.iTotalMagickaRecieved += fAttributeIncrement as Int
+            player.removeItem(dibelMark, fAttributeCost as Int)
+            MCMScript.iTotalRefundableOfferedMarks += fAttributeCost as Int
+            MCMScript.iTotalOfferedMarks += fAttributeCost as Int
+            iMarkCount = player.getItemCount(dibelMark)
+            DibelOfferMenu_Magicka_Changed.Show(fAttributeIncrement as Int)
+            bTraded = True
+            if iMarkCount < fAttributeCost as Int
+              aiMessage = 0
+            endif
+          endif
+        elseif aiButton == 2 ;Stamina
+          if DibelOfferMenu_Confirm_Stamina.Show(fAttributeCost as Int, fAttributeIncrement as Int) == 0
+            player.SetActorValue("Stamina", player.GetBaseActorValue("Stamina") + fAttributeIncrement as Int)
+            MCMScript.iTotalStaminaRecieved += fAttributeIncrement as Int
+            player.removeItem(dibelMark, fAttributeCost as Int)
+            MCMScript.iTotalRefundableOfferedMarks += fAttributeCost as Int
+            MCMScript.iTotalOfferedMarks += fAttributeCost as Int
+            iMarkCount = player.getItemCount(dibelMark)
+            DibelOfferMenu_Stamina_Changed.Show(fAttributeIncrement as Int)
+            bTraded = True
+            if iMarkCount < fAttributeCost as Int
+              aiMessage = 0
+            endif
+          endif
+		endif  
+      elseif aiButton == 3 ;Back
+        aiMessage = 0 ;Top
+      elseif aiButton == 4 ;Exit
+        return bTraded
+      endif
+    elseif aiMessage == 2 ;Skills Type Menu
+      if iMarkCount < fSkillLevelCost as Int
+        DibelOfferMenu_InsufficientMark.Show(fSkillLevelCost as Int, iMarkCount)
+        aiMessage = 0
+      else
+        aiButton = DibelOfferMenu_Skills.Show()
+        if aiButton == -1
+        elseif aiButton == 0 ;Combat Skills
+          aiMessage = 3
+        elseif aiButton == 1 ;Magic Skills
+          aiMessage = 4
+        elseif aiButton == 2 ;Stealth Skills
+          aiMessage = 5
+        elseif aiButton == 3 ;Back
+          aiMessage = 0 ;Top
+        elseif aiButton == 4 ;Exit
+          return bTraded
+        endIf
+      endif
+    elseif aiMessage == 3 ;Combat Skills Menu
+      if iMarkCount < fSkillLevelCost as Int
+        DibelOfferMenu_InsufficientMark.Show(fSkillLevelCost as Int, iMarkCount)
+        aiMessage = 0
+      else
+        aiButton = DibelOfferMenu_Skills_Combat.Show(player.GetActorValue("Marksman") as Int, player.GetActorValue("Block") as Int, player.GetActorValue("HeavyArmor") as Int, player.GetActorValue("OneHanded") as Int, player.GetActorValue("Smithing") as Int, player.GetActorValue("TwoHanded") as Int)
+        if aiButton == -1
+        elseif aiButton < 6
+          if DibelOfferMenu_Confirm_Skill.Show(fSkillLevelCost as Int, fSkillLevelIncrement as Int) == 0
+            if aiButton == 0
+              IncrementSkillLevel("Marksman")
+            elseif aiButton == 1
+              IncrementSkillLevel("Block")
+            elseif aiButton == 2
+              IncrementSkillLevel("HeavyArmor")
+            elseif aiButton == 3
+              IncrementSkillLevel("OneHanded")
+            elseif aiButton == 4
+              IncrementSkillLevel("Smithing")
+            elseif aiButton == 5
+              IncrementSkillLevel("TwoHanded")
+            endif
+			      iMarkCount = player.getItemCount(dibelMark)
+            bTraded = True
+            if iMarkCount < fSkillLevelCost as Int
+              aiMessage = 0
+            endif
+          endif
+        elseif aiButton == 6 ;Back
+          aiMessage = 2 ;;Skills Type Menu
+        elseif aiButton == 7 ;Exit
+          return bTraded
+        endif
+      endif
+    elseif aiMessage == 4 ;Magic Skills Menu
+      if iMarkCount < fSkillLevelCost as Int
+        DibelOfferMenu_InsufficientMark.Show(fSkillLevelCost as Int, iMarkCount)
+        aiMessage = 0
+      else
+        aiButton = DibelOfferMenu_Skills_Magic.Show(player.GetActorValue("Alteration") as Int, player.GetActorValue("Conjuration") as Int, player.GetActorValue("Destruction") as Int, player.GetActorValue("Enchanting") as Int, player.GetActorValue("Illusion") as Int, player.GetActorValue("Restoration") as Int)
+        if aiButton == -1
+        elseif aiButton < 6
+          if DibelOfferMenu_Confirm_Skill.Show(fSkillLevelCost as Int, fSkillLevelIncrement as Int) == 0
+            if aiButton == 0
+              IncrementSkillLevel("Alteration")
+            elseif aiButton == 1
+              IncrementSkillLevel("Conjuration")
+            elseif aiButton == 2
+              IncrementSkillLevel("Destruction")
+            elseif aiButton == 3
+              IncrementSkillLevel("Enchanting")
+            elseif aiButton == 4
+              IncrementSkillLevel("Illusion")
+            elseif aiButton == 5
+              IncrementSkillLevel("Restoration")
+            endif
+			      iMarkCount = player.getItemCount(dibelMark)
+            bTraded = True
+            if iMarkCount < fSkillLevelCost as Int
+              aiMessage = 0
+            endif
+          endif
+        elseif aiButton == 6 ;Back
+          aiMessage = 2 ;;Skills Type Menu
+        elseif aiButton == 7 ;Exit
+          return bTraded
+        endif
+      endif
+    elseif aiMessage == 5 ;Stealth Skills Menu
+      if iMarkCount < fSkillLevelCost as Int
+        DibelOfferMenu_InsufficientMark.Show(fSkillLevelCost as Int, iMarkCount)
+        aiMessage = 0
+      else
+        aiButton = DibelOfferMenu_Skills_Stealth.Show(player.GetActorValue("Alchemy") as Int, player.GetActorValue("LightArmor") as Int, player.GetActorValue("Lockpicking") as Int, player.GetActorValue("Pickpocket") as Int, player.GetActorValue("Sneak") as Int, player.GetActorValue("Speechcraft") as Int)
+        if aiButton == -1
+        elseif aiButton < 6
+          if DibelOfferMenu_Confirm_Skill.Show(fSkillLevelCost as Int, fSkillLevelIncrement as Int) == 0
+            if aiButton == 0
+              IncrementSkillLevel("Alchemy")
+            elseif aiButton == 1
+              IncrementSkillLevel("LightArmor")
+            elseif aiButton == 2
+              IncrementSkillLevel("Lockpicking")
+            elseif aiButton == 3
+              IncrementSkillLevel("Pickpocket")
+            elseif aiButton == 4
+              IncrementSkillLevel("Sneak")
+            elseif aiButton == 5
+              IncrementSkillLevel("Speechcraft")
+            endif
+			      iMarkCount = player.getItemCount(dibelMark)
+            bTraded = True
+            if iMarkCount < fSkillLevelCost as Int
+              aiMessage = 0
+            endif
+          endif
+        elseif aiButton == 6 ;Back
+          aiMessage = 2 ;;Skills Type Menu
+        elseif aiButton == 7 ;Exit
+          return bTraded
+        endif
+      endif
+    endif
+  endWhile
+EndFunction
+
+Function IncrementSkillLevel(String sSkillName)
+  Game.IncrementSkillBy(sSkillName, fSkillLevelIncrement as Int)
+  MCMScript.iTotalSkillLevelRecieved += fSkillLevelIncrement as Int
+  player.removeItem(dibelMark, fSkillLevelCost as Int)
+  ;MCMScript.iTotalRefundableOfferedMarks += fSkillLevelCost as Int
+  MCMScript.iTotalOfferedMarks += fSkillLevelCost as Int
+  DibelOfferMenu_Skill_Changed.Show(fSkillLevelIncrement as Int)
+EndFunction
+
+Function offerDibelMarks(Actor akActor)
+  if GetDibellanRewards()
+    iDontInfect = 2
+    randomSexWithPlayer(akActor)
+  endif
+EndFunction

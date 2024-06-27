@@ -35,3 +35,12 @@ Int function haveSexWithPlayerFG(Quest FlowerGirls, Actor partner, Int Position)
   endif
   return Position
 endfunction
+
+
+function haveRandomSexWithPlayerFG(Quest FlowerGirls, Actor partner) Global
+  dxFlowerGirlsScript FGScript = FlowerGirls as dxFlowerGirlsScript
+  if FGScript.ThreadManager.GetActiveThreadForActor(partner as ObjectReference) != None
+    return
+  endif
+  FGScript.RandomScene(Game.GetPlayer(), partner)
+endfunction
