@@ -17,16 +17,6 @@ ReferenceAlias property Owner auto
 ReferenceAlias property whoreCustomerAlias auto
 ReferenceAlias property dibelCustomerAlias auto
 GlobalVariable property WhoreFailureChance auto
-GlobalVariable Property WhoreNoTheftChance Auto
-GlobalVariable Property DibelNoTheftChance Auto 
-GlobalVariable Property BeggarNoRapeChance Auto
-GlobalVariable Property BeggarRapistGender Auto
-GlobalVariable Property BeggarRapistMoralMax Auto
-GlobalVariable Property WhoreThieftMoralMax Auto
-GlobalVariable Property DibelThieftMoralMax Auto
-Float Property fBeggarRapistMoralMax = 3.0 Auto Hidden Conditional
-Float Property fWhoreThiefMoralMax = 3.0 Auto Hidden Conditional
-Float Property fDibelThiefMoralMax = 2.0 Auto Hidden Conditional
 Message property InterfaceMenu auto
 Message Property DibelOfferMenu Auto
 Message Property DibelOfferMenu_InsufficientMark Auto
@@ -177,9 +167,6 @@ Float Property fCitizenReportChance = 10.0 Auto Hidden Conditional
 Float Property fGuardReportChance = 90.0 Auto Hidden Conditional
 Bool Property isWhoringAllowedInCurrentLocation = False Auto Hidden Conditional
 Bool Property isWhoringAlwaysAllowedInCurrentLocation = False Auto Hidden Conditional
-Float Property fBeggarRapeChance = 0.0 Auto Hidden Conditional
-Float Property fWhoreStealChance = 0.0 Auto Hidden Conditional
-Float Property fDibelStealChance = 0.0 Auto Hidden Conditional
 ImageSpaceModifier property fadeIn auto
 ImageSpaceModifier property fadeOut auto
 ImageSpaceModifier property fastFadeOut auto
@@ -348,19 +335,6 @@ function ProstitutePlayerTo(Actor akCustomer, bool bAccept=true)
     iPosition = -1
   endif
 endfunction
-
-Function stealFromProstitutePlayer(Actor akActor)
-    Utility.wait(1.0)
-    player.removeItem(gold, utility.randomInt(1, player.getItemCount(gold)), false, akActor)
-EndFunction
-
-Function rapeBeggarPlayer(Actor akActor)
-  Utility.wait(1.0)
-  if utility.randomint(0,1) && (player.getItemCount(gold) > 0)
-    player.removeItem(gold, utility.randomInt(1, player.getItemCount(gold)), false, akActor)
-  endif
-  randomSexWithPlayer(akActor, True)
-EndFunction
 
 function playerPracticeDibelArtWith(Actor akActor, bool bAccept=true)
   setGlobalVaues()
@@ -685,13 +659,6 @@ function setGlobalVaues()
   WhoreFailureChance.SetValueInt(maxInt(0, 16 * MCMScript.iWhoreSpeechDifficulty))
   DibelFailureChance.SetValueInt(maxInt(0, 16 * MCMScript.iDibelSpeechDifficulty))
   BeggarFailureChance.SetValueInt(maxInt(0, 16 * MCMScript.iBeggarSpeechDifficulty))
-  WhoreNoTheftChance.SetValueInt(100 - fWhoreStealChance as Int)
-  DibelNoTheftChance.SetValueInt(100 - fDibelStealChance as Int)
-  BeggarNoRapeChance.SetValueInt(100 - fBeggarRapeChance as Int)
-  BeggarRapistGender.SetValueInt(MCMScript.iBeggarRapistGender)
-  BeggarRapistMoralMax.SetValueInt(fBeggarRapistMoralMax as Int)
-  WhoreThieftMoralMax.SetValueInt(fWhoreThiefMoralMax as Int)
-  DibelThieftMoralMax.SetValueInt(fDibelThiefMoralMax as Int)
 endfunction
 
 Int function positionChooser(int vaginalWeight = 50, int AnalWeight = 50, int oralWeight = 50)
@@ -1296,6 +1263,9 @@ State Dibeling
   function snitch()
   EndFunction
 
+  Function offerDibelMarks(Actor akActor)
+  endFunction
+
 EndState
 
 State Whoring
@@ -1349,6 +1319,9 @@ State Whoring
   function snitch()
   EndFunction
 
+  Function offerDibelMarks(Actor akActor)
+  endFunction
+
 EndState
 
 Auto State Init
@@ -1379,6 +1352,9 @@ Auto State Init
 
   function snitch()
   EndFunction
+
+  Function offerDibelMarks(Actor akActor)
+  endFunction
 EndState
 
 Bool function GetDibellanRewards(Int aiMessage=0, Int aiButton=0)
@@ -1626,12 +1602,21 @@ Function IncrementSkillLevel(String sSkillName)
   player.removeItem(dibelMark, fSkillLevelCost as Int)
   ;MCMScript.iTotalRefundableOfferedMarks += fSkillLevelCost as Int
   MCMScript.iTotalOfferedMarks += fSkillLevelCost as Int
+  utility.wait(0.5)
   DibelOfferMenu_Skill_Changed.Show(fSkillLevelIncrement as Int)
 EndFunction
 
 Function offerDibelMarks(Actor akActor)
+  gotostate("offeringToDibella")
   if GetDibellanRewards()
-    iDontInfect = 2
+    utility.wait(1.0)
     randomSexWithPlayer(akActor)
+    iDontInfect = 2
   endif
+  GoToState("")
 EndFunction
+
+State offeringToDibella
+  Function offerDibelMarks(Actor akActor)
+  endFunction
+EndState

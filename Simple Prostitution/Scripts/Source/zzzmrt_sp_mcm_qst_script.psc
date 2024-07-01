@@ -9,7 +9,6 @@ Int Property iWhoreSpeechDifficulty = 3 Auto Hidden
 Int Property iDibelSpeechDifficulty = 2 Auto Hidden
 Int Property iBeggarSpeechDifficulty = 4 Auto Hidden
 Int Property iAnimInterfaceMethod = 0 Auto Hidden
-Int Property iBeggarRapistGender = 2 Auto Hidden
 Int Property iWhoreStatRace = 0 Auto Hidden
 Int Property iDibelStatRace = 0 Auto Hidden
 
@@ -331,9 +330,6 @@ event OnPageReset(String page)
     AddSliderOptionST("SPEECH_BEG_BONUS_MAX_MULT_SLIDER", "$MRT_SP_SPEECH_BEG_BONUS_MAX_MULT_SLIDER1", MainScript.fMaxSpeechBegBonusMult, "$MRT_SP_SPEECH_BEG_BONUS_MAX_MULT_SLIDER2", flag)
     AddMenuOptionST("BEG_ACCEPT_DIFFICULTY_MENU", "$MRT_SP_BEG_ACCEPT_DIFFICULTY_MENU", sGetSpeechDifficultyArr()[iBeggarSpeechDifficulty], flag)
     AddSliderOptionST("SPEECH_BEG_XP_MULT_SLIDER", "$MRT_SP_SPEECH_BEG_XP_MULT_SLIDER1", MainScript.fBeggarPersuasionXPMult, "$MRT_SP_SPEECH_BEG_XP_MULT_SLIDER2", flag)
-    AddSliderOptionST("BEG_RAPE_CHANCE_SLIDER", "$MRT_SP_BEG_RAPE_CHANCE_SLIDER1", Mainscript.fBeggarRapeChance, "$MRT_SP_BEG_RAPE_CHANCE_SLIDER2", flag)
-    AddSliderOptionST("BEG_RAPE_MORAL_MAX_SLIDER", "$MRT_SP_BEG_RAPE_MORAL_MAX_SLIDER1", Mainscript.fBeggarRapistMoralMax, "$MRT_SP_BEG_RAPE_MORAL_MAX_SLIDER2", flag)
-    AddMenuOptionST("BEG_RAPIST_GENDER_MENU", "$MRT_SP_BEG_RAPIST_GENDER_MENU", sGetRapistGenderArray()[iBeggarRapistGender], flag)
   elseif (page == "$MRT_SP_PAGE_STD")
     SetTitleText("$MRT_SP_PAGE_STD")
     _AddHeaderOption("$MRT_SP_HEAD_STD")
@@ -389,8 +385,6 @@ event OnPageReset(String page)
     AddSliderOptionST("SPEECH_WHORE_BONUS_MAX_MULT_SLIDER", "$MRT_SP_SPEECH_WHORE_BONUS_MAX_MULT_SLIDER1", MainScript.fMaxSpeechWhoreBonusMult, "$MRT_SP_SPEECH_WHORE_BONUS_MAX_MULT_SLIDER2", flag)
     AddMenuOptionST("WHORE_ACCEPT_DIFFICULTY_MENU", "$MRT_SP_WHORE_ACCEPT_DIFFICULTY_MENU", sGetSpeechDifficultyArr()[iWhoreSpeechDifficulty], flag)
     AddSliderOptionST("SPEECH_WHORE_XP_MULT_SLIDER", "$MRT_SP_SPEECH_WHORE_XP_MULT_SLIDER1", MainScript.fWhorePersuasionXPMult, "$MRT_SP_SPEECH_WHORE_XP_MULT_SLIDER2", flag)
-    AddSliderOptionST("WHORE_STEAL_CHANCE_SLIDER", "$MRT_SP_WHORE_STEAL_CHANCE_SLIDER1", Mainscript.fWhoreStealChance, "$MRT_SP_WHORE_STEAL_CHANCE_SLIDER2", flag)
-    AddSliderOptionST("WHORE_THIEF_MORAL_MAX_SLIDER", "$MRT_SP_WHORE_THIEF_MORAL_MAX_SLIDER1", Mainscript.fWhoreThiefMoralMax, "$MRT_SP_WHORE_THIEF_MORAL_MAX_SLIDER2", flag)
     AddSliderOptionST("WHORE_MARK_CHANCE_SLIDER", "$MRT_SP_WHORE_MARK_CHANCE_SLIDER1", Mainscript.fWhoreMarkChance, "$MRT_SP_WHORE_MARK_CHANCE_SLIDER2", flag)
     SetCursorPosition(1)
     _AddHeaderOption("$MRT_SP_HEAD_DIBEL")
@@ -419,8 +413,6 @@ event OnPageReset(String page)
     AddSliderOptionST("SPEECH_DIBEL_BONUS_MAX_MULT_SLIDER", "$MRT_SP_SPEECH_DIBEL_BONUS_MAX_MULT_SLIDER1", MainScript.fMaxSpeechDibelBonusMult, "$MRT_SP_SPEECH_DIBEL_BONUS_MAX_MULT_SLIDER2", flag)
     AddMenuOptionST("DIBEL_ACCEPT_DIFFICULTY_MENU", "$MRT_SP_DIBEL_ACCEPT_DIFFICULTY_MENU", sGetSpeechDifficultyArr()[iDibelSpeechDifficulty], flag)
     AddSliderOptionST("SPEECH_DIBEL_XP_MULT_SLIDER", "$MRT_SP_SPEECH_DIBEL_XP_MULT_SLIDER1", MainScript.fDibelPersuasionXPMult, "$MRT_SP_SPEECH_DIBEL_XP_MULT_SLIDER2", flag)
-    AddSliderOptionST("DIBEL_STEAL_CHANCE_SLIDER", "$MRT_SP_DIBEL_STEAL_CHANCE_SLIDER1", Mainscript.fDibelStealChance, "$MRT_SP_DIBEL_STEAL_CHANCE_SLIDER2", flag)
-    AddSliderOptionST("DIBEL_THIEF_MORAL_MAX_SLIDER", "$MRT_SP_DIBEL_THIEF_MORAL_MAX_SLIDER1", Mainscript.fDibelThiefMoralMax, "$MRT_SP_DIBEL_THIEF_MORAL_MAX_SLIDER2", flag)
     AddSliderOptionST("DIBEL_MARK_CHANCE_SLIDER", "$MRT_SP_DIBEL_MARK_CHANCE_SLIDER1", Mainscript.fDibelMarkChance, "$MRT_SP_DIBEL_MARK_CHANCE_SLIDER2", flag)
     addEmptyOption()
     if MainScript.bModEnabled
@@ -452,6 +444,12 @@ event OnVersionUpdate(Int version)
     Debug.Trace(self + ": Updating script to version " + 100)
   endif
 endevent
+
+  Event OnConfigClose()
+    if MainScript.fWhoreOwnerShare > 0.0 && !Mainscript.pimpTracker.isRunning()
+      Mainscript.pimpTracker.start()
+    endif
+  endEvent
 
 String[] function sGetAnimInerfaceMethodArr()
   String[] sAnimInterfaceMethods = new String[3]
@@ -527,14 +525,6 @@ string[] Function sGetSpeechDifficultyArr()
 	sSpeechDifficulties[5] = "$MRT_SP_SpeechDiff_Harder"
 	sSpeechDifficulties[6] = "$MRT_SP_SpeechDiff_VeryHard"
 	return sSpeechDifficulties
-EndFunction
-
-String[] function sGetRapistGenderArray()
-  String[] sGenderArray = Utility.CreateStringArray(3)
-  sGenderArray[0] = "$MRT_SP_Gender_Male"
-  sGenderArray[1] = "$MRT_SP_Gender_Female"
-  sGenderArray[2] = "$MRT_SP_Gender_Both"
-  return sGenderArray
 EndFunction
 
 Int function iGetCurAnimInterface()
@@ -670,27 +660,6 @@ state BEG_ACCEPT_DIFFICULTY_MENU
     SetMenuDialogOptions(sGetSpeechDifficultyArr())
   endevent
 endstate
-
-State BEG_RAPIST_GENDER_MENU
-  event OnDefaultST()
-  endevent
-  
-  event OnHighlightST()
-    SetInfoText("$MRT_SP_DESC_BEG_RAPIST_GENDER_MENU")
-  endevent
-  
-  event OnMenuAcceptST(int index)
-    iBeggarRapistGender = index
-    _SetMenuOptionValueST(sGetRapistGenderArray()[iBeggarRapistGender], True)
-    Mainscript.setGlobalVaues()
-  endevent
-
-  event OnMenuOpenST()
-    SetMenuDialogStartIndex(iBeggarRapistGender)
-    SetMenuDialogDefaultIndex(2)
-    SetMenuDialogOptions(sGetRapistGenderArray())
-  endevent
-endState
 
 state DIBEL_ACCEPT_DIFFICULTY_MENU
   event OnDefaultST()
@@ -1152,28 +1121,6 @@ state SPEECH_WHORE_XP_MULT_SLIDER
     SetSliderDialogInterval(1)
   endEvent
 endstate
-
-state BEG_RAPE_CHANCE_SLIDER
-  event OnDefaultST()
-  endevent
-  
-  event OnHighlightST()
-    SetInfoText("$MRT_SP_DESC_BEG_RAPE_CHANCE_SLIDER")
-  endevent
-  
-  event OnSliderAcceptST(float value)
-    MainScript.fBeggarRapeChance = value
-    _SetSliderOptionValueST(MainScript.fBeggarRapeChance, "$MRT_SP_BEG_RAPE_CHANCE_SLIDER2")
-    Mainscript.setGlobalVaues()
-  endevent
-
-  event OnSliderOpenST()
-    SetSliderDialogStartValue(MainScript.fBeggarRapeChance)
-    SetSliderDialogDefaultValue(0)
-    SetSliderDialogRange(0, 100)
-    SetSliderDialogInterval(1)
-  endEvent
-endState
 
 state SPEECH_BEG_XP_MULT_SLIDER
   event OnDefaultST()
@@ -1735,9 +1682,6 @@ state WHORE_OWNER_SHARE_SLIDER
   event OnSliderAcceptST(float value)
     MainScript.fWhoreOwnerShare = value
     _SetSliderOptionValueST(MainScript.fWhoreOwnerShare, "$MRT_SP_WHORE_OWNER_SHARE_SLIDER2")
-    if MainScript.fWhoreOwnerShare > 0.0
-      Mainscript.pimpTracker.start()
-    endif
   endevent
 
   event OnSliderOpenST()
@@ -1747,117 +1691,6 @@ state WHORE_OWNER_SHARE_SLIDER
     SetSliderDialogInterval(1)
   endEvent
 endstate
-
-state WHORE_STEAL_CHANCE_SLIDER
-  event OnDefaultST()
-  endevent
-
-  event OnHighlightST()
-    SetInfoText("$MRT_SP_DESC_WHORE_STEAL_CHANCE_SLIDER")
-  endevent
-  
-  event OnSliderAcceptST(float value)
-    MainScript.fWhoreStealChance = value
-    _SetSliderOptionValueST(MainScript.fWhoreStealChance, "$MRT_SP_WHORE_STEAL_CHANCE_SLIDER2")
-    MainScript.setGlobalVaues()
-  endevent
-
-  event OnSliderOpenST()
-    SetSliderDialogStartValue(MainScript.fWhoreStealChance)
-    SetSliderDialogDefaultValue(0.0)
-    SetSliderDialogRange(0, 100)
-    SetSliderDialogInterval(1)
-  endEvent
-endState
-
-state DIBEL_THIEF_MORAL_MAX_SLIDER
-  event OnDefaultST()
-  endevent
-
-  event OnHighlightST()
-    SetInfoText("$MRT_SP_DESC_DIBEL_THIEF_MORAL_MAX_SLIDER")
-  endevent
-  
-  event OnSliderAcceptST(float value)
-    MainScript.fDibelThiefMoralMax = value
-    _SetSliderOptionValueST(MainScript.fDibelThiefMoralMax, "$MRT_SP_DIBEL_THIEF_MORAL_MAX_SLIDER2")
-    MainScript.setGlobalVaues()
-  endevent
-
-  event OnSliderOpenST()
-    SetSliderDialogStartValue(MainScript.fDibelThiefMoralMax)
-    SetSliderDialogDefaultValue(2.0)
-    SetSliderDialogRange(0, 3)
-    SetSliderDialogInterval(1)
-  endEvent
-endState
-
-state BEG_RAPE_MORAL_MAX_SLIDER
-  event OnDefaultST()
-  endevent
-
-  event OnHighlightST()
-    SetInfoText("$MRT_SP_DESC_BEG_RAPE_MORAL_MAX_SLIDER")
-  endevent
-  
-  event OnSliderAcceptST(float value)
-    MainScript.fBeggarRapistMoralMax = value
-    _SetSliderOptionValueST(MainScript.fBeggarRapistMoralMax, "$MRT_SP_BEG_RAPE_MORAL_MAX_SLIDER2")
-    MainScript.setGlobalVaues()
-  endevent
-
-  event OnSliderOpenST()
-    SetSliderDialogStartValue(MainScript.fBeggarRapistMoralMax)
-    SetSliderDialogDefaultValue(3.0)
-    SetSliderDialogRange(0, 3)
-    SetSliderDialogInterval(1)
-  endEvent
-endState
-
-
-state WHORE_THIEF_MORAL_MAX_SLIDER
-  event OnDefaultST()
-  endevent
-
-  event OnHighlightST()
-    SetInfoText("$MRT_SP_DESC_WHORE_THIEF_MORAL_MAX_SLIDER")
-  endevent
-  
-  event OnSliderAcceptST(float value)
-    MainScript.fWhoreThiefMoralMax = value
-    _SetSliderOptionValueST(MainScript.fWhoreThiefMoralMax, "$MRT_SP_WHORE_THIEF_MORAL_MAX_SLIDER2")
-    MainScript.setGlobalVaues()
-  endevent
-
-  event OnSliderOpenST()
-    SetSliderDialogStartValue(MainScript.fWhoreThiefMoralMax)
-    SetSliderDialogDefaultValue(3.0)
-    SetSliderDialogRange(0, 3)
-    SetSliderDialogInterval(1)
-  endEvent
-endState
-
-state DIBEL_STEAL_CHANCE_SLIDER
-  event OnDefaultST()
-  endevent
-
-  event OnHighlightST()
-    SetInfoText("$MRT_SP_DESC_DIBEL_STEAL_CHANCE_SLIDER")
-  endevent
-  
-  event OnSliderAcceptST(float value)
-    MainScript.fDibelStealChance = value
-    _SetSliderOptionValueST(MainScript.fDibelStealChance, "$MRT_SP_DIBEL_STEAL_CHANCE_SLIDER2")
-    MainScript.setGlobalVaues()
-  endevent
-
-  event OnSliderOpenST()
-    SetSliderDialogStartValue(MainScript.fDibelStealChance)
-    SetSliderDialogDefaultValue(0.0)
-    SetSliderDialogRange(0, 100)
-    SetSliderDialogInterval(1)
-  endEvent
-endState
 
 state WHORE_MARK_CHANCE_SLIDER
     event OnDefaultST()
@@ -2965,7 +2798,6 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
 
   
   iBeggarSpeechDifficulty = jsonutil.GetPathIntValue(settings_path, "iBeggarSpeechDifficulty", iBeggarSpeechDifficulty)
-  iBeggarRapistGender = jsonutil.GetPathIntValue(settings_path, "iBeggarRapistGender", iBeggarRapistGender)
   iWhoreSpeechDifficulty = jsonutil.GetPathIntValue(settings_path, "iWhoreSpeechDifficulty", iWhoreSpeechDifficulty)
   iDibelSpeechDifficulty = jsonutil.GetPathIntValue(settings_path, "iDibelSpeechDifficulty", iDibelSpeechDifficulty)
   iAnimInterfaceMethod = jsonutil.GetPathIntValue(settings_path, "iAnimInterfaceMethod", iAnimInterfaceMethod)
@@ -2996,9 +2828,6 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
   Mainscript.fBeggarPersuasionXPMult = jsonutil.GetPathFloatValue(settings_path, "fBeggarPersuasionXPMult", MainScript.fBeggarPersuasionXPMult)
   Mainscript.fWhorePersuasionXPMult = jsonutil.GetPathFloatValue(settings_path, "fWhorePersuasionXPMult", MainScript.fWhorePersuasionXPMult)
   Mainscript.fDibelPersuasionXPMult = jsonutil.GetPathFloatValue(settings_path, "fDibelPersuasionXPMult", MainScript.fDibelPersuasionXPMult)
-  Mainscript.fBeggarRapeChance = jsonutil.GetPathFloatValue(settings_path, "fBeggarRapeChance", MainScript.fBeggarRapeChance)
-  MainScript.fWhoreStealChance = jsonutil.GetPathFloatValue(settings_path, "fWhoreStealChance", MainScript.fWhoreStealChance)
-  MainScript.fDibelStealChance = jsonutil.GetPathFloatValue(settings_path, "fDibelStealChance", MainScript.fDibelStealChance)
   MainScript.fWhoreMarkChance = jsonutil.GetPathFloatValue(settings_path, "fWhoreMarkChance", MainScript.fWhoreMarkChance)
   MainScript.fDibelMarkChance = jsonutil.GetPathFloatValue(settings_path, "fDibelMarkChance", MainScript.fDibelMarkChance)
   MainScript.fAttributeCost = jsonutil.GetPathFloatValue(settings_path, "fAttributeCost", MainScript.fAttributeCost)
@@ -3009,9 +2838,6 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
   MainScript.fSkillLevelIncrement = jsonutil.GetPathFloatValue(settings_path, "fSkillLevelIncrement", MainScript.fSkillLevelIncrement)
   MainScript.fPerkPointCost = jsonutil.GetPathFloatValue(settings_path, "fPerkPointCost", MainScript.fPerkPointCost)
   MainScript.fPerkPointIncrement = jsonutil.GetPathFloatValue(settings_path, "fPerkPointIncrement", MainScript.fPerkPointIncrement)
-  MainScript.fBeggarRapistMoralMax = jsonutil.GetPathFloatValue(settings_path, "fBeggarRapistMoralMax", MainScript.fBeggarRapistMoralMax)
-  MainScript.fWhoreThiefMoralMax = jsonutil.GetPathFloatValue(settings_path, "fWhoreThiefMoralMax", MainScript.fWhoreThiefMoralMax)
-  MainScript.fDibelThiefMoralMax = jsonutil.GetPathFloatValue(settings_path, "fDibelThiefMoralMax", MainScript.fDibelThiefMoralMax)
   
   MainScript.fCureNormalDiseaseCost = jsonutil.GetPathFloatValue(settings_path, "fCureNormalDiseaseCost", MainScript.fCureNormalDiseaseCost) 
   MainScript.fCureSTDICost = jsonutil.GetPathFloatValue(settings_path, "fCureSTDICost", MainScript.fCureSTDICost)
@@ -3084,7 +2910,6 @@ Bool function saveUserSettingsPapyrus()
   jsonutil.SetPathIntValue(settings_path, "bNormalAllowMultipleSTDs", MainScript.bNormalAllowMultipleSTDs as Int)
  
   jsonutil.SetPathIntValue(settings_path, "iBeggarSpeechDifficulty", iBeggarSpeechDifficulty)
-  jsonutil.SetPathIntValue(settings_path, "iBeggarRapistGender", iBeggarRapistGender)
   jsonutil.SetPathIntValue(settings_path, "iWhoreSpeechDifficulty", iWhoreSpeechDifficulty)
   jsonutil.SetPathIntValue(settings_path, "iDibelSpeechDifficulty", iDibelSpeechDifficulty)
   jsonutil.SetPathIntValue(settings_path, "iAnimInterfaceMethod", iAnimInterfaceMethod)
@@ -3115,9 +2940,6 @@ Bool function saveUserSettingsPapyrus()
   jsonutil.SetPathFloatValue(settings_path, "fBeggarPersuasionXPMult", MainScript.fBeggarPersuasionXPMult)
   jsonutil.SetPathFloatValue(settings_path, "fWhorePersuasionXPMult", MainScript.fWhorePersuasionXPMult)
   jsonutil.SetPathFloatValue(settings_path, "fDibelPersuasionXPMult", MainScript.fDibelPersuasionXPMult)
-  jsonutil.SetPathFloatValue(settings_path, "fBeggarRapeChance", MainScript.fBeggarRapeChance)
-  jsonutil.SetPathFloatValue(settings_path, "fWhoreStealChance", MainScript.fWhoreStealChance)
-  jsonutil.SetPathFloatValue(settings_path, "fDibelStealChance", MainScript.fDibelStealChance)
   jsonutil.SetPathFloatValue(settings_path, "fWhoreMarkChance", MainScript.fWhoreMarkChance)
   jsonutil.SetPathFloatValue(settings_path, "fDibelMarkChance", MainScript.fDibelMarkChance)
   jsonutil.SetPathFloatValue(settings_path, "fAttributeCost", MainScript.fAttributeCost)
@@ -3128,9 +2950,6 @@ Bool function saveUserSettingsPapyrus()
   jsonutil.SetPathFloatValue(settings_path, "fSkillLevelIncrement", MainScript.fSkillLevelIncrement)
   jsonutil.SetPathFloatValue(settings_path, "fPerkPointCost", MainScript.fPerkPointCost)
   jsonutil.SetPathFloatValue(settings_path, "fPerkPointIncrement", MainScript.fPerkPointIncrement)
-  jsonutil.SetPathFloatValue(settings_path, "fWhoreThiefMoralMax", MainScript.fWhoreThiefMoralMax)
-  jsonutil.SetPathFloatValue(settings_path, "fDibelThiefMoralMax", MainScript.fDibelThiefMoralMax)
-  jsonutil.SetPathFloatValue(settings_path, "fBeggarRapistMoralMax", MainScript.fBeggarRapistMoralMax)
   
   jsonutil.SetPathFloatValue(settings_path, "fCureNormalDiseaseCost", MainScript.fCureNormalDiseaseCost)
   jsonutil.SetPathFloatValue(settings_path, "fCureSTDICost", MainScript.fCureSTDICost)
