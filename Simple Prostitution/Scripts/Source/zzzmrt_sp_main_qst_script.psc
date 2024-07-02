@@ -197,8 +197,6 @@ Float Property fSkillLevelIncrement = 1.0 Auto Hidden Conditional
 Float Property fPerkPointCost = 5.0 Auto Hidden Conditional
 Float Property fPerkPointIncrement = 1.0 Auto Hidden Conditional
 
-Int iDontInfect = 0
-
 function shutDown()
   snitchDetector.stop()
   STD_Script.cureActorSTDs(player, False)
@@ -240,13 +238,6 @@ Function RegisterForEvents()
 EndFunction
 
 function startInfectingPlayer(String curState)
-  if iDontInfect > 0
-    if iDontInfect == 2
-      STD_Script.cureActorSTDs(player, False)
-    endif
-    iDontInfect = 0
-    Return 
-  endif
   int handle = ModEvent.Create("SPP_InfectPlayerWithSTD")
   ModEvent.PushForm(handle, self as Quest)
   ModEvent.PushString(handle, curState)
@@ -370,26 +361,26 @@ Function persuade(Float fSpeechSkillMult)
 endFunction
 
 
-function randomSexWithPlayer(Actor akActor, Bool bAggressive = False)
+Bool function bRandomSexWithPlayer(Actor akActor, Bool bAggressive = False)
   if !akActor
-    return
+    return False
   endif
   string interface = sGetCurAnimInteface()
   if interface == "sexlab"
-    if !bIsSexlabActive
-      return
+    if bIsSexlabActive
+      return SexLabInterface.bHaveRandomSexWithPlayer(akActor, bAggressive)
     endif
-    SexLabInterface.haveRandomSexWithPlayer(akActor, bAggressive)
   elseif interface == "ostim"
-    if !bIsOstimActive
-      return
-    endif
-    OStimInterface.haveRandomSexWithPlayer(akActor, bAggressive)
+    if bIsOstimActive
+      return OStimInterface.bHaveRandomSexWithPlayer(akActor, bAggressive)
+    endif   
   elseif interface == "flowergirls"
-    if !bIsFlowerGirlsActive
-      return
+    if bIsFlowerGirlsActive
+      if FlowerGirlsInterface.bHaveRandomSexWithPlayer(akActor)
+        registerForSingleUpdate(60.0)
+        return True
+      endif
     endif
-    FlowerGirlsInterface.haveRandomSexWithPlayer(akActor)
   else
     Game.DisablePlayerControls(abMovement=True, abFighting=True, abCamSwitch=False, abLooking=False, abSneaking=True, abMenu=True, abActivate=True, abJournalTabs=False, aiDisablePOVType=0)
     FastFadeOut.Apply()
@@ -398,7 +389,10 @@ function randomSexWithPlayer(Actor akActor, Bool bAggressive = False)
     Utility.Wait(5.0)
     BlackScreen.PopTo(FadeIn)
     Game.EnablePlayerControls()
+    registerForSingleUpdate(5.0)
+    return True
   endif
+  return False
 endFunction
 
 int function haveSex(Actor akActor, String interface, Bool bAllowAggressive = False, Bool bAllowAll = False)
@@ -1357,6 +1351,39 @@ Auto State Init
   endFunction
 EndState
 
+State offeringToDibella
+  
+  Event on_spp_sexlab_Sex_Ending(string eventName, string argString, float argNum, form sender)
+  EndEvent
+  
+  event on_spp_sexlab_Sex_End(int tid, bool HasPlayer)
+    if HasPlayer
+      STD_Script.cureActorSTDs(player, False)
+      GoToState("")
+    endif
+  endEvent
+  
+  Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, form sender)
+    STD_Script.cureActorSTDs(player, False)
+    GoToState("")
+  EndEvent
+  
+  event onUpdate()
+      STD_Script.cureActorSTDs(player, False)
+      GoToState("")
+  endEvent
+  
+  event OnUpdateGameTime()
+    RegisterForSingleUpdateGameTime(1.0)
+  endEvent
+  
+  function snitch()
+  EndFunction
+  
+  Function offerDibelMarks(Actor akActor)
+  endFunction
+EndState
+
 Bool function GetDibellanRewards(Int aiMessage=0, Int aiButton=0)
   int iMarkCount = player.getItemCount(dibelMark)
   Bool bTraded = False
@@ -1610,13 +1637,11 @@ Function offerDibelMarks(Actor akActor)
   gotostate("offeringToDibella")
   if GetDibellanRewards()
     utility.wait(1.0)
-    randomSexWithPlayer(akActor)
-    iDontInfect = 2
+    if !bRandomSexWithPlayer(akActor)
+      GoToState("")
+    endIf
+    return
   endif
   GoToState("")
+  return
 EndFunction
-
-State offeringToDibella
-  Function offerDibelMarks(Actor akActor)
-  endFunction
-EndState

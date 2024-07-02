@@ -147,10 +147,10 @@ int Function iGetExtraTagsIndex(string iPos, string sGenders) Global
 endfunction
 
 
-function haveRandomSexWithPlayerSL(Quest SexLabQuestFramework, Actor Partner, Bool bAggressive = False) Global
+Bool function bHaveRandomSexWithPlayerSL(Quest SexLabQuestFramework, Actor Partner, Bool bAggressive = False) Global
   SexLabFramework SexLab = SexLabQuestFramework As SexLabFramework
   if !SexLab.Enabled
-    return
+    return False
   endif
   string SuppressTagsForMale = "Lesbian,FF,"
   String SuppressTagsForNotRough = "Aggressive,Rough,Forced,Bound,"
@@ -213,10 +213,14 @@ function haveRandomSexWithPlayerSL(Quest SexLabQuestFramework, Actor Partner, Bo
       endif
       if anims.Length == 0
         Debug.trace("SimpleProstitution: couldn't find any Sexlab animation.")
-        return
+        return False
       endif
     endif
   endif
   sexActors = SexLab.SortActors(sexActors, true)
-  SexLab.StartSex(sexActors, anims, none, none, true, "AnimationEnding,AnimationEnd")
+  if SexLab.StartSex(sexActors, anims, none, none, true, "AnimationEnding,AnimationEnd") > -1
+    return True
+  endif
+  Debug.trace("SimpleProstitution: couldn't start Sexlab animation.")
+  return False
 endfunction

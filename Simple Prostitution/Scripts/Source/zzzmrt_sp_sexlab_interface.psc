@@ -47,7 +47,8 @@ Actor[] Function hookActors(string argStr)
   return Actors
 endfunction
 
-Function haveRandomSexWithPlayer(Actor Partner, Bool bAggressive = False)
+Bool Function bHaveRandomSexWithPlayer(Actor Partner, Bool bAggressive = False)
+  return False
 EndFunction
 
 state Installed
@@ -63,7 +64,7 @@ state Installed
     return zzzmrt_sp_int_sexlab.hasPlayerSL(SexLabQuestFramework, argStr)
   endfunction
   
-  Function haveRandomSexWithPlayer(Actor Partner, Bool bAggressive = False)
-    zzzmrt_sp_int_sexlab.haveRandomSexWithPlayerSL(SexLabQuestFramework, Partner, bAggressive)
+  Bool Function bHaveRandomSexWithPlayer(Actor Partner, Bool bAggressive = False)
+    return zzzmrt_sp_int_sexlab.bHaveRandomSexWithPlayerSL(SexLabQuestFramework, Partner, bAggressive)
   EndFunction
 endstate

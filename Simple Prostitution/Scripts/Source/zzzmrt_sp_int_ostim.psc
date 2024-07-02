@@ -75,16 +75,18 @@ int function haveSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor partner, 
     else
     	myAnim = anim
     endif
-	if myAnim
-		OThread.QuickStart(actors, StartingAnimation = myAnim)
+	if myAnim && (OThread.QuickStart(actors, StartingAnimation = myAnim) > -1)
 		return Position
 	else
 		Debug.trace("SimpleProstitution: couldn't find suitable OStim animation.")
 		if bAllowAll
 			myAnim = OLibrary.GetRandomScene(actors)
 			if myAnim
-				OThread.QuickStart(actors, StartingAnimation = myAnim)
-				return Position
+				if (OThread.QuickStart(actors, StartingAnimation = myAnim) > -1)
+					return Position
+				endif
+				Debug.trace("SimpleProstitution: couldn't start OStim animation.")
+				return -1
 			endif
 			Debug.trace("SimpleProstitution: couldn't find any OStim animation.")
 		endif
@@ -97,8 +99,12 @@ Bool Function IsSceneAggressiveOS(String SceneID) Global
     int aiIndex = OMetadata.GetActorCount(SceneID)
     While aiIndex > 0
         aiIndex -= 1
-        If (OMetadata.HasActorTag(SceneID, aiIndex, "aggressor") || OMetadata.HasActorTag(SceneID, aiIndex, "dominant"))
+        If OMetadata.HasActorTag(SceneID, aiIndex, "aggressor")
+        		Debug.trace("SimpleProstitution: Scene with aggressor tag found: " + SceneID)
             Return true
+        elseif OMetadata.HasActorTag(SceneID, aiIndex, "dominant")
+        	Debug.trace("SimpleProstitution: Scene with dominant tag found: " + SceneID)
+        	Return true
         EndIf
     EndWhile
     Return false
@@ -153,7 +159,7 @@ int Function iGetExtraTagsIndex(string iPos, string sGenders) Global
   return -1
 endfunction
 
-function haveRandomSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor partner, Bool bAggressive = False) Global
+Bool function bHaveRandomSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor partner, Bool bAggressive = False) Global
 	actor[] actors = new actor[2]
 	actor player = Game.GetPlayer()
 	Bool isPlayerFemale = player.GetActorBase().GetSex()
@@ -177,19 +183,27 @@ function haveRandomSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor partner
 	if bAggressive
 		myAnim = getRandomAnimation(actors, "dominant,aggressor,", "")
 		if myAnim == ""
+			Debug.trace("SimpleProstitution: couldn't find any Aggressive OStim animation.")
 			myAnim = OLibrary.GetRandomScene(actors)
 		endif
 	else
 		myAnim = OLibrary.GetRandomScene(actors)
 	endif
-	Int iIndex = 50
+	Int iIndex = 49
 	While (iIndex > 0) && (IsSceneAggressiveOS(myAnim) != bAggressive)
 		myAnim = OLibrary.GetRandomScene(actors)
 		iIndex -= 1
 	EndWhile
-	if myAnim
-		OThread.QuickStart(actors, StartingAnimation = myAnim)
-		return
+	if (IsSceneAggressiveOS(myAnim) != bAggressive)
+		Debug.trace("SimpleProstitution: couldn't find any suitable OStim animation.")
+	endif
+	if myAnim 
+		if (OThread.QuickStart(actors, StartingAnimation = myAnim) > -1)
+			return true
+		endif
+		Debug.trace("SimpleProstitution: couldn't start OStim animation.")
+		return False
 	endif
 	Debug.trace("SimpleProstitution: couldn't find any OStim animation.")
+	return False
 endfunction
