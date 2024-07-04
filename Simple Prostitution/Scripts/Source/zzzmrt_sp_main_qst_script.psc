@@ -15,7 +15,13 @@ Quest Property LicensesInterfaceQst Auto
 zzzmrt_sp_mcm_qst_script property MCMScript auto
 ReferenceAlias property Owner auto
 ReferenceAlias property whoreCustomerAlias auto
+ReferenceAlias property whoreCustomerAlias2 auto
+ReferenceAlias property whoreCustomerAlias3 auto
+ReferenceAlias property whoreCustomerAlias4 auto
 ReferenceAlias property dibelCustomerAlias auto
+ReferenceAlias property dibelCustomerAlias2 auto
+ReferenceAlias property dibelCustomerAlias3 auto
+ReferenceAlias property dibelCustomerAlias4 auto
 GlobalVariable property WhoreFailureChance auto
 Message property InterfaceMenu auto
 Message Property DibelOfferMenu Auto
@@ -63,6 +69,9 @@ Bool Property bTryAllInterfaces=True Auto Hidden Conditional
 ImageSpaceModifier property blackScreen auto
 Formlist property currentAllowedLocations auto
 Formlist property alwaysAllowedLocations auto
+Formlist property whoreCustomerList Auto
+Formlist property dibelCustomerList Auto
+Formlist Property currentCustomerList Auto
 Spell property customerBeggarSpell auto
 Spell property customerSpell auto
 Float Property fCureNormalDiseaseCost = 100.0 Auto Hidden Conditional
@@ -151,13 +160,17 @@ Int[] property iDibelAnalStatArr Auto Hidden Conditional
 Int[] property iDibelVaginalStatArr Auto Hidden Conditional
 Int[] property iTotalWhoreStats Auto Hidden Conditional
 Int[] property iTotalDibelStats Auto Hidden Conditional
+Int[] property iWhorePositions auto Hidden Conditional
+Int[] property iDibelPositions auto Hidden Conditional
+Int[] Property iPositions Auto Hidden Conditional
+Int property iTotalWhoreCustomers = 0 auto Hidden Conditional
+Int property iTotalDibelCustomers = 0 auto Hidden Conditional
 
 Formlist Property raceList Auto
 Formlist Property vampireRacelist Auto
 
 Formlist property snitchers auto
 Formlist property extraOwners auto 
-Actor Property currentPartner Auto Hidden Conditional
 Quest Property SnitchDetector Auto 
 ReferenceAlias property SnitchRef1 auto
 ReferenceAlias property SnitchRef2 auto
@@ -177,6 +190,8 @@ Faction property whoreFaction auto
 Faction Property DibellaMerchant Auto
 Actor Property DibellaMerchantNPC Auto
 Int Property iPosition = -1 Auto Hidden Conditional
+Int Property iWhorePosition = -1 Auto Hidden Conditional
+Int Property iDibelPosition = -1 Auto Hidden Conditional
 Quest property STD_Quest Auto
 zzzmrt_sp_std_qst_script property STD_Script Auto
 Keyword Property ProstituteClothing_kwd Auto
@@ -197,6 +212,13 @@ Float Property fSkillLevelIncrement = 1.0 Auto Hidden Conditional
 Float Property fPerkPointCost = 5.0 Auto Hidden Conditional
 Float Property fPerkPointIncrement = 1.0 Auto Hidden Conditional
 
+Bool bWhoreAnimEnded = False ;
+Bool bDibelAnimEnded = False
+Int Property iWhorePartners = 0 Auto Hidden Conditional
+Int Property iDibelPartners = 0 Auto Hidden Conditional
+Actor[] property origCustomersArr Auto Hidden Conditional
+Bool property bIsBusy = False Auto Hidden Conditional
+
 function shutDown()
   snitchDetector.stop()
   STD_Script.cureActorSTDs(player, False)
@@ -208,7 +230,7 @@ function shutDown()
   player.removeFromFaction(whoreFaction)
   owner.clear()
   clearCustomer()
-  iPosition = -1
+  clearPositions()
   dibelSnitch = None
   whoreSnitch = None
 EndFunction
@@ -258,7 +280,7 @@ function AllowProstitution(Actor akOwner)
     if !player.IsInFaction(whoreFaction)
       player.AddToFaction(whoreFaction)
     endif
-    if Owner.getActorReference() && (Owner.getActorReference() != akOwner)
+    if (Owner.getActorReference() != None) && (Owner.getActorReference() != akOwner)
       iCurrentOwnerSeptims = 0
       currentOwnerSeptimDisplay.SetValueInt(0)
       UpdateCurrentInstanceGlobal(currentOwnerSeptimDisplay)
@@ -284,7 +306,7 @@ Function ownerPayWhore(Actor whore)
   if iCurrentOwnerSeptims > 0
     int payment = maxInt(0, ((iCurrentOwnerSeptims as float) * ((100.0 - fWhoreOwnerShare) / 100.0)) as int)
     whore.Additem(gold, payment)
-    if Owner.getActorReference() && (iCurrentOwnerSeptims - payment) > 0
+    if (Owner.getActorReference() != None) && (iCurrentOwnerSeptims - payment) > 0
       Owner.getActorReference().Additem(gold,(iCurrentOwnerSeptims - payment))
     endIf
     iCurrentOwnerSeptims = 0
@@ -295,7 +317,7 @@ Function ownerPayWhore(Actor whore)
     pimpTracker.setstage(15)
   endif
   Owner.clear()
-  clearCustomer()
+  clearWhoreCustomers()
   currentAllowedLocations.Revert()
 EndFunction
 
@@ -308,40 +330,6 @@ function playerBegTo(Actor akActor, Bool bPay=True)
     persuade(fBeggarPersuasionXPMult)
   endif
   setGlobalVaues()
-endfunction
-
-function ProstitutePlayerTo(Actor akCustomer, bool bAccept=true)
-  setGlobalVaues()
-  if akCustomer
-    customerSpell.Cast(akCustomer, akCustomer)
-    if !bAccept
-      if !isSnitchOK(whoreSnitch) && !playerHasWhoreLicense()
-        checkSnitch(akCustomer, false, false)
-      endif
-      return
-    endif
-    currentPartner = akCustomer
-    GoToState("Whoring")
-  else
-    iPosition = -1
-  endif
-endfunction
-
-function playerPracticeDibelArtWith(Actor akActor, bool bAccept=true)
-  setGlobalVaues()
-  if akActor
-    customerSpell.Cast(akActor, akActor)
-    if !bAccept
-      if !isSnitchOK(dibelSnitch) && !playerHasDibelLicence()
-        checkSnitch(akActor)
-      endif
-      return
-    endif
-    currentPartner = akActor
-    GoToState("Dibeling")
-  else
-    iPosition = -1
-  endif
 endfunction
 
 Float function getBaseVersion()
@@ -377,7 +365,7 @@ Bool function bRandomSexWithPlayer(Actor akActor, Bool bAggressive = False)
   elseif interface == "flowergirls"
     if bIsFlowerGirlsActive
       if FlowerGirlsInterface.bHaveRandomSexWithPlayer(akActor)
-        registerForSingleUpdate(60.0)
+        registerForSingleUpdate(1.0)
         return True
       endif
     endif
@@ -389,7 +377,7 @@ Bool function bRandomSexWithPlayer(Actor akActor, Bool bAggressive = False)
     Utility.Wait(5.0)
     BlackScreen.PopTo(FadeIn)
     Game.EnablePlayerControls()
-    registerForSingleUpdate(5.0)
+    registerForSingleUpdate(1.0)
     return True
   endif
   return False
@@ -411,7 +399,7 @@ int function haveSex(Actor akActor, String interface, Bool bAllowAggressive = Fa
   endif
   if (result < 0)
     if bTryAllInterfaces && iGetCurTotalAnimInterfaces() > 1
-      Debug.trace("SimpleProstitution: retrying with other interfaces.")
+      Debug.trace("Simple Prostitution: retrying with other interfaces.")
       if interface == "sexlab"
         result = playerSexOS(akActor, bAllowAggressive, bAllowAll)
         if result < 0
@@ -430,12 +418,147 @@ int function haveSex(Actor akActor, String interface, Bool bAllowAggressive = Fa
       endif
     endif
     if result < 0
-      Debug.trace("SimpleProstitution: couldn't find any suitable animation.")
+      Debug.trace("Simple Prostitution: couldn't find any suitable animation.")
       result = haveSexSFW()
     endIf
   endif
   return result
 endfunction
+
+
+Actor[] function formListToActorArray(FormList actorList)
+  Actor[] actors
+  int iSize =  actorList.GetSize()
+  if iSize == 1
+    actors = new Actor[1]
+  elseif iSize == 2
+    actors = new Actor[2]
+  elseif iSize == 3
+    actors = new Actor[3]
+  elseif iSize >= 4
+    actors = new Actor[4]
+  else
+    return actors
+  endif
+  int i = 0
+  while i < iSize
+    actors[i] = actorList.GetAt(i) as Actor
+    i += 1
+  endWhile
+  return actors
+endFunction
+
+Bool Function bHaveGroupSex(String interface, Bool bAllowAggressive = False, Bool bAllowAll = False)
+  if !currentCustomerList.GetSize()
+    return false
+  endif
+  Bool bResult = False
+  actor[] Partners = formListToActorArray(currentCustomerList)
+  if interface == ""
+    Game.DisablePlayerControls(abMovement=True, abFighting=True, abCamSwitch=False, abLooking=False, abSneaking=True, abMenu=True, abActivate=True, abJournalTabs=False, aiDisablePOVType=0)
+    FastFadeOut.Apply()
+    Utility.Wait(1.0)
+    FastFadeOut.PopTo(BlackScreen)
+    Utility.Wait(5.0)
+    BlackScreen.PopTo(FadeIn)
+    Game.EnablePlayerControls()
+    registerForSingleUpdate(1.0)
+    return True
+  else
+    bResult = False
+    while !bResult && (currentCustomerList.GetSize() > 0)
+      if (currentCustomerList.GetSize() == 1) && (currentCustomerList.GetAt(0) as Actor) && (origCustomersArr.Find(currentCustomerList.GetAt(0) as Actor) > -1)
+        int iIndex = origCustomersArr.Find(currentCustomerList.GetAt(0) as Actor)
+        iPosition = iPositions[iIndex]
+        if iPosition < 0
+          iPosition = utility.randomint(0,2)
+        endif
+        int iResult = haveSex(currentCustomerList.GetAt(0) as Actor, interface, bAllowAggressive, bAllowAll)
+        iPositions[iIndex] = iResult
+        bResult = (iResult > -1)
+      else
+        if interface == "sexlab"
+          bResult = playerGroupSexSL(partners ,bAllowAggressive)
+          if !bResult
+            if bTryAllInterfaces
+              bResult = playerGroupSexOS(partners ,bAllowAggressive)
+              if !bResult
+                bResult = playerGroupSexFG(partners)
+              endif
+            endif
+            if !bResult
+              currentCustomerList.RemoveAddedForm(currentCustomerList.GetAt(currentCustomerList.GetSize() - 1))
+              partners = formListToActorArray(currentCustomerList)
+            endif
+          endif
+        elseif interface == "ostim"
+          bResult = playerGroupSexOS(partners ,bAllowAggressive)
+          if !bResult
+            if bTryAllInterfaces
+              bResult = playerGroupSexSL(partners ,bAllowAggressive)
+              if !bResult
+                bResult = playerGroupSexFG(partners)
+              endif
+            endif
+            if !bResult
+              currentCustomerList.RemoveAddedForm(currentCustomerList.GetAt(currentCustomerList.GetSize() - 1))
+              partners = formListToActorArray(currentCustomerList)
+            endif
+          endif
+        elseif interface == "flowergirls"
+          bResult = playerGroupSexFG(partners)
+          if !bResult
+            if bTryAllInterfaces
+              bResult = playerGroupSexOS(partners ,bAllowAggressive)
+              if !bResult
+                bResult = playerGroupSexSL(partners)
+              endif
+            endif
+            if !bResult
+              currentCustomerList.RemoveAddedForm(currentCustomerList.GetAt(currentCustomerList.GetSize() - 1))
+              partners = formListToActorArray(currentCustomerList)
+            endif
+          endif
+        endif
+      endif
+    endwhile
+    return bResult
+  endif
+EndFunction
+
+Bool Function playerGroupSexOS(Actor[] akActors, Bool bAllowAggressive= False)
+  if !bIsOstimActive
+    return False
+  endif
+  if OStimInterface.bHaveGroupSexWithPlayer(akActors, bAllowAggressive)
+    RegisterForModEvent("ostim_end", "on_spp_ostim_Sex_End")
+    return True
+  endif
+  return False
+EndFunction
+
+Bool Function playerGroupSexFG(Actor[] akActors)
+  if !bIsFlowerGirlsActive
+    return False
+  endif
+  if FlowerGirlsInterface.bHaveGroupSexWithPlayer(akActors)
+    registerForSingleUpdate(1.0)
+    return true
+  endif
+  return False
+EndFunction
+
+Bool Function playerGroupSexSL(Actor[] akActors, Bool bAllowAggressive= False)
+  if !bIsSexlabActive
+    return False
+  endif
+  if SexLabInterface.bHaveGroupSexWithPlayer(akActors, bAllowAggressive)
+   RegisterForModEvent("AnimationEnding", "on_spp_sexlab_Sex_Ending")
+   RegisterForModEvent("HookAnimationEnd", "on_spp_sexlab_Sex_End")
+   return True
+ endif
+ return False
+EndFunction
 
 function startSnitchFinder(Bool bCheckDibel)
   int handle = ModEvent.Create("SPP_StartFindSnitch")
@@ -448,18 +571,39 @@ Function setWhoreCustomer(Actor akActor, Bool bPay = False)
   customerSpell.Cast(akActor, akActor)
   if bPay
     if !player.GetActorBase().GetSex() && !akActor.GetLeveledActorBase().GetSex()
-      iPosition = positionChooser(0, fWhoreAnalChance as Int, fWhoreOralChance as Int)
+      iWhorePosition = positionChooser(0, fWhoreAnalChance as Int, fWhoreOralChance as Int)
     else
-      iPosition = positionChooser(fWhoreVagChance as Int, fWhoreAnalChance as Int, fWhoreOralChance as Int)
+      iWhorePosition = positionChooser(fWhoreVagChance as Int, fWhoreAnalChance as Int, fWhoreOralChance as Int)
     endif
-    if iPosition > -1
-      payWhore(player, iPosition)
+    if iWhorePosition > -1
+      payWhore(player, iWhorePosition)
       persuade(fWhorePersuasionXPMult)
     endif
   endIf
-  if iPosition > -1
-    whoreCustomerAlias.ForceRefTo(akActor)
+  if iWhorePositions.length != 4
+    iWhorePositions = new int[4]
+    iWhorePositions[0] = -1
+    iWhorePositions[1] = -1
+    iWhorePositions[2] = -1
+    iWhorePositions[3] = -1
+  endif
+  if iWhorePosition > -1
+    if whoreCustomerList.GetSize() == 0
+      whoreCustomerAlias.ForceRefTo(akActor)
+      iWhorePositions[0] = iWhorePosition
+    elseif whoreCustomerList.GetSize() == 1
+      whoreCustomerAlias2.ForceRefTo(akActor)
+      iWhorePositions[1] = iWhorePosition
+    elseif whoreCustomerList.GetSize() == 2
+      whoreCustomerAlias3.ForceRefTo(akActor)
+      iWhorePositions[2] = iWhorePosition
+    elseif whoreCustomerList.GetSize() == 3
+      whoreCustomerAlias4.ForceRefTo(akActor)
+      iWhorePositions[3] = iWhorePosition
+    endif
     akActor.EvaluatePackage()
+    whoreCustomerList.AddForm(akActor)
+    iTotalWhoreCustomers = whoreCustomerList.GetSize()
   endif
 EndFunction
 
@@ -467,20 +611,75 @@ Function setDibelCustomer(Actor akActor, bool bPay = true )
   customerSpell.Cast(akActor, akActor)
   if bPay
     if !player.GetActorBase().GetSex() && !akActor.GetLeveledActorBase().GetSex()
-      iPosition = positionChooser(0, fDibelAnalChance as Int, fDibelOralChance as Int)
+      iDibelPosition = positionChooser(0, fDibelAnalChance as Int, fDibelOralChance as Int)
     else
-      iPosition = positionChooser(fDibelVagChance as Int, fDibelAnalChance as Int, fDibelOralChance as Int)
+      iDibelPosition = positionChooser(fDibelVagChance as Int, fDibelAnalChance as Int, fDibelOralChance as Int)
     endif
-    if iPosition > -1
-      payDibel(player, iPosition)
+    if iDibelPosition > -1
+      payDibel(player, iDibelPosition)
       persuade(fDibelPersuasionXPMult)
     endif
   endIf
-  if iPosition > -1
-    dibelCustomerAlias.ForceRefTo(akActor)
+  if iDibelPositions.length != 4
+    iDibelPositions = new int[4]
+    iDibelPositions[0] = -1
+    iDibelPositions[1] = -1
+    iDibelPositions[2] = -1
+    iDibelPositions[3] = -1
+  endif
+  if iDibelPosition > -1
+    if dibelCustomerList.GetSize() == 0
+      dibelCustomerAlias.ForceRefTo(akActor)
+      iDibelPositions[0] = iDibelPosition
+    elseif dibelCustomerList.GetSize() == 1
+      dibelCustomerAlias2.ForceRefTo(akActor)
+      iDibelPositions[1] = iDibelPosition
+    elseif dibelCustomerList.GetSize() == 2
+      dibelCustomerAlias3.ForceRefTo(akActor)
+      iDibelPositions[2] = iDibelPosition
+    elseif dibelCustomerList.GetSize() == 3
+      dibelCustomerAlias4.ForceRefTo(akActor)
+      iDibelPositions[3] = iDibelPosition
+    endif
     akActor.EvaluatePackage()
+    dibelCustomerList.AddForm(akActor)
+    iTotalDibelCustomers = dibelCustomerList.GetSize()
   endif
 EndFunction
+
+function ProstitutePlayerTo(Actor akCustomer, bool bAccept=true)
+  setGlobalVaues()
+  if akCustomer
+    customerSpell.Cast(akCustomer, akCustomer)
+    if !bAccept
+      if !isSnitchOK(whoreSnitch) && !playerHasWhoreLicense()
+        checkSnitch(akCustomer, false, false)
+      endif
+      return
+    endif
+    endDialogueWithPlayer(akCustomer as ObjectReference)
+    GoToState("Whoring")
+  else
+    clearWhorePositions()
+  endif
+endfunction
+
+function playerPracticeDibelArtWith(Actor akActor, bool bAccept=true)
+  setGlobalVaues()
+  if akActor
+    customerSpell.Cast(akActor, akActor)
+    if !bAccept
+      if !isSnitchOK(dibelSnitch) && !playerHasDibelLicence()
+        checkSnitch(akActor)
+      endif
+      return
+    endif
+    endDialogueWithPlayer(akActor as ObjectReference)
+    GoToState("Dibeling")
+  else
+    clearDibelPositions()
+  endif
+endfunction
 
 Function clearCustomer()
   Actor Customer = dibelCustomerAlias.getActorReference()
@@ -488,12 +687,124 @@ Function clearCustomer()
     dibelCustomerAlias.Clear()
     Customer.EvaluatePackage()
   endif
+  Customer = dibelCustomerAlias2.getActorReference()
+  if Customer
+    dibelCustomerAlias2.Clear()
+    Customer.EvaluatePackage()
+  endif
+  Customer = dibelCustomerAlias3.getActorReference()
+  if Customer
+    dibelCustomerAlias3.Clear()
+    Customer.EvaluatePackage()
+  endif
+  Customer = dibelCustomerAlias4.getActorReference()
+  if Customer
+    dibelCustomerAlias4.Clear()
+    Customer.EvaluatePackage()
+  endif
   Customer = whoreCustomerAlias.getActorReference()
   if Customer
     whoreCustomerAlias.Clear()
     Customer.EvaluatePackage()
   endif
+  Customer = whoreCustomerAlias2.getActorReference()
+  if Customer
+    whoreCustomerAlias2.Clear()
+    Customer.EvaluatePackage()
+  endif
+  Customer = whoreCustomerAlias3.getActorReference()
+  if Customer
+    whoreCustomerAlias3.Clear()
+    Customer.EvaluatePackage()
+  endif
+  Customer = whoreCustomerAlias4.getActorReference()
+  if Customer
+    whoreCustomerAlias4.Clear()
+    Customer.EvaluatePackage()
+  endif
+  whoreCustomerList.revert()
+  dibelCustomerList.Revert()
+  iTotalWhoreCustomers = 0
+  iTotalDibelCustomers = 0
 EndFunction
+
+Function clearDibelCustomers()
+  Actor Customer = dibelCustomerAlias.getActorReference()
+  if Customer
+    dibelCustomerAlias.Clear()
+    Customer.EvaluatePackage()
+  endif
+  Customer = dibelCustomerAlias2.getActorReference()
+  if Customer
+    dibelCustomerAlias2.Clear()
+    Customer.EvaluatePackage()
+  endif
+  Customer = dibelCustomerAlias3.getActorReference()
+  if Customer
+    dibelCustomerAlias3.Clear()
+    Customer.EvaluatePackage()
+  endif
+  Customer = dibelCustomerAlias4.getActorReference()
+  if Customer
+    dibelCustomerAlias4.Clear()
+    Customer.EvaluatePackage()
+  endif
+  dibelCustomerList.Revert()
+  iTotalDibelCustomers = 0
+EndFunction
+
+Function clearWhoreCustomers()
+  Actor Customer = whoreCustomerAlias.getActorReference()
+  if Customer
+    whoreCustomerAlias.Clear()
+    Customer.EvaluatePackage()
+  endif
+  Customer = whoreCustomerAlias2.getActorReference()
+  if Customer
+    whoreCustomerAlias2.Clear()
+    Customer.EvaluatePackage()
+  endif
+  Customer = whoreCustomerAlias3.getActorReference()
+  if Customer
+    whoreCustomerAlias3.Clear()
+    Customer.EvaluatePackage()
+  endif
+  Customer = whoreCustomerAlias4.getActorReference()
+  if Customer
+    whoreCustomerAlias4.Clear()
+    Customer.EvaluatePackage()
+  endif
+  whoreCustomerList.revert()
+  iTotalWhoreCustomers = 0
+EndFunction
+
+function clearPositions()
+  iPosition = -1
+  iWhorePosition = -1
+  iDibelPosition = -1
+  clearWhorePositions()
+  clearDibelPositions()
+endFunction
+
+function clearWhorePositions()
+  iPosition = -1
+  iWhorePosition = -1
+  int i = iWhorePositions.Length
+  while i > 0
+    i -= 1
+    iWhorePositions[i] = -1
+  endWhile
+endFunction
+
+function clearDibelPositions()
+  iPosition = -1
+  iDibelPosition = -1
+  int i = iDibelPositions.Length
+  while i > 0
+    i -= 1
+    iDibelPositions[i] = -1
+  endWhile
+endFunction
 
 
 int Function playerSexSL(Actor akActor, Bool bAllowAggressive= False, Bool bAllowAll = False)
@@ -502,10 +813,10 @@ int Function playerSexSL(Actor akActor, Bool bAllowAggressive= False, Bool bAllo
   endif
   int result = SexLabInterface.haveSexWithPlayer(akActor, iPosition, sGetExtraTagsArr("sexlab"), bGetRegAllTagsArr("sexlab"), bAllowAggressive, bAllowAll)
   if result > -1
-     RegisterForModEvent("AnimationEnding", "on_spp_sexlab_Sex_Ending")
-     RegisterForModEvent("HookAnimationEnd", "on_spp_sexlab_Sex_End")
-  endif
-  return result
+   RegisterForModEvent("AnimationEnding", "on_spp_sexlab_Sex_Ending")
+   RegisterForModEvent("HookAnimationEnd", "on_spp_sexlab_Sex_End")
+ endif
+ return result
 EndFunction
 
 int Function playerSexOS(Actor akActor, Bool bAllowAggressive= False, Bool bAllowAll = False)
@@ -525,7 +836,7 @@ int Function playerSexFG(Actor akActor)
   endif
   int result = FlowerGirlsInterface.haveSexWithPlayer(akActor, iPosition)
   if result > -1
-    registerForSingleUpdate(60.0)
+    registerForSingleUpdate(1.0)
   endif
   return result
 EndFunction
@@ -541,7 +852,7 @@ int function haveSexSFW()
   Utility.Wait(5.0)
   BlackScreen.PopTo(FadeIn)
   Game.EnablePlayerControls()
-  registerForSingleUpdate(5.0)
+  registerForSingleUpdate(1.0)
   return iPosition
 endfunction
 
@@ -549,15 +860,15 @@ function payBeggar(Actor beggar, Bool bBonus = True)
   Int minBonus = 0
   Int maxBonus = 0
   if bBonus
-	minBonus = maxInt(0, ((beggar.getActorValue("Speechcraft") * fMinSpeechBegBonusMult) As Int) + 1)
-	maxBonus = maxInt(0, ((beggar.getActorValue("Speechcraft") * fMaxSpeechBegBonusMult) As Int) + 1)
-	minBonus = minInt(minBonus,maxBonus)
-	maxBonus = maxInt(minBonus,maxBonus)
-  endif
-  int begPayMin = minInt(fBegPayMin As Int, fBegPayMax As Int)
-  int begPayMax = maxInt(fBegPayMin As Int, fBegPayMax As Int)
-  Int totalPay = maxInt(0, Utility.randomInt(begPayMin, BegPayMax) + Utility.randomInt(minBonus, maxBonus))
-  beggar.Additem(gold, maxInt(0, totalPay))
+   minBonus = maxInt(0, ((beggar.getActorValue("Speechcraft") * fMinSpeechBegBonusMult) As Int) + 1)
+   maxBonus = maxInt(0, ((beggar.getActorValue("Speechcraft") * fMaxSpeechBegBonusMult) As Int) + 1)
+   minBonus = minInt(minBonus,maxBonus)
+   maxBonus = maxInt(minBonus,maxBonus)
+ endif
+ int begPayMin = minInt(fBegPayMin As Int, fBegPayMax As Int)
+ int begPayMax = maxInt(fBegPayMin As Int, fBegPayMax As Int)
+ Int totalPay = maxInt(0, Utility.randomInt(begPayMin, BegPayMax) + Utility.randomInt(minBonus, maxBonus))
+ beggar.Additem(gold, maxInt(0, totalPay))
 endfunction
 
 function payDibel(Actor Dibel, int position)
@@ -794,8 +1105,11 @@ Bool function bCanSnitch(Actor npc, Bool bComplete = true)
   if npc.isDead()
     return false
   endif
-  if npc == currentPartner
-    return False
+  if whoreCustomerlist.hasform(npc)
+    return false
+  endif
+  if dibelCustomerlist.hasform(npc)
+    return false
   endif
   if snitchers.hasform(npc)
     return False
@@ -804,18 +1118,18 @@ Bool function bCanSnitch(Actor npc, Bool bComplete = true)
   if !bComplete
     return True
   endif
- ;SnitchDetector checks these conditions:
+  ;SnitchDetector checks these conditions:
   if !npc.GetCrimeFaction()
     return False
   endif
-  if owner.getActorReference() && (npc == owner.getActorReference())
+  if (owner.getActorReference() != None) && (npc == owner.getActorReference())
     return false
   endif
   if !npc.HasKeywordString("actortypenpc")
     return False
   endif
   if npc.HasKeywordString("prostitutemanager_kwd")
-      return False
+    return False
   endif
   if extraOwners.hasform(npc)
     return False
@@ -916,13 +1230,13 @@ Bool Function findSnitch(Bool bCheckDibel = False)
       npc = actors[iIndex]
       bSnitchFound = checkSnitch(npc, true, bCheckDibel)
       actors[iIndex] && snitchers.addform(actors[iIndex])
-      if !bSnitchFound && snitchRef1.GetActorReference()
+      if !bSnitchFound && (snitchRef1.GetActorReference() != None)
         bSnitchFound = checkSnitch(snitchRef1.GetActorReference(), false, bCheckDibel)
-        snitchRef1.GetActorReference() && snitchers.addform(snitchRef1.GetActorReference())
+        (snitchRef1.GetActorReference() != None) && snitchers.addform(snitchRef1.GetActorReference())
       endif
-      if !bSnitchFound && snitchRef2.GetActorReference()
+      if !bSnitchFound && (snitchRef2.GetActorReference() != None)
         bSnitchFound = checkSnitch(snitchRef2.GetActorReference(), false, bCheckDibel)
-        snitchRef2.GetActorReference() && snitchers.addform(snitchRef2.GetActorReference())
+        (snitchRef2.GetActorReference() != None) && snitchers.addform(snitchRef2.GetActorReference())
       endif
       iIndex += 1
     endWhile
@@ -932,16 +1246,16 @@ Bool Function findSnitch(Bool bCheckDibel = False)
   While !snitchDetector.isRunning()
     utility.wait(0.2)
   endWhile
-  if snitchRef1.GetActorReference()
+  if (snitchRef1.GetActorReference() != None)
     if !bSnitchFound
       bSnitchFound = checkSnitch(snitchRef1.GetActorReference(), false, bCheckDibel)
-      snitchRef1.GetActorReference() && snitchers.addform(snitchRef1.GetActorReference())
+      (snitchRef1.GetActorReference() != None) && snitchers.addform(snitchRef1.GetActorReference())
     endif
   endif
-  if snitchRef2.GetActorReference()
+  if (snitchRef2.GetActorReference() != None)
     if !bSnitchFound
       bSnitchFound = checkSnitch(snitchRef2.GetActorReference(), false, bCheckDibel)
-      snitchRef2.GetActorReference() && snitchers.addform(snitchRef2.GetActorReference())
+      (snitchRef2.GetActorReference() != None) && snitchers.addform(snitchRef2.GetActorReference())
     endif
   endif
   snitchDetector.stop()
@@ -1147,6 +1461,20 @@ Float Function iRewardProgress(Int iPos, Bool bDibel = False)
   return 0.0
 EndFunction
 
+function addDibelMarkToPlayer(float fChance, int iNumPartners = 1)
+  Int iAmount = 0
+  int iIndex = iNumPartners
+  while iIndex > 0
+    iIndex -= 1
+    if utility.randomInt(0,99) < fChance as Int
+      iAmount += 1 
+    endif
+  endWhile
+  if iAmount > 0
+    player.Additem(dibelMark, iAmount)
+  endif
+endFunction
+
 Event OnInit()
 EndEvent
 
@@ -1208,46 +1536,93 @@ endEvent
 
 State Dibeling
   Event OnBeginState()
-    int result = -1
-    clearCustomer()
+    if bIsBusy
+      return
+    endif
+    bIsBusy = True
     if !isSnitchOK(dibelSnitch) && !playerHasDibelLicence()
       startSnitchFinder(true)
     endif
-    result = haveSex(currentPartner, sGetCurAnimInteface(), bDibelAllowAggressive, bAllPosAllowed(fDibelVagChance,fDibelAnalChance,fDibelOralChance))
-    updateHistory(currentPartner, result, True)
-    iPosition = -1
-    if result < 0
-      GoToState("")
-    endif
+    origCustomersArr=formListToActorArray(dibelCustomerlist)
+    while (getState() == "Dibeling") && (dibelCustomerlist.GetSize() > 0)
+      currentCustomerList.revert()
+      Bool bResult = False
+      int i = 0
+      while i < dibelCustomerlist.GetSize()
+        if dibelCustomerlist.getAt(i) as Actor
+          currentCustomerList.AddForm(dibelCustomerlist.getAt(i) as Actor)
+        endif
+        i += 1
+      endWhile
+      iPositions = iDibelPositions
+      bResult = bHaveGroupSex(sGetCurAnimInteface(), bDibelAllowAggressive, bAllPosAllowed(fDibelVagChance,fDibelAnalChance,fDibelOralChance))
+      if bResult
+        i = 0
+        int j = 0
+        iDibelPartners = 0
+        Actor partner
+        while i < currentCustomerList.GetSize()
+          partner = currentCustomerList.getAt(i) as Actor
+          j = origCustomersArr.find(partner)
+          if j > -1
+            updateHistory(partner, iDibelPositions[j], True)
+            iDibelPositions[j] = -1
+            dibelCustomerlist.RemoveAddedForm(partner)
+            iDibelPartners += 1
+          endif
+          i += 1
+        endWhile
+        currentCustomerList.revert()
+        bDibelAnimEnded = False
+        while !bDibelAnimEnded && (getState() == "Dibeling")
+          utility.wait(0.2)
+        endWhile
+        utility.wait(3.0)
+      else
+        GoToState("")
+      endif
+    endWhile
+    clearDibelCustomers()
+    clearDibelPositions()
   EndEvent
+
+  Event OnEndState()
+    bIsBusy = False
+  endEvent
 
   Event on_spp_sexlab_Sex_Ending(string eventName, string argString, float argNum, form sender)
   EndEvent
   
   event on_spp_sexlab_Sex_End(int tid, bool HasPlayer)
     if HasPlayer
-      if utility.randomInt(0,99) < fDibelMarkChance as Int
-        player.Additem(dibelMark, 1)
-      endif
+      addDibelMarkToPlayer(fDibelMarkChance, iDibelPartners)
       startInfectingPlayer(GetState())
-      GoToState("")
+      bDibelAnimEnded = true
+      if dibelCustomerlist.GetSize() == 0
+        GoToState("")
+      endif
+      iDibelPartners = 0
     endif
   endEvent
   
   Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, form sender)
-    if utility.randomInt(0,99) < fDibelMarkChance as Int
-      player.Additem(dibelMark, 1)
-    endif
+    addDibelMarkToPlayer(fDibelMarkChance, iDibelPartners)
     startInfectingPlayer(GetState())
-    GoToState("")
+    bDibelAnimEnded = true
+    if dibelCustomerlist.GetSize() == 0
+      GoToState("")
+    endif
+    iDibelPartners = 0
   EndEvent
   
   event onUpdate()
-    if utility.randomInt(0,99) < fDibelMarkChance as Int
-      player.Additem(dibelMark, 1)
-    endif
+    addDibelMarkToPlayer(fDibelMarkChance, iDibelPartners)
     startInfectingPlayer(GetState())
-    GoToState("")
+    bDibelAnimEnded = true
+    if dibelCustomerlist.GetSize() == 0
+      GoToState("")
+    endif
+    iDibelPartners = 0
   endEvent
   
   event OnUpdateGameTime()
@@ -1264,17 +1639,58 @@ EndState
 
 State Whoring
   Event OnBeginState()
-    int result = -1
+    if bIsBusy
+      return
+    endif
+    bIsBusy = True
     if !isSnitchOK(whoreSnitch) && !playerHasWhoreLicense()
       startSnitchFinder(false)
     endif
-    clearCustomer()
-    result = haveSex(currentPartner, sGetCurAnimInteface(), bWhoreAllowAggressive, bAllPosAllowed(fWhoreVagChance, fWhoreAnalChance, fWhoreOralChance))
-    updateHistory(currentPartner, result, False)
-    iPosition = -1
-    if result < 0
-      GoToState("")
-    endif
+    origCustomersArr=formListToActorArray(whoreCustomerlist)
+    while (getState() == "Whoring") && (whoreCustomerlist.GetSize() > 0)
+      currentCustomerList.revert()
+      Bool bResult = False
+      int i = 0
+      while i < whoreCustomerlist.GetSize()
+        if whoreCustomerlist.getAt(i) as Actor
+          currentCustomerList.AddForm(whoreCustomerlist.getAt(i) as Actor)
+        endif
+        i += 1
+      endWhile
+      iPositions = iWhorePositions
+      bResult = bHaveGroupSex(sGetCurAnimInteface(), bWhoreAllowAggressive, bAllPosAllowed(fWhoreVagChance,fWhoreAnalChance,fWhoreOralChance))
+      if bResult
+        i = 0
+        int j = 0
+        actor partner
+        iWhorePartners = 0
+        while i < currentCustomerList.GetSize()
+          partner = currentCustomerList.getAt(i) as Actor
+          j = origCustomersArr.find(partner)
+          if j > -1
+            updateHistory(partner, iWhorePositions[j], False)
+            iWhorePositions[j] = -1
+            whoreCustomerlist.RemoveAddedForm(partner)
+            iWhorePartners += 1
+          endif
+          i += 1
+        endWhile
+        currentCustomerList.revert()
+        bWhoreAnimEnded = False
+        while !bWhoreAnimEnded && (getState() == "Whoring")
+          utility.wait(0.2)
+        endWhile
+        utility.wait(3.0)
+      else
+        GoToState("")
+      endif
+    endWhile
+    clearWhoreCustomers()
+    clearWhorePositions()
+  EndEvent
+
+  Event OnEndState()
+    bIsBusy = False
   EndEvent
 
   Event on_spp_sexlab_Sex_Ending(string eventName, string argString, float argNum, form sender)
@@ -1282,28 +1698,34 @@ State Whoring
   
   event on_spp_sexlab_Sex_End(int tid, bool HasPlayer)
     if HasPlayer
-      if utility.randomInt(0,99) < fWhoreMarkChance as Int
-        player.Additem(dibelMark, 1)
-      endif
+      addDibelMarkToPlayer(fWhoreMarkChance, iWhorePartners)
       startInfectingPlayer(GetState())
-      GoToState("")
+      bWhoreAnimEnded = true
+      if whoreCustomerlist.GetSize() == 0
+        GoToState("")
+      endif
+      iWhorePartners = 0
     endif
   endEvent
   
   Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, form sender)
-    if utility.randomInt(0,99) < fWhoreMarkChance as Int
-      player.Additem(dibelMark, 1)
-    endif
+    addDibelMarkToPlayer(fWhoreMarkChance, iWhorePartners)
     startInfectingPlayer(GetState())
-    GoToState("")
+    bWhoreAnimEnded = true
+    if whoreCustomerlist.GetSize() == 0
+      GoToState("")
+    endif
+    iWhorePartners = 0
   EndEvent
   
   event onUpdate()
-      if utility.randomInt(0,99) < fWhoreMarkChance as Int
-        player.Additem(dibelMark, 1)
-      endif
-      startInfectingPlayer(GetState())
+    addDibelMarkToPlayer(fWhoreMarkChance, iWhorePartners)
+    startInfectingPlayer(GetState())
+    bWhoreAnimEnded = true
+    if whoreCustomerlist.GetSize() == 0
       GoToState("")
+    endif
+    iWhorePartners = 0
   endEvent
   
   event OnUpdateGameTime()
@@ -1329,6 +1751,7 @@ Auto State Init
   EndEvent
 
   Event onInit()
+    bIsBusy = True
     registerForSingleUpdate(5.0) 
   EndEvent
 
@@ -1342,6 +1765,7 @@ Auto State Init
     endWhile
     ;Debug.Trace("Simple Prostitution started.")
     Debug.Notification("Simple Prostitution started.")
+    bIsBusy = False
   endevent
 
   function snitch()
@@ -1352,7 +1776,7 @@ Auto State Init
 EndState
 
 State offeringToDibella
-  
+
   Event on_spp_sexlab_Sex_Ending(string eventName, string argString, float argNum, form sender)
   EndEvent
   
@@ -1369,8 +1793,8 @@ State offeringToDibella
   EndEvent
   
   event onUpdate()
-      STD_Script.cureActorSTDs(player, False)
-      GoToState("")
+    STD_Script.cureActorSTDs(player, False)
+    GoToState("")
   endEvent
   
   event OnUpdateGameTime()
@@ -1447,180 +1871,180 @@ Bool function GetDibellanRewards(Int aiMessage=0, Int aiButton=0)
       aiButton = DibelOfferMenu_Attributes.Show(player.GetActorValue("Health") as Int, player.GetActorValue("Magicka") as Int, player.GetActorValue("Stamina") as Int)
       if aiButton == -1
       elseif (aiButton == 0) || (aiButton == 1) || (aiButton == 2)
-         if iMarkCount < fAttributeCost as Int
-          DibelOfferMenu_InsufficientMark.Show(fAttributeCost as Int, iMarkCount)
-          aiMessage = 0 ;Top
-        elseif aiButton == 0 ;Health
-          if DibelOfferMenu_Confirm_Health.Show(fAttributeCost as Int, fAttributeIncrement as Int) == 0
-            player.SetActorValue("Health", player.GetBaseActorValue("Health") + fAttributeIncrement as Int)
-            MCMScript.iTotalHealthRecieved += fAttributeIncrement as Int
-            player.removeItem(dibelMark, fAttributeCost as Int)
-            MCMScript.iTotalRefundableOfferedMarks += fAttributeCost as Int
-            MCMScript.iTotalOfferedMarks += fAttributeCost as Int
-            iMarkCount = player.getItemCount(dibelMark)
-            DibelOfferMenu_Health_Changed.Show(fAttributeIncrement as Int)
-            bTraded = True
-            if iMarkCount < fAttributeCost as Int
-              aiMessage = 0
-            endif
+       if iMarkCount < fAttributeCost as Int
+        DibelOfferMenu_InsufficientMark.Show(fAttributeCost as Int, iMarkCount)
+        aiMessage = 0 ;Top
+      elseif aiButton == 0 ;Health
+        if DibelOfferMenu_Confirm_Health.Show(fAttributeCost as Int, fAttributeIncrement as Int) == 0
+          player.SetActorValue("Health", player.GetBaseActorValue("Health") + fAttributeIncrement as Int)
+          MCMScript.iTotalHealthRecieved += fAttributeIncrement as Int
+          player.removeItem(dibelMark, fAttributeCost as Int)
+          MCMScript.iTotalRefundableOfferedMarks += fAttributeCost as Int
+          MCMScript.iTotalOfferedMarks += fAttributeCost as Int
+          iMarkCount = player.getItemCount(dibelMark)
+          DibelOfferMenu_Health_Changed.Show(fAttributeIncrement as Int)
+          bTraded = True
+          if iMarkCount < fAttributeCost as Int
+            aiMessage = 0
           endif
-        elseif aiButton == 1 ;Magicka
-          if DibelOfferMenu_Confirm_Magicka.Show(fAttributeCost as Int, fAttributeIncrement as Int) == 0
-            player.SetActorValue("Magicka", player.GetBaseActorValue("Magicka") + fAttributeIncrement as Int)
-            MCMScript.iTotalMagickaRecieved += fAttributeIncrement as Int
-            player.removeItem(dibelMark, fAttributeCost as Int)
-            MCMScript.iTotalRefundableOfferedMarks += fAttributeCost as Int
-            MCMScript.iTotalOfferedMarks += fAttributeCost as Int
-            iMarkCount = player.getItemCount(dibelMark)
-            DibelOfferMenu_Magicka_Changed.Show(fAttributeIncrement as Int)
-            bTraded = True
-            if iMarkCount < fAttributeCost as Int
-              aiMessage = 0
-            endif
+        endif
+      elseif aiButton == 1 ;Magicka
+        if DibelOfferMenu_Confirm_Magicka.Show(fAttributeCost as Int, fAttributeIncrement as Int) == 0
+          player.SetActorValue("Magicka", player.GetBaseActorValue("Magicka") + fAttributeIncrement as Int)
+          MCMScript.iTotalMagickaRecieved += fAttributeIncrement as Int
+          player.removeItem(dibelMark, fAttributeCost as Int)
+          MCMScript.iTotalRefundableOfferedMarks += fAttributeCost as Int
+          MCMScript.iTotalOfferedMarks += fAttributeCost as Int
+          iMarkCount = player.getItemCount(dibelMark)
+          DibelOfferMenu_Magicka_Changed.Show(fAttributeIncrement as Int)
+          bTraded = True
+          if iMarkCount < fAttributeCost as Int
+            aiMessage = 0
           endif
-        elseif aiButton == 2 ;Stamina
-          if DibelOfferMenu_Confirm_Stamina.Show(fAttributeCost as Int, fAttributeIncrement as Int) == 0
-            player.SetActorValue("Stamina", player.GetBaseActorValue("Stamina") + fAttributeIncrement as Int)
-            MCMScript.iTotalStaminaRecieved += fAttributeIncrement as Int
-            player.removeItem(dibelMark, fAttributeCost as Int)
-            MCMScript.iTotalRefundableOfferedMarks += fAttributeCost as Int
-            MCMScript.iTotalOfferedMarks += fAttributeCost as Int
-            iMarkCount = player.getItemCount(dibelMark)
-            DibelOfferMenu_Stamina_Changed.Show(fAttributeIncrement as Int)
-            bTraded = True
-            if iMarkCount < fAttributeCost as Int
-              aiMessage = 0
-            endif
+        endif
+      elseif aiButton == 2 ;Stamina
+        if DibelOfferMenu_Confirm_Stamina.Show(fAttributeCost as Int, fAttributeIncrement as Int) == 0
+          player.SetActorValue("Stamina", player.GetBaseActorValue("Stamina") + fAttributeIncrement as Int)
+          MCMScript.iTotalStaminaRecieved += fAttributeIncrement as Int
+          player.removeItem(dibelMark, fAttributeCost as Int)
+          MCMScript.iTotalRefundableOfferedMarks += fAttributeCost as Int
+          MCMScript.iTotalOfferedMarks += fAttributeCost as Int
+          iMarkCount = player.getItemCount(dibelMark)
+          DibelOfferMenu_Stamina_Changed.Show(fAttributeIncrement as Int)
+          bTraded = True
+          if iMarkCount < fAttributeCost as Int
+            aiMessage = 0
           endif
-		endif  
+        endif
+      endif  
+    elseif aiButton == 3 ;Back
+      aiMessage = 0 ;Top
+    elseif aiButton == 4 ;Exit
+      return bTraded
+    endif
+  elseif aiMessage == 2 ;Skills Type Menu
+    if iMarkCount < fSkillLevelCost as Int
+      DibelOfferMenu_InsufficientMark.Show(fSkillLevelCost as Int, iMarkCount)
+      aiMessage = 0
+    else
+      aiButton = DibelOfferMenu_Skills.Show()
+      if aiButton == -1
+      elseif aiButton == 0 ;Combat Skills
+        aiMessage = 3
+      elseif aiButton == 1 ;Magic Skills
+        aiMessage = 4
+      elseif aiButton == 2 ;Stealth Skills
+        aiMessage = 5
       elseif aiButton == 3 ;Back
         aiMessage = 0 ;Top
       elseif aiButton == 4 ;Exit
         return bTraded
-      endif
-    elseif aiMessage == 2 ;Skills Type Menu
-      if iMarkCount < fSkillLevelCost as Int
-        DibelOfferMenu_InsufficientMark.Show(fSkillLevelCost as Int, iMarkCount)
-        aiMessage = 0
-      else
-        aiButton = DibelOfferMenu_Skills.Show()
-        if aiButton == -1
-        elseif aiButton == 0 ;Combat Skills
-          aiMessage = 3
-        elseif aiButton == 1 ;Magic Skills
-          aiMessage = 4
-        elseif aiButton == 2 ;Stealth Skills
-          aiMessage = 5
-        elseif aiButton == 3 ;Back
-          aiMessage = 0 ;Top
-        elseif aiButton == 4 ;Exit
-          return bTraded
-        endIf
-      endif
-    elseif aiMessage == 3 ;Combat Skills Menu
-      if iMarkCount < fSkillLevelCost as Int
-        DibelOfferMenu_InsufficientMark.Show(fSkillLevelCost as Int, iMarkCount)
-        aiMessage = 0
-      else
-        aiButton = DibelOfferMenu_Skills_Combat.Show(player.GetActorValue("Marksman") as Int, player.GetActorValue("Block") as Int, player.GetActorValue("HeavyArmor") as Int, player.GetActorValue("OneHanded") as Int, player.GetActorValue("Smithing") as Int, player.GetActorValue("TwoHanded") as Int)
-        if aiButton == -1
-        elseif aiButton < 6
-          if DibelOfferMenu_Confirm_Skill.Show(fSkillLevelCost as Int, fSkillLevelIncrement as Int) == 0
-            if aiButton == 0
-              IncrementSkillLevel("Marksman")
-            elseif aiButton == 1
-              IncrementSkillLevel("Block")
-            elseif aiButton == 2
-              IncrementSkillLevel("HeavyArmor")
-            elseif aiButton == 3
-              IncrementSkillLevel("OneHanded")
-            elseif aiButton == 4
-              IncrementSkillLevel("Smithing")
-            elseif aiButton == 5
-              IncrementSkillLevel("TwoHanded")
-            endif
-			      iMarkCount = player.getItemCount(dibelMark)
-            bTraded = True
-            if iMarkCount < fSkillLevelCost as Int
-              aiMessage = 0
-            endif
+      endIf
+    endif
+  elseif aiMessage == 3 ;Combat Skills Menu
+    if iMarkCount < fSkillLevelCost as Int
+      DibelOfferMenu_InsufficientMark.Show(fSkillLevelCost as Int, iMarkCount)
+      aiMessage = 0
+    else
+      aiButton = DibelOfferMenu_Skills_Combat.Show(player.GetActorValue("Marksman") as Int, player.GetActorValue("Block") as Int, player.GetActorValue("HeavyArmor") as Int, player.GetActorValue("OneHanded") as Int, player.GetActorValue("Smithing") as Int, player.GetActorValue("TwoHanded") as Int)
+      if aiButton == -1
+      elseif aiButton < 6
+        if DibelOfferMenu_Confirm_Skill.Show(fSkillLevelCost as Int, fSkillLevelIncrement as Int) == 0
+          if aiButton == 0
+            IncrementSkillLevel("Marksman")
+          elseif aiButton == 1
+            IncrementSkillLevel("Block")
+          elseif aiButton == 2
+            IncrementSkillLevel("HeavyArmor")
+          elseif aiButton == 3
+            IncrementSkillLevel("OneHanded")
+          elseif aiButton == 4
+            IncrementSkillLevel("Smithing")
+          elseif aiButton == 5
+            IncrementSkillLevel("TwoHanded")
           endif
-        elseif aiButton == 6 ;Back
-          aiMessage = 2 ;;Skills Type Menu
-        elseif aiButton == 7 ;Exit
-          return bTraded
-        endif
-      endif
-    elseif aiMessage == 4 ;Magic Skills Menu
-      if iMarkCount < fSkillLevelCost as Int
-        DibelOfferMenu_InsufficientMark.Show(fSkillLevelCost as Int, iMarkCount)
-        aiMessage = 0
-      else
-        aiButton = DibelOfferMenu_Skills_Magic.Show(player.GetActorValue("Alteration") as Int, player.GetActorValue("Conjuration") as Int, player.GetActorValue("Destruction") as Int, player.GetActorValue("Enchanting") as Int, player.GetActorValue("Illusion") as Int, player.GetActorValue("Restoration") as Int)
-        if aiButton == -1
-        elseif aiButton < 6
-          if DibelOfferMenu_Confirm_Skill.Show(fSkillLevelCost as Int, fSkillLevelIncrement as Int) == 0
-            if aiButton == 0
-              IncrementSkillLevel("Alteration")
-            elseif aiButton == 1
-              IncrementSkillLevel("Conjuration")
-            elseif aiButton == 2
-              IncrementSkillLevel("Destruction")
-            elseif aiButton == 3
-              IncrementSkillLevel("Enchanting")
-            elseif aiButton == 4
-              IncrementSkillLevel("Illusion")
-            elseif aiButton == 5
-              IncrementSkillLevel("Restoration")
-            endif
-			      iMarkCount = player.getItemCount(dibelMark)
-            bTraded = True
-            if iMarkCount < fSkillLevelCost as Int
-              aiMessage = 0
-            endif
+          iMarkCount = player.getItemCount(dibelMark)
+          bTraded = True
+          if iMarkCount < fSkillLevelCost as Int
+            aiMessage = 0
           endif
-        elseif aiButton == 6 ;Back
-          aiMessage = 2 ;;Skills Type Menu
-        elseif aiButton == 7 ;Exit
-          return bTraded
         endif
-      endif
-    elseif aiMessage == 5 ;Stealth Skills Menu
-      if iMarkCount < fSkillLevelCost as Int
-        DibelOfferMenu_InsufficientMark.Show(fSkillLevelCost as Int, iMarkCount)
-        aiMessage = 0
-      else
-        aiButton = DibelOfferMenu_Skills_Stealth.Show(player.GetActorValue("Alchemy") as Int, player.GetActorValue("LightArmor") as Int, player.GetActorValue("Lockpicking") as Int, player.GetActorValue("Pickpocket") as Int, player.GetActorValue("Sneak") as Int, player.GetActorValue("Speechcraft") as Int)
-        if aiButton == -1
-        elseif aiButton < 6
-          if DibelOfferMenu_Confirm_Skill.Show(fSkillLevelCost as Int, fSkillLevelIncrement as Int) == 0
-            if aiButton == 0
-              IncrementSkillLevel("Alchemy")
-            elseif aiButton == 1
-              IncrementSkillLevel("LightArmor")
-            elseif aiButton == 2
-              IncrementSkillLevel("Lockpicking")
-            elseif aiButton == 3
-              IncrementSkillLevel("Pickpocket")
-            elseif aiButton == 4
-              IncrementSkillLevel("Sneak")
-            elseif aiButton == 5
-              IncrementSkillLevel("Speechcraft")
-            endif
-			      iMarkCount = player.getItemCount(dibelMark)
-            bTraded = True
-            if iMarkCount < fSkillLevelCost as Int
-              aiMessage = 0
-            endif
-          endif
-        elseif aiButton == 6 ;Back
-          aiMessage = 2 ;;Skills Type Menu
-        elseif aiButton == 7 ;Exit
-          return bTraded
-        endif
+      elseif aiButton == 6 ;Back
+        aiMessage = 2 ;;Skills Type Menu
+      elseif aiButton == 7 ;Exit
+        return bTraded
       endif
     endif
-  endWhile
+  elseif aiMessage == 4 ;Magic Skills Menu
+    if iMarkCount < fSkillLevelCost as Int
+      DibelOfferMenu_InsufficientMark.Show(fSkillLevelCost as Int, iMarkCount)
+      aiMessage = 0
+    else
+      aiButton = DibelOfferMenu_Skills_Magic.Show(player.GetActorValue("Alteration") as Int, player.GetActorValue("Conjuration") as Int, player.GetActorValue("Destruction") as Int, player.GetActorValue("Enchanting") as Int, player.GetActorValue("Illusion") as Int, player.GetActorValue("Restoration") as Int)
+      if aiButton == -1
+      elseif aiButton < 6
+        if DibelOfferMenu_Confirm_Skill.Show(fSkillLevelCost as Int, fSkillLevelIncrement as Int) == 0
+          if aiButton == 0
+            IncrementSkillLevel("Alteration")
+          elseif aiButton == 1
+            IncrementSkillLevel("Conjuration")
+          elseif aiButton == 2
+            IncrementSkillLevel("Destruction")
+          elseif aiButton == 3
+            IncrementSkillLevel("Enchanting")
+          elseif aiButton == 4
+            IncrementSkillLevel("Illusion")
+          elseif aiButton == 5
+            IncrementSkillLevel("Restoration")
+          endif
+          iMarkCount = player.getItemCount(dibelMark)
+          bTraded = True
+          if iMarkCount < fSkillLevelCost as Int
+            aiMessage = 0
+          endif
+        endif
+      elseif aiButton == 6 ;Back
+        aiMessage = 2 ;;Skills Type Menu
+      elseif aiButton == 7 ;Exit
+        return bTraded
+      endif
+    endif
+  elseif aiMessage == 5 ;Stealth Skills Menu
+    if iMarkCount < fSkillLevelCost as Int
+      DibelOfferMenu_InsufficientMark.Show(fSkillLevelCost as Int, iMarkCount)
+      aiMessage = 0
+    else
+      aiButton = DibelOfferMenu_Skills_Stealth.Show(player.GetActorValue("Alchemy") as Int, player.GetActorValue("LightArmor") as Int, player.GetActorValue("Lockpicking") as Int, player.GetActorValue("Pickpocket") as Int, player.GetActorValue("Sneak") as Int, player.GetActorValue("Speechcraft") as Int)
+      if aiButton == -1
+      elseif aiButton < 6
+        if DibelOfferMenu_Confirm_Skill.Show(fSkillLevelCost as Int, fSkillLevelIncrement as Int) == 0
+          if aiButton == 0
+            IncrementSkillLevel("Alchemy")
+          elseif aiButton == 1
+            IncrementSkillLevel("LightArmor")
+          elseif aiButton == 2
+            IncrementSkillLevel("Lockpicking")
+          elseif aiButton == 3
+            IncrementSkillLevel("Pickpocket")
+          elseif aiButton == 4
+            IncrementSkillLevel("Sneak")
+          elseif aiButton == 5
+            IncrementSkillLevel("Speechcraft")
+          endif
+          iMarkCount = player.getItemCount(dibelMark)
+          bTraded = True
+          if iMarkCount < fSkillLevelCost as Int
+            aiMessage = 0
+          endif
+        endif
+      elseif aiButton == 6 ;Back
+        aiMessage = 2 ;;Skills Type Menu
+      elseif aiButton == 7 ;Exit
+        return bTraded
+      endif
+    endif
+  endif
+endWhile
 EndFunction
 
 Function IncrementSkillLevel(String sSkillName)

@@ -42,11 +42,18 @@ Bool Function bHaveRandomSexWithPlayer(Actor Partner)
   return False
 endfunction
 
+Bool function bHaveGroupSexWithPlayer(Actor[] partners)
+  return false
+endfunction
+
 state Installed
   Int function haveSexWithPlayer(Actor Partner, Int Position)
     return zzzmrt_SP_Int_Flowergirls.haveSexWithPlayerFG(FlowerGirls, Partner, Position)
   endfunction
   Bool Function bHaveRandomSexWithPlayer(Actor Partner)
     return zzzmrt_SP_Int_Flowergirls.bHaveRandomSexWithPlayerFG(FlowerGirls,Partner)
+  endfunction
+  Bool function bHaveGroupSexWithPlayer(Actor[] partners)
+    return zzzmrt_SP_Int_Flowergirls.bHaveGroupSexWithPlayerFG(FlowerGirls, partners)
   endfunction
 endstate

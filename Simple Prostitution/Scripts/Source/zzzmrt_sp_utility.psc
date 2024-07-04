@@ -102,3 +102,15 @@ Int[] Function initIntArray(Int[] arr, Int len, Int def = 0) Global
   endWhile
   return newArr
 EndFunction
+
+Function endDialogueWithPlayer(ObjectReference objTarget) Global
+  {Ends a dialogue with player by pressing menu key (default is ESC).}
+  int iPauseKey = input.GetMappedKey("Pause")
+  if iPauseKey > 0
+    if !IsInMenuMode() 
+      if objTarget.IsInDialogueWithPlayer()
+        Input.tapkey(iPauseKey)
+      Endif
+    Endif
+  endif
+EndFunction

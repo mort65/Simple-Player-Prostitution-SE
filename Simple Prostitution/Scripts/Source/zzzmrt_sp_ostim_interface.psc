@@ -42,6 +42,10 @@ Bool Function bHaveRandomSexWithPlayer(Actor Partner, Bool bAggressive = False)
   return False
 EndFunction
 
+Bool Function bHaveGroupSexWithPlayer(Actor[] partners, Bool bAllowAggressive = True)
+  return false
+EndFunction
+
 Actor[] function getActors()
   Actor[] actors
   return actors
@@ -59,5 +63,9 @@ state Installed
 
   Bool Function bHaveRandomSexWithPlayer(Actor Partner, Bool bAggressive = False)
     return zzzmrt_sp_int_ostim.bHaveRandomSexWithPlayerOS(OSexIntegrationMainQuest, partner, bAggressive)
+  endfunction
+
+  Bool Function bHaveGroupSexWithPlayer(Actor[] partners, Bool bAllowAggressive = True)
+    return zzzmrt_sp_int_ostim.bHaveGroupSexWithPlayerOS(OSexIntegrationMainQuest, partners, bAllowAggressive)
   endfunction
 endstate

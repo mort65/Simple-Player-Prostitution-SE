@@ -2981,7 +2981,7 @@ Bool function saveUserSettingsPapyrus()
   jsonutil.SetPathStringValue(settings_path, "sExtraTags_OS_Vaginal_FF", MainScript.sExtraTags_OS_Vaginal_FF)
 
   if !jsonutil.Save(settings_path, false)
-    debug.Trace("SimpleProstitution: Error saving user settings.", 0)
+    debug.Trace("Simple Prostitution: Error saving user settings.", 0)
     return false
   endIf
   return true
@@ -3225,13 +3225,13 @@ String Function sGetSexStatText(Int iPos, Bool bRace, Bool bDibel = False)
         arr = MainScript.iWhoreOralStatArr
         iCount = arr[iWhoreStatRace]
       endif
-      if arr
-        int iIndex = arr.Length
-        while iIndex > 0
-          iIndex -= 1
-          iTotal = iTotal + arr[iIndex]
-        endWhile
-      endif
+    endif
+    if arr
+      int iIndex = arr.Length
+      while iIndex > 0
+        iIndex -= 1
+        iTotal = iTotal + arr[iIndex]
+      endWhile
     endif
   else
     if bDibel

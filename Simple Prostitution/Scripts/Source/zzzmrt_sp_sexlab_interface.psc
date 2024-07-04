@@ -51,6 +51,10 @@ Bool Function bHaveRandomSexWithPlayer(Actor Partner, Bool bAggressive = False)
   return False
 EndFunction
 
+Bool function bHaveGroupSexWithPlayer(Actor[] partners, Bool bAllowAggressive = True)
+  return False
+EndFunction
+
 state Installed
   int function haveSexWithPlayer(Actor Partner, Int Position, String[] sExtraTags, Bool[] bRequireAllTags, Bool bAllowAggressive = False, Bool bAllowAll = False)
     return zzzmrt_sp_int_sexlab.haveSexWithPlayerSL(SexLabQuestFramework, Partner, Position, sExtraTags, bRequireAllTags, bAllowAggressive, bAllowAll)
@@ -66,5 +70,9 @@ state Installed
   
   Bool Function bHaveRandomSexWithPlayer(Actor Partner, Bool bAggressive = False)
     return zzzmrt_sp_int_sexlab.bHaveRandomSexWithPlayerSL(SexLabQuestFramework, Partner, bAggressive)
+  EndFunction
+
+  Bool function bHaveGroupSexWithPlayer(Actor[] partners, Bool bAllowAggressive = True)
+    return zzzmrt_sp_int_sexlab.bHaveGroupSexWithPlayerSL(SexLabQuestFramework, partners, bAllowAggressive)
   EndFunction
 endstate
