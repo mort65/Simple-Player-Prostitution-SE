@@ -259,10 +259,11 @@ Function RegisterForEvents()
   RegisterForModEvent("ostim_end", "on_spp_ostim_Sex_End")
 EndFunction
 
-function startInfectingPlayer(String curState)
+function startInfectingPlayer(String curState, Int numNPC = 1)
   int handle = ModEvent.Create("SPP_InfectPlayerWithSTD")
   ModEvent.PushForm(handle, self as Quest)
   ModEvent.PushString(handle, curState)
+  ModEvent.PushInt(handle, numNPC)
   ModEvent.Send(Handle)
 EndFunction
 
@@ -387,6 +388,7 @@ int function haveSex(Actor akActor, String interface, Bool bAllowAggressive = Fa
   if !akActor
     return -1
   endif
+  (akActor as ObjectReference).MoveToIfUnloaded(player as ObjectReference)
   int result = -1
   if interface == "sexlab"
     result = playerSexSL(akActor, bAllowAggressive, bAllowAll)
@@ -454,6 +456,12 @@ Bool Function bHaveGroupSex(String interface, Bool bAllowAggressive = False, Boo
   endif
   Bool bResult = False
   actor[] Partners = formListToActorArray(currentCustomerList)
+  int iIndex = partners.Length
+  while iIndex > 0
+    iIndex -= 1
+    (Partners[iIndex] as ObjectReference).MoveToIfUnloaded(player as ObjectReference)
+  endWhile
+  utility.wait(0.2)
   if interface == ""
     Game.DisablePlayerControls(abMovement=True, abFighting=True, abCamSwitch=False, abLooking=False, abSneaking=True, abMenu=True, abActivate=True, abJournalTabs=False, aiDisablePOVType=0)
     FastFadeOut.Apply()
@@ -468,7 +476,7 @@ Bool Function bHaveGroupSex(String interface, Bool bAllowAggressive = False, Boo
     bResult = False
     while !bResult && (currentCustomerList.GetSize() > 0)
       if (currentCustomerList.GetSize() == 1) && (currentCustomerList.GetAt(0) as Actor) && (origCustomersArr.Find(currentCustomerList.GetAt(0) as Actor) > -1)
-        int iIndex = origCustomersArr.Find(currentCustomerList.GetAt(0) as Actor)
+        iIndex = origCustomersArr.Find(currentCustomerList.GetAt(0) as Actor)
         iPosition = iPositions[iIndex]
         if iPosition < 0
           iPosition = utility.randomint(0,2)
@@ -1500,7 +1508,7 @@ Event on_spp_sexlab_Sex_Ending(string eventName, string argString, float argNum,
         endif
       endWhile
     endif
-    startInfectingPlayer(getState())
+    startInfectingPlayer(getState(), actorList.Length - 1)
   endif
 EndEvent
 
@@ -1529,7 +1537,7 @@ Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, for
       if actorList.Length == 2 && hasSpouse
         return
       endif
-      StartInfectingplayer(getState())
+      StartInfectingplayer(getState(), actorList.Length - 1)
     endif
   endif
 endEvent
@@ -1544,42 +1552,47 @@ State Dibeling
       startSnitchFinder(true)
     endif
     origCustomersArr=formListToActorArray(dibelCustomerlist)
+    Bool bResult = False
+    int i = 0
     while (getState() == "Dibeling") && (dibelCustomerlist.GetSize() > 0)
       currentCustomerList.revert()
-      Bool bResult = False
-      int i = 0
+      i = 0
       while i < dibelCustomerlist.GetSize()
-        if dibelCustomerlist.getAt(i) as Actor
+        if (dibelCustomerlist.getAt(i) as Actor) && !(dibelCustomerlist.getAt(i) as Actor).isDead()
           currentCustomerList.AddForm(dibelCustomerlist.getAt(i) as Actor)
+        else
+          dibelCustomerlist.RemoveAddedForm(dibelCustomerlist.getAt(i))
         endif
         i += 1
       endWhile
-      iPositions = iDibelPositions
-      bResult = bHaveGroupSex(sGetCurAnimInteface(), bDibelAllowAggressive, bAllPosAllowed(fDibelVagChance,fDibelAnalChance,fDibelOralChance))
-      if bResult
-        i = 0
-        int j = 0
-        iDibelPartners = 0
-        Actor partner
-        while i < currentCustomerList.GetSize()
-          partner = currentCustomerList.getAt(i) as Actor
-          j = origCustomersArr.find(partner)
-          if j > -1
-            updateHistory(partner, iDibelPositions[j], True)
-            iDibelPositions[j] = -1
-            dibelCustomerlist.RemoveAddedForm(partner)
-            iDibelPartners += 1
-          endif
-          i += 1
-        endWhile
-        currentCustomerList.revert()
-        bDibelAnimEnded = False
-        while !bDibelAnimEnded && (getState() == "Dibeling")
-          utility.wait(0.2)
-        endWhile
-        utility.wait(3.0)
-      else
-        GoToState("")
+      if dibelCustomerlist.GetSize() > 0
+        iPositions = iDibelPositions
+        bResult = bHaveGroupSex(sGetCurAnimInteface(), bDibelAllowAggressive, bAllPosAllowed(fDibelVagChance,fDibelAnalChance,fDibelOralChance))
+        if bResult
+          i = 0
+          int j = 0
+          iDibelPartners = 0
+          Actor partner
+          while i < currentCustomerList.GetSize()
+            partner = currentCustomerList.getAt(i) as Actor
+            j = origCustomersArr.find(partner)
+            if j > -1
+              updateHistory(partner, iDibelPositions[j], True)
+              iDibelPositions[j] = -1
+              dibelCustomerlist.RemoveAddedForm(partner)
+              iDibelPartners += 1
+            endif
+            i += 1
+          endWhile
+          currentCustomerList.revert()
+          bDibelAnimEnded = False
+          while !bDibelAnimEnded && (getState() == "Dibeling")
+            utility.wait(0.2)
+          endWhile
+          utility.wait(3.0)
+        else
+          GoToState("")
+        endif
       endif
     endWhile
     clearDibelCustomers()
@@ -1596,7 +1609,7 @@ State Dibeling
   event on_spp_sexlab_Sex_End(int tid, bool HasPlayer)
     if HasPlayer
       addDibelMarkToPlayer(fDibelMarkChance, iDibelPartners)
-      startInfectingPlayer(GetState())
+      startInfectingPlayer(GetState(), iDibelPartners)
       bDibelAnimEnded = true
       if dibelCustomerlist.GetSize() == 0
         GoToState("")
@@ -1607,7 +1620,7 @@ State Dibeling
   
   Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, form sender)
     addDibelMarkToPlayer(fDibelMarkChance, iDibelPartners)
-    startInfectingPlayer(GetState())
+    startInfectingPlayer(GetState(), iDibelPartners)
     bDibelAnimEnded = true
     if dibelCustomerlist.GetSize() == 0
       GoToState("")
@@ -1617,7 +1630,7 @@ State Dibeling
   
   event onUpdate()
     addDibelMarkToPlayer(fDibelMarkChance, iDibelPartners)
-    startInfectingPlayer(GetState())
+    startInfectingPlayer(GetState(), iDibelPartners)
     bDibelAnimEnded = true
     if dibelCustomerlist.GetSize() == 0
       GoToState("")
@@ -1647,42 +1660,47 @@ State Whoring
       startSnitchFinder(false)
     endif
     origCustomersArr=formListToActorArray(whoreCustomerlist)
+    Bool bResult = False
+    int i = 0
     while (getState() == "Whoring") && (whoreCustomerlist.GetSize() > 0)
       currentCustomerList.revert()
-      Bool bResult = False
-      int i = 0
+      i = 0
       while i < whoreCustomerlist.GetSize()
-        if whoreCustomerlist.getAt(i) as Actor
+        if (whoreCustomerlist.getAt(i) as Actor) && !(whoreCustomerlist.getAt(i) as Actor).isDead()
           currentCustomerList.AddForm(whoreCustomerlist.getAt(i) as Actor)
+        else
+          whoreCustomerlist.RemoveAddedForm(whoreCustomerlist.getAt(i))
         endif
         i += 1
       endWhile
-      iPositions = iWhorePositions
-      bResult = bHaveGroupSex(sGetCurAnimInteface(), bWhoreAllowAggressive, bAllPosAllowed(fWhoreVagChance,fWhoreAnalChance,fWhoreOralChance))
-      if bResult
-        i = 0
-        int j = 0
-        actor partner
-        iWhorePartners = 0
-        while i < currentCustomerList.GetSize()
-          partner = currentCustomerList.getAt(i) as Actor
-          j = origCustomersArr.find(partner)
-          if j > -1
-            updateHistory(partner, iWhorePositions[j], False)
-            iWhorePositions[j] = -1
-            whoreCustomerlist.RemoveAddedForm(partner)
-            iWhorePartners += 1
-          endif
-          i += 1
-        endWhile
-        currentCustomerList.revert()
-        bWhoreAnimEnded = False
-        while !bWhoreAnimEnded && (getState() == "Whoring")
-          utility.wait(0.2)
-        endWhile
-        utility.wait(3.0)
-      else
-        GoToState("")
+      if (whoreCustomerlist.GetSize() > 0)
+        iPositions = iWhorePositions
+        bResult = bHaveGroupSex(sGetCurAnimInteface(), bWhoreAllowAggressive, bAllPosAllowed(fWhoreVagChance,fWhoreAnalChance,fWhoreOralChance))
+        if bResult
+          i = 0
+          int j = 0
+          actor partner
+          iWhorePartners = 0
+          while i < currentCustomerList.GetSize()
+            partner = currentCustomerList.getAt(i) as Actor
+            j = origCustomersArr.find(partner)
+            if j > -1
+              updateHistory(partner, iWhorePositions[j], False)
+              iWhorePositions[j] = -1
+              whoreCustomerlist.RemoveAddedForm(partner)
+              iWhorePartners += 1
+            endif
+            i += 1
+          endWhile
+          currentCustomerList.revert()
+          bWhoreAnimEnded = False
+          while !bWhoreAnimEnded && (getState() == "Whoring")
+            utility.wait(0.2)
+          endWhile
+          utility.wait(3.0)
+        else
+          GoToState("")
+        endif
       endif
     endWhile
     clearWhoreCustomers()
@@ -1699,7 +1717,7 @@ State Whoring
   event on_spp_sexlab_Sex_End(int tid, bool HasPlayer)
     if HasPlayer
       addDibelMarkToPlayer(fWhoreMarkChance, iWhorePartners)
-      startInfectingPlayer(GetState())
+      startInfectingPlayer(GetState(), iWhorePartners)
       bWhoreAnimEnded = true
       if whoreCustomerlist.GetSize() == 0
         GoToState("")
@@ -1710,7 +1728,7 @@ State Whoring
   
   Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, form sender)
     addDibelMarkToPlayer(fWhoreMarkChance, iWhorePartners)
-    startInfectingPlayer(GetState())
+    startInfectingPlayer(GetState(), iWhorePartners)
     bWhoreAnimEnded = true
     if whoreCustomerlist.GetSize() == 0
       GoToState("")
@@ -1720,7 +1738,7 @@ State Whoring
   
   event onUpdate()
     addDibelMarkToPlayer(fWhoreMarkChance, iWhorePartners)
-    startInfectingPlayer(GetState())
+    startInfectingPlayer(GetState(), iWhorePartners)
     bWhoreAnimEnded = true
     if whoreCustomerlist.GetSize() == 0
       GoToState("")

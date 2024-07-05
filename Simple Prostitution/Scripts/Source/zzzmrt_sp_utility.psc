@@ -108,9 +108,26 @@ Function endDialogueWithPlayer(ObjectReference objTarget) Global
   int iPauseKey = input.GetMappedKey("Pause")
   if iPauseKey > 0
     if !IsInMenuMode() 
-      if objTarget.IsInDialogueWithPlayer()
+      if objTarget && objTarget.IsInDialogueWithPlayer()
         Input.tapkey(iPauseKey)
       Endif
     Endif
   endif
+EndFunction
+
+Bool Function bSucessCalculator(float fSuccessPercent, int iRounds = 1) Global
+  {Checks for at least one success after multiple attempts based on input probability : P(at least one success) = 1 - (1 - p)^n}
+  if iRounds < 1 || fSuccessPercent <= 0.0
+    return False
+  endif
+  ;return (1.0 - Math.Pow(1.0 - (fSuccessPercent / 100.0), iRounds as Float)) > utility.randomInt(0,99)
+  
+  int iIndex = 0
+  While iIndex < iRounds
+    if fSuccessPercent > utility.randomInt(0,99)
+      return True
+    endIf
+    iIndex += 1
+  endWhile
+  return False
 EndFunction

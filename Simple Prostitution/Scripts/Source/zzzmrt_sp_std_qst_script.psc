@@ -17,6 +17,7 @@ Potion property CureNormalDiseasePotion auto
 Actor Property player Auto
 MiscObject Property Gold001 Auto
 String sexMode
+Int numNPC
 Bool bBusy = False
 
 Event OnUpdate()
@@ -28,9 +29,10 @@ Event OnInit()
 	registerForSingleUpdate(3.0)
 EndEvent
 
-event OnInfectPlayerWithSTD(Form akSender, String  sMode)
+event OnInfectPlayerWithSTD(Form akSender, String  sMode, int iNum = 1)
 	GoToState("Infecting")
 	sexMode = sMode
+	numNPC = iNum
 	registerForSingleUpdate(5.0)
 endevent
 
@@ -152,6 +154,7 @@ Int Function setCureSTDCost(Actor akActor)
 	Return totalPrice
 Endfunction
 
+
 State Infecting
 	Event OnUpdate()
 		GoToState("")
@@ -161,14 +164,14 @@ State Infecting
 		Bool bInfect
 		Bool bProgress
 		if sexMode == "Dibeling"
-			bInfect = (MainScript.fDibelSTDInfectChance > Utility.RandomInt(0, 99)) && (MainScript.bDibelAllowMultipleSTDs || !actorHasSTD(player))
-			bProgress = MainScript.fDibelSTDProgressChance > Utility.RandomInt(0, 99)
+			bInfect = bSucessCalculator(MainScript.fDibelSTDInfectChance, numNPC) && (MainScript.bDibelAllowMultipleSTDs || !actorHasSTD(player))
+			bProgress = bSucessCalculator(MainScript.fDibelSTDProgressChance)
 		elseif sexMode == "Whoring"
-			bInfect = (MainScript.fWhoreSTDInfectChance > Utility.RandomInt(0, 99)) && (MainScript.bWhoreAllowMultipleSTDs || !actorHasSTD(player))
-			bProgress =  MainScript.fWhoreSTDProgressChance > Utility.RandomInt(0, 99)
+			bInfect = bSucessCalculator(MainScript.fWhoreSTDInfectChance, numNPC) && (MainScript.bWhoreAllowMultipleSTDs || !actorHasSTD(player))
+			bProgress = bSucessCalculator(MainScript.fWhoreSTDProgressChance)
 	    elseif sexMode == ""
-	        bInfect = (MainScript.fNormalSTDInfectChance > Utility.RandomInt(0, 99)) && (MainScript.bNormalAllowMultipleSTDs || !actorHasSTD(player))
-			bProgress = MainScript.fNormalSTDProgressChance > Utility.RandomInt(0, 99)
+	    	bInfect = bSucessCalculator(MainScript.fNormalSTDInfectChance, numNPC) && (MainScript.bNormalAllowMultipleSTDs || !actorHasSTD(player))
+			bProgress = bSucessCalculator(MainScript.fNormalSTDProgressChance)
 	    endif
 	    if bInfect || bProgress
 			nextSTDStages.revert()
@@ -227,7 +230,7 @@ State Infecting
 	Event OnCalcPlayerSTDCurePrice(Form akSender)
 	EndEvent
 
-	event OnInfectPlayerWithSTD(Form akSender, String  sMode)
+	event OnInfectPlayerWithSTD(Form akSender, String  sMode, int iNum = 1)
 	EndEvent
 	
 	Bool function cureActorSTDs(Actor akActor, Bool bPay = true, int maxStage = 0, int maxCures = -1)
@@ -244,7 +247,7 @@ State Healing
 	Event OnCalcPlayerSTDCurePrice(Form akSender)
 	EndEvent
 
-	event OnInfectPlayerWithSTD(Form akSender, String  sMode)
+	event OnInfectPlayerWithSTD(Form akSender, String  sMode, int iNum = 1)
 	EndEvent
 
 	Bool function cureActorSTDs(Actor akActor, Bool bPay = true, int maxStage = 0, int maxCures = -1)
