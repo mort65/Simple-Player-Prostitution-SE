@@ -36,6 +36,8 @@ Message Property DibelOfferMenu_Confirm_Stamina Auto
 Message Property DibelOfferMenu_Confirm_Magicka Auto
 Message Property DibelOfferMenu_Confirm_Perk Auto
 Message Property DibelOfferMenu_Confirm_CarryWeight Auto
+Message Property DibelOfferMenu_Confirm_DDKey Auto
+Message Property DibelOfferMenu_DDKEy_Changed Auto
 Message Property DibelOfferMenu_Skill_Changed Auto
 Message Property DibelOfferMenu_Perk_Changed Auto
 Message Property DibelOfferMenu_Health_Changed Auto
@@ -66,6 +68,7 @@ Bool Property bIsPO3ExtenderActive=False Auto Hidden Conditional
 Bool Property bDibelAllowAggressive=True Auto Hidden Conditional
 Bool Property bWhoreAllowAggressive=True Auto Hidden Conditional
 Bool Property bTryAllInterfaces=True Auto Hidden Conditional
+Bool Property bIsDDIntegrationActive=False Auto Hidden Conditional
 ImageSpaceModifier property blackScreen auto
 Formlist property currentAllowedLocations auto
 Formlist property alwaysAllowedLocations auto
@@ -212,6 +215,8 @@ Float Property fSkillLevelCost = 1.0 Auto Hidden Conditional
 Float Property fSkillLevelIncrement = 1.0 Auto Hidden Conditional
 Float Property fPerkPointCost = 5.0 Auto Hidden Conditional
 Float Property fPerkPointIncrement = 1.0 Auto Hidden Conditional
+Float Property fDDKeyCost = 1.0 Auto Hidden Conditional
+Float Property fDDKeyIncrement = 5.0 Auto Hidden Conditional
 
 Bool bWhoreAnimEnded = False ;
 Bool bDibelAnimEnded = False
@@ -1006,6 +1011,10 @@ Bool Function bCheckPO3Extender()
   return false
 EndFunction
 
+Bool Function bCheckDDIntegeration()
+  return Game.IsPluginInstalled("Devious Devices - Integration.esm")
+EndFunction
+
 Bool Function bAllPosAllowed(Float fVagChance, Float fAnalChance, Float fOralChance)
   return ((fVagChance > 0.0) && (fAnalChance > 0.0) && (fOralChance > 0.0))
 EndFunction
@@ -1484,6 +1493,68 @@ function addDibelMarkToPlayer(float fChance, int iNumPartners = 1)
   endif
 endFunction
 
+Int function iAddDeviousKeyToPlayer(int iNum = 1)
+  if iNum < 1
+    return 0
+  endif
+  int iResult = 0
+  form[] ddKeyArr
+  int iIndex = 0
+  form restraintsKey = Game.GetFormFromFile(0x01775f, "Devious Devices - Integration.esm")
+  if restraintsKey && restraintsKey.getType() == 45
+    iIndex += 1
+  else
+    restraintsKey = None
+    Debug.Trace("Simple Prostitution: [DD] Restraint key not found.")
+  endif
+  form chastityKey = Game.GetFormFromFile(0x008a4f, "Devious Devices - Integration.esm")
+  if chastityKey && chastityKey.getType() == 45
+    iIndex += 1
+  else
+    chastityKey = None
+    Debug.Trace("Simple Prostitution: [DD] Chastity key not found.")
+  endif
+  form piercingKey = Game.GetFormFromFile(0x0409a4, "Devious Devices - Integration.esm")
+  if piercingKey && piercingKey.getType() == 45
+    iIndex += 1
+  else
+    piercingKey = None
+    Debug.Trace("Simple Prostitution: [DD] Piercing key not found.")
+  endif
+  if iIndex == 0
+    return 0
+  endif
+  ddKeyArr = utility.createFormArray(iIndex)
+  While iIndex > 0
+    iIndex -= 1
+    if piercingKey && (ddKeyArr.find(piercingKey) < 0)
+      ddKeyArr[iIndex] = piercingKey
+    elseif chastityKey && (ddKeyArr.find(chastityKey) < 0)
+      ddKeyArr[iIndex] = chastityKey
+    elseif restraintsKey && (ddKeyArr.find(restraintsKey) < 0)
+      ddKeyArr[iIndex] = restraintsKey
+    endif
+  endWhile
+  int[] ddKeyNum = utility.createIntArray(ddKeyArr.Length, 0)
+  iIndex = 0
+  int jIndex 
+  while iIndex < iNum
+    jIndex = Utility.RandomInt(0, ddKeyArr.Length - 1)
+    ddKeyNum[jIndex] = ddKeyNum[jIndex] + 1
+    iIndex += 1
+  endWhile
+  iIndex = ddKeyArr.Length
+  While iIndex > 0
+    iIndex -= 1
+    jIndex = ddKeyNum[iIndex]
+    if jIndex > 0
+      player.Additem(ddKeyArr[iIndex], jIndex)
+      iResult += jIndex
+    endif
+  EndWhile
+  return iResult
+EndFunction
+
 Event OnInit()
 EndEvent
 
@@ -1829,6 +1900,9 @@ EndState
 
 Bool function GetDibellanRewards(Int aiMessage=0, Int aiButton=0)
   int iMarkCount = player.getItemCount(dibelMark)
+  form restraintKey
+  bIsDDIntegrationActive = bCheckDDIntegeration()
+  utility.wait(0.5)
   Bool bTraded = False
   While true
     if aiButton == -1
@@ -1883,7 +1957,27 @@ Bool function GetDibellanRewards(Int aiMessage=0, Int aiButton=0)
             aiMessage = 0
           endif
         endif
-      elseif aiButton == 4 ;Exit
+      elseif aiButton == 4 ;DD key
+        if iMarkCount < fDDKeyCost as Int
+          DibelOfferMenu_InsufficientMark.Show(fDDKeyCost as Int, iMarkCount)
+          aiMessage = 0
+        elseif DibelOfferMenu_Confirm_DDKey.Show(fDDKeyCost as Int, fDDKeyIncrement as Int) == 0
+          int iTotal = iAddDeviousKeyToPlayer(fDDKeyIncrement as Int)
+          if iTotal > 0
+            MCMScript.iTotalDDKeyRecieved += iTotal
+            player.removeItem(dibelMark, fDDKeyCost as Int)
+            MCMScript.iTotalOfferedMarks += fDDKeyCost as Int
+            iMarkCount = player.getItemCount(dibelMark)
+            DibelOfferMenu_DDKEy_Changed.Show(iTotal as Int)
+            bTraded = True
+            if iMarkCount < fDDKeyCost as Int
+              aiMessage = 0
+            endif
+          else
+            aiMessage = 0
+          endif
+        endif
+      elseif aiButton == 5 ;Exit
         return bTraded
       endif
     elseif aiMessage == 1 ;Attribute Menu

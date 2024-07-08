@@ -25,6 +25,7 @@ Int Property iTotalMagickaRecieved = 0 Auto Hidden
 Int Property iTotalStaminaRecieved = 0 Auto Hidden
 Int Property iTotalSkillLevelRecieved = 0 Auto Hidden
 Int Property iTotalPerkPointRecieved = 0 Auto Hidden
+Int Property iTotalDDKeyRecieved = 0 Auto Hidden
 Int Property iTotalCarryWeightRecieved = 0 Auto Hidden
 Int Property iTotalOfferedMarks = 0 Auto Hidden
 Int Property iTotalRefundableOfferedMarks = 0 Auto Hidden
@@ -429,6 +430,8 @@ event OnPageReset(String page)
     AddSliderOptionST("SKILL_REWARD_SLIDER", "$MRT_SP_SKILL_REWARD_SLIDER1", Mainscript.fSkillLevelIncrement, "$MRT_SP_SKILL_REWARD_SLIDER2", flag)
     AddSliderOptionST("PERK_COST_SLIDER", "$MRT_SP_PERK_COST_SLIDER1", Mainscript.fPerkPointCost, "$MRT_SP_PERK_COST_SLIDER2", flag)
     AddSliderOptionST("PERK_REWARD_SLIDER", "$MRT_SP_PERK_REWARD_SLIDER1", Mainscript.fPerkPointIncrement, "$MRT_SP_PERK_REWARD_SLIDER2", flag)
+    AddSliderOptionST("DDKEY_COST_SLIDER", "$MRT_SP_DDKEY_COST_SLIDER1", Mainscript.fDDKeyCost, "$MRT_SP_DDKEY_COST_SLIDER2", flag)
+    AddSliderOptionST("DDKEY_REWARD_SLIDER", "$MRT_SP_DDKEY_REWARD_SLIDER1", Mainscript.fDDKeyIncrement, "$MRT_SP_DDKEY_REWARD_SLIDER2", flag)    
     AddToggleOptionST("SEX_AFTER_OFFERING_TOGGLE","$MRT_SP_SEX_AFTER_OFFERING_TOGGLE", Mainscript.bSexAfterOffering, flag)
     addEmptyOption()
     if MainScript.bModEnabled && (iTotalRefundableOfferedMarks > 0)
@@ -1899,7 +1902,47 @@ state PERK_REWARD_SLIDER
   endEvent
 endState
 
-;;;
+state DDKEY_COST_SLIDER
+  event OnDefaultST()
+  endevent
+
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_DDKEY_COST_SLIDER")
+  endevent
+
+  event OnSliderAcceptST(float value)
+    MainScript.fDDKeyCost = value
+    _SetSliderOptionValueST(MainScript.fDDKeyCost, "$MRT_SP_DDKEY_COST_SLIDER2")
+  endevent
+
+  event OnSliderOpenST()
+    SetSliderDialogStartValue(MainScript.fDDKeyCost)
+    SetSliderDialogDefaultValue(1.0)
+    SetSliderDialogRange(1, 100)
+    SetSliderDialogInterval(1)
+  endEvent
+endState
+
+state DDKEY_REWARD_SLIDER
+  event OnDefaultST()
+  endevent
+
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_DDKEY_REWARD_SLIDER")
+  endevent
+
+  event OnSliderAcceptST(float value)
+    MainScript.fDDKeyIncrement = value
+    _SetSliderOptionValueST(MainScript.fDDKeyIncrement, "$MRT_SP_DDKEY_REWARD_SLIDER2")
+  endevent
+
+  event OnSliderOpenST()
+    SetSliderDialogStartValue(MainScript.fDDKeyIncrement)
+    SetSliderDialogDefaultValue(5.0)
+    SetSliderDialogRange(1, 100)
+    SetSliderDialogInterval(1)
+  endEvent
+endState
 
 state SKILL_COST_SLIDER
   event OnDefaultST()
@@ -2856,6 +2899,8 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
   MainScript.fSkillLevelIncrement = jsonutil.GetPathFloatValue(settings_path, "fSkillLevelIncrement", MainScript.fSkillLevelIncrement)
   MainScript.fPerkPointCost = jsonutil.GetPathFloatValue(settings_path, "fPerkPointCost", MainScript.fPerkPointCost)
   MainScript.fPerkPointIncrement = jsonutil.GetPathFloatValue(settings_path, "fPerkPointIncrement", MainScript.fPerkPointIncrement)
+  MainScript.fDDKeyCost = jsonutil.GetPathFloatValue(settings_path, "fDDKeyCost", MainScript.fDDKeyCost)
+  MainScript.fDDKeyIncrement = jsonutil.GetPathFloatValue(settings_path, "fDDKeyIncrement", MainScript.fDDKeyIncrement)
   
   MainScript.fCureNormalDiseaseCost = jsonutil.GetPathFloatValue(settings_path, "fCureNormalDiseaseCost", MainScript.fCureNormalDiseaseCost) 
   MainScript.fCureSTDICost = jsonutil.GetPathFloatValue(settings_path, "fCureSTDICost", MainScript.fCureSTDICost)
@@ -2969,6 +3014,8 @@ Bool function saveUserSettingsPapyrus()
   jsonutil.SetPathFloatValue(settings_path, "fSkillLevelIncrement", MainScript.fSkillLevelIncrement)
   jsonutil.SetPathFloatValue(settings_path, "fPerkPointCost", MainScript.fPerkPointCost)
   jsonutil.SetPathFloatValue(settings_path, "fPerkPointIncrement", MainScript.fPerkPointIncrement)
+  jsonutil.SetPathFloatValue(settings_path, "fDDKeyCost", MainScript.fDDKeyCost)
+  jsonutil.SetPathFloatValue(settings_path, "fDDKeyIncrement", MainScript.fDDKeyIncrement)
   
   jsonutil.SetPathFloatValue(settings_path, "fCureNormalDiseaseCost", MainScript.fCureNormalDiseaseCost)
   jsonutil.SetPathFloatValue(settings_path, "fCureSTDICost", MainScript.fCureSTDICost)
