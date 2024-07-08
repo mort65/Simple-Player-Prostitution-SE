@@ -165,6 +165,7 @@ Int[] property iDibelPositions auto Hidden Conditional
 Int[] Property iPositions Auto Hidden Conditional
 Int property iTotalWhoreCustomers = 0 auto Hidden Conditional
 Int property iTotalDibelCustomers = 0 auto Hidden Conditional
+Bool property bSexAfterOffering = True Auto Hidden Conditional
 
 Formlist Property raceList Auto
 Formlist Property vampireRacelist Auto
@@ -338,7 +339,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-  return getBaseVersion() + 0.20
+  return getBaseVersion() + 0.21
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
@@ -2079,7 +2080,8 @@ Function offerDibelMarks(Actor akActor)
   gotostate("offeringToDibella")
   if GetDibellanRewards()
     utility.wait(1.0)
-    if !bRandomSexWithPlayer(akActor)
+    if (!bSexAfterOffering || !bRandomSexWithPlayer(akActor))
+      STD_Script.cureActorSTDs(player, False)
       GoToState("")
     endIf
     return

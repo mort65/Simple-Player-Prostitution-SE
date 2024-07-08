@@ -429,6 +429,7 @@ event OnPageReset(String page)
     AddSliderOptionST("SKILL_REWARD_SLIDER", "$MRT_SP_SKILL_REWARD_SLIDER1", Mainscript.fSkillLevelIncrement, "$MRT_SP_SKILL_REWARD_SLIDER2", flag)
     AddSliderOptionST("PERK_COST_SLIDER", "$MRT_SP_PERK_COST_SLIDER1", Mainscript.fPerkPointCost, "$MRT_SP_PERK_COST_SLIDER2", flag)
     AddSliderOptionST("PERK_REWARD_SLIDER", "$MRT_SP_PERK_REWARD_SLIDER1", Mainscript.fPerkPointIncrement, "$MRT_SP_PERK_REWARD_SLIDER2", flag)
+    AddToggleOptionST("SEX_AFTER_OFFERING_TOGGLE","$MRT_SP_SEX_AFTER_OFFERING_TOGGLE", Mainscript.bSexAfterOffering, flag)
     addEmptyOption()
     if MainScript.bModEnabled && (iTotalRefundableOfferedMarks > 0)
       flag = OPTION_FLAG_NONE
@@ -821,6 +822,22 @@ State GUARD_REPORT_CHANCE_SLIDER
     SetSliderDialogRange(1, 100)
     SetSliderDialogInterval(1)
   endEvent
+EndState
+
+State SEX_AFTER_OFFERING_TOGGLE
+  event OnDefaultST()
+    MainScript.bSexAfterOffering = True
+    ForcePageReset()
+  endevent
+  
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_SEX_AFTER_OFFERING_TOGGLE")
+  endevent
+
+  event OnSelectST()
+    MainScript.bSexAfterOffering = !MainScript.bSexAfterOffering
+    ForcePageReset()
+  endevent
 EndState
 
 state DIBEL_AGENT_TOGGLE
@@ -2795,6 +2812,7 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
   MainScript.bDibelAllowMultipleSTDs = jsonutil.GetPathIntValue(settings_path, "bDibelAllowMultipleSTDs", MainScript.bDibelAllowMultipleSTDs as Int)
   MainScript.bWhoreAllowMultipleSTDs = jsonutil.GetPathIntValue(settings_path, "bWhoreAllowMultipleSTDs", MainScript.bWhoreAllowMultipleSTDs as Int)
   MainScript.bNormalAllowMultipleSTDs = jsonutil.GetPathIntValue(settings_path, "bNormalAllowMultipleSTDs", MainScript.bNormalAllowMultipleSTDs as Int)
+  MainScript.bSexAfterOffering = jsonutil.GetPathIntValue(settings_path, "bSexAfterOffering", MainScript.bSexAfterOffering as Int)
 
   
   iBeggarSpeechDifficulty = jsonutil.GetPathIntValue(settings_path, "iBeggarSpeechDifficulty", iBeggarSpeechDifficulty)
@@ -2908,6 +2926,7 @@ Bool function saveUserSettingsPapyrus()
   jsonutil.SetPathIntValue(settings_path, "bDibelAllowMultipleSTDs", MainScript.bDibelAllowMultipleSTDs as Int)
   jsonutil.SetPathIntValue(settings_path, "bWhoreAllowMultipleSTDs", MainScript.bWhoreAllowMultipleSTDs as Int)
   jsonutil.SetPathIntValue(settings_path, "bNormalAllowMultipleSTDs", MainScript.bNormalAllowMultipleSTDs as Int)
+  jsonutil.SetPathIntValue(settings_path, "bSexAfterOffering", MainScript.bSexAfterOffering as Int)
  
   jsonutil.SetPathIntValue(settings_path, "iBeggarSpeechDifficulty", iBeggarSpeechDifficulty)
   jsonutil.SetPathIntValue(settings_path, "iWhoreSpeechDifficulty", iWhoreSpeechDifficulty)
