@@ -1900,7 +1900,6 @@ EndState
 
 Bool function GetDibellanRewards(Int aiMessage=0, Int aiButton=0)
   int iMarkCount = player.getItemCount(dibelMark)
-  form restraintKey
   bIsDDIntegrationActive = bCheckDDIntegeration()
   utility.wait(0.5)
   Bool bTraded = False
