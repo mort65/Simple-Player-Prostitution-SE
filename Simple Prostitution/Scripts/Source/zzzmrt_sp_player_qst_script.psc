@@ -75,10 +75,14 @@ function setVars()
   if !MainScript.LicensesInterface
     MainScript.LicensesInterface = MainScript.LicensesInterfaceQst as zzzmrt_sp_licenses_interface 
   endif
+  if !MainScript.DDI_Interface
+    MainScript.DDI_Interface = MainScript.DDI_Interface as zzzmrt_sp_ddi_interface
+  endIf
   MainScript.SexLabInterface.PlayerLoadsGame()
   MainScript.OStimInterface.PlayerLoadsGame()
   MainScript.FlowerGirlsInterface.PlayerLoadsGame()
   MainScript.LicensesInterface.PlayerLoadsGame()
+  MainScript.DDI_Interface.PlayerLoadsGame()
   MainScript.bIsPapyrusUtilActive = MainScript.bCheckPapyrusUtil()
   MainScript.bIsPO3ExtenderActive = MainScript.bCheckPO3Extender()
   Utility.Wait(10.0)
@@ -86,5 +90,6 @@ function setVars()
   MainScript.bIsOStimActive = MainScript.OStimInterface.GetIsInterfaceActive()
   MainScript.bIsFlowerGirlsActive = MainScript.FlowerGirlsInterface.GetIsInterfaceActive()
   MainScript.bIsLicensesActive = MainScript.LicensesInterface.GetIsInterfaceActive()
+  MainScript.bIsDDIntegrationActive = MainScript.DDI_Interface.GetIsInterfaceActive()
   bBusy = False
 endfunction

@@ -8,6 +8,7 @@ zzzmrt_sp_flowergirls_interface property FlowerGirlsInterface auto
 zzzmrt_sp_sexlab_interface property SexLabInterface auto
 zzzmrt_sp_ostim_interface property OStimInterface auto
 zzzmrt_sp_licenses_interface property LicensesInterface auto
+zzzmrt_sp_ddi_interface property DDI_Interface auto
 Quest Property OStimInterfaceQst Auto
 Quest Property FlowerGirlsInterfaceQst Auto
 Quest Property SexLabInterfaceQst Auto
@@ -1011,10 +1012,6 @@ Bool Function bCheckPO3Extender()
   return false
 EndFunction
 
-Bool Function bCheckDDIntegeration()
-  return Game.IsPluginInstalled("Devious Devices - Integration.esm")
-EndFunction
-
 Bool Function bAllPosAllowed(Float fVagChance, Float fAnalChance, Float fOralChance)
   return ((fVagChance > 0.0) && (fAnalChance > 0.0) && (fOralChance > 0.0))
 EndFunction
@@ -1493,68 +1490,6 @@ function addDibelMarkToPlayer(float fChance, int iNumPartners = 1)
   endif
 endFunction
 
-Int function iAddDeviousKeyToPlayer(int iNum = 1)
-  if iNum < 1
-    return 0
-  endif
-  int iResult = 0
-  form[] ddKeyArr
-  int iIndex = 0
-  form restraintsKey = Game.GetFormFromFile(0x01775f, "Devious Devices - Integration.esm")
-  if restraintsKey && restraintsKey.getType() == 45
-    iIndex += 1
-  else
-    restraintsKey = None
-    Debug.Trace("Simple Prostitution: [DD] Restraint key not found.")
-  endif
-  form chastityKey = Game.GetFormFromFile(0x008a4f, "Devious Devices - Integration.esm")
-  if chastityKey && chastityKey.getType() == 45
-    iIndex += 1
-  else
-    chastityKey = None
-    Debug.Trace("Simple Prostitution: [DD] Chastity key not found.")
-  endif
-  form piercingKey = Game.GetFormFromFile(0x0409a4, "Devious Devices - Integration.esm")
-  if piercingKey && piercingKey.getType() == 45
-    iIndex += 1
-  else
-    piercingKey = None
-    Debug.Trace("Simple Prostitution: [DD] Piercing key not found.")
-  endif
-  if iIndex == 0
-    return 0
-  endif
-  ddKeyArr = utility.createFormArray(iIndex)
-  While iIndex > 0
-    iIndex -= 1
-    if piercingKey && (ddKeyArr.find(piercingKey) < 0)
-      ddKeyArr[iIndex] = piercingKey
-    elseif chastityKey && (ddKeyArr.find(chastityKey) < 0)
-      ddKeyArr[iIndex] = chastityKey
-    elseif restraintsKey && (ddKeyArr.find(restraintsKey) < 0)
-      ddKeyArr[iIndex] = restraintsKey
-    endif
-  endWhile
-  int[] ddKeyNum = utility.createIntArray(ddKeyArr.Length, 0)
-  iIndex = 0
-  int jIndex 
-  while iIndex < iNum
-    jIndex = Utility.RandomInt(0, ddKeyArr.Length - 1)
-    ddKeyNum[jIndex] = ddKeyNum[jIndex] + 1
-    iIndex += 1
-  endWhile
-  iIndex = ddKeyArr.Length
-  While iIndex > 0
-    iIndex -= 1
-    jIndex = ddKeyNum[iIndex]
-    if jIndex > 0
-      player.Additem(ddKeyArr[iIndex], jIndex)
-      iResult += jIndex
-    endif
-  EndWhile
-  return iResult
-EndFunction
-
 Event OnInit()
 EndEvent
 
@@ -1850,7 +1785,7 @@ Auto State Init
   endEvent
   
   event OnEndState()
-    While (!FlowerGirlsInterface.bChecked || !SexLabInterface.bChecked || !OStimInterface.bChecked || !LicensesInterface.bChecked)
+    While (!FlowerGirlsInterface.bChecked || !SexLabInterface.bChecked || !OStimInterface.bChecked || !LicensesInterface.bChecked || !DDI_Interface.bChecked)
       Utility.wait(0.2)
     endWhile
     ;Debug.Trace("Simple Prostitution started.")
@@ -1900,7 +1835,6 @@ EndState
 
 Bool function GetDibellanRewards(Int aiMessage=0, Int aiButton=0)
   int iMarkCount = player.getItemCount(dibelMark)
-  bIsDDIntegrationActive = bCheckDDIntegeration()
   utility.wait(0.5)
   Bool bTraded = False
   While true
@@ -1961,7 +1895,7 @@ Bool function GetDibellanRewards(Int aiMessage=0, Int aiButton=0)
           DibelOfferMenu_InsufficientMark.Show(fDDKeyCost as Int, iMarkCount)
           aiMessage = 0
         elseif DibelOfferMenu_Confirm_DDKey.Show(fDDKeyCost as Int, fDDKeyIncrement as Int) == 0
-          int iTotal = iAddDeviousKeyToPlayer(fDDKeyIncrement as Int)
+          int iTotal = DDI_Interface.iAddRandomKeyToActor(player, fDDKeyIncrement as Int)
           if iTotal > 0
             MCMScript.iTotalDDKeyRecieved += iTotal
             player.removeItem(dibelMark, fDDKeyCost as Int)
