@@ -28,8 +28,8 @@ int function haveSexWithPlayerSL(Quest SexLabQuestFramework, Actor Partner, Int 
   sslBaseAnimation[] anims2
   actor[] sexActors = new actor[2]
   actor player = Game.GetPlayer()
-  Bool isPlayerFemale = player.GetActorBase().GetSex()
-  Bool isPartnerFemale = Partner.GetLeveledActorBase().GetSex()
+  Bool isPlayerFemale = isFemale(SexLabQuestFramework, player)
+  Bool isPartnerFemale = isFemale(SexLabQuestFramework, partner)
   String AllowedTags = ""
   String sGenders = ""
   if isPlayerFemale && !isPartnerFemale
@@ -160,8 +160,8 @@ Bool function bHaveRandomSexWithPlayerSL(Quest SexLabQuestFramework, Actor Partn
   endif
   actor[] sexActors = new actor[2]
   actor player = Game.GetPlayer()
-  Bool isPlayerFemale = player.GetActorBase().GetSex()
-  Bool isPartnerFemale = Partner.GetLeveledActorBase().GetSex()
+  Bool isPlayerFemale = isFemale(SexLabQuestFramework, player)
+  Bool isPartnerFemale = isFemale(SexLabQuestFramework, partner)
   Int iMales = -1
   Int iFemales = -1
   String AllowedTags = ""
@@ -237,7 +237,7 @@ Bool function bHaveGroupSexWithPlayerSL(Quest SexLabQuestFramework, Actor[] part
     Debug.trace("Simple Prostitution: [SexLab] too many partners: " + partners)
     return False
   endif
-  if player.GetActorBase().GetSex()
+  if isFemale(SexLabQuestFramework, player)
     iFemales += 1
   else
     iMales += 1
@@ -247,7 +247,7 @@ Bool function bHaveGroupSexWithPlayerSL(Quest SexLabQuestFramework, Actor[] part
   while iIndex > 0
     iIndex -= 1
     if partners[iIndex]
-      if partners[iIndex].GetLeveledActorBase().GetSex() ;female
+      if isFemale(SexLabQuestFramework, partners[iIndex]) ;female
         iFemales += 1
       else
         iMales += 1
@@ -299,4 +299,10 @@ Bool function bHaveGroupSexWithPlayerSL(Quest SexLabQuestFramework, Actor[] part
   endif
   Debug.trace("Simple Prostitution: [SexLab] couldn't find any SexLab animation for " + actors.length + " actors." )
   return False
+EndFunction
+
+
+Bool function isFemale(Quest SexLabQuestFramework, Actor akActor) Global
+  Int iGender = (SexLabQuestFramework As SexLabFramework).GetGender(akActor)
+  return ((iGender == 1) || (iGender == 3)) ;1 = Human Female | 3 = Female Creature
 EndFunction

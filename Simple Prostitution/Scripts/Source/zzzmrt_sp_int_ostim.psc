@@ -9,13 +9,14 @@ int function haveSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor partner, 
 	if Position < 0
 	  return -1
 	endif
+	OSexIntegrationMain ostim = OSexIntegrationMainQuest as OSexIntegrationMain
 	string anim = ""
 	string anim2 = ""
 	actor[] actors = new actor[2]
 	string sGenders = ""
   actor player = Game.GetPlayer()
-	Bool isPlayerFemale = player.GetActorBase().GetSex()
-	Bool isPartnerFemale = Partner.GetLeveledActorBase().GetSex()
+	Bool isPlayerFemale = ostim.isFemale(player)
+	Bool isPartnerFemale = ostim.isFemale(partner)
 	if isPlayerFemale && !isPartnerFemale
 		sGenders = "MF"
 		actors[0] = partner
@@ -160,10 +161,11 @@ int Function iGetExtraTagsIndex(string iPos, string sGenders) Global
 endfunction
 
 Bool function bHaveRandomSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor partner, Bool bAggressive = False) Global
+	OSexIntegrationMain ostim = OSexIntegrationMainQuest as OSexIntegrationMain
 	actor[] actors = new actor[2]
 	actor player = Game.GetPlayer()
-	Bool isPlayerFemale = player.GetActorBase().GetSex()
-	Bool isPartnerFemale = Partner.GetLeveledActorBase().GetSex()
+	Bool isPlayerFemale = ostim.isFemale(player)
+	Bool isPartnerFemale = ostim.isFemale(partner)
 	if isPlayerFemale && !isPartnerFemale
 		actors[0] = partner
 		actors[1] = player
@@ -210,6 +212,7 @@ endfunction
 
 
 Bool function bHaveGroupSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor[] partners, Bool bAllowAggressive = True) Global
+	OSexIntegrationMain ostim = OSexIntegrationMainQuest as OSexIntegrationMain
 	Actor player = Game.GetPlayer()
 	if partners.length > 4
 		Debug.trace("Simple Prostitution: [OStim] too many partners: " + partners)
@@ -238,18 +241,21 @@ Bool function bHaveGroupSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor[] 
 		return False
 	endif
 		
-	Bool isPlayerFemale = player.GetActorBase().GetSex()
+	Bool isPlayerFemale = ostim.isFemale(player)
 	iIndex = partners.length
 	int jIndex = 0
 	int kIndex = totalActors - 1
 	if isPlayerFemale
 		actors[kIndex] = player
 		kIndex -= 1
+	else
+		actors[jIndex] = player
+		jIndex += 1
 	endif
 	While iIndex > 0
 		iIndex -= 1
 		if partners[iIndex]
-			if partners[iIndex].GetLeveledActorBase().GetSex() ;female
+			if ostim.isFemale(partners[iIndex])
 				actors[kIndex] = partners[iIndex]
 				kIndex -= 1
 			else
@@ -258,13 +264,6 @@ Bool function bHaveGroupSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor[] 
 			endif
 		endif
 	EndWhile
-	if !isPlayerFemale
-		if actors[jIndex] == None
-			actors[jIndex] = player
-		else
-			actors[0] = player
-		endif
-	endif
 	string sAnim = OLibrary.GetRandomScene(actors)
 	if !bAllowAggressive
 		iIndex = 29
