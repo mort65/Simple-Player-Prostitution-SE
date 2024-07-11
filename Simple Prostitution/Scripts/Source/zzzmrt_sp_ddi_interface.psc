@@ -72,12 +72,12 @@ function PlayerLoadsGame(Bool bForce = False)
   bChecked = True
 endfunction
 
-Int Function iAddRandomKeyToActor(ObjectReference akRef, Int aiNum = 1)
+Int Function iAddRandomDDKeyToRef(ObjectReference akRef, Int aiNum = 1)
 	return 0
 endfunction
 
 state Installed
-	Int Function iAddRandomKeyToActor(ObjectReference akRef, Int aiNum = 1)
-		return zzzmrt_sp_int_ddi._iAddRandomKeyToActor(akRef, ddkeys, aiNum)
+	Int Function iAddRandomDDKeyToRef(ObjectReference akRef, Int aiNum = 1)
+		return zzzmrt_sp_int_ddi._iAddRandomKeyToRef(akRef, ddkeys, aiNum)
 	endfunction
 endState

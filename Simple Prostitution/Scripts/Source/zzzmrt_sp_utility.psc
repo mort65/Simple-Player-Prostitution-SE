@@ -131,3 +131,31 @@ Bool Function bSucessCalculator(float fSuccessPercent, int iRounds = 1) Global
   endWhile
   return False
 EndFunction
+
+
+Int function iAddRandomItemToRef(ObjectReference akRef, Form[] akItemArr, Int aiTotalToAdd = 1) Global
+  {Adds random forms from an array to an objectreference and returns how many added.}
+  if (aiTotalToAdd < 1) || (akItemArr.Length < 1)
+    return 0
+  endif
+  Int iResult = 0
+  Int iTotalItems = akItemArr.Length
+  Int[] itemNumToAdd = utility.createIntArray(iTotalItems, 0)
+  Int jIndex
+  Int iIndex = 0
+  while iIndex < aiTotalToAdd
+    jIndex = Utility.RandomInt(0, iTotalItems - 1)
+    itemNumToAdd[jIndex] = itemNumToAdd[jIndex] + 1
+    iIndex += 1
+  endWhile
+  iIndex = iTotalItems
+  While iIndex > 0
+    iIndex -= 1
+    jIndex = itemNumToAdd[iIndex]
+    if akItemArr[iIndex] && jIndex > 0
+      akRef.Additem(akItemArr[iIndex], jIndex)
+      iResult += jIndex
+    endif
+  EndWhile
+  return iResult
+EndFunction

@@ -1,7 +1,7 @@
 Scriptname zzzmrt_sp_int_ddi Hidden
 
 
-Int function _iAddRandomKeyToActor(ObjectReference akRef, Form[] akeyArr, Int aiNum = 1) Global
+Int function _iAddRandomKeyToRef(ObjectReference akRef, Form[] akeyArr, Int aiNum = 1) Global
   if (aiNum < 1) || (akeyArr.Length < 1)
     return 0
   endif

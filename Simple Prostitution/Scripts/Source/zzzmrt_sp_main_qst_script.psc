@@ -345,7 +345,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-  return getBaseVersion() + 0.21
+  return getBaseVersion() + 0.22
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
@@ -1895,7 +1895,7 @@ Bool function GetDibellanRewards(Int aiMessage=0, Int aiButton=0)
           DibelOfferMenu_InsufficientMark.Show(fDDKeyCost as Int, iMarkCount)
           aiMessage = 0
         elseif DibelOfferMenu_Confirm_DDKey.Show(fDDKeyCost as Int, fDDKeyIncrement as Int) == 0
-          int iTotal = DDI_Interface.iAddRandomKeyToActor(player, fDDKeyIncrement as Int)
+          int iTotal = DDI_Interface.iAddRandomDDKeyToRef(player, fDDKeyIncrement as Int)
           if iTotal > 0
             MCMScript.iTotalDDKeyRecieved += iTotal
             player.removeItem(dibelMark, fDDKeyCost as Int)
