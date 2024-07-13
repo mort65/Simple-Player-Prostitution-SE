@@ -1,6 +1,7 @@
 Scriptname zzzmrt_sp_utility hidden
 
 import Utility
+import StringUtil
 
 Form[] Function formlistToArr(Formlist flist) Global
 	{Convert a formlist to an array.}
@@ -70,20 +71,20 @@ endfunction
 
 String function shortenString(String sString, Int iLimit) Global
 	{Shortens the input string and put ... at the end of it.}
-  Int iLen = StringUtil.GetLength(sString)
+  Int iLen = GetLength(sString)
   if iLimit < 4
     if iLimit < 1
       return sString
     endif
     if iLen > iLimit
-      return StringUtil.Substring(sString, 0, iLimit)
+      return Substring(sString, 0, iLimit)
     endif
     return sString
   elseif iLen < 4
     return sString
   endif
   if iLen > iLimit
-    return StringUtil.Substring(sString, 0, len=iLimit - 3) + "..."
+    return Substring(sString, 0, len=iLimit - 3) + "..."
   endif
   return sString
 endfunction
@@ -158,4 +159,19 @@ Int function iAddRandomItemToRef(ObjectReference akRef, Form[] akItemArr, Int ai
     endif
   EndWhile
   return iResult
+EndFunction
+
+Bool function isInteger(String str) Global
+  {Checks whether the given string is an integer or not.}
+  int iIndex = getLength(str)
+  if iIndex == 0
+    return False
+  endif
+  while iIndex > 0
+    iIndex -= 1
+    if !isDigit(getNthChar(str, iIndex))
+      return False
+    endIf
+  endWhile
+  return True
 EndFunction
