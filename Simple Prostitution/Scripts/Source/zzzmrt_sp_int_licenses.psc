@@ -24,14 +24,14 @@ Bool Function bFlagWhoreViolationBM(Quest BMLicenses) Global
 		return False
 	endif
 	String[] sVersionArr = StringUtil.Split(Licenses.bmlmcm.GetModVersion(), ".")
-	if (sVersionArr.Length < 3) || !isInteger(sVersionArr[0]) || !isInteger(sVersionArr[1]) || !isInteger(sVersionArr[2])
+	if (sVersionArr.Length < 3) || !isInteger(sVersionArr[0]) || !isInteger(sVersionArr[1])
 		Debug.Trace("Simple Prostitution: [Licenses] Could not detect the mod version.")
 		return False
 	endif
 	Int iMajorVersion = sVersionArr[0] as Int
 	Int iMinorVersion = sVersionArr[1] as Int
-	Int iPatchVersion = sVersionArr[2] as Int
-	if (iMajorVersion < 1) || (iMinorVersion < 0) || (iPatchVersion < 0)
+	;Int iPatchVersion = sVersionArr[2] as Int
+	if (iMajorVersion < 1) || (iMinorVersion < 0)
 		Debug.Trace("Simple Prostitution: [Licenses] Unknown version.")
 		return False
 	elseif iMajorVersion == 1
