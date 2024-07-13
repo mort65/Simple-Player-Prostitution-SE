@@ -97,14 +97,15 @@ endfunction
 
 
 Bool Function IsSceneAggressiveOS(String SceneID) Global
+    if OMetadata.HasAnySceneTagCSV(SceneID, "aggressive,forced,rough,")
+    	Debug.trace("Simple Prostitution: [OStim] Scene with aggressive tag found: " + SceneID)
+    	Return true
+    endif
     int aiIndex = OMetadata.GetActorCount(SceneID)
     While aiIndex > 0
         aiIndex -= 1
-        If OMetadata.HasActorTag(SceneID, aiIndex, "aggressor")
-        		Debug.trace("Simple Prostitution: [OStim] Scene with aggressor tag found: " + SceneID)
-            Return true
-        elseif OMetadata.HasActorTag(SceneID, aiIndex, "dominant")
-        	Debug.trace("Simple Prostitution: [OStim] Scene with dominant tag found: " + SceneID)
+        if OMetadata.HasAnyActorTagCSV(SceneID, aiIndex, "aggressor,dominant,")
+        	Debug.trace("Simple Prostitution: [OStim] Scene with aggressive actor tag found: " + SceneID)
         	Return true
         EndIf
     EndWhile

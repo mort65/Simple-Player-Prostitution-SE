@@ -43,9 +43,9 @@ Bool Function bFlagWhoreViolationBM(Quest BMLicenses) Global
 		elseif iMinorVersion == 16
 			return Licenses.bmlUtility.FlagViolation(10)
 		else
-			return Licenses.bmlUtility.FlagViolation(12)
+			return Licenses.bmlUtility.FlagViolation(Licenses.bmlUtility.getLicenseID("Whore"))
 		endif
 	else
-		return Licenses.bmlUtility.FlagViolation(12)
+		return Licenses.bmlUtility.FlagViolation(Licenses.bmlUtility.getLicenseID("Whore"))
 	endif
 EndFunction
