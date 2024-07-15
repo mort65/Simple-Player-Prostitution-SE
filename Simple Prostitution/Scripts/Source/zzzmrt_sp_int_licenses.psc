@@ -38,7 +38,7 @@ Bool Function bFlagWhoreViolationBM(Quest BMLicenses) Global
 		if iMinorVersion < 15 ;No isWhoreViolation variable
 			return False
 		elseif iMinorVersion == 15 ;Old method
-			 setWhoreViolationBM(BMLicenses)
+			setWhoreViolationBM(BMLicenses)
 			return Licenses.isWhoreViolation
 		elseif iMinorVersion == 16
 			return Licenses.bmlUtility.FlagViolation(10)

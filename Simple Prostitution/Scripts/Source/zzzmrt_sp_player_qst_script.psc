@@ -36,7 +36,7 @@ Event OnLocationChange(Location akOldLoc, Location akNewLoc)
   MainScript.GoToState("")
   MainScript.startCalcSTDCurePrice()
   if MainScript.whoreSnitch || MainScript.dibelSnitch
-    RegisterForSingleUpdate(utility.randomFloat(15.0,60.0)) 
+    RegisterForSingleUpdate(utility.randomFloat(10.0,30.0)) 
   endif
 endevent
 
