@@ -170,6 +170,7 @@ Int[] Property iPositions Auto Hidden Conditional
 Int property iTotalWhoreCustomers = 0 auto Hidden Conditional
 Int property iTotalDibelCustomers = 0 auto Hidden Conditional
 Bool property bSexAfterOffering = True Auto Hidden Conditional
+Bool Property bWhoreAllowAskingInExteriors = False Auto Hidden Conditional
 
 Formlist Property raceList Auto
 Formlist Property vampireRacelist Auto
@@ -926,6 +927,10 @@ function payDibel(Actor Dibel, int position)
 endfunction
 
 function payWhore(actor whore, int position)
+  if !whore.IsInInterior()
+    payBeggar(whore, True)
+    return
+  endif
   Int minBonus = maxInt(0, ((whore.getActorValue("Speechcraft") * fMinSpeechWhoreBonusMult) As Int) + 1)
   Int maxBonus = maxInt(0, ((whore.getActorValue("Speechcraft") * fMaxSpeechWhoreBonusMult) As Int) + 1)
   minBonus = minInt(minBonus,maxBonus)
