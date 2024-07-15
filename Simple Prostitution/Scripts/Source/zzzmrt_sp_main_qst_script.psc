@@ -382,7 +382,11 @@ Bool function bRandomSexWithPlayer(Actor akActor, Bool bAggressive = False)
     FastFadeOut.Apply()
     Utility.Wait(1.0)
     FastFadeOut.PopTo(BlackScreen)
+    if akActor != player
+      akActor.Disable()
+    endif
     Utility.Wait(5.0)
+    akActor.Enable()
     BlackScreen.PopTo(FadeIn)
     Game.EnablePlayerControls()
     registerForSingleUpdate(1.0)
@@ -404,7 +408,7 @@ int function haveSex(Actor akActor, String interface, Bool bAllowAggressive = Fa
   elseif interface == "flowergirls"
     result = playerSexFG(akActor)
   else
-    result = haveSexSFW()
+    result = playerSexSFW(akActor)
   endif
   if (result < 0)
     if bTryAllInterfaces && iGetCurTotalAnimInterfaces() > 1
@@ -428,7 +432,7 @@ int function haveSex(Actor akActor, String interface, Bool bAllowAggressive = Fa
     endif
     if result < 0
       Debug.trace("Simple Prostitution: couldn't find any suitable animation.")
-      result = haveSexSFW()
+      result = playerSexSFW(akActor)
     endIf
   endif
   return result
@@ -474,7 +478,19 @@ Bool Function bHaveGroupSex(String interface, Bool bAllowAggressive = False, Boo
     FastFadeOut.Apply()
     Utility.Wait(1.0)
     FastFadeOut.PopTo(BlackScreen)
+    iIndex = partners.Length
+    while iIndex > 0
+      iIndex -= 1
+      if partners[iIndex] != player
+        partners[iIndex].Disable()
+      endif
+    endWhile
     Utility.Wait(5.0)
+    iIndex = partners.Length
+    while iIndex > 0
+      iIndex -= 1
+      partners[iIndex].enable()
+    endWhile
     BlackScreen.PopTo(FadeIn)
     Game.EnablePlayerControls()
     registerForSingleUpdate(1.0)
@@ -856,7 +872,7 @@ int Function playerSexFG(Actor akActor)
   return result
 EndFunction
 
-int function haveSexSFW()
+int function playerSexSFW(Actor akActor = None)
   if iPosition < 0
     return -1
   endif
@@ -864,7 +880,13 @@ int function haveSexSFW()
   FastFadeOut.Apply()
   Utility.Wait(1.0)
   FastFadeOut.PopTo(BlackScreen)
+  if akActor && (akActor != player)
+    akActor.Disable()
+  endif
   Utility.Wait(5.0)
+  if akActor
+    akActor.enable()
+  endif
   BlackScreen.PopTo(FadeIn)
   Game.EnablePlayerControls()
   registerForSingleUpdate(1.0)
