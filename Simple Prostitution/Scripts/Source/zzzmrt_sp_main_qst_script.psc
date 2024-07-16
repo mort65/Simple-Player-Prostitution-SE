@@ -170,7 +170,6 @@ Int[] Property iPositions Auto Hidden Conditional
 Int property iTotalWhoreCustomers = 0 auto Hidden Conditional
 Int property iTotalDibelCustomers = 0 auto Hidden Conditional
 Bool property bSexAfterOffering = True Auto Hidden Conditional
-;Bool Property bWhoreAllowAskingInExteriors = False Auto Hidden Conditional
 
 Formlist Property raceList Auto
 Formlist Property vampireRacelist Auto
