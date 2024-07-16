@@ -387,7 +387,7 @@ event OnPageReset(String page)
     AddMenuOptionST("WHORE_ACCEPT_DIFFICULTY_MENU", "$MRT_SP_WHORE_ACCEPT_DIFFICULTY_MENU", sGetSpeechDifficultyArr()[iWhoreSpeechDifficulty], flag)
     AddSliderOptionST("SPEECH_WHORE_XP_MULT_SLIDER", "$MRT_SP_SPEECH_WHORE_XP_MULT_SLIDER1", MainScript.fWhorePersuasionXPMult, "$MRT_SP_SPEECH_WHORE_XP_MULT_SLIDER2", flag)
     AddSliderOptionST("WHORE_MARK_CHANCE_SLIDER", "$MRT_SP_WHORE_MARK_CHANCE_SLIDER1", Mainscript.fWhoreMarkChance, "$MRT_SP_WHORE_MARK_CHANCE_SLIDER2", flag)
-    _AddToggleOptionST("WHORE_ALLOW_EXTERIORS_TOGGLE", "$MRT_SP_WHORE_ALLOW_EXTERIORS_TOGGLE", MainScript.bWhoreAllowAskingInExteriors, flag)
+    ;_AddToggleOptionST("WHORE_ALLOW_EXTERIORS_TOGGLE", "$MRT_SP_WHORE_ALLOW_EXTERIORS_TOGGLE", MainScript.bWhoreAllowAskingInExteriors, flag)
     SetCursorPosition(1)
     _AddHeaderOption("$MRT_SP_HEAD_DIBEL")
     if (MainScript.bModEnabled)
@@ -1074,7 +1074,7 @@ state SPEECH_BEG_BONUS_MAX_MULT_SLIDER
  
   event OnSliderOpenST()
 		SetSliderDialogStartValue(MainScript.fMaxSpeechBegBonusMult)
-		SetSliderDialogDefaultValue(0.8)
+		SetSliderDialogDefaultValue(0.5)
 		SetSliderDialogRange(0, 10)
 		SetSliderDialogInterval(0.1)
 	endEvent
@@ -1200,7 +1200,7 @@ state SPEECH_DIBEL_BONUS_MIN_MULT_SLIDER
 
   event OnSliderOpenST()
 		SetSliderDialogStartValue(MainScript.fMinSpeechDibelBonusMult)
-		SetSliderDialogDefaultValue(0.0)
+		SetSliderDialogDefaultValue(0.8)
 		SetSliderDialogRange(0, 10)
 		SetSliderDialogInterval(0.1)
 	endEvent
@@ -1242,7 +1242,7 @@ state SPEECH_WHORE_BONUS_MIN_MULT_SLIDER
 
   event OnSliderOpenST()
 		SetSliderDialogStartValue(MainScript.fMinSpeechWhoreBonusMult)
-		SetSliderDialogDefaultValue(0.0)
+		SetSliderDialogDefaultValue(0.6)
 		SetSliderDialogRange(0, 10)
 		SetSliderDialogInterval(0.1)
 	endEvent
@@ -1322,21 +1322,21 @@ state WHORE_ALLOW_AGGRESSIVE_TOGGLE
   endevent
 endstate
 
-state WHORE_ALLOW_EXTERIORS_TOGGLE
-  event OnDefaultST()
-    MainScript.bWhoreAllowAskingInExteriors = False
-    ForcePageReset()
-  endevent
+;state WHORE_ALLOW_EXTERIORS_TOGGLE
+;  event OnDefaultST()
+;    MainScript.bWhoreAllowAskingInExteriors = False
+;    ForcePageReset()
+;  endevent
 
-  event OnHighlightST()
-    SetInfoText("$MRT_SP_DESC_WHORE_ALLOW_EXTERIORS_TOGGLE")
-  endevent
+;  event OnHighlightST()
+;    SetInfoText("$MRT_SP_DESC_WHORE_ALLOW_EXTERIORS_TOGGLE")
+;  endevent
 
-  event OnSelectST()
-    MainScript.bWhoreAllowAskingInExteriors = !MainScript.bWhoreAllowAskingInExteriors
-    ForcePageReset()
-  endevent
-endstate
+;  event OnSelectST()
+;    MainScript.bWhoreAllowAskingInExteriors = !MainScript.bWhoreAllowAskingInExteriors
+;    ForcePageReset()
+;  endevent
+;endstate
 
 state Dibel_ALLOW_AGGRESSIVE_TOGGLE
   event OnDefaultST()
@@ -2852,7 +2852,7 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
   MainScript.bDibelNaked = jsonutil.GetPathIntValue(settings_path, "bDibelNaked", MainScript.bDibelNaked as Int)
   MainScript.bWhoreAllowAggressive = jsonutil.GetPathIntValue(settings_path, "bWhoreAllowAggressive", MainScript.bWhoreAllowAggressive as Int)
   MainScript.bDibelAllowAggressive = jsonutil.GetPathIntValue(settings_path, "bDibelAllowAggressive", MainScript.bDibelAllowAggressive as Int)
-  MainScript.bWhoreAllowAskingInExteriors = jsonutil.GetPathIntValue(settings_path, "bWhoreAllowAskingInExteriors", MainScript.bWhoreAllowAskingInExteriors as Int)
+  ;MainScript.bWhoreAllowAskingInExteriors = jsonutil.GetPathIntValue(settings_path, "bWhoreAllowAskingInExteriors", MainScript.bWhoreAllowAskingInExteriors as Int)
   MainScript.bTryAllInterfaces = jsonutil.GetPathIntValue(settings_path, "bTryAllInterfaces", MainScript.bTryAllInterfaces as Int)
   MainScript.bExtraTags_SL_Oral_MF_ALL = jsonutil.GetPathIntValue(settings_path, "bExtraTags_SL_Oral_MF_ALL", MainScript.bExtraTags_SL_Oral_MF_ALL as Int)
   MainScript.bExtraTags_SL_Oral_FF_ALL = jsonutil.GetPathIntValue(settings_path, "bExtraTags_SL_Oral_FF_ALL", MainScript.bExtraTags_SL_Oral_FF_ALL as Int)
@@ -2969,7 +2969,7 @@ Bool function saveUserSettingsPapyrus()
   jsonutil.SetPathIntValue(settings_path, "bDibelNaked", MainScript.bDibelNaked as Int)
   jsonutil.SetPathIntValue(settings_path, "bWhoreAllowAggressive", MainScript.bWhoreAllowAggressive as Int)
   jsonutil.SetPathIntValue(settings_path, "bDibelAllowAggressive", MainScript.bDibelAllowAggressive as Int)
-  jsonutil.SetPathIntValue(settings_path, "bWhoreAllowAskingInExteriors", MainScript.bWhoreAllowAskingInExteriors as Int)
+  ;jsonutil.SetPathIntValue(settings_path, "bWhoreAllowAskingInExteriors", MainScript.bWhoreAllowAskingInExteriors as Int)
   jsonutil.SetPathIntValue(settings_path, "bTryAllInterfaces", MainScript.bTryAllInterfaces as Int)
   jsonutil.SetPathIntValue(settings_path, "bExtraTags_SL_Oral_MF_ALL", MainScript.bExtraTags_SL_Oral_MF_ALL as Int)
   jsonutil.SetPathIntValue(settings_path, "bExtraTags_SL_Oral_FF_ALL", MainScript.bExtraTags_SL_Oral_FF_ALL as Int)

@@ -103,12 +103,12 @@ Float property fDibelVagPay=20.0 auto Hidden Conditional
 Float property fDibelAnalChance=50.0 auto Hidden Conditional
 Float property fDibelOralChance=50.0 auto Hidden Conditional
 Float property fDibelVagChance=50.0 auto Hidden Conditional
-Float property fMaxSpeechBegBonusMult=0.8 auto Hidden Conditional
+Float property fMaxSpeechBegBonusMult=0.5 auto Hidden Conditional
 Float property fMaxSpeechDibelBonusMult=1.5 auto Hidden Conditional
 Float property fMaxSpeechWhoreBonusMult=1.2 auto Hidden Conditional
 Float property fMinSpeechBegBonusMult=0.0 auto Hidden Conditional
-Float property fMinSpeechDibelBonusMult=0.0 auto Hidden Conditional
-Float property fMinSpeechWhoreBonusMult=0.0 auto Hidden Conditional
+Float property fMinSpeechDibelBonusMult=0.8 auto Hidden Conditional
+Float property fMinSpeechWhoreBonusMult=0.6 auto Hidden Conditional
 Float property fSpeechDifficultyArr auto Hidden
 Float property fWhoreAnalPay=10.0 auto Hidden Conditional
 Float property fWhoreOralPay=5.0 auto Hidden Conditional
@@ -170,7 +170,7 @@ Int[] Property iPositions Auto Hidden Conditional
 Int property iTotalWhoreCustomers = 0 auto Hidden Conditional
 Int property iTotalDibelCustomers = 0 auto Hidden Conditional
 Bool property bSexAfterOffering = True Auto Hidden Conditional
-Bool Property bWhoreAllowAskingInExteriors = False Auto Hidden Conditional
+;Bool Property bWhoreAllowAskingInExteriors = False Auto Hidden Conditional
 
 Formlist Property raceList Auto
 Formlist Property vampireRacelist Auto
@@ -346,7 +346,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-  return getBaseVersion() + 0.25
+  return getBaseVersion() + 0.26
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
@@ -927,7 +927,7 @@ function payDibel(Actor Dibel, int position)
 endfunction
 
 function payWhore(actor whore, int position)
-  if !whore.IsInInterior()
+  if !isWhoringAllowedInCurrentLocation
     payBeggar(whore, True)
     return
   endif
@@ -950,8 +950,10 @@ function payWhore(actor whore, int position)
     UpdateCurrentInstanceGlobal(currentOwnerSeptimDisplay)
     pimpTracker.UpdateCurrentInstanceGlobal(currentOwnerSeptimDisplay)
     Debug.Notification(totalPay + " septim added to " + Owner.getActorReference().getLeveledActorBase().getName())
-  else
+  elseif isWhoringAlwaysAllowedInCurrentLocation || (Owner.getReference() && (Owner.getReference().getParentCell() == whore.getParentCell()))
     whore.Additem(gold, maxInt(0, totalPay))
+  else
+    payBeggar(whore, True)
   endif
 endfunction
 
