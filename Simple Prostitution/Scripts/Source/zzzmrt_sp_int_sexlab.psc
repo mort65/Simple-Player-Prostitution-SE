@@ -195,12 +195,12 @@ Bool function bHaveRandomSexWithPlayerSL(Quest SexLabQuestFramework, Actor Partn
       AllowedTags = sGenders + ","
       SuppressedTags = SuppressedTags + SuppressTagsForMale
     endif
-    if utility.randomInt(0,1)
-        sexActors[0] = player
-        sexActors[1] = Partner
-    else
+    if utility.randomInt(0,1) || bAggressive
         sexActors[0] = Partner
         sexActors[1] = player
+    else
+        sexActors[0] = player
+        sexActors[1] = Partner
     endif
   endif
   sslBaseAnimation[] anims = SexLab.GetAnimationsByType(2, iMales, iFemales, -1, bAggressive, true)

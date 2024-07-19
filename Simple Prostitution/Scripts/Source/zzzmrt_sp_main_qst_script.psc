@@ -4,6 +4,8 @@ import zzzmrt_sp_utility
 
 GlobalVariable property BeggarFailureChance auto
 GlobalVariable property DibelFailureChance auto
+GlobalVariable Property BeggarNotMaleRapistChance Auto
+GlobalVariable Property BeggarNotFemaleRapistChance Auto
 zzzmrt_sp_flowergirls_interface property FlowerGirlsInterface auto
 zzzmrt_sp_sexlab_interface property SexLabInterface auto
 zzzmrt_sp_ostim_interface property OStimInterface auto
@@ -170,6 +172,10 @@ Int[] Property iPositions Auto Hidden Conditional
 Int property iTotalWhoreCustomers = 0 auto Hidden Conditional
 Int property iTotalDibelCustomers = 0 auto Hidden Conditional
 Bool property bSexAfterOffering = True Auto Hidden Conditional
+Bool Property bBeggingMaleSexOffer = False Auto Hidden Conditional
+Bool Property bBeggingFemaleSexOffer = False Auto Hidden Conditional
+Float Property fBeggingMaleRapistChance = 0.0 Auto Hidden Conditional
+Float Property fBeggingFemaleRapistChance = 0.0 Auto Hidden Conditional
 
 Formlist Property raceList Auto
 Formlist Property vampireRacelist Auto
@@ -221,6 +227,7 @@ Float Property fDDKeyIncrement = 5.0 Auto Hidden Conditional
 
 Bool bWhoreAnimEnded = False ;
 Bool bDibelAnimEnded = False
+Bool Property bLastBeggingSucceed = False Auto Hidden Conditional
 Int Property iWhorePartners = 0 Auto Hidden Conditional
 Int Property iDibelPartners = 0 Auto Hidden Conditional
 Actor[] property origCustomersArr Auto Hidden Conditional
@@ -330,6 +337,7 @@ Function ownerPayWhore(Actor whore)
 EndFunction
 
 function playerBegTo(Actor akActor, Bool bPay=True)
+  bLastBeggingSucceed = bPay
   if akActor
     customerBeggarSpell.Cast(akActor, akActor)
   endif
@@ -345,7 +353,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-  return getBaseVersion() + 0.26
+  return getBaseVersion() + 0.27
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
@@ -598,7 +606,7 @@ function startSnitchFinder(Bool bCheckDibel)
   ModEvent.Send(Handle)
 EndFunction
 
-Function setWhoreCustomer(Actor akActor, Bool bPay = False)
+Function setWhoreCustomer(Actor akActor, Bool bPay = False, Bool bPersuaded = True)
   customerSpell.Cast(akActor, akActor)
   if bPay
     if !player.GetActorBase().GetSex() && !akActor.GetLeveledActorBase().GetSex()
@@ -608,7 +616,9 @@ Function setWhoreCustomer(Actor akActor, Bool bPay = False)
     endif
     if iWhorePosition > -1
       payWhore(player, iWhorePosition)
-      persuade(fWhorePersuasionXPMult)
+      if bPersuaded
+        persuade(fWhorePersuasionXPMult)
+      endif
     endif
   endIf
   if iWhorePositions.length != 4
@@ -1007,6 +1017,8 @@ function setGlobalVaues()
   WhoreFailureChance.SetValueInt(maxInt(0, 16 * MCMScript.iWhoreSpeechDifficulty))
   DibelFailureChance.SetValueInt(maxInt(0, 16 * MCMScript.iDibelSpeechDifficulty))
   BeggarFailureChance.SetValueInt(maxInt(0, 16 * MCMScript.iBeggarSpeechDifficulty))
+  BeggarNotFemaleRapistChance.SetValueInt(maxInt(0,(100.0 - fBeggingFemaleRapistChance) as Int))
+  BeggarNotMaleRapistChance.SetValueInt(maxInt(0,(100.0 - fBeggingMaleRapistChance) as Int))
 endfunction
 
 Int function positionChooser(int vaginalWeight = 50, int AnalWeight = 50, int oralWeight = 50)
@@ -1861,6 +1873,47 @@ State offeringToDibella
   endFunction
 EndState
 
+State raped
+
+  Event on_spp_sexlab_Sex_Ending(string eventName, string argString, float argNum, form sender)
+  EndEvent
+  
+  event on_spp_sexlab_Sex_End(int tid, bool HasPlayer)
+    if HasPlayer
+      startInfectingPlayer("", 1)
+      GoToState("")
+    endif
+  endEvent
+  
+  Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, form sender)
+    startInfectingPlayer("", 1)
+    GoToState("")
+  EndEvent
+  
+  event onUpdate()
+    startInfectingPlayer("", 1)
+    GoToState("")
+  endEvent
+  
+  event OnUpdateGameTime()
+    RegisterForSingleUpdateGameTime(1.0)
+  endEvent
+
+  event OnEndState()
+    bIsBusy = false
+  endEvent
+  
+  function snitch()
+  EndFunction
+  
+  Function offerDibelMarks(Actor akActor)
+  endFunction
+
+  Function rapePlayer(Actor akAggressor)
+  endFunction
+
+EndState
+
 Bool function GetDibellanRewards(Int aiMessage=0, Int aiButton=0)
   int iMarkCount = player.getItemCount(dibelMark)
   utility.wait(0.5)
@@ -2142,5 +2195,18 @@ Function offerDibelMarks(Actor akActor)
     return
   endif
   GoToState("")
+  return
+EndFunction
+
+
+Function rapePlayer(Actor akAggressor)
+  if bIsBusy
+    return
+  endif
+  bIsBusy = True
+  gotostate("raped")
+  if !bRandomSexWithPlayer(akAggressor, True)
+    GoToState("")
+  endIf
   return
 EndFunction

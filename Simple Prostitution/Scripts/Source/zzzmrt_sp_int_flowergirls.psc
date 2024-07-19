@@ -57,7 +57,11 @@ Bool function bHaveRandomSexWithPlayerFG(Quest FlowerGirls, Actor partner) Globa
     Debug.trace("Simple Prostitution: [FG] partner is busy in another scene: " + partner)
     return False
   endif
-  FGScript.RandomScene(player, partner)
+  if partner.GetLeveledActorBase().GetSex() == player.GetActorBase().GetSex()
+    FGScript.RandomScene(partner, player)
+  else
+    FGScript.RandomScene(player, partner)
+  endif
   return bCheckThreadForActorAndWaitFG(FlowerGirls, player)
 endfunction
 

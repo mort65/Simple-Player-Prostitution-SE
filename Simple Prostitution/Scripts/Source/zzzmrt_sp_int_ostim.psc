@@ -174,7 +174,7 @@ Bool function bHaveRandomSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor p
 		actors[0] = player
 		actors[1] = partner
 	else
-		if Utility.randomInt(0,1)
+		if Utility.randomInt(0,1) || bAggressive
 			actors[0] = player
 			actors[1] = partner
 		else

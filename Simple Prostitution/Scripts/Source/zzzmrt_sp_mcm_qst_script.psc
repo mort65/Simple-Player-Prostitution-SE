@@ -331,6 +331,15 @@ event OnPageReset(String page)
     AddSliderOptionST("SPEECH_BEG_BONUS_MAX_MULT_SLIDER", "$MRT_SP_SPEECH_BEG_BONUS_MAX_MULT_SLIDER1", MainScript.fMaxSpeechBegBonusMult, "$MRT_SP_SPEECH_BEG_BONUS_MAX_MULT_SLIDER2", flag)
     AddMenuOptionST("BEG_ACCEPT_DIFFICULTY_MENU", "$MRT_SP_BEG_ACCEPT_DIFFICULTY_MENU", sGetSpeechDifficultyArr()[iBeggarSpeechDifficulty], flag)
     AddSliderOptionST("SPEECH_BEG_XP_MULT_SLIDER", "$MRT_SP_SPEECH_BEG_XP_MULT_SLIDER1", MainScript.fBeggarPersuasionXPMult, "$MRT_SP_SPEECH_BEG_XP_MULT_SLIDER2", flag)
+    if (MainScript.bModEnabled && MainScript.bWhoreEnabled && MainScript.bBeggingEnabled)
+      flag = OPTION_FLAG_NONE
+    else
+      flag = OPTION_FLAG_DISABLED
+    endif  
+    _AddToggleOptionST("BEGGING_MALE_SEX_OFFER_TOGGLE", "$MRT_SP_BEGGING_MALE_SEX_OFFER_TOGGLE", MainScript.bBeggingMaleSexOffer, flag)
+    _AddToggleOptionST("BEGGING_FEMALE_SEX_OFFER_TOGGLE", "$MRT_SP_BEGGING_FEMALE_SEX_OFFER_TOGGLE", MainScript.bBeggingFemaleSexOffer, flag)
+    AddSliderOptionST("BEG_MALE_RAPE_SLIDER", "$MRT_SP_BEG_MALE_RAPE_SLIDER1", MainScript.fBeggingMaleRapistChance, "$MRT_SP_BEG_MALE_RAPE_SLIDER2", flag)
+    AddSliderOptionST("BEG_FEMALE_RAPE_SLIDER", "$MRT_SP_BEG_FEMALE_RAPE_SLIDER1", MainScript.fBeggingFemaleRapistChance, "$MRT_SP_BEG_FEMALE_RAPE_SLIDER2", flag)
   elseif (page == "$MRT_SP_PAGE_STD")
     SetTitleText("$MRT_SP_PAGE_STD")
     _AddHeaderOption("$MRT_SP_HEAD_STD")
@@ -701,6 +710,38 @@ state BEGGING_CLOTHING_TOGGLE
     ForcePageReset()
   endevent
 endstate
+
+State BEGGING_MALE_SEX_OFFER_TOGGLE
+    event OnDefaultST()
+    MainScript.bBeggingMaleSexOffer = False
+    ForcePageReset()
+  endevent
+
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_BEGGING_MALE_SEX_OFFER_TOGGLE")
+  endevent
+
+  event OnSelectST()
+    MainScript.bBeggingMaleSexOffer = !MainScript.bBeggingMaleSexOffer
+    ForcePageReset()
+  endevent
+EndState
+
+State BEGGING_FEMALE_SEX_OFFER_TOGGLE
+    event OnDefaultST()
+    MainScript.bBeggingFemaleSexOffer = False
+    ForcePageReset()
+  endevent
+
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_BEGGING_FEMALE_SEX_OFFER_TOGGLE")
+  endevent
+
+  event OnSelectST()
+    MainScript.bBeggingFemaleSexOffer = !MainScript.bBeggingFemaleSexOffer
+    ForcePageReset()
+  endevent
+EndState
 
 state BEG_POOR_HELP_TOGGLE
   event OnDefaultST()
@@ -1162,6 +1203,51 @@ state SPEECH_BEG_XP_MULT_SLIDER
     SetSliderDialogInterval(1)
   endEvent
 endstate
+
+state BEG_MALE_RAPE_SLIDER
+  event OnDefaultST()
+  endevent
+
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_BEG_MALE_RAPE_SLIDER")
+  endevent
+
+  event OnSliderAcceptST(float value)
+    MainScript.fBeggingMaleRapistChance = value
+    _SetSliderOptionValueST(MainScript.fBeggingMaleRapistChance, "$MRT_SP_BEG_MALE_RAPE_SLIDER2")
+    MainScript.setGlobalVaues()
+  endevent
+
+  event OnSliderOpenST()
+    SetSliderDialogStartValue(MainScript.fBeggingMaleRapistChance)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(1)
+  endEvent
+endState
+
+state BEG_FEMALE_RAPE_SLIDER
+  event OnDefaultST()
+  endevent
+
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_BEG_FEMALE_RAPE_SLIDER")
+  endevent
+
+  event OnSliderAcceptST(float value)
+    MainScript.fBeggingFemaleRapistChance = value
+    _SetSliderOptionValueST(MainScript.fBeggingFemaleRapistChance, "$MRT_SP_BEG_FEMALE_RAPE_SLIDER2")
+    MainScript.setGlobalVaues()
+  endevent
+
+  event OnSliderOpenST()
+    SetSliderDialogStartValue(MainScript.fBeggingFemaleRapistChance)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(1)
+  endEvent
+endState
+
 
 state SPEECH_DIBEL_BONUS_MAX_MULT_SLIDER
   event OnDefaultST()
@@ -2856,6 +2942,8 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
   MainScript.bWhoreAllowMultipleSTDs = jsonutil.GetPathIntValue(settings_path, "bWhoreAllowMultipleSTDs", MainScript.bWhoreAllowMultipleSTDs as Int)
   MainScript.bNormalAllowMultipleSTDs = jsonutil.GetPathIntValue(settings_path, "bNormalAllowMultipleSTDs", MainScript.bNormalAllowMultipleSTDs as Int)
   MainScript.bSexAfterOffering = jsonutil.GetPathIntValue(settings_path, "bSexAfterOffering", MainScript.bSexAfterOffering as Int)
+  MainScript.bBeggingFemaleSexOffer = jsonutil.GetPathIntValue(settings_path, "bBeggingFemaleSexOffer", MainScript.bBeggingFemaleSexOffer as Int)
+  MainScript.bBeggingMaleSexOffer = jsonutil.GetPathIntValue(settings_path, "bBeggingMaleSexOffer", MainScript.bBeggingMaleSexOffer as Int)
 
   
   iBeggarSpeechDifficulty = jsonutil.GetPathIntValue(settings_path, "iBeggarSpeechDifficulty", iBeggarSpeechDifficulty)
@@ -2901,13 +2989,13 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
   MainScript.fPerkPointIncrement = jsonutil.GetPathFloatValue(settings_path, "fPerkPointIncrement", MainScript.fPerkPointIncrement)
   MainScript.fDDKeyCost = jsonutil.GetPathFloatValue(settings_path, "fDDKeyCost", MainScript.fDDKeyCost)
   MainScript.fDDKeyIncrement = jsonutil.GetPathFloatValue(settings_path, "fDDKeyIncrement", MainScript.fDDKeyIncrement)
-  
+  MainScript.fBeggingFemaleRapistChance = jsonutil.GetPathFloatValue(settings_path, "fBeggingFemaleRapistChance", MainScript.fBeggingFemaleRapistChance) 
+  MainScript.fBeggingMaleRapistChance = jsonutil.GetPathFloatValue(settings_path, "fBeggingMaleRapistChance", MainScript.fBeggingMaleRapistChance) 
   MainScript.fCureNormalDiseaseCost = jsonutil.GetPathFloatValue(settings_path, "fCureNormalDiseaseCost", MainScript.fCureNormalDiseaseCost) 
   MainScript.fCureSTDICost = jsonutil.GetPathFloatValue(settings_path, "fCureSTDICost", MainScript.fCureSTDICost)
   MainScript.fCureSTDIICost = jsonutil.GetPathFloatValue(settings_path, "fCureSTDIICost", MainScript.fCureSTDIICost)
   MainScript.fCureSTDIIICost = jsonutil.GetPathFloatValue(settings_path, "fCureSTDIIICost", MainScript.fCureSTDIIICost)
   MainScript.fCureSTDIVCost = jsonutil.GetPathFloatValue(settings_path, "fCureSTDIVCost", MainScript.fCureSTDIVCost)
-  
   MainScript.fWhoreSTDProgressChance = jsonutil.GetPathFloatValue(settings_path, "fWhoreSTDProgressChance", MainScript.fWhoreSTDProgressChance)
   MainScript.fDibelSTDProgressChance = jsonutil.GetPathFloatValue(settings_path, "fDibelSTDProgressChance", MainScript.fDibelSTDProgressChance)
   MainScript.fNormalSTDProgressChance = jsonutil.GetPathFloatValue(settings_path, "fNormalSTDProgressChance", MainScript.fNormalSTDProgressChance)
@@ -2972,6 +3060,8 @@ Bool function saveUserSettingsPapyrus()
   jsonutil.SetPathIntValue(settings_path, "bWhoreAllowMultipleSTDs", MainScript.bWhoreAllowMultipleSTDs as Int)
   jsonutil.SetPathIntValue(settings_path, "bNormalAllowMultipleSTDs", MainScript.bNormalAllowMultipleSTDs as Int)
   jsonutil.SetPathIntValue(settings_path, "bSexAfterOffering", MainScript.bSexAfterOffering as Int)
+  jsonutil.SetPathIntValue(settings_path, "bBeggingFemaleSexOffer", MainScript.bBeggingFemaleSexOffer as Int)
+  jsonutil.SetPathIntValue(settings_path, "bBeggingMaleSexOffer", MainScript.bBeggingMaleSexOffer as Int)
  
   jsonutil.SetPathIntValue(settings_path, "iBeggarSpeechDifficulty", iBeggarSpeechDifficulty)
   jsonutil.SetPathIntValue(settings_path, "iWhoreSpeechDifficulty", iWhoreSpeechDifficulty)
@@ -3016,6 +3106,8 @@ Bool function saveUserSettingsPapyrus()
   jsonutil.SetPathFloatValue(settings_path, "fPerkPointIncrement", MainScript.fPerkPointIncrement)
   jsonutil.SetPathFloatValue(settings_path, "fDDKeyCost", MainScript.fDDKeyCost)
   jsonutil.SetPathFloatValue(settings_path, "fDDKeyIncrement", MainScript.fDDKeyIncrement)
+  jsonutil.SetPathFloatValue(settings_path, "fBeggingFemaleRapistChance", MainScript.fBeggingFemaleRapistChance)
+  jsonutil.SetPathFloatValue(settings_path, "fBeggingMaleRapistChance", MainScript.fBeggingMaleRapistChance)
   
   jsonutil.SetPathFloatValue(settings_path, "fCureNormalDiseaseCost", MainScript.fCureNormalDiseaseCost)
   jsonutil.SetPathFloatValue(settings_path, "fCureSTDICost", MainScript.fCureSTDICost)
