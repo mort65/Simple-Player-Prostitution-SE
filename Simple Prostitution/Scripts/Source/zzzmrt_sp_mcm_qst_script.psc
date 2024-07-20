@@ -317,11 +317,6 @@ event OnPageReset(String page)
       flag = OPTION_FLAG_DISABLED
     endif
     _AddToggleOptionST("BEGGING_TOGGLE", "$MRT_SP_BEGGING_TOGGLE", MainScript.bBeggingEnabled, flag)
-    if (MainScript.bModEnabled && MainScript.bBeggingEnabled)
-      flag = OPTION_FLAG_NONE
-    else
-      flag = OPTION_FLAG_DISABLED
-    endif
     _AddToggleOptionST("BEGGING_CLOTHING_TOGGLE", "$MRT_SP_BEGGING_CLOTHING_TOGGLE", MainScript.bBeggingClothing, flag)
     _AddToggleOptionST("BEG_POOR_HELP_TOGGLE", "$MRT_SP_BEG_POOR_HELP_TOGGLE", MainScript.bPoorHelpBeggar, flag)
     _AddToggleOptionST("BEG_GUARD_HELP_TOGGLE", "$MRT_SP_BEG_GUARD_HELP_TOGGLE", MainScript.bGuardHelpBeggar, flag)
@@ -331,11 +326,9 @@ event OnPageReset(String page)
     AddSliderOptionST("SPEECH_BEG_BONUS_MAX_MULT_SLIDER", "$MRT_SP_SPEECH_BEG_BONUS_MAX_MULT_SLIDER1", MainScript.fMaxSpeechBegBonusMult, "$MRT_SP_SPEECH_BEG_BONUS_MAX_MULT_SLIDER2", flag)
     AddMenuOptionST("BEG_ACCEPT_DIFFICULTY_MENU", "$MRT_SP_BEG_ACCEPT_DIFFICULTY_MENU", sGetSpeechDifficultyArr()[iBeggarSpeechDifficulty], flag)
     AddSliderOptionST("SPEECH_BEG_XP_MULT_SLIDER", "$MRT_SP_SPEECH_BEG_XP_MULT_SLIDER1", MainScript.fBeggarPersuasionXPMult, "$MRT_SP_SPEECH_BEG_XP_MULT_SLIDER2", flag)
-    if (MainScript.bModEnabled && MainScript.bWhoreEnabled && MainScript.bBeggingEnabled)
-      flag = OPTION_FLAG_NONE
-    else
-      flag = OPTION_FLAG_DISABLED
-    endif  
+    SetCursorPosition(1)
+    _AddHeaderOption("$MRT_SP_HEAD_BEG_WHORE")
+    AddSliderOptionST("BEG_SEX_OFFER_SLIDER", "$MRT_SP_BEG_SEX_OFFER_SLIDER1", MainScript.fBeggarSexOfferChance, "$MRT_SP_BEG_SEX_OFFER_SLIDER2", flag)
     _AddToggleOptionST("BEGGING_MALE_SEX_OFFER_TOGGLE", "$MRT_SP_BEGGING_MALE_SEX_OFFER_TOGGLE", MainScript.bBeggingMaleSexOffer, flag)
     _AddToggleOptionST("BEGGING_FEMALE_SEX_OFFER_TOGGLE", "$MRT_SP_BEGGING_FEMALE_SEX_OFFER_TOGGLE", MainScript.bBeggingFemaleSexOffer, flag)
     AddSliderOptionST("BEG_MALE_RAPE_SLIDER", "$MRT_SP_BEG_MALE_RAPE_SLIDER1", MainScript.fBeggingMaleRapistChance, "$MRT_SP_BEG_MALE_RAPE_SLIDER2", flag)
@@ -377,11 +370,6 @@ event OnPageReset(String page)
       flag = OPTION_FLAG_DISABLED
     endif
     _AddToggleOptionST("WHORE_TOGGLE", "$MRT_SP_WHORE_TOGGLE", MainScript.bWhoreEnabled, flag)
-    if (MainScript.bModEnabled && MainScript.bWhoreEnabled)
-      flag = OPTION_FLAG_NONE
-    else
-      flag = OPTION_FLAG_DISABLED
-    endif
     _AddToggleOptionST("WHORE_CLOTHING_TOGGLE", "$MRT_SP_WHORE_CLOTHING_TOGGLE", MainScript.bWhoreClothing, flag)
     _AddToggleOptionST("WHORE_ALLOW_AGGRESSIVE_TOGGLE", "$MRT_SP_WHORE_ALLOW_AGGRESSIVE_TOGGLE", MainScript.bWhoreAllowAggressive, flag)
     AddSliderOptionST("WHORE_OWNER_SHARE_SLIDER", "$MRT_SP_WHORE_OWNER_SHARE_SLIDER1", MainScript.fWhoreOwnerShare, "$MRT_SP_WHORE_OWNER_SHARE_SLIDER2", flag)
@@ -404,11 +392,6 @@ event OnPageReset(String page)
       flag = OPTION_FLAG_DISABLED
     endif
     _AddToggleOptionST("DIBEL_TOGGLE", "$MRT_SP_DIBEL_TOGGLE", MainScript.bDibelEnabled, flag)
-    if (MainScript.bModEnabled && MainScript.bDibelEnabled)
-      flag = OPTION_FLAG_NONE
-    else
-      flag = OPTION_FLAG_DISABLED
-    endif
     _AddToggleOptionST("DIBEL_AGENT_TOGGLE", "$MRT_SP_DIBEL_AGENT_TOGGLE", MainScript.bDibelAgent, flag)
     _AddToggleOptionST("DIBEL_CROWN_TOGGLE", "$MRT_SP_DIBEL_CROWN_TOGGLE", MainScript.bDibelCrown, flag)
     _AddToggleOptionST("DIBEL_ALLOW_AGGRESSIVE_TOGGLE", "$MRT_SP_DIBEL_ALLOW_AGGRESSIVE_TOGGLE", MainScript.bDIBELAllowAggressive, flag)
@@ -1203,6 +1186,29 @@ state SPEECH_BEG_XP_MULT_SLIDER
     SetSliderDialogInterval(1)
   endEvent
 endstate
+
+
+state BEG_SEX_OFFER_SLIDER
+  event OnDefaultST()
+  endevent
+
+  event OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_BEG_SEX_OFFER_SLIDER")
+  endevent
+
+  event OnSliderAcceptST(float value)
+    MainScript.fBeggarSexOfferChance = value
+    _SetSliderOptionValueST(MainScript.fBeggarSexOfferChance, "$MRT_SP_BEG_SEX_OFFER_SLIDER2")
+    MainScript.setGlobalVaues()
+  endevent
+
+  event OnSliderOpenST()
+    SetSliderDialogStartValue(MainScript.fBeggarSexOfferChance)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(1)
+  endEvent
+endState
 
 state BEG_MALE_RAPE_SLIDER
   event OnDefaultST()
@@ -2990,7 +2996,9 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
   MainScript.fDDKeyCost = jsonutil.GetPathFloatValue(settings_path, "fDDKeyCost", MainScript.fDDKeyCost)
   MainScript.fDDKeyIncrement = jsonutil.GetPathFloatValue(settings_path, "fDDKeyIncrement", MainScript.fDDKeyIncrement)
   MainScript.fBeggingFemaleRapistChance = jsonutil.GetPathFloatValue(settings_path, "fBeggingFemaleRapistChance", MainScript.fBeggingFemaleRapistChance) 
-  MainScript.fBeggingMaleRapistChance = jsonutil.GetPathFloatValue(settings_path, "fBeggingMaleRapistChance", MainScript.fBeggingMaleRapistChance) 
+  MainScript.fBeggingMaleRapistChance = jsonutil.GetPathFloatValue(settings_path, "fBeggingMaleRapistChance", MainScript.fBeggingMaleRapistChance)
+  MainScript.fBeggarSexOfferChance = jsonutil.GetPathFloatValue(settings_path, "fBeggarSexOfferChance", MainScript.fBeggarSexOfferChance)
+
   MainScript.fCureNormalDiseaseCost = jsonutil.GetPathFloatValue(settings_path, "fCureNormalDiseaseCost", MainScript.fCureNormalDiseaseCost) 
   MainScript.fCureSTDICost = jsonutil.GetPathFloatValue(settings_path, "fCureSTDICost", MainScript.fCureSTDICost)
   MainScript.fCureSTDIICost = jsonutil.GetPathFloatValue(settings_path, "fCureSTDIICost", MainScript.fCureSTDIICost)
@@ -3108,7 +3116,8 @@ Bool function saveUserSettingsPapyrus()
   jsonutil.SetPathFloatValue(settings_path, "fDDKeyIncrement", MainScript.fDDKeyIncrement)
   jsonutil.SetPathFloatValue(settings_path, "fBeggingFemaleRapistChance", MainScript.fBeggingFemaleRapistChance)
   jsonutil.SetPathFloatValue(settings_path, "fBeggingMaleRapistChance", MainScript.fBeggingMaleRapistChance)
-  
+  jsonutil.SetPathFloatValue(settings_path, "fBeggarSexOfferChance", MainScript.fBeggarSexOfferChance)
+
   jsonutil.SetPathFloatValue(settings_path, "fCureNormalDiseaseCost", MainScript.fCureNormalDiseaseCost)
   jsonutil.SetPathFloatValue(settings_path, "fCureSTDICost", MainScript.fCureSTDICost)
   jsonutil.SetPathFloatValue(settings_path, "fCureSTDIICost", MainScript.fCureSTDIICost)

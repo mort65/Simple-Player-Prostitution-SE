@@ -6,6 +6,7 @@ GlobalVariable property BeggarFailureChance auto
 GlobalVariable property DibelFailureChance auto
 GlobalVariable Property BeggarNotMaleRapistChance Auto
 GlobalVariable Property BeggarNotFemaleRapistChance Auto
+GlobalVariable Property BeggarNoSexOfferChance Auto
 zzzmrt_sp_flowergirls_interface property FlowerGirlsInterface auto
 zzzmrt_sp_sexlab_interface property SexLabInterface auto
 zzzmrt_sp_ostim_interface property OStimInterface auto
@@ -176,6 +177,7 @@ Bool Property bBeggingMaleSexOffer = False Auto Hidden Conditional
 Bool Property bBeggingFemaleSexOffer = False Auto Hidden Conditional
 Float Property fBeggingMaleRapistChance = 0.0 Auto Hidden Conditional
 Float Property fBeggingFemaleRapistChance = 0.0 Auto Hidden Conditional
+Float Property fBeggarSexOfferChance = 0.0 Auto Hidden Conditional
 
 Formlist Property raceList Auto
 Formlist Property vampireRacelist Auto
@@ -1017,8 +1019,9 @@ function setGlobalVaues()
   WhoreFailureChance.SetValueInt(maxInt(0, 16 * MCMScript.iWhoreSpeechDifficulty))
   DibelFailureChance.SetValueInt(maxInt(0, 16 * MCMScript.iDibelSpeechDifficulty))
   BeggarFailureChance.SetValueInt(maxInt(0, 16 * MCMScript.iBeggarSpeechDifficulty))
-  BeggarNotFemaleRapistChance.SetValueInt(maxInt(0,(100.0 - fBeggingFemaleRapistChance) as Int))
-  BeggarNotMaleRapistChance.SetValueInt(maxInt(0,(100.0 - fBeggingMaleRapistChance) as Int))
+  BeggarNoSexOfferChance.SetValueInt(maxInt(0, (100.0 - fBeggarSexOfferChance) as Int))
+  BeggarNotFemaleRapistChance.SetValueInt(maxInt(0, (100.0 - fBeggingFemaleRapistChance) as Int))
+  BeggarNotMaleRapistChance.SetValueInt(maxInt(0, (100.0 - fBeggingMaleRapistChance) as Int))
 endfunction
 
 Int function positionChooser(int vaginalWeight = 50, int AnalWeight = 50, int oralWeight = 50)
