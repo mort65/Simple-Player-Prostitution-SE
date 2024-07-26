@@ -47,6 +47,10 @@ Function setVars()
   endif
 endfunction
 
+Bool Function bCheckVars()
+  return True
+endfunction
+
 Bool function GetIsInterfaceActive()
   if GetState() == "Installed"
     return true
@@ -61,7 +65,7 @@ function PlayerLoadsGame(Bool bForce = False)
   if Game.IsPluginInstalled("Devious Devices - Integration.esm")
     if GetState() != "Installed"
       GoToState("Installed")
-    elseif bForce
+    elseif bForce || !bCheckVars()
       setVars()
     endif
   else
@@ -77,7 +81,11 @@ Int Function iAddRandomDDKeyToRef(ObjectReference akRef, Int aiNum = 1)
 endfunction
 
 state Installed
-	Int Function iAddRandomDDKeyToRef(ObjectReference akRef, Int aiNum = 1)
-		return zzzmrt_sp_int_ddi._iAddRandomKeyToRef(akRef, ddkeys, aiNum)
-	endfunction
+  Bool Function bCheckVars()
+    return ddkeys && (ddkeys.Length == 3) && (ddkeys.find(None) == -1)
+  endfunction
+  
+  Int Function iAddRandomDDKeyToRef(ObjectReference akRef, Int aiNum = 1)
+    return zzzmrt_sp_int_ddi._iAddRandomKeyToRef(akRef, ddkeys, aiNum)
+  endfunction
 endState

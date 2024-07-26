@@ -25,6 +25,8 @@ function PlayerLoadsGame()
   if Game.IsPluginInstalled("Licenses.esp")
     if GetState() != "Installed"
       GoToState("Installed")
+    else
+      checkVars()
     endif
   else
     if GetState() != ""
@@ -32,6 +34,9 @@ function PlayerLoadsGame()
     endif
   endif
   bChecked = True
+endfunction
+
+function checkVars()
 endfunction
 
 Bool function bHasWhoreLicense()
@@ -45,7 +50,13 @@ endfunction
 Function setWhoreViolation()
 endfunction
 
-state Installed
+state Installed 
+  function checkVars()
+    if BMLicenses == None
+      BMLicenses = Game.GetFormFromFile(0x000d62, "Licenses.esp") as Quest
+    endif
+  endfunction
+  
   Bool function bHasWhoreLicense()
     return zzzmrt_sp_int_licenses.bHasWhoreLicenseBM(BMLicenses)
   endfunction

@@ -25,6 +25,8 @@ function PlayerLoadsGame()
   if Game.IsPluginInstalled("SexLab.esm")
     if GetState() != "Installed"
       GoToState("Installed")
+    else
+      checkVars()
     endif
   else
     if GetState() != ""
@@ -32,6 +34,9 @@ function PlayerLoadsGame()
     endif
   endif
   bChecked = True
+endfunction
+
+function checkVars()
 endfunction
 
 int function haveSexWithPlayer(Actor Partner, Int Position, String[] sExtraTags, Bool[] bRequireAllTags, Bool bAllowAggressive = False, Bool bAllowAll = False)
@@ -55,7 +60,21 @@ Bool function bHaveGroupSexWithPlayer(Actor[] partners, Bool bAllowAggressive = 
   return False
 EndFunction
 
+Bool function IsActorActive(Actor ActorRef)
+  return False
+endfunction
+
 state Installed
+  function checkVars()
+    if SexLabQuestFramework == None
+      SexLabQuestFramework = Game.GetFormFromFile(0x000d62, "SexLab.esm") as Quest
+    endif
+  endfunction
+
+  Bool function IsActorActive(Actor ActorRef)
+    return zzzmrt_sp_int_sexlab.IsActorActiveSL(SexLabQuestFramework, ActorRef)
+  endfunction
+
   int function haveSexWithPlayer(Actor Partner, Int Position, String[] sExtraTags, Bool[] bRequireAllTags, Bool bAllowAggressive = False, Bool bAllowAll = False)
     return zzzmrt_sp_int_sexlab.haveSexWithPlayerSL(SexLabQuestFramework, Partner, Position, sExtraTags, bRequireAllTags, bAllowAggressive, bAllowAll)
   endfunction

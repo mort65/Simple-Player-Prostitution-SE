@@ -25,6 +25,8 @@ function PlayerLoadsGame()
   if Game.IsPluginInstalled("OStim.esp")
     if GetState() != "Installed"
       GoToState("Installed")
+    else
+      checkVars()
     endif
   else
     if GetState() != ""
@@ -32,6 +34,9 @@ function PlayerLoadsGame()
     endif
   endif
   bChecked = True
+endfunction
+
+function checkVars()
 endfunction
 
 int function haveSexWithPlayer(Actor Partner, Int Position, String[] sExtraTags, Bool[] bRequireAllTags, Bool bAllowAggressive = False, Bool bAllowAll = False)
@@ -51,7 +56,17 @@ Actor[] function getActors()
   return actors
 endfunction
 
+Bool Function isActorActive(Actor act)
+  return False
+endfunction
+
 state Installed
+
+  function checkVars()
+    if OSexIntegrationMainQuest == None
+      OSexIntegrationMainQuest = Game.GetFormFromFile(0x000801, "OStim.esp") as Quest
+    endif
+  endfunction
   
   int function haveSexWithPlayer(Actor Partner, Int Position, String[] sExtraTags, Bool[] bRequireAllTags, Bool bAllowAggressive = False, Bool bAllowAll = False)
     return zzzmrt_sp_int_ostim.haveSexWithPlayerOS(OSexIntegrationMainQuest, Partner, Position, sExtraTags, bRequireAllTags, bAllowAggressive, bAllowAll)
@@ -67,5 +82,9 @@ state Installed
 
   Bool Function bHaveGroupSexWithPlayer(Actor[] partners, Bool bAllowAggressive = True)
     return zzzmrt_sp_int_ostim.bHaveGroupSexWithPlayerOS(OSexIntegrationMainQuest, partners, bAllowAggressive)
+  endfunction
+
+  Bool Function isActorActive(Actor act)
+    return zzzmrt_sp_int_ostim.isActorActiveOS(OSexIntegrationMainQuest, act)
   endfunction
 endstate

@@ -5,6 +5,11 @@ Actor[] function getActorsOS(Quest OSexIntegrationMainQuest) Global
 	return ostim.getActors()
 EndFunction
 
+Bool function isActorActiveOS(Quest OSexIntegrationMainQuest, Actor act) Global
+  OSexIntegrationMain OSexMainQuest = OSexIntegrationMainQuest as OSexIntegrationMain
+  return OSexMainQuest.IsActorActive(act)
+EndFunction
+
 int function haveSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor partner, Int Position, String[] sExtraTags, Bool[] bRequireAllTags, Bool bAllowAggressive = False, Bool bAllowAll =False) Global
 	if Position < 0
 	  return -1

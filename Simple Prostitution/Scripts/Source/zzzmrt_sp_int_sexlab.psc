@@ -10,6 +10,11 @@ Bool Function hasPlayerSL(Quest SexLabQuestFramework, String argString) Global
   return SexLab.ThreadSlots.GetController(argString as int).HasPlayer
 endfunction
 
+Bool function IsActorActiveSL(Quest SexLabQuestFramework, Actor ActorRef) Global
+  SexLabFramework SexLab = SexLabQuestFramework as SexLabFramework
+  return SexLab.IsActorActive(ActorRef)
+endfunction
+
 int function haveSexWithPlayerSL(Quest SexLabQuestFramework, Actor Partner, Int Position, String[] sExtraTags, Bool[] bRequireAllTags, Bool bAllowAggressive = False, Bool bAllowAll = False) Global
   if position < 0
 	  return -1
