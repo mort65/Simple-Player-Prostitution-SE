@@ -125,7 +125,7 @@ Bool Function bSucessCalculator(float fSuccessPercent, int iRounds = 1) Global
   
   int iIndex = 0
   While iIndex < iRounds
-    if fSuccessPercent > utility.randomInt(0,99)
+    if fSuccessPercent > (utility.randomInt(0,999) / 10.0)
       return True
     endIf
     iIndex += 1

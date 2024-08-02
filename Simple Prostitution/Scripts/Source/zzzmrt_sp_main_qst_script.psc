@@ -355,7 +355,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-  return getBaseVersion() + 0.27
+  return getBaseVersion() + 0.28
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
@@ -1131,7 +1131,7 @@ Bool Function checkSnitch(Actor npc, Bool bCompleteCheck = False, Bool bDibel = 
   endif
   
   if npc.isGuard()
-    if utility.RandomInt(0,99) < fGuardReportChance as int
+    if (utility.RandomInt(0,999) / 10.0) < fGuardReportChance as int
       if bCanSnitch(npc, bCompleteCheck)
         if bDibel
           dibelSnitch = npc
@@ -1142,7 +1142,7 @@ Bool Function checkSnitch(Actor npc, Bool bCompleteCheck = False, Bool bDibel = 
         Return True
       endif
     endif
-  elseif (utility.RandomInt(0,99) < fCitizenReportChance as int)
+  elseif ((utility.RandomInt(0,999) / 10.0) < fCitizenReportChance as int)
     if bCanSnitch(npc, bCompleteCheck)
       if bDibel
         dibelSnitch = npc
@@ -1524,7 +1524,7 @@ function addDibelMarkToPlayer(float fChance, int iNumPartners = 1)
   int iIndex = iNumPartners
   while iIndex > 0
     iIndex -= 1
-    if utility.randomInt(0,99) < fChance as Int
+    if (utility.randomInt(0,999) / 10.0) < fChance as Int
       iAmount += 1 
     endif
   endWhile

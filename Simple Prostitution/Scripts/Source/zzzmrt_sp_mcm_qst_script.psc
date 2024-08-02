@@ -830,7 +830,7 @@ State CITIZEN_REPORT_CHANCE_SLIDER
     SetSliderDialogStartValue(MainScript.fCitizenReportChance)
     SetSliderDialogDefaultValue(10.0)
     SetSliderDialogRange(1, 100)
-    SetSliderDialogInterval(1)
+    SetSliderDialogInterval(0.1)
   endEvent
 EndState
 
@@ -847,7 +847,7 @@ State GUARD_REPORT_CHANCE_SLIDER
     SetSliderDialogStartValue(MainScript.fGuardReportChance)
     SetSliderDialogDefaultValue(90.0)
     SetSliderDialogRange(1, 100)
-    SetSliderDialogInterval(1)
+    SetSliderDialogInterval(0.1)
   endEvent
 EndState
 
@@ -1516,7 +1516,7 @@ state NORMAL_STD_INFECT_CHANCE_SLIDER
     SetSliderDialogStartValue(MainScript.fNormalSTDInfectChance)
     SetSliderDialogDefaultValue(0.0)
     SetSliderDialogRange(0, 100)
-    SetSliderDialogInterval(1)
+    SetSliderDialogInterval(0.1)
   endEvent
 endstate
 
@@ -1537,7 +1537,7 @@ state NORMAL_STD_PROGRESS_CHANCE_SLIDER
     SetSliderDialogStartValue(MainScript.fNormalSTDProgressChance)
     SetSliderDialogDefaultValue(0.0)
     SetSliderDialogRange(0, 100)
-    SetSliderDialogInterval(1)
+    SetSliderDialogInterval(0.1)
   endEvent
 endstate
 
@@ -1574,7 +1574,7 @@ state WHORE_STD_INFECT_CHANCE_SLIDER
     SetSliderDialogStartValue(MainScript.fWhoreSTDInfectChance)
     SetSliderDialogDefaultValue(5.0)
     SetSliderDialogRange(0, 100)
-    SetSliderDialogInterval(1)
+    SetSliderDialogInterval(0.1)
   endEvent
 endstate
 
@@ -1595,7 +1595,7 @@ state WHORE_STD_PROGRESS_CHANCE_SLIDER
     SetSliderDialogStartValue(MainScript.fWhoreSTDProgressChance)
     SetSliderDialogDefaultValue(25.0)
     SetSliderDialogRange(0, 100)
-    SetSliderDialogInterval(1)
+    SetSliderDialogInterval(0.1)
   endEvent
 endstate
 
@@ -1616,7 +1616,7 @@ state DIBEL_STD_INFECT_CHANCE_SLIDER
     SetSliderDialogStartValue(MainScript.fDibelSTDInfectChance)
     SetSliderDialogDefaultValue(0.0)
     SetSliderDialogRange(0, 100)
-    SetSliderDialogInterval(1)
+    SetSliderDialogInterval(0.1)
   endEvent
 endstate
 
@@ -1637,7 +1637,7 @@ state DIBEL_STD_PROGRESS_CHANCE_SLIDER
     SetSliderDialogStartValue(MainScript.fDibelSTDProgressChance)
     SetSliderDialogDefaultValue(0.0)
     SetSliderDialogRange(0, 100)
-    SetSliderDialogInterval(1)
+    SetSliderDialogInterval(0.1)
   endEvent
 endstate
 
@@ -1800,7 +1800,7 @@ state WHORE_OWNER_SHARE_SLIDER
     SetSliderDialogStartValue(MainScript.fWhoreOwnerShare)
     SetSliderDialogDefaultValue(0.0)
     SetSliderDialogRange(0, 100)
-    SetSliderDialogInterval(1)
+    SetSliderDialogInterval(0.1)
   endEvent
 endstate
 
@@ -1821,7 +1821,7 @@ state WHORE_MARK_CHANCE_SLIDER
     SetSliderDialogStartValue(MainScript.fWhoreMarkChance)
     SetSliderDialogDefaultValue(0.0)
     SetSliderDialogRange(0, 100)
-    SetSliderDialogInterval(1)
+    SetSliderDialogInterval(0.1)
   endEvent
 endState
 
@@ -1842,7 +1842,7 @@ state DIBEL_MARK_CHANCE_SLIDER
     SetSliderDialogStartValue(MainScript.fDibelMarkChance)
     SetSliderDialogDefaultValue(1.0)
     SetSliderDialogRange(0, 100)
-    SetSliderDialogInterval(1)
+    SetSliderDialogInterval(0.1)
   endEvent
 endState
 
