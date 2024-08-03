@@ -355,7 +355,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-  return getBaseVersion() + 0.28
+  return getBaseVersion() + 0.29
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
