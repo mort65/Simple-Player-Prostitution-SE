@@ -175,3 +175,40 @@ Bool function isInteger(String str) Global
   endWhile
   return True
 EndFunction
+
+
+Int function weightedRandInt(int[] weights, bool bUsePo3 = false) Global
+	debug.trace("weights: " + weights) 
+	if weights.Length < 1
+		return -1
+	endif
+	Int iLen = weights.Length
+  int[] cumulWeights = Utility.createIntArray(iLen)
+  int iIndex = 0
+  int jIndex = 0
+  while iIndex < iLen
+  	jIndex = 0
+  	cumulWeights[iIndex] = 0
+  	while jIndex < iIndex + 1
+  		cumulWeights[iIndex] = cumulWeights[iIndex] + weights[jIndex]
+  		jIndex += 1
+  	endWhile
+  	iIndex += 1
+  endWhile
+  if bUsePo3
+  	jIndex = PO3_SKSEFunctions.GenerateRandomInt(1, cumulWeights[iLen - 1])
+  else
+  	jIndex = utility.randomInt(1,cumulWeights[iLen - 1])
+  endif
+  iIndex = 0
+  while iIndex < cumulWeights.Length
+    if jIndex <= cumulWeights[iIndex]
+    	debug.trace("returned jIndex: " + jIndex)
+    	debug.trace("returned cumulWeights: " + cumulWeights)
+    	debug.trace("returned result: " + iIndex)
+      return iIndex
+    endIf
+    iIndex += 1
+  endWhile
+  return -1
+endfunction

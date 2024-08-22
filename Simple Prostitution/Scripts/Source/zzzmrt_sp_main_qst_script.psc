@@ -4,8 +4,6 @@ import zzzmrt_sp_utility
 
 GlobalVariable property BeggarFailureChance auto
 GlobalVariable property DibelFailureChance auto
-GlobalVariable Property BeggarNotMaleRapistChance Auto
-GlobalVariable Property BeggarNotFemaleRapistChance Auto
 GlobalVariable Property BeggarNoSexOfferChance Auto
 zzzmrt_sp_flowergirls_interface property FlowerGirlsInterface auto
 zzzmrt_sp_sexlab_interface property SexLabInterface auto
@@ -17,6 +15,8 @@ Quest Property FlowerGirlsInterfaceQst Auto
 Quest Property SexLabInterfaceQst Auto
 Quest Property LicensesInterfaceQst Auto
 zzzmrt_sp_mcm_qst_script property MCMScript auto
+zzzmrt_sp_appr_monitor_qst_script property ApproachMonitorScr Auto
+Quest Property ApproachMonitorQst Auto
 ReferenceAlias property Owner auto
 ReferenceAlias property whoreCustomerAlias auto
 ReferenceAlias property whoreCustomerAlias2 auto
@@ -27,6 +27,7 @@ ReferenceAlias property dibelCustomerAlias2 auto
 ReferenceAlias property dibelCustomerAlias3 auto
 ReferenceAlias property dibelCustomerAlias4 auto
 GlobalVariable property WhoreFailureChance auto
+ReferenceAlias property Assaulter auto
 Message property InterfaceMenu auto
 Message Property DibelOfferMenu Auto
 Message Property DibelOfferMenu_InsufficientMark Auto
@@ -69,6 +70,7 @@ Bool property bWhoreEnabled=True auto Hidden Conditional
 Bool property bWhoreNeedLicense=True auto Hidden Conditional
 Bool Property bIsPapyrusUtilActive=False Auto Hidden Conditional
 Bool Property bIsPO3ExtenderActive=False Auto Hidden Conditional
+Bool Property bIsPyramidUtilsOK=False Auto Hidden Conditional
 Bool Property bDibelAllowAggressive=True Auto Hidden Conditional
 Bool Property bWhoreAllowAggressive=True Auto Hidden Conditional
 Bool Property bTryAllInterfaces=True Auto Hidden Conditional
@@ -81,6 +83,8 @@ Formlist property dibelCustomerList Auto
 Formlist Property currentCustomerList Auto
 Spell property customerBeggarSpell auto
 Spell property customerSpell auto
+Spell property StaggerSpell Auto
+Spell property ParalyzeSpell Auto
 Float Property fCureNormalDiseaseCost = 100.0 Auto Hidden Conditional
 Float Property fCureSTDICost = 100.0 Auto Hidden Conditional
 Float Property fCureSTDIICost = 150.0 Auto Hidden Conditional
@@ -170,14 +174,82 @@ Int[] property iTotalDibelStats Auto Hidden Conditional
 Int[] property iWhorePositions auto Hidden Conditional
 Int[] property iDibelPositions auto Hidden Conditional
 Int[] Property iPositions Auto Hidden Conditional
+keyword[] property forbidenArmorKeywords auto hidden Conditional
 Int property iTotalWhoreCustomers = 0 auto Hidden Conditional
 Int property iTotalDibelCustomers = 0 auto Hidden Conditional
 Bool property bSexAfterOffering = True Auto Hidden Conditional
 Bool Property bBeggingMaleSexOffer = False Auto Hidden Conditional
 Bool Property bBeggingFemaleSexOffer = False Auto Hidden Conditional
+Float Property fBeggarSexOfferChance = 0.0 Auto Hidden Conditional
+Bool Property bFemaleCustomerApproach = True Auto Hidden Conditional
+Bool Property bMaleCustomerApproach = True Auto Hidden Conditional
+Float Property fCustomerApproachChance = 50.0 Auto Hidden Conditional
+
+Faction Property DibelCustomerFaction Auto
+Faction Property WhoreCustomerFaction Auto
+
+
+Int Property iPaidGoldCustomer1 = 0 Auto Hidden Conditional
+Int Property iPaidGoldCustomer2 = 0 Auto Hidden Conditional
+Int Property iPaidGoldCustomer3 = 0 Auto Hidden Conditional
+Int Property iPaidGoldCustomer4 = 0 Auto Hidden Conditional
+Int Property iPaidGoldAllCustomers = 0 Auto Hidden Conditional
+
+Int Property iPaidGoldDibelCustomer1 = 0 Auto Hidden Conditional
+Int Property iPaidGoldDibelCustomer2 = 0 Auto Hidden Conditional
+Int Property iPaidGoldDibelCustomer3 = 0 Auto Hidden Conditional
+Int Property iPaidGoldDibelCustomer4 = 0 Auto Hidden Conditional
+Int Property iPaidGoldAllDibelCustomers = 0 Auto Hidden Conditional
+
+Int Property iWhoringRejectResult = 0 Auto Hidden Conditional
+
+Float property fBeggarRejectMaleAcceptChance = 100.0 Auto Hidden Conditional
+Float property fBeggarRejectFemaleAcceptChance = 100.0 Auto Hidden Conditional
 Float Property fBeggingMaleRapistChance = 0.0 Auto Hidden Conditional
 Float Property fBeggingFemaleRapistChance = 0.0 Auto Hidden Conditional
-Float Property fBeggarSexOfferChance = 0.0 Auto Hidden Conditional
+Float property fBeggarRejectFemaleTheftChance = 0.0 Auto Hidden Conditional
+Float property fBeggarRejectMaleTheftChance = 0.0 Auto Hidden Conditional
+Float property fBeggarRejectMaleAssaultChance = 0.0 Auto Hidden Conditional
+Float property fBeggarRejectFemaleAssaultChance = 0.0 Auto Hidden Conditional
+Float property fBeggarRejectMaleSlaveryChance = 0.0 Auto Hidden Conditional
+Float property fBeggarRejectFemaleSlaveryChance = 0.0 Auto Hidden Conditional
+
+Float property fWhoreRejectMaleAcceptChance = 100.0 Auto Hidden Conditional
+Float property fWhoreRejectFemaleAcceptChance = 100.0 Auto Hidden Conditional
+Float property fWhoreRejectMaleRapeChance = 0.0 Auto Hidden Conditional
+Float property fWhoreRejectFemaleRapeChance = 0.0 Auto Hidden Conditional
+Float property fWhoreRejectMaleTheftChance = 0.0 Auto Hidden Conditional
+Float property fWhoreRejectFemaleTheftChance = 0.0 Auto Hidden Conditional
+Float property fWhoreRejectMaleAssaultChance = 0.0 Auto Hidden Conditional
+Float property fWhoreRejectFemaleAssaultChance = 0.0 Auto Hidden Conditional
+Float property fWhoreRejectMaleSlaveryChance = 0.0 Auto Hidden Conditional
+Float property fWhoreRejectFemaleSlaveryChance = 0.0 Auto Hidden Conditional
+Float property fWhoreRejectMaleReportChance = 0.0 Auto Hidden Conditional
+Float property fWhoreRejectFemaleReportChance = 0.0 Auto Hidden Conditional
+
+Float property fDibelRejectMaleAcceptChance = 100.0 Auto Hidden Conditional
+Float property fDibelRejectFemaleAcceptChance = 100.0 Auto Hidden Conditional
+Float property fDibelRejectMaleRapeChance = 0.0 Auto Hidden Conditional
+Float property fDibelRejectFemaleRapeChance = 0.0 Auto Hidden Conditional
+Float property fDibelRejectMaleTheftChance = 0.0 Auto Hidden Conditional
+Float property fDibelRejectFemaleTheftChance = 0.0 Auto Hidden Conditional
+Float property fDibelRejectMaleAssaultChance = 0.0 Auto Hidden Conditional
+Float property fDibelRejectFemaleAssaultChance = 0.0 Auto Hidden Conditional
+Float property fDibelRejectMaleSlaveryChance = 0.0 Auto Hidden Conditional
+Float property fDibelRejectFemaleSlaveryChance = 0.0 Auto Hidden Conditional
+Float property fDibelRejectMaleReportChance = 0.0 Auto Hidden Conditional
+Float property fDibelRejectFemaleReportChance = 0.0 Auto Hidden Conditional
+
+Int property iCustomerApproachTimer = 3 Auto Hidden Conditional
+Bool property bDibelCustomerApproach = False Auto Hidden Conditional
+Bool property isDibel = False Auto Hidden Conditional ;for starting customer approach and checking dibel license
+Bool property isWhore = False Auto Hidden Conditional ;for starting customer approach
+Int Property iTotalCustomerPaidGold = 0 Auto Hidden Conditional
+Bool property bRejectAssaultRape = False Auto Hidden Conditional
+Bool property bRejectAssaultTheft = False Auto Hidden Conditional
+Bool property bOnlyInteriorApproach = False Auto Hidden Conditional
+Bool property bOnlyWhoreClothingApproach = False Auto Hidden Conditional
+FormList Property whoreClothingList Auto
 
 Formlist Property raceList Auto
 Formlist Property vampireRacelist Auto
@@ -212,7 +284,9 @@ Keyword Property prostituteManager_KWD Auto
 Keyword Property prostituteLocation_KWD Auto
 Keyword Property stdHealer_KWD Auto
 Keyword Property BeggarClothing_kwd Auto
-associationType Property spouse  auto
+Keyword Property ClothingBody_kwd Auto
+Keyword Property ArmorCuirass_kwd Auto
+associationType Property spouse  Auto
 Quest Property pimpTracker Auto
 Float Property fWhoreMarkChance = 0.0 Auto Hidden Conditional
 Float Property fDibelMarkChance = 1.0 Auto Hidden Conditional
@@ -226,8 +300,12 @@ Float Property fPerkPointCost = 5.0 Auto Hidden Conditional
 Float Property fPerkPointIncrement = 1.0 Auto Hidden Conditional
 Float Property fDDKeyCost = 1.0 Auto Hidden Conditional
 Float Property fDDKeyIncrement = 5.0 Auto Hidden Conditional
+Actor property angryWhoreCustomer Auto Hidden Conditional
+Actor property angryDibelCustomer Auto Hidden Conditional
+Magiceffect property customerEffect Auto
+Magiceffect property beggarCustomerEffect Auto
 
-Bool bWhoreAnimEnded = False ;
+Bool bWhoreAnimEnded = False
 Bool bDibelAnimEnded = False
 Bool Property bLastBeggingSucceed = False Auto Hidden Conditional
 Int Property iWhorePartners = 0 Auto Hidden Conditional
@@ -235,8 +313,28 @@ Int Property iDibelPartners = 0 Auto Hidden Conditional
 Actor[] property origCustomersArr Auto Hidden Conditional
 Bool property bIsBusy = False Auto Hidden Conditional
 
+Int Property iRejectAcceptChance = 0 Auto Hidden Conditional
+Int Property iRejectReportChance = 0 Auto Hidden Conditional
+Int Property iRejectTheftChance = 0 Auto Hidden Conditional
+Int Property iRejectAssaultChance = 0 Auto Hidden Conditional
+Int Property iRejectSlaveryChance = 0 Auto Hidden Conditional
+Int Property iRejectRapeChance = 0 Auto Hidden Conditional
+
+Bool Property bDibelRejectTheftOnlyGold = True Auto Hidden Conditional
+Bool Property bWhoreRejectTheftOnlyGold = True Auto Hidden Conditional
+Bool Property bBeggarRejectTheftOnlyGold = True Auto Hidden Conditional
+
+Bool property bRejectTheftOnlyGold = True Auto Hidden Conditional
+
+Bool property bDibelReject = False Auto Hidden Conditional
+Bool property bBeggarReject = False Auto Hidden Conditional
+
+Package Property drawWeapon  Auto 
+
 function shutDown()
+  stopApproach()
   snitchDetector.stop()
+  ApproachMonitorQst.stop()
   STD_Script.cureActorSTDs(player, False)
   STD_Quest.Stop()
   if pimpTracker.isRunning()
@@ -249,6 +347,10 @@ function shutDown()
   clearPositions()
   dibelSnitch = None
   whoreSnitch = None
+  bIsBusy = False
+  isDibel = false
+  isWhore = false
+  GoToState("")
 EndFunction
 
 Function SetVars()
@@ -267,6 +369,13 @@ Function SetVars()
   startCalcSTDCurePrice()
   RegisterForEvents()
   checkCurrentLocation()
+  if !ApproachMonitorScr
+    ApproachMonitorScr = ApproachMonitorQst as zzzmrt_sp_appr_monitor_qst_script
+  endif
+  if !ApproachMonitorQst.isRunning()
+    ApproachMonitorQst.start()
+  endif
+  ApproachMonitorScr.updateApproach(False)
 EndFunction
 
 Function RegisterForEvents()
@@ -297,6 +406,7 @@ function AllowProstitution(Actor akOwner)
     if !player.IsInFaction(whoreFaction)
       player.AddToFaction(whoreFaction)
     endif
+    isWhore = true
     if (Owner.getActorReference() != None) && (Owner.getActorReference() != akOwner)
       iCurrentOwnerSeptims = 0
       currentOwnerSeptimDisplay.SetValueInt(0)
@@ -355,7 +465,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-  return getBaseVersion() + 0.29
+  return getBaseVersion() + 0.30
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
@@ -393,10 +503,10 @@ Bool function bRandomSexWithPlayer(Actor akActor, Bool bAggressive = False)
     Utility.Wait(1.0)
     FastFadeOut.PopTo(BlackScreen)
     if akActor != player
-      akActor.Disable()
+      akActor.EnableAI(False)
     endif
     Utility.Wait(5.0)
-    akActor.Enable()
+    akActor.EnableAI(True)
     BlackScreen.PopTo(FadeIn)
     Game.EnablePlayerControls()
     registerForSingleUpdate(1.0)
@@ -450,25 +560,25 @@ endfunction
 
 
 Actor[] function formListToActorArray(FormList actorList)
-  Actor[] actors
-  int iSize =  actorList.GetSize()
-  if iSize == 1
-    actors = new Actor[1]
-  elseif iSize == 2
-    actors = new Actor[2]
-  elseif iSize == 3
-    actors = new Actor[3]
-  elseif iSize >= 4
-    actors = new Actor[4]
-  else
-    return actors
-  endif
-  int i = 0
-  while i < iSize
-    actors[i] = actorList.GetAt(i) as Actor
-    i += 1
-  endWhile
+Actor[] actors
+int iSize =  actorList.GetSize()
+if iSize == 1
+  actors = new Actor[1]
+elseif iSize == 2
+  actors = new Actor[2]
+elseif iSize == 3
+  actors = new Actor[3]
+elseif iSize >= 4
+  actors = new Actor[4]
+else
   return actors
+endif
+int i = 0
+while i < iSize
+  actors[i] = actorList.GetAt(i) as Actor
+  i += 1
+endWhile
+return actors
 endFunction
 
 Bool Function bHaveGroupSex(String interface, Bool bAllowAggressive = False, Bool bAllowAll = False)
@@ -492,14 +602,14 @@ Bool Function bHaveGroupSex(String interface, Bool bAllowAggressive = False, Boo
     while iIndex > 0
       iIndex -= 1
       if partners[iIndex] != player
-        partners[iIndex].Disable()
+        partners[iIndex].EnableAI(False)
       endif
     endWhile
     Utility.Wait(5.0)
     iIndex = partners.Length
     while iIndex > 0
       iIndex -= 1
-      partners[iIndex].enable()
+      partners[iIndex].EnableAI(True)
     endWhile
     BlackScreen.PopTo(FadeIn)
     Game.EnablePlayerControls()
@@ -512,7 +622,7 @@ Bool Function bHaveGroupSex(String interface, Bool bAllowAggressive = False, Boo
         iIndex = origCustomersArr.Find(currentCustomerList.GetAt(0) as Actor)
         iPosition = iPositions[iIndex]
         if iPosition < 0
-          iPosition = utility.randomint(0,2)
+          iPosition = randInt(0,2)
         endif
         int iResult = haveSex(currentCustomerList.GetAt(0) as Actor, interface, bAllowAggressive, bAllowAll)
         iPositions[iIndex] = iResult
@@ -609,6 +719,7 @@ function startSnitchFinder(Bool bCheckDibel)
 EndFunction
 
 Function setWhoreCustomer(Actor akActor, Bool bPay = False, Bool bPersuaded = True)
+  int iPayment = 0
   customerSpell.Cast(akActor, akActor)
   if bPay
     if !player.GetActorBase().GetSex() && !akActor.GetLeveledActorBase().GetSex()
@@ -617,7 +728,7 @@ Function setWhoreCustomer(Actor akActor, Bool bPay = False, Bool bPersuaded = Tr
       iWhorePosition = positionChooser(fWhoreVagChance as Int, fWhoreAnalChance as Int, fWhoreOralChance as Int)
     endif
     if iWhorePosition > -1
-      payWhore(player, iWhorePosition)
+      iPayment = payWhore(player, iWhorePosition)
       if bPersuaded
         persuade(fWhorePersuasionXPMult)
       endif
@@ -634,15 +745,23 @@ Function setWhoreCustomer(Actor akActor, Bool bPay = False, Bool bPersuaded = Tr
     if whoreCustomerList.GetSize() == 0
       whoreCustomerAlias.ForceRefTo(akActor)
       iWhorePositions[0] = iWhorePosition
+      iPaidGoldCustomer1 = iPayment
+      iPaidGoldAllCustomers += iPaidGoldCustomer1 
     elseif whoreCustomerList.GetSize() == 1
       whoreCustomerAlias2.ForceRefTo(akActor)
       iWhorePositions[1] = iWhorePosition
+      iPaidGoldCustomer2 = iPayment
+      iPaidGoldAllCustomers += iPaidGoldCustomer2
     elseif whoreCustomerList.GetSize() == 2
       whoreCustomerAlias3.ForceRefTo(akActor)
       iWhorePositions[2] = iWhorePosition
+      iPaidGoldCustomer3 = iPayment
+      iPaidGoldAllCustomers += iPaidGoldCustomer3
     elseif whoreCustomerList.GetSize() == 3
       whoreCustomerAlias4.ForceRefTo(akActor)
       iWhorePositions[3] = iWhorePosition
+      iPaidGoldCustomer4 = iPayment
+      iPaidGoldAllCustomers += iPaidGoldCustomer4
     endif
     akActor.EvaluatePackage()
     whoreCustomerList.AddForm(akActor)
@@ -652,6 +771,7 @@ EndFunction
 
 Function setDibelCustomer(Actor akActor, bool bPay = true )
   customerSpell.Cast(akActor, akActor)
+  int iPayment = 0
   if bPay
     if !player.GetActorBase().GetSex() && !akActor.GetLeveledActorBase().GetSex()
       iDibelPosition = positionChooser(0, fDibelAnalChance as Int, fDibelOralChance as Int)
@@ -659,7 +779,7 @@ Function setDibelCustomer(Actor akActor, bool bPay = true )
       iDibelPosition = positionChooser(fDibelVagChance as Int, fDibelAnalChance as Int, fDibelOralChance as Int)
     endif
     if iDibelPosition > -1
-      payDibel(player, iDibelPosition)
+      iPayment = payDibel(player, iDibelPosition)
       persuade(fDibelPersuasionXPMult)
     endif
   endIf
@@ -674,21 +794,480 @@ Function setDibelCustomer(Actor akActor, bool bPay = true )
     if dibelCustomerList.GetSize() == 0
       dibelCustomerAlias.ForceRefTo(akActor)
       iDibelPositions[0] = iDibelPosition
+      iPaidGoldDibelCustomer1 = iPayment
     elseif dibelCustomerList.GetSize() == 1
       dibelCustomerAlias2.ForceRefTo(akActor)
       iDibelPositions[1] = iDibelPosition
+      iPaidGoldDibelCustomer2 = iPayment
     elseif dibelCustomerList.GetSize() == 2
       dibelCustomerAlias3.ForceRefTo(akActor)
       iDibelPositions[2] = iDibelPosition
+      iPaidGoldDibelCustomer3 = iPayment
     elseif dibelCustomerList.GetSize() == 3
       dibelCustomerAlias4.ForceRefTo(akActor)
       iDibelPositions[3] = iDibelPosition
+      iPaidGoldDibelCustomer4 = iPayment
     endif
     akActor.EvaluatePackage()
     dibelCustomerList.AddForm(akActor)
     iTotalDibelCustomers = dibelCustomerList.GetSize()
   endif
 EndFunction
+
+Function setRejectingCustomerResult(Actor akActor, Bool bDibel = False, Bool bBeggar = False, Bool bApproach = False)
+  bIsBusy = true
+  int iRand 
+  bRejectAssaultRape = False
+  bRejectAssaultTheft = False
+  Bool bFemaleNPC = akActor.GetLeveledActorBase().GetSex()
+  iRejectAcceptChance = 0
+  iRejectReportChance = 0
+  iRejectTheftChance = 0
+  iRejectAssaultChance = 0
+  iRejectSlaveryChance = 0
+  iRejectRapeChance = 0
+  if bDibel
+    if bFemaleNPC
+      iRejectAcceptChance = fDibelRejectFemaleAcceptChance as Int
+      iRejectReportChance = fDibelRejectFemaleReportChance as Int
+      iRejectTheftChance = fDibelRejectFemaleTheftChance as Int
+      iRejectAssaultChance = fDibelRejectFemaleAssaultChance as Int
+      iRejectSlaveryChance = fDibelRejectFemaleSlaveryChance as Int
+      iRejectRapeChance = fDibelRejectFemaleRapeChance as Int
+    else
+      iRejectAcceptChance = fDibelRejectMaleAcceptChance as Int
+      iRejectReportChance = fDibelRejectMaleReportChance as Int
+      iRejectTheftChance = fDibelRejectMaleTheftChance as Int
+      iRejectAssaultChance = fDibelRejectMaleAssaultChance as Int
+      iRejectSlaveryChance = fDibelRejectMaleSlaveryChance as Int
+      iRejectRapeChance = fDibelRejectMaleRapeChance as Int
+    endif
+    bRejectTheftOnlyGold = bDibelRejectTheftOnlyGold
+  elseif bBeggar
+    if bFemaleNPC
+      iRejectAcceptChance = fBeggarRejectFemaleAcceptChance as Int
+      iRejectReportChance = 0
+      iRejectTheftChance = fBeggarRejectFemaleTheftChance as Int
+      iRejectAssaultChance = fBeggarRejectFemaleAssaultChance as Int
+      iRejectSlaveryChance = fBeggarRejectFemaleSlaveryChance as Int
+      iRejectRapeChance = fBeggingFemaleRapistChance as Int
+    else
+      iRejectAcceptChance = fBeggarRejectMaleAcceptChance as Int
+      iRejectReportChance = 0
+      iRejectTheftChance = fBeggarRejectMaleTheftChance as Int
+      iRejectAssaultChance = fBeggarRejectMaleAssaultChance as Int
+      iRejectSlaveryChance = fBeggarRejectMaleSlaveryChance as Int
+      iRejectRapeChance = fBeggingMaleRapistChance as Int
+    endif
+    bRejectTheftOnlyGold = bBeggarRejectTheftOnlyGold
+  else
+    if bFemaleNPC
+      iRejectAcceptChance = fWhoreRejectFemaleAcceptChance as Int
+      iRejectReportChance = fWhoreRejectFemaleReportChance as Int
+      iRejectTheftChance = fWhoreRejectFemaleTheftChance as Int
+      iRejectAssaultChance = fWhoreRejectFemaleAssaultChance as Int
+      iRejectSlaveryChance = fWhoreRejectFemaleSlaveryChance as Int
+      iRejectRapeChance = fWhoreRejectFemaleRapeChance as Int
+    else
+      iRejectAcceptChance = fWhoreRejectMaleAcceptChance as Int
+      iRejectReportChance = fWhoreRejectMaleReportChance as Int
+      iRejectTheftChance = fWhoreRejectMaleTheftChance as Int
+      iRejectAssaultChance = fWhoreRejectMaleAssaultChance as Int
+      iRejectSlaveryChance = fWhoreRejectMaleSlaveryChance as Int
+      iRejectRapeChance = fWhoreRejectMaleRapeChance as Int
+    endif
+    bRejectTheftOnlyGold = bWhoreRejectTheftOnlyGold
+  endif
+
+  if akActor.isGuard()
+    iRejectTheftChance = 0
+    iRejectAssaultChance = 0
+    iRejectSlaveryChance = 0
+    iRejectRapeChance = 0
+  endif
+
+  if !bCanAssault(akActor)
+    iRejectAssaultChance = 0
+    iRejectSlaveryChance = 0  
+  endif
+
+  if bApproach
+    iRejectReportChance = 0
+  endif
+  
+  int[] resultWeights = new int[7]
+  resultWeights[0] = iRejectAcceptChance
+  resultWeights[1] = iRejectReportChance
+  resultWeights[2] = iRejectTheftChance
+  resultWeights[3] = iRejectAssaultChance
+  resultWeights[4] = iRejectSlaveryChance
+  resultWeights[5] = iRejectRapeChance
+  resultWeights[6] = minInt(iRejectRapeChance,iRejectTheftChance)
+  iRand = weightedRandInt(resultWeights)
+
+  if (iRand == 3) ;Assault
+    bRejectAssaultRape = (randInt(0, 99) < iRejectRapeChance)
+    bRejectAssaultTheft = (randInt(0, 99) < iRejectTheftChance)
+  elseif (iRand == 4) ;Slavery
+    bRejectAssaultTheft = (randInt(0, 99) < iRejectTheftChance)
+  endif
+
+  if iRand > 0
+    iWhoringRejectResult = iRand
+  else
+    iWhoringRejectResult = 0
+  endif
+  bDibelReject = bDibel
+  bBeggarReject = bBeggar
+  bIsBusy = false
+endfunction
+
+Function rejectCusomer(Actor akCustomer)
+  bIsBusy = true
+  debug.trace("bdibel:"+bDibelReject)
+  debug.trace("bBeggar:"+bBeggarReject)
+  debug.trace("iWhoringRejectResult: "+iWhoringRejectResult)
+  int iWhatToDo
+  if bDibelReject
+    if dibelCustomerAlias.getActorReference()
+      iTotalCustomerPaidGold += iPaidGoldDibelCustomer1
+    endif
+    if dibelCustomerAlias2.getActorReference()
+      iTotalCustomerPaidGold += iPaidGoldDibelCustomer2
+    endif
+    if dibelCustomerAlias3.getActorReference()
+      iTotalCustomerPaidGold += iPaidGoldDibelCustomer3
+    endif
+    if dibelCustomerAlias4.getActorReference()
+      iTotalCustomerPaidGold += iPaidGoldDibelCustomer4
+    endif
+  elseif bBeggarReject
+    iTotalCustomerPaidGold = player.getItemCount(Gold)
+  else
+    if whoreCustomerAlias.getActorReference()
+      iTotalCustomerPaidGold += iPaidGoldCustomer1
+    endif
+    if whoreCustomerAlias2.getActorReference()
+      iTotalCustomerPaidGold += iPaidGoldCustomer2
+    endif
+    if whoreCustomerAlias3.getActorReference()
+      iTotalCustomerPaidGold += iPaidGoldCustomer3
+    endif
+    if whoreCustomerAlias4.getActorReference()
+      iTotalCustomerPaidGold += iPaidGoldCustomer4
+    endif
+  endif
+  iWhatToDo = iWhoringRejectResult
+  if bDibelReject && akCustomer.IsInFaction(DibelCustomerFaction)
+    clearDibelCustomers()
+    clearDibelPositions()
+  elseif !bBeggarReject && akCustomer.IsInFaction(WhoreCustomerFaction)
+    clearWhoreCustomers() 
+    clearWhorePositions()
+  endif 
+  debug.trace("iWhatToDo: "+iWhatToDo)  
+  if (iWhatToDo == 0)
+    if !bBeggarReject
+      player.removeItem(gold, iTotalCustomerPaidGold, false, akCustomer)
+    endif
+  elseif iWhatToDo == 1
+    if bDibelReject
+      if !isSnitchOK(angryDibelCustomer)
+        angryDibelCustomer = akCustomer
+      endif
+    elseif !bBeggarReject
+      if !isSnitchOK(angryWhoreCustomer)
+        angryWhoreCustomer = akCustomer
+      endif
+    endif
+  elseif iWhatToDo == 2
+    if akCustomer.IsOnMount()
+      akCustomer.Dismount()
+      Utility.wait(3.0)
+    endif
+    debug.sendanimationevent(akCustomer, "idleforcedefaultstate")
+    utility.wait(1.0)
+    akCustomer.DrawWeapon()
+    utility.wait(0.5)
+    StaggerSpell.Cast(player)
+    stealFromPlayer(akCustomer)
+  elseif (iWhatToDo == 3 || iWhatToDo == 4)
+    AssaultPlayer(akCustomer, (iWhatToDo == 4), bRejectAssaultRape, bRejectAssaultTheft)
+  elseif iWhatToDo == 5
+    rapePlayer(akCustomer)
+  elseif iWhatToDo == 6
+    if akCustomer.IsOnMount()
+      akCustomer.Dismount()
+      Utility.wait(3.0)
+    endif
+    debug.sendanimationevent(akCustomer, "idleforcedefaultstate")
+    utility.wait(1.0)
+    akCustomer.DrawWeapon()
+    utility.wait(0.5)
+    StaggerSpell.Cast(player)
+    stealFromPlayer(akCustomer)
+    Utility.wait(0.5)
+    rapePlayer(akCustomer)
+  endif
+  bIsBusy = false
+EndFunction
+
+Function AssaultPlayer(Actor akAssaulter, Bool bEnslave = false, Bool bRape = false, Bool bSteal = false)
+  Debug.SetGodMode(true)
+  Game.setPlayerAiDriven(true)
+  if akAssaulter.IsOnMount()
+    akAssaulter.Dismount()
+    Utility.wait(3.0)
+  endif
+  debug.sendanimationevent(akAssaulter, "idleforcedefaultstate")
+  utility.wait(1.0)
+  akAssaulter.SetDontMove(true)
+  Bool bRobbed = False
+  if bSteal && randInt(0,1)
+    akAssaulter.DrawWeapon()
+    utility.wait(0.5)
+    StaggerSpell.Cast(player)
+    stealFromPlayer(akAssaulter)
+    bRobbed = true
+  endif
+  utility.wait(0.5)
+  Assaulter.ForceRefTo(akAssaulter)
+  bIsPapyrusUtilActive && ActorUtil.AddPackageOverride(akAssaulter as Actor, drawWeapon, 1)
+  (akAssaulter as Actor).EvaluatePackage()
+  Player.setposition(akAssaulter.GetPositionX() + 75 * math.sin(akAssaulter.GetAngleZ()), akAssaulter.GetPositionY() + 75 * math.cos(akAssaulter.GetAngleZ()), akAssaulter.GetPositionZ())
+  Player.SetAngle(akAssaulter.GetAngleX(), akAssaulter.GetAngleY(), akAssaulter.GetAngleZ() + 180)
+  utility.wait(0.5)
+  if !akAssaulter.isWeaponDrawn()
+    akAssaulter.DrawWeapon()
+  endif
+  form weap
+  if bEnslave
+    weap = akAssaulter.GetEquippedObject(1)
+    if weap
+      akAssaulter.UnequipItemEx(weap, 1)
+    endif
+  endif
+  utility.wait(1.5)
+  Debug.sendAnimationEvent(akAssaulter, "attackStart")
+  float fwaitedTime = 0.0
+  While !akAssaulter.GetAnimationVariableBool("IsAttacking") && (fWaitedTime < 12.0)
+   Debug.sendAnimationEvent(akAssaulter, "attackStart")
+   utility.wait(0.2)
+   fWaitedTime += 0.2
+  endWhile
+  utility.wait(0.5)
+  player.PushActorAway(player, 0)
+  player.SetActorValue("Paralysis", 0)
+  ;ParalyzeSpell.Cast(player)
+  utility.wait(4.0)
+  String sAnimInterface
+  if bRape
+    sAnimInterface = sGetCurAnimInteface(true)
+  endif
+  Bool bBlackScreen = False
+  if sAnimInterface == "flowergirls"
+  elseif sAnimInterface == "ask"
+  else
+    FastFadeOut.Apply()
+    Utility.Wait(1.0)
+    FastFadeOut.PopTo(BlackScreen)
+    bBlackScreen = true
+  endif
+  if weap
+    akAssaulter.equipItemEx(weap, 1)
+  endif
+  akAssaulter.SetDontMove(false)
+  Assaulter.Clear()
+  bIsPapyrusUtilActive && ActorUtil.RemovePackageOverride(akAssaulter as Actor, drawWeapon)
+  (akAssaulter as Actor).EvaluatePackage()
+  utility.wait(5.0)
+  if player.GetActorValue("paralysis")
+    if player.GetActorValue("paralysis")
+      player.ForceActorValue("paralysis", 0)
+    endif
+  endif
+  if bSteal && !bRobbed
+    stealFromPlayer(akAssaulter)
+  endif
+  if !bEnslave && bRape && sAnimInterface
+    Game.setPlayerAiDriven(false)
+    player.SetDontMove(true)
+    utility.wait(4.0)
+    player.SetDontMove(false)
+    rapePlayer(akAssaulter)
+    utility.wait(8.0)
+  else
+    utility.wait(4.0)
+  endif
+  if bEnslave
+    Game.setPlayerAiDriven(false)
+    utility.wait(4.0)
+    player.SetDontMove(false)
+    Debug.SetGodMode(false)
+    sendModEvent("SSLV Entry")
+    if bBlackScreen
+      BlackScreen.PopTo(FadeIn)
+    endif
+  else
+    Float fOldHP = player.GetActorValue("Health")
+    Float fNewHP = maxFloat(40.0, ((player.GetBaseActorValue("Health") * 0.5) - 10.0))
+    if fOldHP > fNewHP
+      player.DamageActorValue("Health", fOldHP - fNewHP)
+    else
+      player.RestoreActorValue("Health", fNewHP - fOldHP)
+    endif
+    Game.setPlayerAiDriven(false)
+    player.SetDontMove(false)
+    Debug.SetGodMode(false)
+    if bBlackScreen
+      BlackScreen.PopTo(FadeIn)
+    endif
+  endif
+endFunction
+
+Bool Function stealFromPlayer(Actor Thief)
+  Int iGoldToRemove = 0
+  Form itemToRob
+  Int iMaxGold = player.getItemCount(Gold)
+  Bool bRobbed = False 
+  if iTotalCustomerPaidGold < iMaxGold
+    iGoldToRemove = randInt(iTotalCustomerPaidGold, iMaxGold)
+  else
+    iGoldToRemove = iMaxGold   
+  endif
+  if iGoldToRemove > 0
+    player.removeItem(gold, iGoldToRemove, false, Thief)
+    Debug.trace("Simple Prostitution: " + Thief + " : " + Thief.GetBaseObject().GetName() + " stole " + iGoldToRemove + " septim.")
+    bRobbed = true
+  endif
+  Form[] QuestItemsArr
+  if !bRejectTheftOnlyGold && ((randInt(0,99) < iRejectTheftChance) || (iGoldToRemove < iTotalCustomerPaidGold))
+    itemToRob = player.GetWornForm(Armor.GetMaskForSlot(32))
+    if itemToRob && !hasInvalidKeyword(itemToRob) && (itemToRob.GetGoldValue() > 0)
+      player.removeItem(itemToRob, 1, false, Thief)
+      Debug.trace("Simple Prostitution: " + Thief + " : " + Thief.GetBaseObject().GetName() + " stole " + itemToRob)
+      bRobbed = true
+    else
+      if bIsPapyrusUtilActive
+        QuestItemsArr = PO3_SKSEFunctions.GetQuestItems(player As ObjectReference)
+      else
+        return bRobbed
+      endif
+      itemToRob = None
+      int iIndex = 30
+      while iIndex < 60
+        if (iIndex != 50) && (iIndex != 51) && (iIndex != 32) ;50=DecapitateHead 51=Decapitate 61=FX01
+          itemToRob = player.GetWornForm(Armor.GetMaskForSlot(iIndex))
+          if (itemToRob As Armor) && itemToRob.GetName()
+            if (QuestItemsArr.Find(itemToRob) > -1)
+            elseif itemToRob.HasKeywordString("zad_inventorydevice")
+            elseif itemToRob.HasKeywordString("zzzmoa_ignoreitem")
+            elseif itemToRob.HasKeywordString("sos_underwear")
+            elseif itemToRob.HasKeywordString("zbfworndevice")
+            elseif itemToRob.HasKeywordString("zad_questitem")
+            elseif itemToRob.HasKeywordString("zad_lockable")
+            elseif itemToRob.HasKeywordString("sos_genitals")
+            elseif itemToRob.HasKeywordString("toystoy")
+            else
+             if itemToRob.GetGoldValue() > 0
+               player.removeItem(itemToRob, 1, false, Thief)
+               Debug.trace("Simple Prostitution: " + Thief + " stole " + itemToRob)
+               bRobbed = true
+             elseif !itemToRob.HasKeywordString("ostimnostrip") && !itemToRob.HasKeywordString("sexlabnostrip")
+               player.UnequipItemSlot(iIndex)
+               utility.wait(0.5)
+             endif
+           endif
+         endif
+       EndIf
+       iIndex += 1
+     endWhile
+   endif
+   if !bRejectTheftOnlyGold && !bRobbed ||  (randInt(0,99) < iRejectTheftChance)
+     if bIsPyramidUtilsOK && bIsPapyrusUtilActive
+       keyword[] forbidenkw
+       form[] items = PyramidUtils.GetItemsByKeyword(player, forbidenkw)
+       if forbidenArmorKeywords.length != 8
+        forbidenArmorKeywords = new keyword[8]
+        forbidenArmorKeywords[0] = keyword.GetKeyword("zad_inventorydevice")
+        forbidenArmorKeywords[1] = keyword.GetKeyword("zzzmoa_ignoreitem")
+        forbidenArmorKeywords[2] = keyword.GetKeyword("sos_underwear")
+        forbidenArmorKeywords[3] = keyword.GetKeyword("zbfworndevice")
+        forbidenArmorKeywords[4] = keyword.GetKeyword("zad_questitem")
+        forbidenArmorKeywords[5] = keyword.GetKeyword("zad_lockable")
+        forbidenArmorKeywords[6] = keyword.GetKeyword("sos_genitals")
+        forbidenArmorKeywords[7] = keyword.GetKeyword("toystoy")
+      endif
+      forbidenkw = forbidenArmorKeywords
+      items = PyramidUtils.FilterFormsByKeyword(items, forbidenkw, false, true)
+      items = PyramidUtils.FilterFormsByGoldValue(items, 1)
+      Int iVal
+      int j
+      int i = 0
+      itemToRob = None ;check 10 random items and 10 sequenced items
+      int iLen = items.Length
+      int m = minInt(iLen, 10)
+      int k = randInt(0, iLen - 1)
+      while (i < m )
+        j = randInt(0, iLen - 1) 
+        if items[j] && (QuestItemsArr.find(items[j]) < 0) && (player.getItemCount(items[j]) > 0)
+          if items[j].GetGoldValue() > iVal
+            itemToRob = items[j]
+            iVal = items[j].GetGoldValue()
+          endif
+        endif
+        if (k < iLen) && (k != j)
+          if items[k] && (QuestItemsArr.find(items[k]) < 0) && (player.getItemCount(items[k]) > 0)
+            if items[k].GetGoldValue() > iVal
+              itemToRob = items[k]
+              iVal = items[k].GetGoldValue()
+            endif
+          endif
+        endif
+        i += 1
+        k += 1
+      endwhile
+      if iVal > 0
+        player.removeItem(itemToRob, 1, false, thief)
+        Debug.trace("Simple Prostitution: " + Thief + " : " + Thief.GetBaseObject().GetName() + " stole " + itemToRob)
+        bRobbed = true
+      endif
+    endif
+  endif
+EndIf
+return bRobbed
+EndFunction
+
+Bool Function hasInvalidKeyword(Form kItem)
+  if kItem.HasKeywordString("vendornosale")
+    return true
+  endif
+  if kItem.HasKeywordString("magicdisallowenchanting")
+    return true
+  endif
+  if kItem.HasKeywordString("sos_underwear")
+    return true
+  endif
+  if kItem.HasKeywordString("sos_genitals")
+    return true
+  endif
+  if kItem.HasKeywordString("zad_questitem")
+    return true
+  endif
+  if kItem.HasKeywordString("zad_lockable")
+    return true
+  endif 
+  if kItem.HasKeywordString("zad_inventorydevice")
+    return true
+  endif 
+  if kItem.HasKeywordString("zbfworndevice")
+    return true
+  endif 
+  if kItem.HasKeywordString("toystoy")
+    return true
+  endif 
+  return False
+endfunction
 
 function ProstitutePlayerTo(Actor akCustomer, bool bAccept=true)
   setGlobalVaues()
@@ -794,6 +1373,11 @@ Function clearDibelCustomers()
   endif
   dibelCustomerList.Revert()
   iTotalDibelCustomers = 0
+  iPaidGoldDibelCustomer1 = 0
+  iPaidGoldDibelCustomer2 = 0
+  iPaidGoldDibelCustomer3 = 0
+  iPaidGoldDibelCustomer4 = 0
+  iPaidGoldAllDibelCustomers = 0
 EndFunction
 
 Function clearWhoreCustomers()
@@ -819,6 +1403,11 @@ Function clearWhoreCustomers()
   endif
   whoreCustomerList.revert()
   iTotalWhoreCustomers = 0
+  iPaidGoldCustomer1 = 0
+  iPaidGoldCustomer2 = 0
+  iPaidGoldCustomer3 = 0
+  iPaidGoldCustomer4 = 0
+  iPaidGoldAllCustomers = 0
 EndFunction
 
 function clearPositions()
@@ -893,11 +1482,11 @@ int function playerSexSFW(Actor akActor = None)
   Utility.Wait(1.0)
   FastFadeOut.PopTo(BlackScreen)
   if akActor && (akActor != player)
-    akActor.Disable()
+    akActor.EnableAI(False)
   endif
   Utility.Wait(5.0)
   if akActor
-    akActor.enable()
+    akActor.EnableAI(True)
   endif
   BlackScreen.PopTo(FadeIn)
   Game.EnablePlayerControls()
@@ -905,7 +1494,7 @@ int function playerSexSFW(Actor akActor = None)
   return iPosition
 endfunction
 
-function payBeggar(Actor beggar, Bool bBonus = True)
+Int function payBeggar(Actor beggar, Bool bBonus = True)
   Int minBonus = 0
   Int maxBonus = 0
   if bBonus
@@ -916,11 +1505,13 @@ function payBeggar(Actor beggar, Bool bBonus = True)
  endif
  int begPayMin = minInt(fBegPayMin As Int, fBegPayMax As Int)
  int begPayMax = maxInt(fBegPayMin As Int, fBegPayMax As Int)
- Int totalPay = maxInt(0, Utility.randomInt(begPayMin, BegPayMax) + Utility.randomInt(minBonus, maxBonus))
- beggar.Additem(gold, maxInt(0, totalPay))
+ Int totalPay = maxInt(0, randInt(begPayMin, BegPayMax) + randInt(minBonus, maxBonus))
+ totalPay = maxInt(0, totalPay)
+ beggar.Additem(gold, totalPay)
+ return totalPay
 endfunction
 
-function payDibel(Actor Dibel, int position)
+Int function payDibel(Actor Dibel, int position)
   Int minBonus = maxInt(0, ((Dibel.getActorValue("Speechcraft") * fMinSpeechDibelBonusMult) As Int) + 1)
   Int maxBonus = maxInt(0, ((Dibel.getActorValue("Speechcraft") * fMaxSpeechDibelBonusMult) As Int) + 1)
   minBonus = minInt(minBonus,maxBonus)
@@ -933,15 +1524,17 @@ function payDibel(Actor Dibel, int position)
   elseif position == 2
     positionReward = fDibelOralPay As Int
   endif
-  Int totalPay = positionReward + Utility.randomInt(minBonus, maxBonus)
-  Dibel.Additem(gold, maxInt(0, totalPay))
+  Int totalPay = positionReward + randInt(minBonus, maxBonus)
+  totalPay = maxInt(0, totalPay)
+  Dibel.Additem(gold, totalPay)
+  return totalPay
 endfunction
 
-function payWhore(actor whore, int position)
+Int function payWhore(actor whore, int position)
   if !isWhoringAllowedInCurrentLocation
-    payBeggar(whore, True)
-    return
+    return payBeggar(whore, True)
   endif
+  int totalPay = 0
   Int minBonus = maxInt(0, ((whore.getActorValue("Speechcraft") * fMinSpeechWhoreBonusMult) As Int) + 1)
   Int maxBonus = maxInt(0, ((whore.getActorValue("Speechcraft") * fMaxSpeechWhoreBonusMult) As Int) + 1)
   minBonus = minInt(minBonus,maxBonus)
@@ -954,7 +1547,7 @@ function payWhore(actor whore, int position)
   elseif position == 2
     positionReward = fWhoreOralPay As Int
   endif
-  Int totalPay = maxInt(0, positionReward + Utility.randomInt(minBonus, maxBonus))
+  totalPay = maxInt(0, positionReward + randInt(minBonus, maxBonus))
   if (fWhoreOwnerShare > 0.0) && Owner.getReference() &&  (Owner.getReference().getParentCell() == whore.getParentCell())
     iCurrentOwnerSeptims = iCurrentOwnerSeptims + totalPay
     currentOwnerSeptimDisplay.SetValueInt(iCurrentOwnerSeptims)
@@ -962,13 +1555,14 @@ function payWhore(actor whore, int position)
     pimpTracker.UpdateCurrentInstanceGlobal(currentOwnerSeptimDisplay)
     Debug.Notification(totalPay + " septim added to " + Owner.getActorReference().getLeveledActorBase().getName())
   elseif isWhoringAlwaysAllowedInCurrentLocation || (Owner.getReference() && (Owner.getReference().getParentCell() == whore.getParentCell()))
-    whore.Additem(gold, maxInt(0, totalPay))
-  else
-    payBeggar(whore, True)
-  endif
+   whore.Additem(gold, totalPay)
+ else
+  totalPay = payBeggar(whore, True)
+endif
+return totalPay
 endfunction
 
-String function sGetCurAnimInteface()
+String function sGetCurAnimInteface(Bool bDontAsk = False)
   Int interf = MCMScript.iGetCurAnimInterface()
   if iGetCurTotalAnimInterfaces() > 1
     if MCMScript.iAnimInterfaceMethod == 2 ;random
@@ -986,9 +1580,13 @@ String function sGetCurAnimInteface()
       if bIsFlowerGirlsActive
         intefs[i] = "flowergirls"
       endIf
-      return intefs[Utility.randomInt(0, len - 1)]
+      return intefs[randInt(0, len - 1)]
     elseif MCMScript.iAnimInterfaceMethod == 1 ;ask
-      interf = InterfaceMenu.Show()
+      if bDontAsk
+        return "ask"
+      else
+        interf = InterfaceMenu.Show()
+      endif
     EndIf
   endif
   if interf == 0
@@ -1020,8 +1618,8 @@ function setGlobalVaues()
   DibelFailureChance.SetValueInt(maxInt(0, 16 * MCMScript.iDibelSpeechDifficulty))
   BeggarFailureChance.SetValueInt(maxInt(0, 16 * MCMScript.iBeggarSpeechDifficulty))
   BeggarNoSexOfferChance.SetValueInt(maxInt(0, (100.0 - fBeggarSexOfferChance) as Int))
-  BeggarNotFemaleRapistChance.SetValueInt(maxInt(0, (100.0 - fBeggingFemaleRapistChance) as Int))
-  BeggarNotMaleRapistChance.SetValueInt(maxInt(0, (100.0 - fBeggingMaleRapistChance) as Int))
+  ;NotFemaleCustomerApproach.SetValueInt(maxInt(0, (100.0 - fFemaleCustomerApproachChance) as Int))
+  ;NotMaleCustomerApproach.SetValueInt(maxInt(0, (100.0 - fMaleCustomerApproachChance) as Int))
 endfunction
 
 Int function positionChooser(int vaginalWeight = 50, int AnalWeight = 50, int oralWeight = 50)
@@ -1032,7 +1630,7 @@ Int function positionChooser(int vaginalWeight = 50, int AnalWeight = 50, int or
   cumulWeight[0] = vaginalWeight
   cumulWeight[1] = AnalWeight + vaginalWeight
   cumulWeight[2] = oralWeight + AnalWeight + vaginalWeight
-  int x = utility.randomInt(1,cumulWeight[2])
+  int x = randInt(1,cumulWeight[2])
   int i = 0
   while i < cumulWeight.Length
     if x <= cumulWeight[i]
@@ -1044,15 +1642,19 @@ Int function positionChooser(int vaginalWeight = 50, int AnalWeight = 50, int or
 endfunction
 
 Bool Function bCheckPapyrusUtil()
-  return papyrusutil.GetVersion() > 31
+  return papyrusutil.GetVersion() >= 40
 EndFunction
 
 Bool Function bCheckPO3Extender()
   int[] version = PO3_SKSEFunctions.GetPapyrusExtenderVersion()
-  if version || PO3_SKSEFunctions.GenerateRandomInt(1, 2)
+  if version && (version.length == 3) && (version[0] > 4)
     return True
   endif
   return false
+EndFunction
+
+Bool Function bCheckPyramidUtils()
+  return PyramidUtils.GetVersion() >= 0.002002
 EndFunction
 
 Bool Function bAllPosAllowed(Float fVagChance, Float fAnalChance, Float fOralChance)
@@ -1061,51 +1663,51 @@ EndFunction
 
 
 bool[] Function bGetRegAllTagsArr(String sInterface)
-  bool[] bReqAllArr = Utility.createBoolArray(8)
-  if sInterface == "sexlab"
-    bReqAllArr[0] = bExtraTags_SL_Oral_MF_ALL
-    bReqAllArr[1] = bExtraTags_SL_Oral_FF_ALL
-    bReqAllArr[2] = bExtraTags_SL_Oral_MM_ALL    
-    bReqAllArr[3] = bExtraTags_SL_Anal_MF_ALL
-    bReqAllArr[4] = bExtraTags_SL_Anal_FF_ALL
-    bReqAllArr[5] = bExtraTags_SL_Anal_MM_ALL
-    bReqAllArr[6] = bExtraTags_SL_Vaginal_MF_ALL
-    bReqAllArr[7] = bExtraTags_SL_Vaginal_FF_ALL
-  elseif sInterface == "ostim"
-    bReqAllArr[0] = bExtraTags_OS_Oral_MF_ALL
-    bReqAllArr[1] = bExtraTags_OS_Oral_FF_ALL
-    bReqAllArr[2] = bExtraTags_OS_Oral_MM_ALL    
-    bReqAllArr[3] = bExtraTags_OS_Anal_MF_ALL
-    bReqAllArr[4] = bExtraTags_OS_Anal_FF_ALL
-    bReqAllArr[5] = bExtraTags_OS_Anal_MM_ALL
-    bReqAllArr[6] = bExtraTags_OS_Vaginal_MF_ALL
-    bReqAllArr[7] = bExtraTags_OS_Vaginal_FF_ALL
-  endif
-  return bReqAllArr
+bool[] bReqAllArr = Utility.createBoolArray(8)
+if sInterface == "sexlab"
+  bReqAllArr[0] = bExtraTags_SL_Oral_MF_ALL
+  bReqAllArr[1] = bExtraTags_SL_Oral_FF_ALL
+  bReqAllArr[2] = bExtraTags_SL_Oral_MM_ALL    
+  bReqAllArr[3] = bExtraTags_SL_Anal_MF_ALL
+  bReqAllArr[4] = bExtraTags_SL_Anal_FF_ALL
+  bReqAllArr[5] = bExtraTags_SL_Anal_MM_ALL
+  bReqAllArr[6] = bExtraTags_SL_Vaginal_MF_ALL
+  bReqAllArr[7] = bExtraTags_SL_Vaginal_FF_ALL
+elseif sInterface == "ostim"
+  bReqAllArr[0] = bExtraTags_OS_Oral_MF_ALL
+  bReqAllArr[1] = bExtraTags_OS_Oral_FF_ALL
+  bReqAllArr[2] = bExtraTags_OS_Oral_MM_ALL    
+  bReqAllArr[3] = bExtraTags_OS_Anal_MF_ALL
+  bReqAllArr[4] = bExtraTags_OS_Anal_FF_ALL
+  bReqAllArr[5] = bExtraTags_OS_Anal_MM_ALL
+  bReqAllArr[6] = bExtraTags_OS_Vaginal_MF_ALL
+  bReqAllArr[7] = bExtraTags_OS_Vaginal_FF_ALL
+endif
+return bReqAllArr
 EndFunction
 
 string[] Function sGetExtraTagsArr(String sInterface)
-  string[] sTagsArr = Utility.createStringArray(8)
-  if sInterface == "sexlab"
-    sTagsArr[0] = sExtraTags_SL_Oral_MF
-    sTagsArr[1] = sExtraTags_SL_Oral_FF
-    sTagsArr[2] = sExtraTags_SL_Oral_MM
-    sTagsArr[3] = sExtraTags_SL_Anal_MF
-    sTagsArr[4] = sExtraTags_SL_Anal_FF
-    sTagsArr[5] = sExtraTags_SL_Anal_MM
-    sTagsArr[6] = sExtraTags_SL_Vaginal_MF
-    sTagsArr[7] = sExtraTags_SL_Vaginal_FF
-  elseif sInterface == "ostim"
-    sTagsArr[0] = sExtraTags_OS_Oral_MF
-    sTagsArr[1] = sExtraTags_OS_Oral_FF
-    sTagsArr[2] = sExtraTags_OS_Oral_MM
-    sTagsArr[3] = sExtraTags_OS_Anal_MF
-    sTagsArr[4] = sExtraTags_OS_Anal_FF
-    sTagsArr[5] = sExtraTags_OS_Anal_MM
-    sTagsArr[6] = sExtraTags_OS_Vaginal_MF
-    sTagsArr[7] = sExtraTags_OS_Vaginal_FF
-  endif
-  return sTagsArr
+string[] sTagsArr = Utility.createStringArray(8)
+if sInterface == "sexlab"
+  sTagsArr[0] = sExtraTags_SL_Oral_MF
+  sTagsArr[1] = sExtraTags_SL_Oral_FF
+  sTagsArr[2] = sExtraTags_SL_Oral_MM
+  sTagsArr[3] = sExtraTags_SL_Anal_MF
+  sTagsArr[4] = sExtraTags_SL_Anal_FF
+  sTagsArr[5] = sExtraTags_SL_Anal_MM
+  sTagsArr[6] = sExtraTags_SL_Vaginal_MF
+  sTagsArr[7] = sExtraTags_SL_Vaginal_FF
+elseif sInterface == "ostim"
+  sTagsArr[0] = sExtraTags_OS_Oral_MF
+  sTagsArr[1] = sExtraTags_OS_Oral_FF
+  sTagsArr[2] = sExtraTags_OS_Oral_MM
+  sTagsArr[3] = sExtraTags_OS_Anal_MF
+  sTagsArr[4] = sExtraTags_OS_Anal_FF
+  sTagsArr[5] = sExtraTags_OS_Anal_MM
+  sTagsArr[6] = sExtraTags_OS_Vaginal_MF
+  sTagsArr[7] = sExtraTags_OS_Vaginal_FF
+endif
+return sTagsArr
 EndFunction
 
 
@@ -1131,7 +1733,7 @@ Bool Function checkSnitch(Actor npc, Bool bCompleteCheck = False, Bool bDibel = 
   endif
   
   if npc.isGuard()
-    if (utility.RandomInt(0,999) / 10.0) < fGuardReportChance as int
+    if (randInt(0,999) / 10.0) < fGuardReportChance as int
       if bCanSnitch(npc, bCompleteCheck)
         if bDibel
           dibelSnitch = npc
@@ -1142,7 +1744,7 @@ Bool Function checkSnitch(Actor npc, Bool bCompleteCheck = False, Bool bDibel = 
         Return True
       endif
     endif
-  elseif ((utility.RandomInt(0,999) / 10.0) < fCitizenReportChance as int)
+  elseif ((randInt(0,999) / 10.0) < fCitizenReportChance as int)
     if bCanSnitch(npc, bCompleteCheck)
       if bDibel
         dibelSnitch = npc
@@ -1223,7 +1825,7 @@ EndFunction
 
 
 Bool function playerHasWhoreLicense()
-  return !bWhoreNeedLicense || LicensesInterface.bHasWhoreLicense()
+  return (isDibel && !bDibelNeedLicense) || (!bWhoreNeedLicense || LicensesInterface.bHasWhoreLicense())
 EndFunction
 
 Bool Function playerHasDibelLicence()
@@ -1238,23 +1840,34 @@ function snitch()
   If playerHasDibelLicence() || !isSnitchOK(dibelSnitch)
     dibelSnitch = None
   endif
+  if !isSnitchOK(angryWhoreCustomer)
+    angryWhoreCustomer = None
+  endif
+  if !isSnitchOK(angryDibelCustomer)
+    angryDibelCustomer = None
+  endif
   if bIsLicensesActive
     if whoreSnitch
-      if inSameCell(player, whoreSnitch)
-        RegisterForSingleUpdateGameTime(Utility.RandomInt(8,14) As Float)
-      else
+      if !inSameCell(player, whoreSnitch)
         snitch = whoreSnitch
         whoreSnitch = None
         dibelSnitch = None
       endif
     elseif dibelSnitch
-      if inSameCell(player, whoreSnitch)
-        RegisterForSingleUpdateGameTime(Utility.RandomInt(8,14) As Float)
-      else
+      if !inSameCell(player, whoreSnitch)
         snitch = dibelSnitch
         whoreSnitch = None
         dibelSnitch = None
       endif
+    endif
+  endif
+  if (whoreSnitch || dibelSnitch) || (!snitch && (angryWhoreCustomer || angryDibelCustomer)) ;Snitches can't report so checking angry customers
+    if angryWhoreCustomer && !inSameCell(player, angryWhoreCustomer)
+      snitch = angryWhoreCustomer
+    elseif angryDibelCustomer && !inSameCell(player, angryDibelCustomer)
+      snitch = angryDibelCustomer
+    else
+      RegisterForSingleUpdateGameTime(randInt(8,14) As Float)
     endif
   endif
   if snitch
@@ -1266,13 +1879,17 @@ function snitch()
     endif
     Debug.Trace(msg + " (" + snitch + ")")
     Debug.Notification(msg)
-    if !LicensesInterface.bFlagWhoreViolation()
+    if ((snitch == angryDibelCustomer) || (snitch == angryWhoreCustomer)) || !LicensesInterface.bFlagWhoreViolation()
       if snitch.getcrimefaction()
         if !player.GetCurrentLocation() || !player.GetCurrentLocation().HasKeywordstring("loctypejail")
           snitch.getcrimefaction().ModCrimeGold(50)
         endIf
       endif
     endif
+    whoreSnitch = None
+    dibelSnitch = None
+    angryDibelCustomer = None
+    angryWhoreCustomer = None
   endif
 endfunction
 
@@ -1524,7 +2141,7 @@ function addDibelMarkToPlayer(float fChance, int iNumPartners = 1)
   int iIndex = iNumPartners
   while iIndex > 0
     iIndex -= 1
-    if (utility.randomInt(0,999) / 10.0) < fChance as Int
+    if (randInt(0,999) / 10.0) < fChance as Int
       iAmount += 1 
     endif
   endWhile
@@ -1594,10 +2211,8 @@ endEvent
 
 State Dibeling
   Event OnBeginState()
-    if bIsBusy
-      return
-    endif
     bIsBusy = True
+    isDibel = true
     if !isSnitchOK(dibelSnitch) && !playerHasDibelLicence()
       startSnitchFinder(true)
     endif
@@ -1702,10 +2317,8 @@ EndState
 
 State Whoring
   Event OnBeginState()
-    if bIsBusy
-      return
-    endif
     bIsBusy = True
+    isWhore = True
     if !isSnitchOK(whoreSnitch) && !playerHasWhoreLicense()
       startSnitchFinder(false)
     endif
@@ -1831,6 +2444,9 @@ Auto State Init
     While (!FlowerGirlsInterface.bChecked || !SexLabInterface.bChecked || !OStimInterface.bChecked || !LicensesInterface.bChecked || !DDI_Interface.bChecked)
       Utility.wait(0.2)
     endWhile
+    if !ApproachMonitorQst.isRunning()
+      ApproachMonitorQst.start()
+    endif
     ;Debug.Trace("Simple Prostitution started.")
     Debug.Notification("Simple Prostitution started.")
     bIsBusy = False
@@ -2203,13 +2819,52 @@ EndFunction
 
 
 Function rapePlayer(Actor akAggressor)
-  if bIsBusy
-    return
-  endif
   bIsBusy = True
   gotostate("raped")
   if !bRandomSexWithPlayer(akAggressor, True)
     GoToState("")
   endIf
   return
+EndFunction
+
+Int function randInt(int iMin, int iMax)
+  if bIsPO3ExtenderActive
+    return PO3_SKSEFunctions.GenerateRandomInt(iMin, iMax)
+  else
+    return utility.randomInt(iMin, iMin)
+  endif
+endFunction
+
+Float function randFloat(float fMin, float fMax)
+  if bIsPO3ExtenderActive
+    return PO3_SKSEFunctions.GenerateRandomFloat(fMin, fMax)
+  else
+    return utility.randomFloat(fMin, fMin)
+  endif
+endFunction
+
+Bool function bCanAssault(Actor akActor)
+  if !akActor
+  elseif akActor.IsFlying()
+  elseif akActor.IsSwimming()
+  elseif akActor.isGuard()
+  elseif akActor.GetRelationshipRank(player) > 0
+  else
+    return true
+  endif
+  return false
+endFunction
+
+Function stopApproach()
+  ApproachMonitorScr.stopApproach()
+EndFunction
+
+Bool function isActorHavingSex(Actor akActor)
+  if OStimInterface.IsActorActive(akActor)
+  elseif SexLabInterface.IsActorActive(akActor)
+  elseif FlowerGirlsInterface.IsActorActive(akActor)
+  else
+    return False
+  endif
+  return true
 EndFunction

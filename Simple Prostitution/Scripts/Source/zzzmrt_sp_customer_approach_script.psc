@@ -1,0 +1,6 @@
+Scriptname zzzmrt_sp_customer_approach_script extends Quest  Conditional
+
+Quest Property ApproachMonitorQst Auto
+Quest property MainQuest auto
+zzzmrt_sp_appr_monitor_qst_script property ApproachMonitorScr Auto
+zzzmrt_sp_main_qst_script property MainScript auto

@@ -2,7 +2,6 @@ Scriptname zzzmrt_sp_player_qst_script extends ReferenceAlias
 
 zzzmrt_sp_main_qst_script property MainScript auto
 
-Bool bBusy = False
 Bool bCheckVars = False
 
 event OnInit()
@@ -34,8 +33,9 @@ EndEvent
 Event OnLocationChange(Location akOldLoc, Location akNewLoc)
   MainScript.checkCurrentLocation()
   MainScript.GoToState("")
+  MainScript.stopApproach()
   MainScript.startCalcSTDCurePrice()
-  if MainScript.whoreSnitch || MainScript.dibelSnitch
+  if (MainScript.whoreSnitch || MainScript.dibelSnitch || MainScript.angryDibelCustomer || MainScript.angryWhoreCustomer)
     RegisterForSingleUpdate(utility.randomFloat(10.0,30.0)) 
   endif
 endevent
@@ -53,16 +53,11 @@ Event OnStartFindSnitch(Form sender, Bool bCheckDibel)
 EndEvent
 
 function setVars()
-  if bBusy
-    return
-  endif
-  bBusy = True
   if !MainScript.STD_Quest.isRunning()
     MainScript.STD_Quest.Start()
   endIf
   RegisterForEvents()
   MainScript.STD_Script.registerForEvents()
-  MainScript.setVars()
   if !MainScript.SexLabInterface
     MainScript.SexLabInterface = MainScript.SexLabInterfaceQst as zzzmrt_sp_sexlab_interface 
   endif
@@ -78,6 +73,7 @@ function setVars()
   if !MainScript.DDI_Interface
     MainScript.DDI_Interface = MainScript.DDI_Interface as zzzmrt_sp_ddi_interface
   endIf
+  MainScript.setVars()
   MainScript.SexLabInterface.PlayerLoadsGame()
   MainScript.OStimInterface.PlayerLoadsGame()
   MainScript.FlowerGirlsInterface.PlayerLoadsGame()
@@ -85,11 +81,12 @@ function setVars()
   MainScript.DDI_Interface.PlayerLoadsGame()
   MainScript.bIsPapyrusUtilActive = MainScript.bCheckPapyrusUtil()
   MainScript.bIsPO3ExtenderActive = MainScript.bCheckPO3Extender()
+  MainScript.bIsPyramidUtilsOK = MainScript.bCheckPyramidUtils()
   Utility.Wait(10.0)
   MainScript.bIsSexlabActive = MainScript.SexLabInterface.GetIsInterfaceActive()
   MainScript.bIsOStimActive = MainScript.OStimInterface.GetIsInterfaceActive()
   MainScript.bIsFlowerGirlsActive = MainScript.FlowerGirlsInterface.GetIsInterfaceActive()
   MainScript.bIsLicensesActive = MainScript.LicensesInterface.GetIsInterfaceActive()
   MainScript.bIsDDIntegrationActive = MainScript.DDI_Interface.GetIsInterfaceActive()
-  bBusy = False
+  MainScript.ApproachMonitorScr.PlayerLoadsGame()
 endfunction
