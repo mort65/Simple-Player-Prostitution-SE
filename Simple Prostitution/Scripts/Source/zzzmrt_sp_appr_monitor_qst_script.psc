@@ -61,7 +61,7 @@ Bool Function playerHasLicense()
 	hasWhoreLicense = MainScript.playerHasWhoreLicense()
 	hasDibelLicense = MainScript.playerHasDibelLicence()
 	if MainScript.bDibelEnabled && MainScript.isDibel
-		hasLicense = (hasDibelLicense || hasWhoreLicense)
+		hasLicense = hasDibelLicense
 	elseif MainScript.bWhoreEnabled && MainScript.isWhore
 		hasLicense = hasWhoreLicense
 	else
@@ -76,11 +76,18 @@ Bool function isplayerHavingSex()
 EndFunction
 
 Bool function isplayerWearingWhoreClothing()
-	if MainScript.bOnlyWhoreClothingApproach && !player.WornHasKeyword(MainScript.ProstituteClothing_kwd) && \
-		!player.isEquipped(MainScript.whoreClothingList) && (player.WornHasKeyword(MainScript.ClothingBody_kwd) || player.WornHasKeyword(MainScript.ArmorCuirass_kwd))
-		playerWearingWhoreClothing = False
+	if MainScript.bOnlyWhoreClothingApproach
+		if player.WornHasKeyword(MainScript.ProstituteClothing_kwd)
+		elseif player.isEquipped(MainScript.whoreClothingList)
+		elseif (!player.WornHasKeyword(MainScript.ClothingBody_kwd) && !player.WornHasKeyword(MainScript.ArmorCuirass_kwd))
+		else
+			playerWearingWhoreClothing = false
+			return playerWearingWhoreClothing
+		endif
+		playerWearingWhoreClothing = true
+		return playerWearingWhoreClothing
 	endif
-	playerWearingWhoreClothing = True
+	playerWearingWhoreClothing = true
 	return playerWearingWhoreClothing
 EndFunction
 
