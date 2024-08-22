@@ -54,9 +54,6 @@ Function updateApproach(Bool bReset = False)
 		ApproachQst.start()
 	endif
 		
-	if doReset && playerHasLicense() && MainScript.iCustomerApproachTimer > 0
-		ApproachQst.start()
-	endif
 	self.RegisterForSingleUpdateGameTime(MainScript.iCustomerApproachTimer + 1)
 EndFunction
 
