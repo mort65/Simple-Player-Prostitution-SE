@@ -177,8 +177,7 @@ Bool function isInteger(String str) Global
 EndFunction
 
 
-Int function weightedRandInt(int[] weights, bool bUsePo3 = false) Global
-	debug.trace("weights: " + weights) 
+Int function weightedRandInt(int[] weights, bool bUsePo3 = false) Global 
 	if weights.Length < 1
 		return -1
 	endif
@@ -203,9 +202,6 @@ Int function weightedRandInt(int[] weights, bool bUsePo3 = false) Global
   iIndex = 0
   while iIndex < cumulWeights.Length
     if jIndex <= cumulWeights[iIndex]
-    	debug.trace("returned jIndex: " + jIndex)
-    	debug.trace("returned cumulWeights: " + cumulWeights)
-    	debug.trace("returned result: " + iIndex)
       return iIndex
     endIf
     iIndex += 1

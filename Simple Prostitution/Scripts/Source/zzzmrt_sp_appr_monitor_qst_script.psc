@@ -51,7 +51,10 @@ Function updateApproach(Bool bReset = False)
 	elseif !isplayerWearingWhoreClothing()
 	elseif MainScript.bOnlyInteriorApproach && !player.IsInInterior()
 	else
-		ApproachQst.start()
+		player.GetCombatState()
+		If player.GetcombatState() == 0
+			ApproachQst.start()
+		EndIf
 	endif
 		
 	self.RegisterForSingleUpdateGameTime(MainScript.iCustomerApproachTimer + 1)

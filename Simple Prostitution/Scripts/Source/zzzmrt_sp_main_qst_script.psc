@@ -924,9 +924,6 @@ endfunction
 
 Function rejectCusomer(Actor akCustomer)
   bIsBusy = true
-  debug.trace("bdibel:"+bDibelReject)
-  debug.trace("bBeggar:"+bBeggarReject)
-  debug.trace("iWhoringRejectResult: "+iWhoringRejectResult)
   int iWhatToDo
   if bDibelReject
     if dibelCustomerAlias.getActorReference()
@@ -964,8 +961,7 @@ Function rejectCusomer(Actor akCustomer)
   elseif !bBeggarReject && akCustomer.IsInFaction(WhoreCustomerFaction)
     clearWhoreCustomers() 
     clearWhorePositions()
-  endif 
-  debug.trace("iWhatToDo: "+iWhatToDo)  
+  endif   
   if (iWhatToDo == 0)
     if !bBeggarReject
       player.removeItem(gold, iTotalCustomerPaidGold, false, akCustomer)
