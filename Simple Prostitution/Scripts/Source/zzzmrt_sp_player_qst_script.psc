@@ -35,6 +35,7 @@ Event OnLocationChange(Location akOldLoc, Location akNewLoc)
   MainScript.GoToState("")
   MainScript.stopApproach()
   MainScript.startCalcSTDCurePrice()
+  MainScript.CheckAliases()
   if (MainScript.whoreSnitch || MainScript.dibelSnitch || MainScript.angryDibelCustomer || MainScript.angryWhoreCustomer)
     RegisterForSingleUpdate(utility.randomFloat(10.0,30.0)) 
   endif

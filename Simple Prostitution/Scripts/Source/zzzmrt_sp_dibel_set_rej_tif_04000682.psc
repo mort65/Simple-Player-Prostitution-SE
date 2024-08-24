@@ -7,7 +7,7 @@ Function Fragment_0(ObjectReference akSpeakerRef)
 Actor akSpeaker = akSpeakerRef as Actor
 ;BEGIN CODE
 zzzmrt_sp_main_qst_script MainScript = GetOwningQuest() As zzzmrt_sp_main_qst_script
-MainScript.setRejectingCustomerResult(akSpeaker, true, false)
+MainScript.setRejectingCustomerResult(akSpeaker, true, false, false)
 ;END CODE
 EndFunction
 ;END FRAGMENT

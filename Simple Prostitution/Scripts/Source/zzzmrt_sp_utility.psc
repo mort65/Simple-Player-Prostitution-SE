@@ -178,6 +178,7 @@ EndFunction
 
 
 Int function weightedRandInt(int[] weights, bool bUsePo3 = false) Global 
+	{Generates weighted random integers.}
 	if weights.Length < 1
 		return -1
 	endif
@@ -207,4 +208,9 @@ Int function weightedRandInt(int[] weights, bool bUsePo3 = false) Global
     iIndex += 1
   endWhile
   return -1
+endfunction
+
+Bool function isFormValid(Form akForm) Global
+  {checks if the form not empty and has a usable value.}
+  return akForm && (akForm != None) && (akForm.getFormID() != 0)
 endfunction

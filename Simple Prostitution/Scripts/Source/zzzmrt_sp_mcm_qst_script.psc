@@ -30,6 +30,8 @@ Int Property iTotalCarryWeightRecieved = 0 Auto Hidden
 Int Property iTotalOfferedMarks = 0 Auto Hidden
 Int Property iTotalRefundableOfferedMarks = 0 Auto Hidden
 
+Bool setModVars = false
+
 String settings_path = "..\\simple-prostitution\\user-settings"
 String data_path = "..\\simple-prostitution\\user-data"
 
@@ -334,6 +336,7 @@ event OnPageReset(String page)
     AddSliderOptionST("BEG_SEX_OFFER_SLIDER", "$MRT_SP_BEG_SEX_OFFER_SLIDER1", MainScript.fBeggarSexOfferChance, "$MRT_SP_BEG_SEX_OFFER_SLIDER2", flag)
     _AddToggleOptionST("BEGGING_MALE_SEX_OFFER_TOGGLE", "$MRT_SP_BEGGING_MALE_SEX_OFFER_TOGGLE", MainScript.bBeggingMaleSexOffer, flag)
     _AddToggleOptionST("BEGGING_FEMALE_SEX_OFFER_TOGGLE", "$MRT_SP_BEGGING_FEMALE_SEX_OFFER_TOGGLE", MainScript.bBeggingFemaleSexOffer, flag)
+    OID_BEG_ONLY_LICENSED_SEX_OFFER = AddToggleOption("$MRT_SP_BEG_ONLY_LICENSED_SEX_OFFER", MainScript.bOnlyLicensedBeggarSexOffer, flag)
     AddEmptyOption()
     beggarRejectOptions(flag)
 
@@ -470,8 +473,13 @@ event OnVersionUpdate(Int version)
 endevent
 
   Event OnConfigClose()
-    if MainScript.fWhoreOwnerShare > 0.0 && !Mainscript.pimpTracker.isRunning()
-      Mainscript.pimpTracker.start()
+    if setModVars
+      Mainscript.setVars()
+      setModVars = false
+    else
+      if MainScript.fWhoreOwnerShare > 0.0 && !Mainscript.pimpTracker.isRunning()
+        Mainscript.pimpTracker.start()
+      endif
     endif
     Mainscript.ApproachMonitorScr.playerHasLicense()
   endEvent
@@ -2896,7 +2904,7 @@ state LOAD_USER_SETTING_TXT
   function OnSelectST()
     if ShowMessage("Do you want to load user settings?", true, "$Accept", "$Cancel")
       if loadUserSettingsPapyrus()
-        Mainscript.setVars()
+        setModVars = true
 		    ForcePageReset()
         ShowMessage("User settings loaded successfully.", false, "$Accept", "$Cancel")
       else
@@ -2984,6 +2992,8 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
   MainScript.bFemaleCustomerApproach = jsonutil.GetPathIntValue(settings_path, "bFemaleCustomerApproach", MainScript.bFemaleCustomerApproach as Int)
   MainScript.bOnlyInteriorApproach = jsonutil.GetPathIntValue(settings_path, "bOnlyInteriorApproach", MainScript.bOnlyInteriorApproach as Int)
   MainScript.bOnlyWhoreClothingApproach = jsonutil.GetPathIntValue(settings_path, "bOnlyWhoreClothingApproach", MainScript.bOnlyWhoreClothingApproach as Int)
+  MainScript.bOnlyLicensedApproach = jsonutil.GetPathIntValue(settings_path, "bOnlyLicensedApproach", MainScript.bOnlyLicensedApproach as Int)
+  MainScript.bOnlyLicensedBeggarSexOffer = jsonutil.GetPathIntValue(settings_path, "bOnlyLicensedBeggarSexOffer", MainScript.bOnlyLicensedBeggarSexOffer as Int)
 
   
 
@@ -3149,7 +3159,9 @@ Bool function saveUserSettingsPapyrus()
   jsonutil.SetPathIntValue(settings_path, "bMaleCustomerApproach", MainScript.bMaleCustomerApproach as Int)
   jsonutil.SetPathIntValue(settings_path, "bFemaleCustomerApproach", MainScript.bFemaleCustomerApproach as Int)
   jsonutil.SetPathIntValue(settings_path, "bOnlyWhoreClothingApproach", MainScript.bOnlyWhoreClothingApproach as Int)
-  jsonutil.SetPathIntValue(settings_path, "bOnlyInteriorApproach", MainScript.bOnlyInteriorApproach as Int)  
+  jsonutil.SetPathIntValue(settings_path, "bOnlyInteriorApproach", MainScript.bOnlyInteriorApproach as Int)
+  jsonutil.SetPathIntValue(settings_path, "bOnlyLicensedApproach", MainScript.bOnlyLicensedApproach as Int)  
+  jsonutil.SetPathIntValue(settings_path, "bOnlyLicensedBeggarSexOffer", MainScript.bOnlyLicensedBeggarSexOffer as Int)  
   
  
   jsonutil.SetPathIntValue(settings_path, "iBeggarSpeechDifficulty", iBeggarSpeechDifficulty)
@@ -3652,6 +3664,12 @@ event OnOptionSelect(int option)
   elseif option == OID_ONLY_INTERIOR_APPROACH
     MainScript.bOnlyInteriorApproach = !MainScript.bOnlyInteriorApproach
     SetToggleOptionValue(option, MainScript.bOnlyInteriorApproach)
+  elseif option == OID_ONLY_LICENSED_APPROACH
+    MainScript.bOnlyLicensedApproach = !MainScript.bOnlyLicensedApproach
+    SetToggleOptionValue(option, MainScript.bOnlyLicensedApproach) 
+  elseif option == OID_BEG_ONLY_LICENSED_SEX_OFFER
+    MainScript.bOnlyLicensedBeggarSexOffer = !MainScript.bOnlyLicensedBeggarSexOffer
+    SetToggleOptionValue(option, MainScript.bOnlyLicensedBeggarSexOffer) 
   endif
   ForcePageReset()
 EndEvent
@@ -3676,6 +3694,10 @@ event OnOptionDefault(int option)
     MainScript.bOnlyWhoreClothingApproach = False
   elseif option == OID_ONLY_INTERIOR_APPROACH
     MainScript.bOnlyInteriorApproach = False
+  elseif option == OID_ONLY_LICENSED_APPROACH
+    MainScript.bOnlyLicensedApproach = True
+  elseif option == OID_BEG_ONLY_LICENSED_SEX_OFFER
+    MainScript.bOnlyLicensedBeggarSexOffer = True
   endif
   ForcePageReset()
 EndEvent
@@ -3763,6 +3785,10 @@ event OnOptionHighlight(int option)
     SetInfoText("$MRT_SP_DESC_ONLY_WHORE_CLOTHING_APPROACH")
   elseif option == OID_ONLY_INTERIOR_APPROACH
     SetInfoText("$MRT_SP_DESC_ONLY_INTERIOR_APPROACH")
+  elseif option == OID_ONLY_LICENSED_APPROACH
+    SetInfoText("$MRT_SP_DESC_ONLY_LICENSED_APPROACH_TOGGLE")
+  elseif option == OID_BEG_ONLY_LICENSED_SEX_OFFER
+    SetInfoText("$MRT_SP_DESC_BEG_ONLY_LICENSED_SEX_OFFER")
   endif
 endevent
 
@@ -4106,6 +4132,7 @@ EndFunction
   OID_FEMALE_CUSTOMER_APPROACH = AddToggleOption("$MRT_SP_FEMALE_CUSTOMER_APPROACH_TOGGLE", MainScript.bFemaleCustomerApproach, flag)
   OID_ONLY_INTERIOR_APPROACH = AddToggleOption("$MRT_SP_ONLY_INTERIOR_APPROACH_TOGGLE", MainScript.bOnlyInteriorApproach, flag)
   OID_ONLY_WHORE_CLOTHING_APPROACH = AddToggleOption("$MRT_SP_ONLY_WHORE_CLOTHING_APPROACH_TOGGLE", MainScript.bOnlyWhoreClothingApproach, flag)
+  OID_ONLY_LICENSED_APPROACH = AddToggleOption("$MRT_SP_ONLY_LICENSED_APPROACH_TOGGLE", MainScript.bOnlyLicensedApproach, flag)
 EndFunction
 
 Int OID_BEG_REJ_MALE_ACCEPT
@@ -4154,4 +4181,6 @@ Int OID_CUSTOMER_APPROACH_INTERVAL
 
 Int OID_ONLY_INTERIOR_APPROACH
 Int OID_ONLY_WHORE_CLOTHING_APPROACH
+Int OID_ONLY_LICENSED_APPROACH
+Int OID_BEG_ONLY_LICENSED_SEX_OFFER
 

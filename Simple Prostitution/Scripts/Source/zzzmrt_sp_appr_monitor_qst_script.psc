@@ -35,9 +35,11 @@ Function updateApproach(Bool bReset = False)
 				doReset = false
 			else
 				ApproachQst.stop()
-				While ApproachQst.IsRunning()
-					utility.wait(0.2)
-				EndWhile
+				if doReset
+					While ApproachQst.IsRunning()
+						utility.WaitMenuMode(0.2)
+					EndWhile
+			    endif
 			endIf
 		endIf
 	endIf
@@ -47,7 +49,7 @@ Function updateApproach(Bool bReset = False)
 	endif
 
 	if !doReset
-	elseif !playerHasLicense()
+	elseif MainScript.bOnlyLicensedApproach && !playerHasLicense()
 	elseif !isplayerWearingWhoreClothing()
 	elseif MainScript.bOnlyInteriorApproach && !player.IsInInterior()
 	else
