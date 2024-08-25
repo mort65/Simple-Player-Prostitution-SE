@@ -204,42 +204,45 @@ Int Property iPaidGoldAllDibelCustomers = 0 Auto Hidden Conditional
 
 Int Property iWhoringRejectResult = 0 Auto Hidden Conditional
 
-Float property fBeggarRejectMaleAcceptChance = 100.0 Auto Hidden Conditional
-Float property fBeggarRejectFemaleAcceptChance = 100.0 Auto Hidden Conditional
-Float Property fBeggingMaleRapistChance = 0.0 Auto Hidden Conditional
+Float property fBeggarRejectMaleAcceptChance = 50.0 Auto Hidden Conditional
+Float Property fBeggingMaleRapistChance = 14.0 Auto Hidden Conditional
+Float property fBeggarRejectMaleAssaultChance = 16.0 Auto Hidden Conditional
+Float property fBeggarRejectMaleTheftChance = 18.0 Auto Hidden Conditional
+Float property fBeggarRejectMaleSlaveryChance = 2.0 Auto Hidden Conditional
+
+Float property fBeggarRejectFemaleAcceptChance = 50.0 Auto Hidden Conditional
 Float Property fBeggingFemaleRapistChance = 0.0 Auto Hidden Conditional
-Float property fBeggarRejectFemaleTheftChance = 0.0 Auto Hidden Conditional
-Float property fBeggarRejectMaleTheftChance = 0.0 Auto Hidden Conditional
-Float property fBeggarRejectMaleAssaultChance = 0.0 Auto Hidden Conditional
 Float property fBeggarRejectFemaleAssaultChance = 0.0 Auto Hidden Conditional
-Float property fBeggarRejectMaleSlaveryChance = 0.0 Auto Hidden Conditional
+Float property fBeggarRejectFemaleTheftChance = 50.0 Auto Hidden Conditional
 Float property fBeggarRejectFemaleSlaveryChance = 0.0 Auto Hidden Conditional
 
-Float property fWhoreRejectMaleAcceptChance = 100.0 Auto Hidden Conditional
-Float property fWhoreRejectFemaleAcceptChance = 100.0 Auto Hidden Conditional
-Float property fWhoreRejectMaleRapeChance = 0.0 Auto Hidden Conditional
-Float property fWhoreRejectFemaleRapeChance = 0.0 Auto Hidden Conditional
-Float property fWhoreRejectMaleTheftChance = 0.0 Auto Hidden Conditional
-Float property fWhoreRejectFemaleTheftChance = 0.0 Auto Hidden Conditional
-Float property fWhoreRejectMaleAssaultChance = 0.0 Auto Hidden Conditional
-Float property fWhoreRejectFemaleAssaultChance = 0.0 Auto Hidden Conditional
-Float property fWhoreRejectMaleSlaveryChance = 0.0 Auto Hidden Conditional
-Float property fWhoreRejectFemaleSlaveryChance = 0.0 Auto Hidden Conditional
-Float property fWhoreRejectMaleReportChance = 0.0 Auto Hidden Conditional
-Float property fWhoreRejectFemaleReportChance = 0.0 Auto Hidden Conditional
+Float property fWhoreRejectMaleAcceptChance = 50.0 Auto Hidden Conditional
+Float property fWhoreRejectMaleRapeChance = 15.0 Auto Hidden Conditional
+Float property fWhoreRejectMaleAssaultChance = 15.0 Auto Hidden Conditional
+Float property fWhoreRejectMaleTheftChance = 12.0 Auto Hidden Conditional
+Float property fWhoreRejectMaleReportChance = 6.0 Auto Hidden Conditional
+Float property fWhoreRejectMaleSlaveryChance = 2.0 Auto Hidden Conditional
 
-Float property fDibelRejectMaleAcceptChance = 100.0 Auto Hidden Conditional
-Float property fDibelRejectFemaleAcceptChance = 100.0 Auto Hidden Conditional
-Float property fDibelRejectMaleRapeChance = 0.0 Auto Hidden Conditional
-Float property fDibelRejectFemaleRapeChance = 0.0 Auto Hidden Conditional
-Float property fDibelRejectMaleTheftChance = 0.0 Auto Hidden Conditional
-Float property fDibelRejectFemaleTheftChance = 0.0 Auto Hidden Conditional
-Float property fDibelRejectMaleAssaultChance = 0.0 Auto Hidden Conditional
-Float property fDibelRejectFemaleAssaultChance = 0.0 Auto Hidden Conditional
+Float property fWhoreRejectFemaleAcceptChance = 50.0 Auto Hidden Conditional
+Float property fWhoreRejectFemaleRapeChance = 0.0 Auto Hidden Conditional
+Float property fWhoreRejectFemaleAssaultChance = 0.0 Auto Hidden Conditional
+Float property fWhoreRejectFemaleTheftChance = 20.0 Auto Hidden Conditional
+Float property fWhoreRejectFemaleReportChance = 30.0 Auto Hidden Conditional
+Float property fWhoreRejectFemaleSlaveryChance = 0.0 Auto Hidden Conditional
+
+Float property fDibelRejectMaleAcceptChance = 50.0 Auto Hidden Conditional
+Float property fDibelRejectMaleRapeChance = 15.0 Auto Hidden Conditional
+Float property fDibelRejectMaleAssaultChance = 15.0 Auto Hidden Conditional
+Float property fDibelRejectMaleTheftChance = 12.0 Auto Hidden Conditional
+Float property fDibelRejectMaleReportChance = 8.0 Auto Hidden Conditional
 Float property fDibelRejectMaleSlaveryChance = 0.0 Auto Hidden Conditional
+
+Float property fDibelRejectFemaleAcceptChance = 50.0 Auto Hidden Conditional
+Float property fDibelRejectFemaleRapeChance = 0.0 Auto Hidden Conditional
+Float property fDibelRejectFemaleAssaultChance = 0.0 Auto Hidden Conditional
+Float property fDibelRejectFemaleTheftChance = 15.0 Auto Hidden Conditional
+Float property fDibelRejectFemaleReportChance = 35.0 Auto Hidden Conditional
 Float property fDibelRejectFemaleSlaveryChance = 0.0 Auto Hidden Conditional
-Float property fDibelRejectMaleReportChance = 0.0 Auto Hidden Conditional
-Float property fDibelRejectFemaleReportChance = 0.0 Auto Hidden Conditional
 
 Int property iCustomerApproachTimer = 3 Auto Hidden Conditional
 Bool property bDibelCustomerApproach = False Auto Hidden Conditional
@@ -306,6 +309,10 @@ Actor property angryDibelCustomer Auto Hidden Conditional
 Magiceffect property customerEffect Auto
 Magiceffect property beggarCustomerEffect Auto
 
+Bool Property bDibelRejectTheftOnlyGold = True Auto Hidden Conditional
+Bool Property bWhoreRejectTheftOnlyGold = True Auto Hidden Conditional
+Bool Property bBeggarRejectTheftOnlyGold = True Auto Hidden Conditional
+
 Bool bWhoreAnimEnded = False
 Bool bDibelAnimEnded = False
 Bool Property bLastBeggingSucceed = False Auto Hidden Conditional
@@ -320,16 +327,13 @@ Int Property iRejectTheftChance = 0 Auto Hidden Conditional
 Int Property iRejectAssaultChance = 0 Auto Hidden Conditional
 Int Property iRejectSlaveryChance = 0 Auto Hidden Conditional
 Int Property iRejectRapeChance = 0 Auto Hidden Conditional
-
-Bool Property bDibelRejectTheftOnlyGold = True Auto Hidden Conditional
-Bool Property bWhoreRejectTheftOnlyGold = True Auto Hidden Conditional
-Bool Property bBeggarRejectTheftOnlyGold = True Auto Hidden Conditional
-
 Bool property bRejectTheftOnlyGold = True Auto Hidden Conditional
+Bool property bRejectDibel = False Auto Hidden Conditional
+Bool property bRejectBeggar = False Auto Hidden Conditional
+Bool property bRejectApproach = False Auto Hidden Conditional
 
-Bool property bDibelReject = False Auto Hidden Conditional
-Bool property bBeggarReject = False Auto Hidden Conditional
-Bool property bApproachReject = False Auto Hidden Conditional
+Int property iCrimeBounty = 50 Auto Hidden Conditional
+Int property iTotalCrimes = 0 Auto Hidden Conditional
 
 Package Property drawWeaponPackage  Auto 
 Package Property customerForceGreetPackage Auto
@@ -339,7 +343,7 @@ Bool Property bOnlyLicensedApproach = true Auto Hidden Conditional
 Bool Property bOnlyLicensedBeggarSexOffer = true Auto Hidden Conditional
 
 function shutDown()
-  stopApproach()
+  stopApproach(true)
   snitchDetector.stop()
   ApproachMonitorQst.stop()
   STD_Script.cureActorSTDs(player, False)
@@ -899,7 +903,7 @@ Function setRejectingCustomerResult(Actor akActor, Bool bDibel = False, Bool bBe
     iRejectSlaveryChance = 0  
   endif
 
-  if bApproach
+  if (bApproach || !akActor.GetCrimeFaction())
     iRejectReportChance = 0
   endif
   
@@ -920,21 +924,17 @@ Function setRejectingCustomerResult(Actor akActor, Bool bDibel = False, Bool bBe
     bRejectAssaultTheft = (randInt(0, 99) < iRejectTheftChance)
   endif
 
-  if iRand > 0
-    iWhoringRejectResult = iRand
-  else
-    iWhoringRejectResult = 0
-  endif
-  bDibelReject = bDibel
-  bBeggarReject = bBeggar
-  bApproachReject = bApproach
+  iWhoringRejectResult = maxInt(0, iRand)
+  bRejectDibel = bDibel
+  bRejectBeggar = bBeggar
+  bRejectApproach = bApproach
   bIsBusy = false
 endfunction
 
 Function rejectCusomer(Actor akCustomer)
   bIsBusy = true
   int iWhatToDo
-  if bDibelReject
+  if bRejectDibel
     if dibelCustomerAlias.getActorReference()
       iTotalCustomerPaidGold += iPaidGoldDibelCustomer1
     endif
@@ -947,7 +947,7 @@ Function rejectCusomer(Actor akCustomer)
     if dibelCustomerAlias4.getActorReference()
       iTotalCustomerPaidGold += iPaidGoldDibelCustomer4
     endif
-  elseif bBeggarReject
+  elseif bRejectBeggar
     iTotalCustomerPaidGold = player.getItemCount(Gold)
   else
     if whoreCustomerAlias.getActorReference()
@@ -964,23 +964,24 @@ Function rejectCusomer(Actor akCustomer)
     endif
   endif
   iWhatToDo = iWhoringRejectResult
-  if bDibelReject && akCustomer.IsInFaction(DibelCustomerFaction)
+  if bRejectDibel && akCustomer.IsInFaction(DibelCustomerFaction)
     clearDibelCustomers()
     clearDibelPositions()
-  elseif !bBeggarReject && akCustomer.IsInFaction(WhoreCustomerFaction)
+  elseif !bRejectBeggar && akCustomer.IsInFaction(WhoreCustomerFaction)
     clearWhoreCustomers() 
     clearWhorePositions()
   endif   
   if (iWhatToDo == 0)
-    if !bBeggarReject && !bApproachReject
+    if !bRejectBeggar && !bRejectApproach
       player.removeItem(gold, iTotalCustomerPaidGold, false, akCustomer)
     endif
   elseif iWhatToDo == 1
-    if bDibelReject
+    iTotalCrimes = iTotalCrimes + 1
+    if bRejectDibel
       if !isSnitchOK(angryDibelCustomer)
         angryDibelCustomer = akCustomer
       endif
-    elseif !bBeggarReject
+    elseif !bRejectBeggar
       if !isSnitchOK(angryWhoreCustomer)
         angryWhoreCustomer = akCustomer
       endif
@@ -1149,7 +1150,7 @@ Bool Function stealFromPlayer(Actor Thief)
   endif
   if iGoldToRemove > 0
     player.removeItem(gold, iGoldToRemove, false, Thief)
-    Debug.trace("Simple Prostitution: " + Thief + " : " + Thief.GetBaseObject().GetName() + " stole " + iGoldToRemove + " septim.")
+    Debug.trace("Simple Prostitution: " + Thief + " : " + Thief.GetLeveledActorBase().GetName() + " stole " + iGoldToRemove + " septim.")
     bRobbed = true
   endif
   Form[] QuestItemsArr
@@ -1157,7 +1158,7 @@ Bool Function stealFromPlayer(Actor Thief)
     itemToRob = player.GetWornForm(Armor.GetMaskForSlot(32))
     if itemToRob && !hasInvalidKeyword(itemToRob) && (itemToRob.GetGoldValue() > 0)
       player.removeItem(itemToRob, 1, false, Thief)
-      Debug.trace("Simple Prostitution: " + Thief + " : " + Thief.GetBaseObject().GetName() + " stole " + itemToRob)
+      Debug.trace("Simple Prostitution: " + Thief + " : " + Thief.GetLeveledActorBase().GetName() + " stole " + itemToRob)
       bRobbed = true
     else
       if bIsPapyrusUtilActive
@@ -1241,7 +1242,7 @@ Bool Function stealFromPlayer(Actor Thief)
       endwhile
       if iVal > 0
         player.removeItem(itemToRob, 1, false, thief)
-        Debug.trace("Simple Prostitution: " + Thief + " : " + Thief.GetBaseObject().GetName() + " stole " + itemToRob)
+        Debug.trace("Simple Prostitution: " + Thief + " : " + Thief.GetLeveledActorBase().GetName() + " stole " + itemToRob)
         bRobbed = true
       endif
     endif
@@ -1768,7 +1769,7 @@ Bool Function checkSnitch(Actor npc, Bool bCompleteCheck = False, Bool bDibel = 
     Snitch = whoreSnitch
   Endif
 
-  if !npc || (npc == player) || (Snitch && !Snitch.isDead())
+  if !npc || (npc == player) || (Snitch && !Snitch.isDead() && snitch.GetCrimeFaction())
     Return True
   endif
   
@@ -1780,7 +1781,7 @@ Bool Function checkSnitch(Actor npc, Bool bCompleteCheck = False, Bool bDibel = 
         else
           whoreSnitch = npc
         endif
-        Debug.Trace("Simple Prostitution: " + npc.GetBaseObject().GetName() + " (" + npc + ") wants to snitch on player.")
+        Debug.Trace("Simple Prostitution: " + npc.GetLeveledActorBase().GetName() + " (" + npc + ") wants to snitch on player.")
         Return True
       endif
     endif
@@ -1791,7 +1792,7 @@ Bool Function checkSnitch(Actor npc, Bool bCompleteCheck = False, Bool bDibel = 
       else
         whoreSnitch = npc
       endif
-      Debug.Trace("Simple Prostitution: " + npc.GetBaseObject().GetName() + " (" + npc + ") wants to snitch on player.")
+      Debug.Trace("Simple Prostitution: " + npc.GetLeveledActorBase().GetName() + " (" + npc + ") wants to snitch on player.")
       Return True
     endif
   endif
@@ -1853,7 +1854,7 @@ Bool function bCanSnitch(Actor npc, Bool bComplete = true)
 EndFunction
 
 Bool function isSnitchOK(actor snitch)
-  return snitch && !snitch.isDead()
+  return snitch && !snitch.isDead() && snitch.getcrimefaction()
 endfunction
 
 Bool Function inSameCell(Actor actor1, Actor actor2)
@@ -1907,25 +1908,33 @@ function snitch()
     elseif angryDibelCustomer && !inSameCell(player, angryDibelCustomer)
       snitch = angryDibelCustomer
     else
-      RegisterForSingleUpdateGameTime(randInt(8,14) As Float)
+      RegisterForSingleUpdateGameTime(randInt(4,8) As Float)
     endif
   endif
   if snitch
-    String msg
-    if snitch.GetBaseObject().GetName()
-      msg = "Simple Prostitution: " + snitch.GetBaseObject().GetName() + " reported you."
-    else
-      msg = "Simple Prostitution: Someone reported you."
-    endif
-    Debug.Trace(msg + " (" + snitch + ")")
-    Debug.Notification(msg)
-    if ((snitch == angryDibelCustomer) || (snitch == angryWhoreCustomer)) || !LicensesInterface.bFlagWhoreViolation()
-      if snitch.getcrimefaction()
+    if snitch.getcrimefaction()
+      String msg
+      if (iTotalCrimes > 1) && ((snitch == angryDibelCustomer) || (snitch == angryWhoreCustomer))
+        msg = "Simple Prostitution: You have been reported to the guards."
+      elseif snitch.GetLeveledActorBase().GetName()
+        msg = "Simple Prostitution: " + snitch.GetLeveledActorBase().GetName() + " reported you."
+      else
+        msg = "Simple Prostitution: Someone reported you."
+      endif
+      Debug.Trace(msg + " (" + snitch + ")")
+      Debug.Notification(msg)
+      if ((snitch == angryDibelCustomer) || (snitch == angryWhoreCustomer)) || !LicensesInterface.bFlagWhoreViolation()
         if !player.GetCurrentLocation() || !player.GetCurrentLocation().HasKeywordstring("loctypejail")
-          snitch.getcrimefaction().ModCrimeGold(50)
+          if iTotalCrimes > 0
+            snitch.getcrimefaction().ModCrimeGold(minInt(1000000, iTotalCrimes * iCrimeBounty))
+            iTotalCrimes = 0
+          else
+            snitch.getcrimefaction().ModCrimeGold(iCrimeBounty)
+          endif
         endIf
       endif
     endif
+    iTotalCrimes = 0
     whoreSnitch = None
     dibelSnitch = None
     angryDibelCustomer = None
@@ -2895,8 +2904,8 @@ Bool function bCanAssault(Actor akActor)
   return false
 endFunction
 
-Function stopApproach()
-  ApproachMonitorScr.stopApproach()
+Function stopApproach(Bool bConfirm = true)
+  ApproachMonitorScr.stopApproach(bConfirm)
 EndFunction
 
 Bool function isActorHavingSex(Actor akActor)

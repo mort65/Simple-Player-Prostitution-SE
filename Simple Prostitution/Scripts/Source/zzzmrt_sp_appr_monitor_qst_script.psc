@@ -22,8 +22,19 @@ EndEvent
 EndFunction
 
 
-Function stopApproach()
+Function stopApproach(Bool bConfirm = true)
+	actor apprActor = approachingRef.GetActorRef()
 	ApproachQst.stop()
+	if !bConfirm
+		return
+	endif
+	While ApproachQst.IsRunning()
+		Utility.WaitMenuMode(0.1)
+	EndWhile
+	if MainScript.bIsPapyrusUtilActive && apprActor && (apprActor.GetCurrentPackage() == MainScript.customerForceGreetPackage)
+		ActorUtil.RemovePackageOverride(apprActor, MainScript.customerForceGreetPackage)
+		apprActor.EvaluatePackage()
+	endif
 EndFunction
 
 Function updateApproach(Bool bReset = False)
@@ -34,13 +45,8 @@ Function updateApproach(Bool bReset = False)
 			if approachingActor.GetDialogueTarget() == player
 				doReset = false
 			else
-				ApproachQst.stop()
-				if doReset
-					While ApproachQst.IsRunning()
-						utility.WaitMenuMode(0.2)
-					EndWhile
-			    endif
-			endIf
+				stopApproach(doReset)
+			endif
 		endIf
 	endIf
 	

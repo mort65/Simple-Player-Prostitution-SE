@@ -8,7 +8,7 @@ ReferenceAlias property approachingCustomerAlias Auto
 
 Event OnInit()
 	Actor approachingActor = approachingCustomerAlias.GetActorRef()
-	Form approachingActorBase = approachingActor.GetBaseObject()
+	Form approachingActorBase = approachingActor.GetLeveledActorBase()
 	String sName = approachingActorBase.GetName()
 	if sName == "" && MainScript.bIsPO3ExtenderActive
 		sName = PO3_SKSEFunctions.GetFormEditorID(approachingActor)

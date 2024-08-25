@@ -33,7 +33,7 @@ EndEvent
 Event OnLocationChange(Location akOldLoc, Location akNewLoc)
   MainScript.checkCurrentLocation()
   MainScript.GoToState("")
-  MainScript.stopApproach()
+  MainScript.stopApproach(true)
   MainScript.startCalcSTDCurePrice()
   MainScript.CheckAliases()
   if (MainScript.whoreSnitch || MainScript.dibelSnitch || MainScript.angryDibelCustomer || MainScript.angryWhoreCustomer)
