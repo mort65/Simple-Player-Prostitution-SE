@@ -1264,7 +1264,7 @@ state BEG_MALE_RAPE_SLIDER
 
   event OnSliderOpenST()
     SetSliderDialogStartValue(MainScript.fBeggingMaleRapistChance)
-    SetSliderDialogDefaultValue(14.0)
+    SetSliderDialogDefaultValue(12.0)
     SetSliderDialogRange(0, 100)
     SetSliderDialogInterval(1)
   endEvent
@@ -3942,7 +3942,7 @@ event OnOptionSliderOpen(int option)
     SetSliderDialogInterval(1)
   elseif option == OID_BEG_REJ_MALE_SLAVERY
     SetSliderDialogStartValue(MainScript.fBeggarRejectMaleSlaveryChance)
-    SetSliderDialogDefaultValue(2.0)
+    SetSliderDialogDefaultValue(0.0)
     SetSliderDialogRange(0, 100)
     SetSliderDialogInterval(1)
   elseif option == OID_BEG_REJ_FEMALE_SLAVERY
@@ -3972,7 +3972,7 @@ event OnOptionSliderOpen(int option)
     SetSliderDialogInterval(1)
   elseif option == OID_WHORE_REJ_MALE_RAPE
     SetSliderDialogStartValue(MainScript.fWhoreRejectMaleRapeChance)
-    SetSliderDialogDefaultValue(15.0)
+    SetSliderDialogDefaultValue(17.0)
     SetSliderDialogRange(0, 100)
     SetSliderDialogInterval(1)
   elseif option == OID_WHORE_REJ_FEMALE_RAPE
@@ -4002,7 +4002,7 @@ event OnOptionSliderOpen(int option)
     SetSliderDialogInterval(1)
   elseif option == OID_WHORE_REJ_MALE_SLAVERY
    SetSliderDialogStartValue(MainScript.fWhoreRejectMaleSlaveryChance)
-   SetSliderDialogDefaultValue(2.0)
+   SetSliderDialogDefaultValue(0.0)
    SetSliderDialogRange(0, 100)
    SetSliderDialogInterval(1)
   elseif option == OID_WHORE_REJ_FEMALE_SLAVERY
@@ -4022,7 +4022,7 @@ event OnOptionSliderOpen(int option)
     SetSliderDialogInterval(1)
   elseif option == OID_DIBEL_REJ_MALE_REPORT
     SetSliderDialogStartValue(MainScript.fDibelRejectMaleReportChance)
-    SetSliderDialogDefaultValue(8.0)
+    SetSliderDialogDefaultValue(18.0)
     SetSliderDialogRange(0, 100)
     SetSliderDialogInterval(1)
   elseif option == OID_DIBEL_REJ_FEMALE_REPORT
@@ -4032,7 +4032,7 @@ event OnOptionSliderOpen(int option)
     SetSliderDialogInterval(1)
   elseif option == OID_DIBEL_REJ_MALE_RAPE
     SetSliderDialogStartValue(MainScript.fDibelRejectMaleRapeChance)
-    SetSliderDialogDefaultValue(15.0)
+    SetSliderDialogDefaultValue(10.0)
     SetSliderDialogRange(0, 100)
     SetSliderDialogInterval(1)
   elseif option == OID_DIBEL_REJ_FEMALE_RAPE
@@ -4052,7 +4052,7 @@ event OnOptionSliderOpen(int option)
     SetSliderDialogInterval(1)
   elseif option == OID_DIBEL_REJ_MALE_ASSAULT
     SetSliderDialogStartValue(MainScript.fDibelRejectMaleAssaultChance)
-    SetSliderDialogDefaultValue(15.0)
+    SetSliderDialogDefaultValue(10.0)
     SetSliderDialogRange(0, 100)
     SetSliderDialogInterval(1)
   elseif option == OID_DIBEL_REJ_FEMALE_ASSAULT
@@ -4083,7 +4083,7 @@ event OnOptionSliderOpen(int option)
   elseif option == OID_CRIME_BOUNTY
    SetSliderDialogStartValue(MainScript.iCrimeBounty)
    SetSliderDialogDefaultValue(50.0)
-   SetSliderDialogRange(1, 300)
+   SetSliderDialogRange(1, 500)
    SetSliderDialogInterval(1)
   endif
 EndEvent

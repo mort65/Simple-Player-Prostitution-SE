@@ -205,10 +205,10 @@ Int Property iPaidGoldAllDibelCustomers = 0 Auto Hidden Conditional
 Int Property iWhoringRejectResult = 0 Auto Hidden Conditional
 
 Float property fBeggarRejectMaleAcceptChance = 50.0 Auto Hidden Conditional
-Float Property fBeggingMaleRapistChance = 14.0 Auto Hidden Conditional
+Float Property fBeggingMaleRapistChance = 12.0 Auto Hidden Conditional
 Float property fBeggarRejectMaleAssaultChance = 16.0 Auto Hidden Conditional
 Float property fBeggarRejectMaleTheftChance = 18.0 Auto Hidden Conditional
-Float property fBeggarRejectMaleSlaveryChance = 2.0 Auto Hidden Conditional
+Float property fBeggarRejectMaleSlaveryChance = 0.0 Auto Hidden Conditional
 
 Float property fBeggarRejectFemaleAcceptChance = 50.0 Auto Hidden Conditional
 Float Property fBeggingFemaleRapistChance = 0.0 Auto Hidden Conditional
@@ -217,11 +217,11 @@ Float property fBeggarRejectFemaleTheftChance = 50.0 Auto Hidden Conditional
 Float property fBeggarRejectFemaleSlaveryChance = 0.0 Auto Hidden Conditional
 
 Float property fWhoreRejectMaleAcceptChance = 50.0 Auto Hidden Conditional
-Float property fWhoreRejectMaleRapeChance = 15.0 Auto Hidden Conditional
+Float property fWhoreRejectMaleRapeChance = 17.0 Auto Hidden Conditional
 Float property fWhoreRejectMaleAssaultChance = 15.0 Auto Hidden Conditional
 Float property fWhoreRejectMaleTheftChance = 12.0 Auto Hidden Conditional
 Float property fWhoreRejectMaleReportChance = 6.0 Auto Hidden Conditional
-Float property fWhoreRejectMaleSlaveryChance = 2.0 Auto Hidden Conditional
+Float property fWhoreRejectMaleSlaveryChance = 0.0 Auto Hidden Conditional
 
 Float property fWhoreRejectFemaleAcceptChance = 50.0 Auto Hidden Conditional
 Float property fWhoreRejectFemaleRapeChance = 0.0 Auto Hidden Conditional
@@ -231,10 +231,10 @@ Float property fWhoreRejectFemaleReportChance = 30.0 Auto Hidden Conditional
 Float property fWhoreRejectFemaleSlaveryChance = 0.0 Auto Hidden Conditional
 
 Float property fDibelRejectMaleAcceptChance = 50.0 Auto Hidden Conditional
-Float property fDibelRejectMaleRapeChance = 15.0 Auto Hidden Conditional
-Float property fDibelRejectMaleAssaultChance = 15.0 Auto Hidden Conditional
+Float property fDibelRejectMaleRapeChance = 10.0 Auto Hidden Conditional
+Float property fDibelRejectMaleAssaultChance = 10.0 Auto Hidden Conditional
 Float property fDibelRejectMaleTheftChance = 12.0 Auto Hidden Conditional
-Float property fDibelRejectMaleReportChance = 8.0 Auto Hidden Conditional
+Float property fDibelRejectMaleReportChance = 18.0 Auto Hidden Conditional
 Float property fDibelRejectMaleSlaveryChance = 0.0 Auto Hidden Conditional
 
 Float property fDibelRejectFemaleAcceptChance = 50.0 Auto Hidden Conditional
