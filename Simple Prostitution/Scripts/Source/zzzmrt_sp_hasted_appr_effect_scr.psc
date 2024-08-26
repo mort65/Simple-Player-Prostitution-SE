@@ -15,7 +15,7 @@ event onEffectStart(Actor akTarget, Actor akCaster)
 				akTarget.EvaluatePackage()
 			endif
 		endif
-    endif
+	endif
 endEvent
 
 event onEffectFinish(Actor akTarget, Actor akCaster)
