@@ -16,9 +16,9 @@ Event OnUpdateGameTime()
 	updateApproach(True)
 EndEvent
 
- Function PlayerLoadsGame()
- 	debug.trace("Simple Prostitution: PlayerLoadsGame() triggered for "+ self)
- 	updateApproach(False)
+Function PlayerLoadsGame()
+	debug.trace("Simple Prostitution: PlayerLoadsGame() triggered for "+ self)
+	updateApproach(False)
 EndFunction
 
 
@@ -64,7 +64,7 @@ Function updateApproach(Bool bReset = False)
 			ApproachQst.start()
 		EndIf
 	endif
-		
+	
 	self.RegisterForSingleUpdateGameTime(MainScript.iCustomerApproachTimer + 1)
 EndFunction
 
@@ -82,8 +82,8 @@ Bool Function playerHasLicense()
 endfunction
 
 Bool function isplayerHavingSex()
-  playerHavingSex = MainScript.isActorHavingSex(player)
-  return playerHavingSex
+	playerHavingSex = MainScript.isActorHavingSex(player)
+	return playerHavingSex
 EndFunction
 
 Bool function isplayerWearingWhoreClothing()
