@@ -204,44 +204,44 @@ Int Property iPaidGoldAllDibelCustomers = 0 Auto Hidden Conditional
 
 Int Property iWhoringRejectResult = 0 Auto Hidden Conditional
 
-Float property fBeggarRejectMaleAcceptChance = 50.0 Auto Hidden Conditional
-Float Property fBeggingMaleRapistChance = 12.0 Auto Hidden Conditional
-Float property fBeggarRejectMaleAssaultChance = 16.0 Auto Hidden Conditional
-Float property fBeggarRejectMaleTheftChance = 18.0 Auto Hidden Conditional
+Float property fBeggarRejectMaleAcceptChance = 100.0 Auto Hidden Conditional
+Float Property fBeggingMaleRapistChance = 0.0 Auto Hidden Conditional
+Float property fBeggarRejectMaleAssaultChance = 0.0 Auto Hidden Conditional
+Float property fBeggarRejectMaleTheftChance = 0.0 Auto Hidden Conditional
 Float property fBeggarRejectMaleSlaveryChance = 0.0 Auto Hidden Conditional
 
-Float property fBeggarRejectFemaleAcceptChance = 50.0 Auto Hidden Conditional
+Float property fBeggarRejectFemaleAcceptChance = 100.0 Auto Hidden Conditional
 Float Property fBeggingFemaleRapistChance = 0.0 Auto Hidden Conditional
 Float property fBeggarRejectFemaleAssaultChance = 0.0 Auto Hidden Conditional
-Float property fBeggarRejectFemaleTheftChance = 50.0 Auto Hidden Conditional
+Float property fBeggarRejectFemaleTheftChance = 0.0 Auto Hidden Conditional
 Float property fBeggarRejectFemaleSlaveryChance = 0.0 Auto Hidden Conditional
 
-Float property fWhoreRejectMaleAcceptChance = 50.0 Auto Hidden Conditional
-Float property fWhoreRejectMaleRapeChance = 17.0 Auto Hidden Conditional
-Float property fWhoreRejectMaleAssaultChance = 15.0 Auto Hidden Conditional
-Float property fWhoreRejectMaleTheftChance = 12.0 Auto Hidden Conditional
-Float property fWhoreRejectMaleReportChance = 6.0 Auto Hidden Conditional
+Float property fWhoreRejectMaleAcceptChance = 100.0 Auto Hidden Conditional
+Float property fWhoreRejectMaleRapeChance = 0.0 Auto Hidden Conditional
+Float property fWhoreRejectMaleAssaultChance = 0.0 Auto Hidden Conditional
+Float property fWhoreRejectMaleTheftChance = 0.0 Auto Hidden Conditional
+Float property fWhoreRejectMaleReportChance = 0.0 Auto Hidden Conditional
 Float property fWhoreRejectMaleSlaveryChance = 0.0 Auto Hidden Conditional
 
-Float property fWhoreRejectFemaleAcceptChance = 50.0 Auto Hidden Conditional
+Float property fWhoreRejectFemaleAcceptChance = 100.0 Auto Hidden Conditional
 Float property fWhoreRejectFemaleRapeChance = 0.0 Auto Hidden Conditional
 Float property fWhoreRejectFemaleAssaultChance = 0.0 Auto Hidden Conditional
-Float property fWhoreRejectFemaleTheftChance = 20.0 Auto Hidden Conditional
-Float property fWhoreRejectFemaleReportChance = 30.0 Auto Hidden Conditional
+Float property fWhoreRejectFemaleTheftChance = 0.0 Auto Hidden Conditional
+Float property fWhoreRejectFemaleReportChance = 0.0 Auto Hidden Conditional
 Float property fWhoreRejectFemaleSlaveryChance = 0.0 Auto Hidden Conditional
 
-Float property fDibelRejectMaleAcceptChance = 50.0 Auto Hidden Conditional
-Float property fDibelRejectMaleRapeChance = 10.0 Auto Hidden Conditional
-Float property fDibelRejectMaleAssaultChance = 10.0 Auto Hidden Conditional
-Float property fDibelRejectMaleTheftChance = 12.0 Auto Hidden Conditional
-Float property fDibelRejectMaleReportChance = 18.0 Auto Hidden Conditional
+Float property fDibelRejectMaleAcceptChance = 100.0 Auto Hidden Conditional
+Float property fDibelRejectMaleRapeChance = 0.0 Auto Hidden Conditional
+Float property fDibelRejectMaleAssaultChance = 0.0 Auto Hidden Conditional
+Float property fDibelRejectMaleTheftChance = 0.0 Auto Hidden Conditional
+Float property fDibelRejectMaleReportChance = 0.0 Auto Hidden Conditional
 Float property fDibelRejectMaleSlaveryChance = 0.0 Auto Hidden Conditional
 
-Float property fDibelRejectFemaleAcceptChance = 50.0 Auto Hidden Conditional
+Float property fDibelRejectFemaleAcceptChance = 100.0 Auto Hidden Conditional
 Float property fDibelRejectFemaleRapeChance = 0.0 Auto Hidden Conditional
 Float property fDibelRejectFemaleAssaultChance = 0.0 Auto Hidden Conditional
-Float property fDibelRejectFemaleTheftChance = 15.0 Auto Hidden Conditional
-Float property fDibelRejectFemaleReportChance = 35.0 Auto Hidden Conditional
+Float property fDibelRejectFemaleTheftChance = 0.0 Auto Hidden Conditional
+Float property fDibelRejectFemaleReportChance = 0.0 Auto Hidden Conditional
 Float property fDibelRejectFemaleSlaveryChance = 0.0 Auto Hidden Conditional
 
 Int property iCustomerApproachTimer = 3 Auto Hidden Conditional
@@ -257,6 +257,7 @@ FormList Property whoreClothingList Auto
 
 Formlist Property raceList Auto
 Formlist Property vampireRacelist Auto
+FormList Property checkedItems Auto
 
 Formlist property snitchers auto
 Formlist property extraOwners auto 
@@ -993,7 +994,7 @@ Function rejectCusomer(Actor akCustomer)
     endif
     debug.sendanimationevent(akCustomer, "idleforcedefaultstate")
     utility.wait(1.0)
-    akCustomer.DrawWeapon()
+    debug.sendanimationevent(akCustomer, "IdleTake")
     utility.wait(0.5)
     StaggerSpell.Cast(player)
     stealFromPlayer(akCustomer)
@@ -1008,7 +1009,7 @@ Function rejectCusomer(Actor akCustomer)
     endif
     debug.sendanimationevent(akCustomer, "idleforcedefaultstate")
     utility.wait(1.0)
-    akCustomer.DrawWeapon()
+    debug.sendanimationevent(akCustomer, "IdleTake")
     utility.wait(0.5)
     StaggerSpell.Cast(player)
     stealFromPlayer(akCustomer)
@@ -1030,7 +1031,7 @@ Function AssaultPlayer(Actor akAssaulter, Bool bEnslave = false, Bool bRape = fa
   akAssaulter.SetDontMove(true)
   Bool bRobbed = False
   if bSteal && randInt(0,1)
-    akAssaulter.DrawWeapon()
+    debug.sendanimationevent(akAssaulter, "IdleTake")
     utility.wait(0.5)
     StaggerSpell.Cast(player)
     stealFromPlayer(akAssaulter)
@@ -1154,7 +1155,7 @@ Bool Function stealFromPlayer(Actor Thief)
     bRobbed = true
   endif
   Form[] QuestItemsArr
-  if !bRejectTheftOnlyGold && ((randInt(0,99) < iRejectTheftChance) || (iGoldToRemove < iTotalCustomerPaidGold))
+  if !bRejectTheftOnlyGold && ((iGoldToRemove < iTotalCustomerPaidGold) || (randInt(0, 99) < maxInt(50, 100 - iRejectTheftChance)))
     itemToRob = player.GetWornForm(Armor.GetMaskForSlot(32))
     if itemToRob && !hasInvalidKeyword(itemToRob) && (itemToRob.GetGoldValue() > 0)
       player.removeItem(itemToRob, 1, false, Thief)
@@ -1175,6 +1176,7 @@ Bool Function stealFromPlayer(Actor Thief)
             if (QuestItemsArr.Find(itemToRob) > -1)
             elseif itemToRob.HasKeywordString("zad_inventorydevice")
             elseif itemToRob.HasKeywordString("zzzmoa_ignoreitem")
+            elseif itemToRob.HasKeywordString("zzzmrt_ignoreitem_kwd")
             elseif itemToRob.HasKeywordString("sos_underwear")
             elseif itemToRob.HasKeywordString("zbfworndevice")
             elseif itemToRob.HasKeywordString("zad_questitem")
@@ -1184,7 +1186,7 @@ Bool Function stealFromPlayer(Actor Thief)
             else
              if itemToRob.GetGoldValue() > 0
                player.removeItem(itemToRob, 1, false, Thief)
-               Debug.trace("Simple Prostitution: " + Thief + " stole " + itemToRob)
+               Debug.trace("Simple Prostitution: " + Thief + " : " + Thief.GetLeveledActorBase().GetName() + " stole " + itemToRob)
                bRobbed = true
              elseif !itemToRob.HasKeywordString("ostimnostrip") && !itemToRob.HasKeywordString("sexlabnostrip")
                player.UnequipItemSlot(iIndex)
@@ -1196,20 +1198,21 @@ Bool Function stealFromPlayer(Actor Thief)
        iIndex += 1
      endWhile
    endif
-   if !bRejectTheftOnlyGold && !bRobbed ||  (randInt(0,99) < iRejectTheftChance)
+   if !bRejectTheftOnlyGold && (!bRobbed ||  (randInt(0,99) < maxInt(50, 100 - iRejectTheftChance))) ; The lower the chance, the less likely theft will happen, so it should be a good theft.
      if bIsPyramidUtilsOK && bIsPapyrusUtilActive
        keyword[] forbidenkw
        form[] items = PyramidUtils.GetItemsByKeyword(player, forbidenkw)
-       if forbidenArmorKeywords.length != 8
-        forbidenArmorKeywords = new keyword[8]
+       if forbidenArmorKeywords.length != 9
+        forbidenArmorKeywords = new keyword[9]
         forbidenArmorKeywords[0] = keyword.GetKeyword("zad_inventorydevice")
         forbidenArmorKeywords[1] = keyword.GetKeyword("zzzmoa_ignoreitem")
-        forbidenArmorKeywords[2] = keyword.GetKeyword("sos_underwear")
-        forbidenArmorKeywords[3] = keyword.GetKeyword("zbfworndevice")
-        forbidenArmorKeywords[4] = keyword.GetKeyword("zad_questitem")
-        forbidenArmorKeywords[5] = keyword.GetKeyword("zad_lockable")
-        forbidenArmorKeywords[6] = keyword.GetKeyword("sos_genitals")
-        forbidenArmorKeywords[7] = keyword.GetKeyword("toystoy")
+        forbidenArmorKeywords[2] = keyword.GetKeyword("zzzmrt_ignoreitem_kwd")
+        forbidenArmorKeywords[3] = keyword.GetKeyword("sos_underwear")
+        forbidenArmorKeywords[4] = keyword.GetKeyword("zbfworndevice")
+        forbidenArmorKeywords[5] = keyword.GetKeyword("zad_questitem")
+        forbidenArmorKeywords[6] = keyword.GetKeyword("zad_lockable")
+        forbidenArmorKeywords[7] = keyword.GetKeyword("sos_genitals")
+        forbidenArmorKeywords[8] = keyword.GetKeyword("toystoy")
       endif
       forbidenkw = forbidenArmorKeywords
       items = PyramidUtils.FilterFormsByKeyword(items, forbidenkw, false, true)
@@ -1217,24 +1220,32 @@ Bool Function stealFromPlayer(Actor Thief)
       Int iVal
       int j
       int i = 0
-      itemToRob = None ;check 10 random items and 10 sequenced items
+      itemToRob = None
+      Int iNumToCheck = 10 ;check 10 random items and 10 sequenced items
       int iLen = items.Length
-      int m = minInt(iLen, 10)
-      int k = randInt(0, iLen - 1)
-      while (i < m )
+      int max = minInt(iLen, iNumToCheck)
+      int k = randInt(0, maxInt(0, (iLen - iNumToCheck)))
+      checkedItems.revert()
+      while (i < max )
         j = randInt(0, iLen - 1) 
-        if items[j] && (QuestItemsArr.find(items[j]) < 0) && (player.getItemCount(items[j]) > 0)
-          if items[j].GetGoldValue() > iVal
-            itemToRob = items[j]
-            iVal = items[j].GetGoldValue()
+        if items[j] && !checkedItems.hasform(items[j])
+          if (QuestItemsArr.find(items[j]) < 0) && (player.getItemCount(items[j]) > 0)
+            if items[j].GetGoldValue() > iVal
+              itemToRob = items[j]
+              iVal = items[j].GetGoldValue()
+            endif
           endif
+          checkedItems.addform(items[j])
         endif
         if (k < iLen) && (k != j)
-          if items[k] && (QuestItemsArr.find(items[k]) < 0) && (player.getItemCount(items[k]) > 0)
-            if items[k].GetGoldValue() > iVal
-              itemToRob = items[k]
-              iVal = items[k].GetGoldValue()
+          if items[k] && !checkedItems.hasform(items[k])
+            if (QuestItemsArr.find(items[k]) < 0) && (player.getItemCount(items[k]) > 0)
+              if items[k].GetGoldValue() > iVal
+                itemToRob = items[k]
+                iVal = items[k].GetGoldValue()
+              endif
             endif
+            checkedItems.addform(items[k])
           endif
         endif
         i += 1
@@ -1245,6 +1256,7 @@ Bool Function stealFromPlayer(Actor Thief)
         Debug.trace("Simple Prostitution: " + Thief + " : " + Thief.GetLeveledActorBase().GetName() + " stole " + itemToRob)
         bRobbed = true
       endif
+      checkedItems.revert()
     endif
   endif
 EndIf

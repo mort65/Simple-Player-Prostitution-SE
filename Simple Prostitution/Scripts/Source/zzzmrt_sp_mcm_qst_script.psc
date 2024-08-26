@@ -1264,7 +1264,7 @@ state BEG_MALE_RAPE_SLIDER
 
   event OnSliderOpenST()
     SetSliderDialogStartValue(MainScript.fBeggingMaleRapistChance)
-    SetSliderDialogDefaultValue(12.0)
+    SetSliderDialogDefaultValue(0.0)
     SetSliderDialogRange(0, 100)
     SetSliderDialogInterval(1)
   endEvent
@@ -3912,27 +3912,27 @@ EndEvent
 event OnOptionSliderOpen(int option)
   if option == OID_BEG_REJ_MALE_ACCEPT
     SetSliderDialogStartValue(MainScript.fBeggarRejectMaleAcceptChance)
-    SetSliderDialogDefaultValue(50.0)
+    SetSliderDialogDefaultValue(100.0)
     SetSliderDialogRange(0, 100)
     SetSliderDialogInterval(1)
   elseif option == OID_BEG_REJ_FEMALE_ACCEPT
     SetSliderDialogStartValue(MainScript.fBeggarRejectFemaleAcceptChance)
-    SetSliderDialogDefaultValue(50.0)
+    SetSliderDialogDefaultValue(100.0)
     SetSliderDialogRange(0, 100)
     SetSliderDialogInterval(1)
   elseif option == OID_BEG_REJ_MALE_THEFT
     SetSliderDialogStartValue(MainScript.fBeggarRejectMaleTheftChance)
-    SetSliderDialogDefaultValue(18.0)
+    SetSliderDialogDefaultValue(0.0)
     SetSliderDialogRange(0, 100)
     SetSliderDialogInterval(1)
   elseif option == OID_BEG_REJ_FEMALE_THEFT
     SetSliderDialogStartValue(MainScript.fBeggarRejectFemaleTheftChance)
-    SetSliderDialogDefaultValue(50.0)
+    SetSliderDialogDefaultValue(0.0)
     SetSliderDialogRange(0, 100)
     SetSliderDialogInterval(1)
   elseif option == OID_BEG_REJ_MALE_ASSAULT
     SetSliderDialogStartValue(MainScript.fBeggarRejectMaleAssaultChance)
-    SetSliderDialogDefaultValue(16.0)
+    SetSliderDialogDefaultValue(0.0)
     SetSliderDialogRange(0, 100)
     SetSliderDialogInterval(1)
   elseif option == OID_BEG_REJ_FEMALE_ASSAULT
@@ -3952,27 +3952,27 @@ event OnOptionSliderOpen(int option)
     SetSliderDialogInterval(1)
   elseif option == OID_WHORE_REJ_MALE_ACCEPT
     SetSliderDialogStartValue(MainScript.fWhoreRejectMaleAcceptChance)
-    SetSliderDialogDefaultValue(50.0)
+    SetSliderDialogDefaultValue(100.0)
     SetSliderDialogRange(0, 100)
     SetSliderDialogInterval(1)
   elseif option == OID_WHORE_REJ_FEMALE_ACCEPT
     SetSliderDialogStartValue(MainScript.fWhoreRejectFemaleAcceptChance)
-    SetSliderDialogDefaultValue(50.0)
+    SetSliderDialogDefaultValue(100.0)
     SetSliderDialogRange(0, 100)
     SetSliderDialogInterval(1)
   elseif option == OID_WHORE_REJ_MALE_REPORT
     SetSliderDialogStartValue(MainScript.fWhoreRejectMaleReportChance)
-    SetSliderDialogDefaultValue(6.0)
+    SetSliderDialogDefaultValue(0.0)
     SetSliderDialogRange(0, 100)
     SetSliderDialogInterval(1)
   elseif option == OID_WHORE_REJ_FEMALE_REPORT
     SetSliderDialogStartValue(MainScript.fWhoreRejectFemaleReportChance)
-    SetSliderDialogDefaultValue(30.0)
+    SetSliderDialogDefaultValue(0.0)
     SetSliderDialogRange(0, 100)
     SetSliderDialogInterval(1)
   elseif option == OID_WHORE_REJ_MALE_RAPE
     SetSliderDialogStartValue(MainScript.fWhoreRejectMaleRapeChance)
-    SetSliderDialogDefaultValue(17.0)
+    SetSliderDialogDefaultValue(0.0)
     SetSliderDialogRange(0, 100)
     SetSliderDialogInterval(1)
   elseif option == OID_WHORE_REJ_FEMALE_RAPE
@@ -3982,17 +3982,17 @@ event OnOptionSliderOpen(int option)
     SetSliderDialogInterval(1)
   elseif option == OID_WHORE_REJ_MALE_THEFT
     SetSliderDialogStartValue(MainScript.fWhoreRejectMaleTheftChance)
-    SetSliderDialogDefaultValue(12.0)
+    SetSliderDialogDefaultValue(0.0)
     SetSliderDialogRange(0, 100)
     SetSliderDialogInterval(1)
   elseif option == OID_WHORE_REJ_FEMALE_THEFT
     SetSliderDialogStartValue(MainScript.fWhoreRejectFemaleTheftChance)
-    SetSliderDialogDefaultValue(20.0)
+    SetSliderDialogDefaultValue(0.0)
     SetSliderDialogRange(0, 100)
     SetSliderDialogInterval(1)
   elseif option == OID_WHORE_REJ_MALE_ASSAULT
     SetSliderDialogStartValue(MainScript.fWhoreRejectMaleAssaultChance)
-    SetSliderDialogDefaultValue(15.0)
+    SetSliderDialogDefaultValue(0.0)
     SetSliderDialogRange(0, 100)
     SetSliderDialogInterval(1)
   elseif option == OID_WHORE_REJ_FEMALE_ASSAULT
@@ -4012,27 +4012,27 @@ event OnOptionSliderOpen(int option)
    SetSliderDialogInterval(1)
   elseif option == OID_DIBEL_REJ_MALE_ACCEPT
     SetSliderDialogStartValue(MainScript.fDibelRejectMaleAcceptChance)
-    SetSliderDialogDefaultValue(50.0)
+    SetSliderDialogDefaultValue(100.0)
     SetSliderDialogRange(0, 100)
     SetSliderDialogInterval(1)
   elseif option == OID_DIBEL_REJ_FEMALE_ACCEPT
     SetSliderDialogStartValue(MainScript.fDibelRejectFemaleAcceptChance)
-    SetSliderDialogDefaultValue(50.0)
+    SetSliderDialogDefaultValue(100.0)
     SetSliderDialogRange(0, 100)
     SetSliderDialogInterval(1)
   elseif option == OID_DIBEL_REJ_MALE_REPORT
     SetSliderDialogStartValue(MainScript.fDibelRejectMaleReportChance)
-    SetSliderDialogDefaultValue(18.0)
+    SetSliderDialogDefaultValue(0.0)
     SetSliderDialogRange(0, 100)
     SetSliderDialogInterval(1)
   elseif option == OID_DIBEL_REJ_FEMALE_REPORT
     SetSliderDialogStartValue(MainScript.fDibelRejectFemaleReportChance)
-    SetSliderDialogDefaultValue(35.0)
+    SetSliderDialogDefaultValue(0.0)
     SetSliderDialogRange(0, 100)
     SetSliderDialogInterval(1)
   elseif option == OID_DIBEL_REJ_MALE_RAPE
     SetSliderDialogStartValue(MainScript.fDibelRejectMaleRapeChance)
-    SetSliderDialogDefaultValue(10.0)
+    SetSliderDialogDefaultValue(0.0)
     SetSliderDialogRange(0, 100)
     SetSliderDialogInterval(1)
   elseif option == OID_DIBEL_REJ_FEMALE_RAPE
@@ -4042,17 +4042,17 @@ event OnOptionSliderOpen(int option)
     SetSliderDialogInterval(1)
   elseif option == OID_DIBEL_REJ_MALE_THEFT
     SetSliderDialogStartValue(MainScript.fDibelRejectMaleTheftChance)
-    SetSliderDialogDefaultValue(12.0)
+    SetSliderDialogDefaultValue(0.0)
     SetSliderDialogRange(0, 100)
     SetSliderDialogInterval(1)
   elseif option == OID_DIBEL_REJ_FEMALE_THEFT
     SetSliderDialogStartValue(MainScript.fDibelRejectFemaleTheftChance)
-    SetSliderDialogDefaultValue(15.0)
+    SetSliderDialogDefaultValue(0.0)
     SetSliderDialogRange(0, 100)
     SetSliderDialogInterval(1)
   elseif option == OID_DIBEL_REJ_MALE_ASSAULT
     SetSliderDialogStartValue(MainScript.fDibelRejectMaleAssaultChance)
-    SetSliderDialogDefaultValue(10.0)
+    SetSliderDialogDefaultValue(0.0)
     SetSliderDialogRange(0, 100)
     SetSliderDialogInterval(1)
   elseif option == OID_DIBEL_REJ_FEMALE_ASSAULT
