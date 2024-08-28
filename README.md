@@ -26,9 +26,11 @@ Or
 [Licenses - Player Oppression](https://www.nexusmods.com/skyrimspecialedition/mods/110418?tab=description):
 If both mods have the license option enabled, the player needs to buy a license from the guards to work. Otherwise, NPCs may report it as a crime.
 
-[SkyPatcher](https://www.nexusmods.com/skyrimspecialedition/mods/106659) is needed for [The Naked Dragon](https://www.nexusmods.com/skyrimspecialedition/mods/94940) and [The Rift's Rest](https://www.nexusmods.com/skyrimspecialedition/mods/75649) patches, editing Level lists, NPCs,...
+[SkyPatcher](https://www.nexusmods.com/skyrimspecialedition/mods/106659) is needed for [The Naked Dragon](https://www.nexusmods.com/skyrimspecialedition/mods/94940) and [The Rift's Rest](https://www.nexusmods.com/skyrimspecialedition/mods/75649) patches, editing Level lists, NPCs, …
 
-[Powerofthree's Papyrus Extender](https://www.nexusmods.com/skyrimspecialedition/mods/22854) for adding keywords to NPCs/Clothing/Armors/Locations. 
+[Powerofthree's Papyrus Extender](https://www.nexusmods.com/skyrimspecialedition/mods/22854) for adding keywords to NPCs/Clothing/Armors/Locations …
+
+[Pyramid Utils](https://www.nexusmods.com/skyrimspecialedition/mods/110832) for checking inventory items, …
  
 
 **Recommended Mods:**
