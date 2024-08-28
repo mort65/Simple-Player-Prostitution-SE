@@ -21,7 +21,7 @@ Or
 
 **Optional:** 
 
-[PapyrusUtil SE](https://www.nexusmods.com/skyrimspecialedition/mods/13048) for saving/loading MCM settings and user data.
+[PapyrusUtil SE](https://www.nexusmods.com/skyrimspecialedition/mods/13048) for saving/loading MCM settings and user data, …
 
 [Licenses - Player Oppression](https://www.nexusmods.com/skyrimspecialedition/mods/110418?tab=description):
 If both mods have the license option enabled, the player needs to buy a license from the guards to work. Otherwise, NPCs may report it as a crime.
