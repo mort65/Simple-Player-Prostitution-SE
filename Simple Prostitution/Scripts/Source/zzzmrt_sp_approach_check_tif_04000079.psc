@@ -1,13 +1,13 @@
 ;BEGIN FRAGMENT CODE - Do not edit anything between this and the end comment
-;NEXT FRAGMENT INDEX 1
+;NEXT FRAGMENT INDEX 2
 Scriptname zzzmrt_sp_approach_check_tif_04000079 Extends TopicInfo Hidden
 
-;BEGIN FRAGMENT Fragment_0
-Function Fragment_0(ObjectReference akSpeakerRef)
+;BEGIN FRAGMENT Fragment_1
+Function Fragment_1(ObjectReference akSpeakerRef)
 Actor akSpeaker = akSpeakerRef as Actor
 ;BEGIN CODE
 zzzmrt_sp_customer_approach_script ApproachScript = GetOwningQuest() As zzzmrt_sp_customer_approach_script
-ApproachScript.ApproachMonitorScr.checkPlayerStatus()
+ApproachScript.ApproachMonitorScr.checkStatus(akSpeaker)
 ;END CODE
 EndFunction
 ;END FRAGMENT

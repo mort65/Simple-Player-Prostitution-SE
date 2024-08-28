@@ -9,6 +9,7 @@ Bool property hasWhoreLicense = False Auto Hidden Conditional
 Bool property hasDibelLicense = False Auto Hidden Conditional
 Bool property hasLicense = False Auto Hidden Conditional
 Bool property playerHavingSex = false Auto Hidden Conditional
+Bool property actorHavingSex = False Auto Hidden Conditional
 Bool property playerWearingWhoreClothing = false Auto Hidden Conditional
 
 Event OnUpdateGameTime()
@@ -81,11 +82,6 @@ Bool Function playerHasLicense()
 	return hasLicense
 endfunction
 
-Bool function isplayerHavingSex()
-	playerHavingSex = MainScript.isActorHavingSex(player)
-	return playerHavingSex
-EndFunction
-
 Bool function isplayerWearingWhoreClothing()
 	if MainScript.bOnlyWhoreClothingApproach
 		if player.WornHasKeyword(MainScript.ProstituteClothing_kwd)
@@ -105,6 +101,17 @@ EndFunction
 
 Function checkPlayerStatus()
 	isplayerWearingWhoreClothing()
-	isplayerHavingSex()
 	playerHasLicense()
+	playerHavingSex = MainScript.isActorHavingSex(player)
+EndFunction
+
+Function checkActorStatus(Actor akActor)
+	actorHavingSex = MainScript.isActorHavingSex(akActor)
+EndFunction
+
+Function checkStatus(Actor akActor)
+    checkPlayerStatus()
+	if akActor != player
+	    checkActorStatus(akActor)
+	endif
 EndFunction

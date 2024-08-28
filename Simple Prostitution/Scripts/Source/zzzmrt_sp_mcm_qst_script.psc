@@ -40,8 +40,6 @@ Int flag
 event OnConfigInit()
   ModName = "Simple Prostitution"
   initPages()
-  loadSettingsAtStart()
-  Mainscript.setVars()
 endevent
 
 function initPages()
@@ -1110,8 +1108,6 @@ state MOD_TOGGLE
     Utility.wait(0.5)
     if MainScript.bModEnabled
       MainQuest.Start()
-      loadSettingsAtStart()
-      Mainscript.setVars()
       Debug.Notification("Simple Prostitution enabled.")
     else
       MainScript.ShutDown()

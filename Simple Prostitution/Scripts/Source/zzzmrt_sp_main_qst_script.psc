@@ -478,7 +478,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-  return getBaseVersion() + 0.30
+  return getBaseVersion() + 0.31
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
@@ -2486,9 +2486,8 @@ Auto State Init
     While (!FlowerGirlsInterface.bChecked || !SexLabInterface.bChecked || !OStimInterface.bChecked || !LicensesInterface.bChecked || !DDI_Interface.bChecked)
       Utility.wait(0.2)
     endWhile
-    if !ApproachMonitorQst.isRunning()
-      ApproachMonitorQst.start()
-    endif
+    MCMScript.loadSettingsAtStart()
+    SetVars()
     ;Debug.Trace("Simple Prostitution started.")
     Debug.Notification("Simple Prostitution started.")
     bIsBusy = False

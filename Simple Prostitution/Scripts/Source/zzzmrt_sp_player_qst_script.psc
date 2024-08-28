@@ -3,8 +3,11 @@ Scriptname zzzmrt_sp_player_qst_script extends ReferenceAlias
 zzzmrt_sp_main_qst_script property MainScript auto
 
 Bool bCheckVars = False
+Bool bInit = False
 
 event OnInit()
+  ;Debug.trace("Simple Prostitution: OnInit() triggered for " + self)
+  bInit = True
   bCheckVars = True
   RegisterForSingleUpdate(3.0)
 endevent
@@ -24,6 +27,7 @@ event OnUpdate()
     bCheckVars = False
   endif
   MainScript.snitch()
+  bInit = False
 endevent
 
 Event OnCellLoad()
@@ -74,7 +78,7 @@ function setVars()
   if !MainScript.DDI_Interface
     MainScript.DDI_Interface = MainScript.DDI_Interface as zzzmrt_sp_ddi_interface
   endIf
-  MainScript.setVars()
+  !bInit && MainScript.setVars()
   MainScript.SexLabInterface.PlayerLoadsGame()
   MainScript.OStimInterface.PlayerLoadsGame()
   MainScript.FlowerGirlsInterface.PlayerLoadsGame()
