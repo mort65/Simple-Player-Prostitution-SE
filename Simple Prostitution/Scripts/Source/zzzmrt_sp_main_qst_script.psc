@@ -478,7 +478,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-  return getBaseVersion() + 0.31
+  return getBaseVersion() + 0.32
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
@@ -1047,7 +1047,7 @@ Function AssaultPlayer(Actor akAssaulter, Bool bEnslave = false, Bool bRape = fa
     akAssaulter.DrawWeapon()
   endif
   form weap
-  if bEnslave
+  if bEnslave || randInt(0,1)
     weap = akAssaulter.GetEquippedObject(1)
     if weap
       akAssaulter.UnequipItemEx(weap, 1)
@@ -1676,7 +1676,7 @@ Int function positionChooser(int vaginalWeight = 50, int AnalWeight = 50, int or
 endfunction
 
 Bool Function bCheckPapyrusUtil()
-  return papyrusutil.GetVersion() >= 40
+  return papyrusutil.GetVersion() >= 30
 EndFunction
 
 Bool Function bCheckPO3Extender()
