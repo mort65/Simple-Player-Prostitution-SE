@@ -362,7 +362,9 @@ Bool property bRejectWhore = False Auto Hidden Conditional
 Bool property bRejectBeggar = False Auto Hidden Conditional
 Bool property bRejectApproach = False Auto Hidden Conditional
 
-Bool Property bApproachingGuardsAreCruel = False Auto Hidden Conditional
+Bool Property bGuardsAreCruel = True Auto Hidden Conditional
+Bool Property bGuardsMayApproach = True Auto Hidden Conditional
+Bool Property bBeggarGuardsSexOffer = True Auto Hidden Conditional
 
 Int property iCrimeBounty = 50 Auto Hidden Conditional
 Int property iTotalCrimes = 0 Auto Hidden Conditional
@@ -509,7 +511,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-	return getBaseVersion() + 0.33
+	return getBaseVersion() + 0.35
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
@@ -949,7 +951,7 @@ Function setRejectingCustomerResult(Actor akActor, Bool bWhore = False, Bool bDi
 		bRejectTheftOnlyGold = bDefaultRejectTheftOnlyGold
 	endif
 
-	if akActor.isGuard() && !bApproachingGuardsAreCruel
+	if akActor.isGuard() && !bGuardsAreCruel
 		iRejectTheftChance = 0
 		iRejectAssaultChance = 0
 		iRejectSlaveryChance = 0

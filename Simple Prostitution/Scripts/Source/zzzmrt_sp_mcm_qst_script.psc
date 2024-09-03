@@ -336,6 +336,7 @@ event OnPageReset(String page)
     _AddToggleOptionST("BEGGING_FEMALE_SEX_OFFER_TOGGLE", "$MRT_SP_BEGGING_FEMALE_SEX_OFFER_TOGGLE", MainScript.bBeggingFemaleSexOffer, flag)
     OID_BEG_ONLY_LICENSED_SEX_OFFER = AddToggleOption("$MRT_SP_BEG_ONLY_LICENSED_SEX_OFFER", MainScript.bOnlyLicensedBeggarSexOffer, flag)
     OID_BEG_ONLY_INTERIOR_SEX_OFFER = AddToggleOption("$MRT_SP_BEG_ONLY_INTERIOR_SEX_OFFER", MainScript.bOnlyInteriorBeggarOfferSex, flag)
+    OID_BEG_GUARDS_SEX_OFFER = AddToggleOption("$MRT_SP_BEG_GUARDS_SEX_OFFER", MainScript.bBeggarGuardsSexOffer, flag)
     AddEmptyOption()
     beggarRejectOptions(flag)
 
@@ -3002,8 +3003,11 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
   MainScript.bOnlyLicensedApproach = jsonutil.GetPathIntValue(settings_path, "bOnlyLicensedApproach", MainScript.bOnlyLicensedApproach as Int)
   MainScript.bOnlyLicensedBeggarSexOffer = jsonutil.GetPathIntValue(settings_path, "bOnlyLicensedBeggarSexOffer", MainScript.bOnlyLicensedBeggarSexOffer as Int)
   MainScript.bOnlyInteriorBeggarOfferSex = jsonutil.GetPathIntValue(settings_path, "bOnlyInteriorBeggarOfferSex", MainScript.bOnlyInteriorBeggarOfferSex as Int)
-  MainScript.bApproachingGuardsAreCruel = jsonutil.GetPathIntValue(settings_path, "bApproachingGuardsAreCruel", MainScript.bApproachingGuardsAreCruel as Int)
-  MainScript.bBeggarRejectWalkAwayCheck = jsonutil.GetPathIntValue(settings_path, "bBeggarRejectWalkAwayCheck", MainScript.bBeggarRejectWalkAwayCheck as Int)  
+  MainScript.bGuardsAreCruel = jsonutil.GetPathIntValue(settings_path, "bGuardsAreCruel", MainScript.bGuardsAreCruel as Int)
+  MainScript.bBeggarRejectWalkAwayCheck = jsonutil.GetPathIntValue(settings_path, "bBeggarRejectWalkAwayCheck", MainScript.bBeggarRejectWalkAwayCheck as Int)
+  MainScript.bGuardsMayApproach = jsonutil.GetPathIntValue(settings_path, "bGuardsMayApproach", MainScript.bGuardsMayApproach as Int)
+  MainScript.bBeggarGuardsSexOffer = jsonutil.GetPathIntValue(settings_path, "bBeggarGuardsSexOffer", MainScript.bBeggarGuardsSexOffer as Int)
+
 
   
   iBeggarSpeechDifficulty = jsonutil.GetPathIntValue(settings_path, "iBeggarSpeechDifficulty", iBeggarSpeechDifficulty)
@@ -3191,9 +3195,10 @@ Bool function saveUserSettingsPapyrus()
   jsonutil.SetPathIntValue(settings_path, "bOnlyLicensedApproach", MainScript.bOnlyLicensedApproach as Int)  
   jsonutil.SetPathIntValue(settings_path, "bOnlyLicensedBeggarSexOffer", MainScript.bOnlyLicensedBeggarSexOffer as Int)
   jsonutil.SetPathIntValue(settings_path, "bOnlyInteriorBeggarOfferSex", MainScript.bOnlyInteriorBeggarOfferSex as Int)
-  jsonutil.SetPathIntValue(settings_path, "bApproachingGuardsAreCruel", MainScript.bApproachingGuardsAreCruel as Int)
+  jsonutil.SetPathIntValue(settings_path, "bGuardsAreCruel", MainScript.bGuardsAreCruel as Int)
   jsonutil.SetPathIntValue(settings_path, "bBeggarRejectWalkAwayCheck", MainScript.bBeggarRejectWalkAwayCheck as Int)
-  
+  jsonutil.SetPathIntValue(settings_path, "bGuardsMayApproach", MainScript.bGuardsMayApproach as Int)
+  jsonutil.SetPathIntValue(settings_path, "bBeggarGuardsSexOffer", MainScript.bBeggarGuardsSexOffer as Int)
  
   jsonutil.SetPathIntValue(settings_path, "iBeggarSpeechDifficulty", iBeggarSpeechDifficulty)
   jsonutil.SetPathIntValue(settings_path, "iWhoreSpeechDifficulty", iWhoreSpeechDifficulty)
@@ -3708,6 +3713,9 @@ event OnOptionSelect(int option)
   elseif option == OID_BEG_ONLY_INTERIOR_SEX_OFFER
     MainScript.bOnlyInteriorBeggarOfferSex = !MainScript.bOnlyInteriorBeggarOfferSex
     SetToggleOptionValue(option, MainScript.bOnlyInteriorBeggarOfferSex)
+  elseif option == OID_BEG_GUARDS_SEX_OFFER
+    MainScript.bBeggarGuardsSexOffer = !MainScript.bBeggarGuardsSexOffer
+    SetToggleOptionValue(option, MainScript.bBeggarGuardsSexOffer)
   elseif option == OID_MALE_CUSTOMER_APPROACH
     MainScript.bMaleCustomerApproach = !MainScript.bMaleCustomerApproach
     SetToggleOptionValue(option, MainScript.bMaleCustomerApproach)
@@ -3730,8 +3738,11 @@ event OnOptionSelect(int option)
     MainScript.bDefaultRejectTheftOnlyGold = !MainScript.bDefaultRejectTheftOnlyGold
     SetToggleOptionValue(option, MainScript.bDefaultRejectTheftOnlyGold)
   elseif option == OID_CRUEL_GUARDS_APPROACH
-    MainScript.bApproachingGuardsAreCruel = !MainScript.bApproachingGuardsAreCruel
-    SetToggleOptionValue(option, MainScript.bApproachingGuardsAreCruel)
+    MainScript.bGuardsAreCruel = !MainScript.bGuardsAreCruel
+    SetToggleOptionValue(option, MainScript.bGuardsAreCruel)
+  elseif option == OID_GUARDS_MAY_APPROACH
+    MainScript.bGuardsMayApproach = !MainScript.bGuardsMayApproach
+    SetToggleOptionValue(option, MainScript.bGuardsMayApproach)
   endif
   ForcePageReset()
 EndEvent
@@ -3752,6 +3763,9 @@ event OnOptionDefault(int option)
   elseif option == OID_BEG_ONLY_INTERIOR_SEX_OFFER
     MainScript.bOnlyInteriorBeggarOfferSex = False
     SetToggleOptionValue(option, MainScript.bOnlyInteriorBeggarOfferSex)
+  elseif option == OID_BEG_GUARDS_SEX_OFFER
+    MainScript.bBeggarGuardsSexOffer = True
+    SetToggleOptionValue(option, MainScript.bBeggarGuardsSexOffer)
   elseif option == OID_MALE_CUSTOMER_APPROACH
     MainScript.bMaleCustomerApproach = True
     SetToggleOptionValue(option, MainScript.bMaleCustomerApproach)
@@ -3770,8 +3784,11 @@ event OnOptionDefault(int option)
     MainScript.bDefaultRejectTheftOnlyGold = True
     SetToggleOptionValue(option, MainScript.bDefaultRejectTheftOnlyGold)
   elseif option == OID_CRUEL_GUARDS_APPROACH
-    MainScript.bApproachingGuardsAreCruel = False
-    SetToggleOptionValue(option, MainScript.bApproachingGuardsAreCruel)
+    MainScript.bGuardsAreCruel = True
+    SetToggleOptionValue(option, MainScript.bGuardsAreCruel)
+  elseif option == OID_GUARDS_MAY_APPROACH
+    MainScript.bGuardsMayApproach = true
+    SetToggleOptionValue(option, MainScript.bGuardsMayApproach)
   endif
   ForcePageReset()
 EndEvent
@@ -3851,6 +3868,8 @@ event OnOptionHighlight(int option)
     SetInfoText("$MRT_SP_DESC_MALE_CUSTOMER_APPROACH")
   elseif option == OID_BEG_ONLY_INTERIOR_SEX_OFFER
      SetInfoText("$MRT_SP_DESC_BEG_REJ_ONLY_INTERIOR_SEX_OFFER")
+  elseif option == OID_BEG_GUARDS_SEX_OFFER
+     SetInfoText("$MRT_SP_DESC_BEG_GUARDS_SEX_OFFER")
   elseif option == OID_BEG_REJ_THEFT_ONLYGOLD
      SetInfoText("$MRT_SP_DESC_BEG_REJ_THEFT_ONLYGOLD")
   elseif option == OID_BEG_REJ_WALKAWAY_CHECK
@@ -3909,6 +3928,8 @@ event OnOptionHighlight(int option)
     SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_THEFT_ONLYGOLD")
   elseif option == OID_CRUEL_GUARDS_APPROACH
     SetInfoText("$MRT_SP_DESC_CRUEL_GUARDS_APPROACH")
+  elseif option == OID_GUARDS_MAY_APPROACH
+    SetInfoText("$MRT_SP_DESC_GUARDS_MAY_APPROACH")
   endif
 endevent
 
@@ -4370,7 +4391,7 @@ function beggarRejectOptions(Int iflag)
   OID_BEG_REJ_FEMALE_SLAVERY = AddSliderOption("$MRT_SP_BEG_REJ_FEMALE_SLAVERY_SLIDER1", MainScript.fBeggarRejectFemaleSlaveryChance, "$MRT_SP_BEG_REJ_FEMALE_SLAVERY_SLIDER2", iflag) 
   AddEmptyOption()
   OID_BEG_REJ_THEFT_ONLYGOLD = AddToggleOption("$MRT_SP_BEG_REJ_THEFT_ONLYGOLD_TOGGLE", MainScript.bBeggarRejectTheftOnlyGold, iflag)
-  OID_BEG_REJ_WALKAWAY_CHECK = AddToggleOption("$MRT_SP_BEG_REJ_WALKAWAY_CHECK", MainScript.bBeggarRejectWalkAwayCheck, flag)
+  OID_BEG_REJ_WALKAWAY_CHECK = AddToggleOption("$MRT_SP_BEG_REJ_WALKAWAY_CHECK", MainScript.bBeggarRejectWalkAwayCheck, iflag)
 EndFunction
 
 function whoreRejectOptions(Int iflag)
@@ -4391,7 +4412,7 @@ function whoreRejectOptions(Int iflag)
   OID_WHORE_REJ_FEMALE_MURDER = AddSliderOption("$MRT_SP_WHORE_REJ_FEMALE_MURDER_SLIDER1", MainScript.fWhoreRejectFemaleMurderChance, "$MRT_SP_WHORE_REJ_FEMALE_MURDER_SLIDER2", iflag) 
   OID_WHORE_REJ_FEMALE_SLAVERY = AddSliderOption("$MRT_SP_WHORE_REJ_FEMALE_SLAVERY_SLIDER1", MainScript.fWhoreRejectFemaleSlaveryChance, "$MRT_SP_WHORE_REJ_FEMALE_SLAVERY_SLIDER2", iflag) 
   AddEmptyOption()
-  OID_WHORE_REJ_THEFT_ONLYGOLD = AddToggleOption("$MRT_SP_WHORE_REJ_THEFT_ONLYGOLD_TOGGLE", MainScript.bWhoreRejectTheftOnlyGold, flag)
+  OID_WHORE_REJ_THEFT_ONLYGOLD = AddToggleOption("$MRT_SP_WHORE_REJ_THEFT_ONLYGOLD_TOGGLE", MainScript.bWhoreRejectTheftOnlyGold, iflag)
 EndFunction
 
 function dibelRejectOptions(Int iflag)
@@ -4412,7 +4433,7 @@ function dibelRejectOptions(Int iflag)
   OID_DIBEL_REJ_FEMALE_MURDER = AddSliderOption("$MRT_SP_DIBEL_REJ_FEMALE_MURDER_SLIDER1", MainScript.fDibelRejectFemaleMurderChance, "$MRT_SP_DIBEL_REJ_FEMALE_MURDER_SLIDER2", iflag) 
   OID_DIBEL_REJ_FEMALE_SLAVERY = AddSliderOption("$MRT_SP_DIBEL_REJ_FEMALE_SLAVERY_SLIDER1", MainScript.fDibelRejectFemaleSlaveryChance, "$MRT_SP_DIBEL_REJ_FEMALE_SLAVERY_SLIDER2", iflag) 
   AddEmptyOption()
-  OID_DIBEL_REJ_THEFT_ONLYGOLD = AddToggleOption("$MRT_SP_DIBEL_REJ_THEFT_ONLYGOLD_TOGGLE", MainScript.bDibelRejectTheftOnlyGold, flag)
+  OID_DIBEL_REJ_THEFT_ONLYGOLD = AddToggleOption("$MRT_SP_DIBEL_REJ_THEFT_ONLYGOLD_TOGGLE", MainScript.bDibelRejectTheftOnlyGold, iflag)
 EndFunction
 
 function defaultRejectOptions(Int iflag)
@@ -4431,21 +4452,30 @@ function defaultRejectOptions(Int iflag)
   OID_DEFAULT_REJ_FEMALE_MURDER = AddSliderOption("$MRT_SP_DEFAULT_REJ_FEMALE_MURDER_SLIDER1", MainScript.fDefaultRejectFemaleMurderChance, "$MRT_SP_DEFAULT_REJ_FEMALE_MURDER_SLIDER2", iflag) 
   OID_DEFAULT_REJ_FEMALE_SLAVERY = AddSliderOption("$MRT_SP_DEFAULT_REJ_FEMALE_SLAVERY_SLIDER1", MainScript.fDefaultRejectFemaleSlaveryChance, "$MRT_SP_DEFAULT_REJ_FEMALE_SLAVERY_SLIDER2", iflag) 
   AddEmptyOption()
-  OID_DEFAULT_REJ_THEFT_ONLYGOLD = AddToggleOption("$MRT_SP_DEFAULT_REJ_THEFT_ONLYGOLD_TOGGLE", MainScript.bDefaultRejectTheftOnlyGold, flag)
+  OID_DEFAULT_REJ_THEFT_ONLYGOLD = AddToggleOption("$MRT_SP_DEFAULT_REJ_THEFT_ONLYGOLD_TOGGLE", MainScript.bDefaultRejectTheftOnlyGold, iflag)
 EndFunction
 
  Function approachOptions(Int iflag)
-  OID_CUSTOMER_APPROACH_INTERVAL =  AddSliderOption("$MRT_SP_CUSTOMER_APPROACH_INTERVAL_SLIDER1", MainScript.iCustomerApproachTimer as Float, "$MRT_SP_CUSTOMER_APPROACH_INTERVAL_SLIDER2", iflag)
+  int flg = iflag
+  OID_CUSTOMER_APPROACH_INTERVAL =  AddSliderOption("$MRT_SP_CUSTOMER_APPROACH_INTERVAL_SLIDER1", MainScript.iCustomerApproachTimer as Float, "$MRT_SP_CUSTOMER_APPROACH_INTERVAL_SLIDER2", flg)
   AddEmptyOption()
-  OID_CUSTOMER_APPROACH_CHANCE =  AddSliderOption("$MRT_SP_CUSTOMER_APPROACH_CHANCE_SLIDER1", MainScript.fCustomerApproachChance, "$MRT_SP_CUSTOMER_APPROACH_CHANCE_SLIDER2", iflag)
-  OID_MALE_CUSTOMER_APPROACH = AddToggleOption("$MRT_SP_MALE_CUSTOMER_APPROACH_TOGGLE", MainScript.bMaleCustomerApproach, flag)
-  OID_FEMALE_CUSTOMER_APPROACH = AddToggleOption("$MRT_SP_FEMALE_CUSTOMER_APPROACH_TOGGLE", MainScript.bFemaleCustomerApproach, flag)
-  OID_ONLY_INTERIOR_APPROACH = AddToggleOption("$MRT_SP_ONLY_INTERIOR_APPROACH_TOGGLE", MainScript.bOnlyInteriorApproach, flag)
-  OID_ONLY_LICENSED_APPROACH = AddToggleOption("$MRT_SP_ONLY_LICENSED_APPROACH_TOGGLE", MainScript.bOnlyLicensedApproach, flag)
-  OID_ONLY_WHORE_CLOTHING_APPROACH = AddToggleOption("$MRT_SP_ONLY_WHORE_CLOTHING_APPROACH_TOGGLE", MainScript.bOnlyWhoreClothingApproach, flag)
-  OID_CRUEL_GUARDS_APPROACH = AddToggleOption("$MRT_SP_CRUEL_GUARDS_APPROACH_TOGGLE", MainScript.bApproachingGuardsAreCruel, flag)
+  OID_CUSTOMER_APPROACH_CHANCE =  AddSliderOption("$MRT_SP_CUSTOMER_APPROACH_CHANCE_SLIDER1", MainScript.fCustomerApproachChance, "$MRT_SP_CUSTOMER_APPROACH_CHANCE_SLIDER2", flg)
+  OID_MALE_CUSTOMER_APPROACH = AddToggleOption("$MRT_SP_MALE_CUSTOMER_APPROACH_TOGGLE", MainScript.bMaleCustomerApproach, flg)
+  OID_FEMALE_CUSTOMER_APPROACH = AddToggleOption("$MRT_SP_FEMALE_CUSTOMER_APPROACH_TOGGLE", MainScript.bFemaleCustomerApproach, flg)
+  OID_ONLY_INTERIOR_APPROACH = AddToggleOption("$MRT_SP_ONLY_INTERIOR_APPROACH_TOGGLE", MainScript.bOnlyInteriorApproach, flg)
+  OID_ONLY_LICENSED_APPROACH = AddToggleOption("$MRT_SP_ONLY_LICENSED_APPROACH_TOGGLE", MainScript.bOnlyLicensedApproach, flg)
+  OID_ONLY_WHORE_CLOTHING_APPROACH = AddToggleOption("$MRT_SP_ONLY_WHORE_CLOTHING_APPROACH_TOGGLE", MainScript.bOnlyWhoreClothingApproach, flg)
+  OID_GUARDS_MAY_APPROACH = AddToggleOption("$MRT_SP_GUARDS_MAY_APPROACH_TOGGLE", MainScript.bGuardsMayApproach, flg)
+  if  (iflag == OPTION_FLAG_NONE) && MainScript.bGuardsMayApproach
+    flg = OPTION_FLAG_NONE
+  else
+    flg = OPTION_FLAG_DISABLED
+  endIf
+  OID_CRUEL_GUARDS_APPROACH = AddToggleOption("$MRT_SP_CRUEL_GUARDS_APPROACH_TOGGLE", MainScript.bGuardsAreCruel, flg)
 EndFunction
 
+Int OID_BEG_GUARDS_SEX_OFFER
+Int OID_GUARDS_MAY_APPROACH
 Int OID_CRUEL_GUARDS_APPROACH
 Int OID_BEG_REJ_MALE_ACCEPT
 Int OID_BEG_REJ_FEMALE_ACCEPT

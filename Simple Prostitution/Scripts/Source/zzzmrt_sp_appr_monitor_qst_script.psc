@@ -131,7 +131,8 @@ Bool function canPunishPlayerForRejectingApproach(Actor akActor)
 	elseif MainScript.isActorHavingSex(akActor)
 	elseif !Game.IsMovementControlsEnabled()
 	elseif !MainScript.bMaleCustomerApproach && !akActor.GetLeveledActorBase().GetSex()
-	elseif !MainScript.bFemaleCustomerApproach && akActor.GetLeveledActorBase().GetSex()	
+	elseif !MainScript.bFemaleCustomerApproach && akActor.GetLeveledActorBase().GetSex()
+	elseif !MainScript.bGuardsMayApproach && akActor.IsGuard()
 	elseif player.GetCurrentScene() != None
 	elseif akActor.GetCurrentScene() != None
 	elseif akActor.GetDistance(player) > 3000.0
@@ -146,6 +147,7 @@ Bool Function canPunishPlayerForRejectingSexOffer(Actor akActor)
 	elseif MainScript.bOnlyInteriorBeggarOfferSex && !player.IsInInterior()
 	elseif !MainScript.bBeggingMaleSexOffer && !akActor.GetLeveledActorBase().GetSex()
 	elseif !MainScript.bBeggingFemaleSexOffer && akActor.GetLeveledActorBase().GetSex()
+	elseif !MainScript.bBeggarGuardsSexOffer && akActor.IsGuard()
 	elseif MainScript.isActorHavingSex(player)
 	elseif MainScript.isActorHavingSex(akActor)
 	elseif !Game.IsMovementControlsEnabled()
