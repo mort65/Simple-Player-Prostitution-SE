@@ -56,17 +56,12 @@ Function updateApproach(Bool bReset = False)
 	endif
 
 	if !doReset
-	elseif MainScript.bOnlyLicensedApproach && !playerHasLicense()
-	elseif !isplayerWearingWhoreClothing()
-	elseif MainScript.bOnlyInteriorApproach && !player.IsInInterior()
+	elseif !canPlayerApproached()
 	else
-		player.GetCombatState()
-		If player.GetcombatState() == 0
-			ApproachQst.start()
-		EndIf
+		ApproachQst.start()
 	endif
 	
-	self.RegisterForSingleUpdateGameTime(MainScript.iCustomerApproachTimer + 1)
+	self.RegisterForSingleUpdateGameTime(MainScript.iCustomerApproachTimer)
 EndFunction
 
 Bool Function playerHasLicense()
@@ -114,4 +109,54 @@ Function checkStatus(Actor akActor)
 	if akActor != player
 	    checkActorStatus(akActor)
 	endif
+EndFunction
+
+Bool Function canPlayerApproached()
+	if MainScript.bOnlyLicensedApproach && !playerHasLicense()
+	elseif MainScript.bOnlyInteriorApproach && !player.IsInInterior()
+	elseif !isplayerWearingWhoreClothing()
+	else
+		player.GetCombatState()
+		If player.GetcombatState() == 0
+			return true
+		endif
+	endif
+	return false
+EndFunction
+
+Bool function canPunishPlayerForRejectingApproach(Actor akActor)
+	if !canPlayerApproached()
+	elseif player.IsBleedingOut()
+	elseif MainScript.isActorHavingSex(player)
+	elseif MainScript.isActorHavingSex(akActor)
+	elseif !Game.IsMovementControlsEnabled()
+	elseif !MainScript.bMaleCustomerApproach && !akActor.GetLeveledActorBase().GetSex()
+	elseif !MainScript.bFemaleCustomerApproach && akActor.GetLeveledActorBase().GetSex()	
+	elseif player.GetCurrentScene() != None
+	elseif akActor.GetCurrentScene() != None
+	elseif akActor.GetDistance(player) > 3000.0
+	else
+		return true
+	endif
+	return false
+EndFunction
+
+Bool Function canPunishPlayerForRejectingSexOffer(Actor akActor)
+	if MainScript.bOnlyLicensedBeggarSexOffer && !playerHasLicense()
+	elseif MainScript.bOnlyInteriorBeggarOfferSex && !player.IsInInterior()
+	elseif !MainScript.bBeggingMaleSexOffer && !akActor.GetLeveledActorBase().GetSex()
+	elseif !MainScript.bBeggingFemaleSexOffer && akActor.GetLeveledActorBase().GetSex()
+	elseif MainScript.isActorHavingSex(player)
+	elseif MainScript.isActorHavingSex(akActor)
+	elseif !Game.IsMovementControlsEnabled()
+	elseif player.GetCurrentScene() != None
+	elseif akActor.GetCurrentScene() != None
+	elseif akActor.GetDistance(player) > 3000.0
+	else
+		player.GetCombatState()
+		If player.GetcombatState() == 0
+			return true
+		endif
+	endif
+	return False
 EndFunction

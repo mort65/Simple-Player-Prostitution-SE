@@ -9,7 +9,7 @@ Actor akSpeaker = akSpeakerRef as Actor
 zzzmrt_sp_main_qst_script MainScript = GetOwningQuest() As zzzmrt_sp_main_qst_script
 MainScript.stopApproach(true)
 akSpeaker.EvaluatePackage()
-MainScript.setRejectingCustomerResult(akSpeaker, Mainscript.isDibel, false, true)
+MainScript.setRejectingCustomerResult(akSpeaker, !Mainscript.isDibel, Mainscript.isDibel, false, true)
 ;END CODE
 EndFunction
 ;END FRAGMENT

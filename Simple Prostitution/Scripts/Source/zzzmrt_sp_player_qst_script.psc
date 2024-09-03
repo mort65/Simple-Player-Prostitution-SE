@@ -19,6 +19,8 @@ endevent
 
 Function RegisterForEvents()
   RegisterForModEvent("SPP_StartFindSnitch", "OnStartFindSnitch")
+  RegisterForModEvent("SPP_StartDetectAssault", "OnStartDetectAssault")
+  RegisterForModEvent("SPP_StopDetectAssault", "OnStopDetectAssault")
 endfunction
 
 event OnUpdate()
@@ -44,6 +46,16 @@ Event OnLocationChange(Location akOldLoc, Location akNewLoc)
     RegisterForSingleUpdate(utility.randomFloat(10.0,30.0)) 
   endif
 endevent
+
+Event OnHit(ObjectReference akAggressor, Form akSource, Projectile akProjectile, bool abPowerAttack, bool abSneakAttack, bool abBashAttack, bool abHitBlocked)
+EndEvent
+
+Event OnStartDetectAssault(string eventName, string strArg, float numArg, Form sender)
+  GoToState("Assault")
+EndEvent
+
+Event OnStopDetectAssault(string eventName, string strArg, float numArg, Form sender)
+EndEvent
 
 Event OnStartFindSnitch(Form sender, Bool bCheckDibel)
   ;Debug.Trace("Simple Prostitution: OnStartFindSnitch triggered.")
@@ -95,3 +107,20 @@ function setVars()
   MainScript.bIsDDIntegrationActive = MainScript.DDI_Interface.GetIsInterfaceActive()
   MainScript.ApproachMonitorScr.PlayerLoadsGame()
 endfunction
+
+
+State Assault
+  Event OnHit(ObjectReference akAggressor, Form akSource, Projectile akProjectile, bool abPowerAttack, bool abSneakAttack, bool abBashAttack, bool abHitBlocked)
+    Debug.trace("Simple Prostitution: OnHit() triggered for " + self)
+    MainScript.bAssaulted = true
+    if GetState() == "Assault"
+      GoToState("")
+    endif
+  EndEvent
+
+  Event OnStopDetectAssault(string eventName, string strArg, float numArg, Form sender)
+    if GetState() == "Assault"
+      GoToState("")
+    endif
+  EndEvent
+EndState
