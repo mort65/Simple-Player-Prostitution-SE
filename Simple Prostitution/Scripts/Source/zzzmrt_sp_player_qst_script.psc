@@ -88,7 +88,7 @@ function setVars()
     MainScript.LicensesInterface = MainScript.LicensesInterfaceQst as zzzmrt_sp_licenses_interface 
   endif
   if !MainScript.DDI_Interface
-    MainScript.DDI_Interface = MainScript.DDI_Interface as zzzmrt_sp_ddi_interface
+    MainScript.DDI_Interface = MainScript.DDI_Interface_Qst as zzzmrt_sp_ddi_interface
   endIf
   !bInit && MainScript.setVars()
   MainScript.SexLabInterface.PlayerLoadsGame()

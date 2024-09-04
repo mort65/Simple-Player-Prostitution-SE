@@ -11,6 +11,7 @@ Bool property hasLicense = False Auto Hidden Conditional
 Bool property playerHavingSex = false Auto Hidden Conditional
 Bool property actorHavingSex = False Auto Hidden Conditional
 Bool property playerWearingWhoreClothing = false Auto Hidden Conditional
+Bool property playerIsBusyInMOA = false Auto Hidden Conditional
 
 Event OnUpdateGameTime()
 	debug.trace("Simple Prostitution: OnUpdateGameTime() triggered for "+ self)
@@ -98,6 +99,7 @@ Function checkPlayerStatus()
 	isplayerWearingWhoreClothing()
 	playerHasLicense()
 	playerHavingSex = MainScript.isActorHavingSex(player)
+	checkMOAStatus()
 EndFunction
 
 Function checkActorStatus(Actor akActor)
@@ -105,21 +107,19 @@ Function checkActorStatus(Actor akActor)
 EndFunction
 
 Function checkStatus(Actor akActor)
-    checkPlayerStatus()
+	checkPlayerStatus()
 	if akActor != player
-	    checkActorStatus(akActor)
+		checkActorStatus(akActor)
 	endif
 EndFunction
 
 Bool Function canPlayerApproached()
-	if MainScript.bOnlyLicensedApproach && !playerHasLicense()
+	if player.IsInCombat()
+	elseif MainScript.bOnlyLicensedApproach && !playerHasLicense()
 	elseif MainScript.bOnlyInteriorApproach && !player.IsInInterior()
 	elseif !isplayerWearingWhoreClothing()
 	else
-		player.GetCombatState()
-		If player.GetcombatState() == 0
-			return true
-		endif
+		return true
 	endif
 	return false
 EndFunction
@@ -136,7 +136,8 @@ Bool function canPunishPlayerForRejectingApproach(Actor akActor)
 	elseif player.GetCurrentScene() != None
 	elseif akActor.GetCurrentScene() != None
 	elseif akActor.GetDistance(player) > 3000.0
-	else
+	elseif isPlayerBusyInMOA()
+	else		
 		return true
 	endif
 	return false
@@ -154,11 +155,20 @@ Bool Function canPunishPlayerForRejectingSexOffer(Actor akActor)
 	elseif player.GetCurrentScene() != None
 	elseif akActor.GetCurrentScene() != None
 	elseif akActor.GetDistance(player) > 3000.0
+	elseif player.IsInCombat()
+	elseif isPlayerBusyInMOA()
 	else
-		player.GetCombatState()
-		If player.GetcombatState() == 0
-			return true
-		endif
+		return true
 	endif
 	return False
+EndFunction
+
+
+Function checkMOAStatus()
+	playerIsBusyInMOA = player.haskeywordstring("zzzmoa_ActorBusy_KWD")
+EndFunction
+
+Bool Function isPlayerBusyInMOA()
+	checkMOAStatus()
+	return playerIsBusyInMOA
 EndFunction

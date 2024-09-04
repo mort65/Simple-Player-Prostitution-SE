@@ -214,3 +214,11 @@ Bool function isFormValid(Form akForm) Global
   {checks if the form not empty and has a usable value.}
   return akForm && (akForm != None) && (akForm.getFormID() != 0)
 endfunction
+
+Bool function isPluginFound(string pluginName) Global
+  {Checks if the plugin installed. Works for LE and SE}
+  if SKSE.GetVersion() < 2
+    return (Game.GetModByName(pluginName) != 255)
+  endif
+  return Game.IsPluginInstalled(pluginName)
+endfunction

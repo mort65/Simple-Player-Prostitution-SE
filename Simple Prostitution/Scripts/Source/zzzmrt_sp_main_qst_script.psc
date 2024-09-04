@@ -14,6 +14,7 @@ Quest Property OStimInterfaceQst Auto
 Quest Property FlowerGirlsInterfaceQst Auto
 Quest Property SexLabInterfaceQst Auto
 Quest Property LicensesInterfaceQst Auto
+Quest Property DDI_Interface_Qst Auto
 zzzmrt_sp_mcm_qst_script property MCMScript auto
 zzzmrt_sp_appr_monitor_qst_script property ApproachMonitorScr Auto
 Bool Property bAssaulted = false Auto Hidden Conditional

@@ -1,5 +1,7 @@
 Scriptname zzzmrt_sp_ddi_interface extends Quest
 
+import zzzmrt_sp_utility
+
 Form[] ddkeys
 Bool property bChecked = False Auto Hidden
 
@@ -11,21 +13,21 @@ endevent
 Function setVars()
   int iIndex = 0
   form restraintsKey = Game.GetFormFromFile(0x01775f, "Devious Devices - Integration.esm")
-  if restraintsKey && restraintsKey.getType() == 45
+  if isFormValid(restraintsKey) && restraintsKey.getType() == 45
     iIndex += 1
   else
     restraintsKey = None
     Debug.Trace("Simple Prostitution: [DD] Restraint key not found.")
   endif
   form chastityKey = Game.GetFormFromFile(0x008a4f, "Devious Devices - Integration.esm")
-  if chastityKey && chastityKey.getType() == 45
+  if isFormValid(chastityKey) && chastityKey.getType() == 45
     iIndex += 1
   else
     chastityKey = None
     Debug.Trace("Simple Prostitution: [DD] Chastity key not found.")
   endif
   form piercingKey = Game.GetFormFromFile(0x0409a4, "Devious Devices - Integration.esm")
-  if piercingKey && piercingKey.getType() == 45
+  if isFormValid(piercingKey) && piercingKey.getType() == 45
     iIndex += 1
   else
     piercingKey = None
@@ -62,7 +64,7 @@ function PlayerLoadsGame(Bool bForce = False)
   Debug.trace("Simple Prostitution: PlayerLoadsGame() triggered for " + self)
 
   ; Is the soft dependency installed and is our script in the right state? If not change state.
-  if Game.IsPluginInstalled("Devious Devices - Integration.esm")
+  if isPluginFound("Devious Devices - Integration.esm")
     if GetState() != "Installed"
       GoToState("Installed")
     elseif bForce || !bCheckVars()
@@ -82,7 +84,17 @@ endfunction
 
 state Installed
   Bool Function bCheckVars()
-    return ddkeys && (ddkeys.Length == 3) && (ddkeys.find(None) == -1)
+    if ddkeys && ddkeys.Length == 3
+      int iIndex = 3
+      while iIndex > 0
+        iIndex -= 1
+        if !isFormValid(ddkeys[iIndex])
+          return False
+        endif
+      endWhile
+      return True
+    endif
+    return False
   endfunction
   
   Int Function iAddRandomDDKeyToRef(ObjectReference akRef, Int aiNum = 1)

@@ -8,6 +8,7 @@ Actor akSpeaker = akSpeakerRef as Actor
 ;BEGIN CODE
 zzzmrt_sp_main_qst_script MainScript = GetOwningQuest() As zzzmrt_sp_main_qst_script
 MainScript.ApproachMonitorScr.playerHasLicense()
+MainScript.ApproachMonitorScr.checkMOAStatus()
 MainScript.ApproachMonitorScr.playerHavingSex = MainScript.isActorHavingSex(MainScript.player)
 MainScript.ApproachMonitorScr.actorHavingSex = MainScript.isActorHavingSex(akSpeaker)
 ;END CODE
