@@ -377,8 +377,6 @@ Package Property FollowPackage Auto
 Bool Property bOnlyLicensedApproach = true Auto Hidden Conditional
 Bool Property bOnlyLicensedBeggarSexOffer = true Auto Hidden Conditional
 
-Float Property fAliasCheckTimer = 10.0 Auto Hidden Conditional
-
 function shutDown()
 	stopApproach(true)
 	snitchDetector.stop()
@@ -1038,7 +1036,7 @@ Function rejectCusomer(Actor akCustomer)
 	if akCustomer.IsInFaction(WhoreCustomerFaction)
 		clearWhoreCustomers() 
 		clearWhorePositions()
-	endif  
+	endif 
 	if (iWhatToDo == 0)
 		if !bRejectBeggar && !bRejectApproach
 			player.removeItem(gold, iTotalCustomerPaidGold, false, akCustomer)
@@ -3009,11 +3007,10 @@ Function forceRefAndPackageTo(Actor akActor, ReferenceAlias akRef, Package akPac
 	if !akActor || !akRef
 		return
 	endif
-	akRef.ForceRefTo(akActor)
 	if bIsPapyrusUtilActive && akPackage
-		ActorUtil.AddPackageOverride(akActor, akPackage, 100)
+		ActorUtil.AddPackageOverride(akActor, akPackage, 100, 1)
 	endif
-	akRef.registerForSingleUpdate(fAliasCheckTimer)
+	akRef.ForceRefTo(akActor)
 EndFunction
 
 Function CheckAliases()

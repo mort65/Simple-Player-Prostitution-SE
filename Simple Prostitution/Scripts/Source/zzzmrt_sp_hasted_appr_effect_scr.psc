@@ -11,7 +11,7 @@ event onEffectStart(Actor akTarget, Actor akCaster)
 		if akTarget == MainScript.ApproachMonitorScr.approachingRef.GetActorReference()
 			mySelf = akTarget
 			if MainScript.bIsPapyrusUtilActive && !MainScript.isActorHavingSex(mySelf)
-				ActorUtil.AddPackageOverride(akTarget, MainScript.customerForceGreetPackage, 100)
+				ActorUtil.AddPackageOverride(akTarget, MainScript.customerForceGreetPackage, 100, 1)
 				akTarget.EvaluatePackage()
 			endif
 		endif
