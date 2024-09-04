@@ -377,6 +377,8 @@ Package Property FollowPackage Auto
 Bool Property bOnlyLicensedApproach = true Auto Hidden Conditional
 Bool Property bOnlyLicensedBeggarSexOffer = true Auto Hidden Conditional
 
+Float Property fAliasCheckTimer = 10.0 Auto Hidden Conditional
+
 function shutDown()
 	stopApproach(true)
 	snitchDetector.stop()
@@ -3011,6 +3013,7 @@ Function forceRefAndPackageTo(Actor akActor, ReferenceAlias akRef, Package akPac
 	if bIsPapyrusUtilActive && akPackage
 		ActorUtil.AddPackageOverride(akActor, akPackage, 100)
 	endif
+	akRef.registerForSingleUpdate(fAliasCheckTimer)
 EndFunction
 
 Function CheckAliases()
