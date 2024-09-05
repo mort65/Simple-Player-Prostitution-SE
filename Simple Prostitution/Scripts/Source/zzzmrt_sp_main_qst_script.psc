@@ -1114,16 +1114,26 @@ Function AssaultPlayer(Actor akAssaulter, Bool bEnslave = false, Bool bRape = fa
 		akAssaulter.DrawWeapon()
 	endif
 	form weap = akAssaulter.GetEquippedObject(1)
-	float fDamage = 25.0
+	Float fDamage = 25.0
+	Int weapType = 0
+	if weap as Weapon
+		if weap == unArmed
+			weapType = 1
+		elseif weap.HasKeywordstring("WeapTypeBow")
+			weapType = 2
+		else
+			weapType = 3
+		endif
+	endif
 	if bMurder
-		if !(weap as Weapon) || (weap == unArmed)
+		if weaptype != 3
 			akAssaulter.additem(assaultDagger, 1, true)
 			utility.wait(0.5)
 			akAssaulter.EquipItemEx(assaultDagger, 1, true, false)
 		endif
 	else
-		if (weap as Weapon) && (weap != unArmed) 
-			if bEnslave || randInt(0, 1)
+		if weapType > 0
+			if (bEnslave || (weapType == 2) || randInt(0, 1))
 				akAssaulter.UnequipItemEx(weap, 1, true)
 		    else
 		    	fDamage = 50.0
@@ -1175,7 +1185,7 @@ Function AssaultPlayer(Actor akAssaulter, Bool bEnslave = false, Bool bRape = fa
 		Game.setPlayerAiDriven(false)
 		player.SetDontMove(false)
 		Debug.SetGodMode(false)
-		if player.GetActorValue("Health") >= 0.0 
+		if bAssaulted && player.GetActorValue("Health") >= 0.0 
 			player.DamageActorValue("Health", player.GetActorValue("Health") + 30)
 		endif
 		Assaulter.Clear()
@@ -1191,7 +1201,7 @@ Function AssaultPlayer(Actor akAssaulter, Bool bEnslave = false, Bool bRape = fa
 		endif
 		akAssaulter.EvaluatePackage() 
 		return
-	else
+	elseif bAssaulted
 		StaggerSpell.Cast(player)
 	endif
 	utility.wait(4.0)
