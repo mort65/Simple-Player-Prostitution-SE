@@ -1140,7 +1140,7 @@ Function AssaultPlayer(Actor akAssaulter, Bool bEnslave = false, Bool bRape = fa
 	if (akAssaulter.GetEquippedObject(1) as Weapon)
 		fReach = maxInt(50, ((akAssaulter.GetEquippedObject(1) as Weapon).GetReach() * 100.0) as Int)
 	endif
-	setFaceToFace(Player, akAssaulter, fReach - 20.0)
+	setFaceToFace(Player, akAssaulter, maxInt(50, (fReach - 20.0) as Int))
 	akAssaulter.SetLookAt(player)
 	utility.wait(1.5)
 	if !akAssaulter.isWeaponDrawn()
@@ -1164,7 +1164,7 @@ Function AssaultPlayer(Actor akAssaulter, Bool bEnslave = false, Bool bRape = fa
 				if (akAssaulter.GetEquippedObject(1) as Weapon)
 					fReach = maxInt(50, ((akAssaulter.GetEquippedObject(1) as Weapon).GetReach() * 100.0) as Int)
 				endif
-				setFaceToFace(Player, akAssaulter, randInt((fReach - 25.0) as Int, fReach as Int))
+				setFaceToFace(Player, akAssaulter, maxInt(50, randInt((fReach - 25.0) as Int, fReach as Int)))
 				utility.wait(0.5)
 				if !akAssaulter.isWeaponDrawn()
 					forceRefAndPackageTo(akAssaulter, Assaulter, drawWeaponPackage)
