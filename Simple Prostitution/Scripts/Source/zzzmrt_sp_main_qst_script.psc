@@ -1084,8 +1084,8 @@ Function rejectCusomer(Actor akCustomer)
 	bIsBusy = false
 EndFunction
 
-Function SetFaceToFace(Actor akActor1, Actor akActor2)
-	akActor1.setposition(akActor2.GetPositionX() + 60 * math.sin(akActor2.GetAngleZ()), akActor2.GetPositionY() + 60 * math.cos(akActor2.GetAngleZ()), akActor2.GetPositionZ())
+Function SetFaceToFace(Actor akActor1, Actor akActor2, float fDistance = 75.0)
+	akActor1.setposition(akActor2.GetPositionX() + fDistance * math.sin(akActor2.GetAngleZ()), akActor2.GetPositionY() + fDistance * math.cos(akActor2.GetAngleZ()), akActor2.GetPositionZ())
 	akActor1.SetAngle(akActor2.GetAngleX(), akActor2.GetAngleY(), akActor2.GetAngleZ() + 180)
 EndFunction
 
@@ -1108,12 +1108,7 @@ Function AssaultPlayer(Actor akAssaulter, Bool bEnslave = false, Bool bRape = fa
 	utility.wait(0.5)
 	forceRefAndPackageTo(akAssaulter, Assaulter, drawWeaponPackage)
 	(akAssaulter as Actor).EvaluatePackage()
-	setFaceToFace(Player, akAssaulter)
 	utility.wait(0.5)
-	akAssaulter.SetLookAt(player)
-	if !akAssaulter.isWeaponDrawn()
-		akAssaulter.DrawWeapon()
-	endif
 	form weap = akAssaulter.GetEquippedObject(1)
 	Float fDamage = 25.0
 	Int weapType = 0
@@ -1127,20 +1122,26 @@ Function AssaultPlayer(Actor akAssaulter, Bool bEnslave = false, Bool bRape = fa
 		endif
 	endif
 	if bMurder
-		if weaptype != 3
+		if (weaptype != 3) || (weap as Weapon).GetEnchantment()
 			akAssaulter.additem(assaultDagger, 1, true)
 			utility.wait(0.5)
 			akAssaulter.EquipItemEx(assaultDagger, 1, true, false)
 		endif
 	else
 		if weapType > 0
-			if (bEnslave || (weapType == 2) || randInt(0, 1))
+			if (bEnslave || (weapType == 2) || ((weapType == 3) && (weap as Weapon).GetEnchantment()) || randInt(0, 1))
 				akAssaulter.UnequipItemEx(weap, 1, true)
 		    else
 		    	fDamage = 50.0
 		    endif
 		endif
 	endif
+	float fReach = 100.0 
+	if (akAssaulter.GetEquippedObject(1) as Weapon)
+		fReach = maxInt(50, ((akAssaulter.GetEquippedObject(1) as Weapon).GetReach() * 100.0) as Int)
+	endif
+	setFaceToFace(Player, akAssaulter, fReach - 20.0)
+	akAssaulter.SetLookAt(player)
 	utility.wait(1.5)
 	if !akAssaulter.isWeaponDrawn()
 		forceRefAndPackageTo(akAssaulter, Assaulter, drawWeaponPackage)
@@ -1154,12 +1155,16 @@ Function AssaultPlayer(Actor akAssaulter, Bool bEnslave = false, Bool bRape = fa
 	sendModEvent("SPP_StartDetectAssault")
 	Debug.sendAnimationEvent(akAssaulter, "attackStart")
 	Bool isAttacking = akAssaulter.GetAnimationVariableBool("IsAttacking")
-	While !bAssaulted && (fWaitedTime < 12.0)
+	While !bAssaulted && (fWaitedTime < 9.0)
 		if isAttacking
 			if fAttackTime < 0.0
 				fAttackTime = fWaitedTime
 			elseif (fWaitedTime - fAttackTime) > 3.0
-				setFaceToFace(Player, akAssaulter)
+				fReach = 100.0
+				if (akAssaulter.GetEquippedObject(1) as Weapon)
+					fReach = maxInt(50, ((akAssaulter.GetEquippedObject(1) as Weapon).GetReach() * 100.0) as Int)
+				endif
+				setFaceToFace(Player, akAssaulter, randInt((fReach - 25.0) as Int, fReach as Int))
 				utility.wait(0.5)
 				if !akAssaulter.isWeaponDrawn()
 					forceRefAndPackageTo(akAssaulter, Assaulter, drawWeaponPackage)
