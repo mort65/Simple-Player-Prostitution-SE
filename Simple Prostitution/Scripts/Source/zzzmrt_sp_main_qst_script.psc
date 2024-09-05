@@ -512,7 +512,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-	return getBaseVersion() + 0.35
+	return getBaseVersion() + 0.36
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
@@ -1110,6 +1110,7 @@ Function AssaultPlayer(Actor akAssaulter, Bool bEnslave = false, Bool bRape = fa
 	(akAssaulter as Actor).EvaluatePackage()
 	setFaceToFace(Player, akAssaulter)
 	utility.wait(0.5)
+	akAssaulter.SetLookAt(player)
 	if !akAssaulter.isWeaponDrawn()
 		akAssaulter.DrawWeapon()
 	endif
@@ -1191,6 +1192,7 @@ Function AssaultPlayer(Actor akAssaulter, Bool bEnslave = false, Bool bRape = fa
 		Assaulter.Clear()
 		bIsPapyrusUtilActive && ActorUtil.RemovePackageOverride(akAssaulter, drawWeaponPackage) 
 		akAssaulter.SetDontMove(false)
+		akAssaulter.ClearLookAt()
 		akAssaulter.UnequipItemEx(assaultDagger)
 		utility.wait(0.5)
 		akAssaulter.RemoveItem(assaultDagger, akAssaulter.GetItemCount(assaultDagger), true)
@@ -1213,6 +1215,7 @@ Function AssaultPlayer(Actor akAssaulter, Bool bEnslave = false, Bool bRape = fa
 		akAssaulter.equipItemEx(weap, 1)
 		utility.wait(0.5)
 	endif
+	akAssaulter.ClearLookAt()
 	if !bEnslave && bRape ;&& sAnimInterface
 		Game.setPlayerAiDriven(false)
 		player.SetDontMove(true)
