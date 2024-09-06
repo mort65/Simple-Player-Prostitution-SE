@@ -27,6 +27,9 @@ EndFunction
 Function stopApproach(Bool bConfirm = true)
 	actor apprActor = approachingRef.GetActorRef()
 	ApproachQst.stop()
+	if !MainScript.isCustomer(apprActor)
+		MainScript.removeSceneFlagFromActor(apprActor)
+	endif
 	if !bConfirm
 		return
 	endif
@@ -133,8 +136,8 @@ Bool function canPunishPlayerForRejectingApproach(Actor akActor)
 	elseif !MainScript.bMaleCustomerApproach && !akActor.GetLeveledActorBase().GetSex()
 	elseif !MainScript.bFemaleCustomerApproach && akActor.GetLeveledActorBase().GetSex()
 	elseif !MainScript.bGuardsMayApproach && akActor.IsGuard()
-	elseif player.GetCurrentScene() != None
-	elseif akActor.GetCurrentScene() != None
+	elseif (player.GetCurrentScene() != None) && (player.GetCurrentScene() != MainScript.fakeScene)
+	elseif (akActor.GetCurrentScene() != None) && (akActor.GetCurrentScene() != MainScript.fakeScene)
 	elseif akActor.GetDistance(player) > 3000.0
 	elseif isPlayerBusyInMOA()
 	else		
@@ -152,8 +155,8 @@ Bool Function canPunishPlayerForRejectingSexOffer(Actor akActor)
 	elseif MainScript.isActorHavingSex(player)
 	elseif MainScript.isActorHavingSex(akActor)
 	elseif !Game.IsMovementControlsEnabled()
-	elseif player.GetCurrentScene() != None
-	elseif akActor.GetCurrentScene() != None
+	elseif (player.GetCurrentScene() != None) && (player.GetCurrentScene() != MainScript.fakeScene)
+	elseif (akActor.GetCurrentScene() != None) && (akActor.GetCurrentScene() != MainScript.fakeScene)
 	elseif akActor.GetDistance(player) > 3000.0
 	elseif player.IsInCombat()
 	elseif isPlayerBusyInMOA()

@@ -11,6 +11,7 @@ Actor approachingActor
 Event OnInit()
 	if approachingCustomerAlias.GetActorRef()
 		approachingActor = approachingCustomerAlias.GetActorRef()
+		MainScript.addSceneFlagToActor(approachingActor)
 		Form approachingActorBase = approachingActor.GetLeveledActorBase()
 		String sName = approachingActorBase.GetName()
 		if sName == "" && MainScript.bIsPO3ExtenderActive

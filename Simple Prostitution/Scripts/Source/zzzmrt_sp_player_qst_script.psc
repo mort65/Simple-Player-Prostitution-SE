@@ -106,6 +106,7 @@ function setVars()
   MainScript.bIsLicensesActive = MainScript.LicensesInterface.GetIsInterfaceActive()
   MainScript.bIsDDIntegrationActive = MainScript.DDI_Interface.GetIsInterfaceActive()
   MainScript.ApproachMonitorScr.PlayerLoadsGame()
+  !bInit && MainScript.CheckAliases()
 endfunction
 
 

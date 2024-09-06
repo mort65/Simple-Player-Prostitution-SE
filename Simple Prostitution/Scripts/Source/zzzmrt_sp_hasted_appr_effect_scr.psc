@@ -28,6 +28,9 @@ event onEffectFinish(Actor akTarget, Actor akCaster)
 		target.ModActorValue("CarryWeight", -0.1)
 		if target && MainScript.bIsPapyrusUtilActive
 			ActorUtil.RemovePackageOverride(target, MainScript.customerForceGreetPackage)
+			if !MainScript.isCustomer(target)
+				MainScript.removeSceneFlagFromActor(target)
+		    endif
 			target.EvaluatePackage()
 		endif
 	endif
