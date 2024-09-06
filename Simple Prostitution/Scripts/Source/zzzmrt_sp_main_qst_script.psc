@@ -388,6 +388,8 @@ function shutDown()
 	if pimpTracker.isRunning()
 		pimpTracker.setstage(10)
 	endif
+	fakeScene.Stop()
+	fakeSceneQst.Stop()
 	currentAllowedLocations.Revert()
 	player.removeFromFaction(whoreFaction)
 	owner.clear()
@@ -2413,12 +2415,12 @@ State Dibeling
 	Event OnBeginState()
 		bIsBusy = True
 		isDibel = true
+		string sInterface
 		if !isSnitchOK(dibelSnitch) && !playerHasDibelLicence()
 			startSnitchFinder(true)
 		endif
 		origCustomersArr=formListToActorArray(dibelCustomerlist)
 		Bool bResult = False
-		Bool bAllInterfs = false
 		int i = 0
 		while (getState() == "Dibeling") && (dibelCustomerlist.GetSize() > 0)
 			currentCustomerList.revert()
@@ -2433,17 +2435,11 @@ State Dibeling
 			endWhile
 			if dibelCustomerlist.GetSize() > 0
 				iPositions = iDibelPositions
-				if bAllInterfs
-					bResult = bHaveGroupSex(sGetCurAnimInteface(), bDibelAllowAggressive, bAllPosAllowed(fDibelVagChance,fDibelAnalChance,fDibelOralChance), true)
-				else
-					bResult = bHaveGroupSex(sGetCurAnimInteface(), bDibelAllowAggressive, bAllPosAllowed(fDibelVagChance,fDibelAnalChance,fDibelOralChance), false)
-					if !bResult
-						Debug.Notification("Simple Prostitution: Could not Start Animation for selected Interface")
-						bAllInterfs = bTryAllInterfaces
-						if bAllInterfs
-							bResult = bHaveGroupSex(sGetCurAnimInteface(), bDibelAllowAggressive, bAllPosAllowed(fDibelVagChance,fDibelAnalChance,fDibelOralChance), true)
-						endif
-					endif
+				sInterface = sGetCurAnimInteface()
+				if bHaveGroupSex(sInterface, bDibelAllowAggressive, bAllPosAllowed(fDibelVagChance,fDibelAnalChance,fDibelOralChance), false)
+					bResult = true
+				elseif bTryAllInterfaces
+					bResult = bHaveGroupSex(sInterface, bDibelAllowAggressive, bAllPosAllowed(fDibelVagChance,fDibelAnalChance,fDibelOralChance), true)
 				endif
 				if bResult
 					i = 0
@@ -2531,12 +2527,12 @@ State Whoring
 	Event OnBeginState()
 		bIsBusy = True
 		isWhore = True
+		String sInterface
 		if !isSnitchOK(whoreSnitch) && !playerHasWhoreLicense()
 			startSnitchFinder(false)
 		endif
 		origCustomersArr=formListToActorArray(whoreCustomerlist)
 		Bool bResult = False
-		Bool bAllInterfs = False
 		int i = 0
 		while (getState() == "Whoring") && (whoreCustomerlist.GetSize() > 0)
 			currentCustomerList.revert()
@@ -2551,17 +2547,11 @@ State Whoring
 			endWhile
 			if (whoreCustomerlist.GetSize() > 0)
 				iPositions = iWhorePositions
-				if bAllInterfs
-					bResult = bHaveGroupSex(sGetCurAnimInteface(), bWhoreAllowAggressive, bAllPosAllowed(fWhoreVagChance,fWhoreAnalChance,fWhoreOralChance), true)
-				else
-					bResult = bHaveGroupSex(sGetCurAnimInteface(), bWhoreAllowAggressive, bAllPosAllowed(fWhoreVagChance,fWhoreAnalChance,fWhoreOralChance), false)
-					if !bResult
-						Debug.Notification("Simple Prostitution: Could not Start Animation for selected Interface")
-						bAllInterfs = bTryAllInterfaces
-						if bAllInterfs
-							bResult = bHaveGroupSex(sGetCurAnimInteface(), bWhoreAllowAggressive, bAllPosAllowed(fWhoreVagChance,fWhoreAnalChance,fWhoreOralChance), true)
-						endif
-					endif
+				sInterface = sGetCurAnimInteface()
+				if bHaveGroupSex(sInterface, bWhoreAllowAggressive, bAllPosAllowed(fWhoreVagChance,fWhoreAnalChance,fWhoreOralChance), false)
+					bResult = true
+				elseif bTryAllInterfaces
+					bResult = bHaveGroupSex(sInterface, bWhoreAllowAggressive, bAllPosAllowed(fWhoreVagChance,fWhoreAnalChance,fWhoreOralChance), true)
 				endif
 				if bResult
 					i = 0
@@ -3116,13 +3106,15 @@ Function CheckAliases()
 			if pimpTracker.isRunning()
 				pimpTracker.setstage(10)
 			endif
-		else
-			Debug.Trace("Simple Prostitution: Owner = " + getActorInfo(act))
 		endif
 	else
 		if pimpTracker.isRunning()
 			pimpTracker.setstage(10)
 		endif
+	endif
+
+	if bIsBusy
+		return
 	endif
 
 	int totalCustomers = 4
@@ -3144,11 +3136,11 @@ Function CheckAliases()
 			if iIndex > -1
 				customerArr[iIndex] = act
 			endif
-			Debug.Trace("Simple Prostitution: WhoreCustomer1 = " + getActorInfo(act))
 		endif
 	else
 		totalCustomers -= 1
 	endif
+
 	if whoreCustomerAlias2
 		act = whoreCustomerAlias2.getActorReference()
 		if !isFormValid(act) || (customerArr.find(act) > -1)
@@ -3167,11 +3159,12 @@ Function CheckAliases()
 			if iIndex > -1
 				customerArr[iIndex] = act
 			endif
-			Debug.Trace("Simple Prostitution: WhoreCustomer2 = " + getActorInfo(act))
 		endif
 	else
 		totalCustomers -= 1
 	endif
+
+	
 	if whoreCustomerAlias3
 		act = whoreCustomerAlias3.getActorReference()
 		if !isFormValid(act) || (customerArr.find(act) > -1)
@@ -3190,11 +3183,11 @@ Function CheckAliases()
 			if iIndex > -1
 				customerArr[iIndex] = act
 			endif
-			Debug.Trace("Simple Prostitution: WhoreCustomer3 = " + getActorInfo(act))
 		endif
 	else
 		totalCustomers -= 1
 	endif
+
 	if whoreCustomerAlias4
 		act = whoreCustomerAlias4.getActorReference()
 		if !isFormValid(act) || (customerArr.find(act) > -1)
@@ -3213,14 +3206,18 @@ Function CheckAliases()
 			if iIndex > -1
 				customerArr[iIndex] = act
 			endif
-			Debug.Trace("Simple Prostitution: WhoreCustomer4 = " + getActorInfo(act))
 		endif
 	else
 		totalCustomers -= 1
 	endif
+
 	iTotalWhoreCustomers = totalCustomers
 	if iTotalWhoreCustomers < 1
 		whoreCustomerList.Revert()
+	endif
+
+	if bIsBusy
+		return
 	endif
 
 	totalCustomers = 4
@@ -3242,11 +3239,11 @@ Function CheckAliases()
 			if iIndex > -1
 				customerArr[iIndex] = act
 			endif
-			Debug.Trace("Simple Prostitution: DibelCustomer1 = " + getActorInfo(act))
 		endif
 	else
 		totalCustomers -= 1
 	endif
+	
 	if dibelCustomerAlias2
 		act = dibelCustomerAlias2.getActorReference()
 		if !isFormValid(act) || (customerArr.find(act) > -1)
@@ -3265,11 +3262,11 @@ Function CheckAliases()
 			if iIndex > -1
 				customerArr[iIndex] = act
 			endif
-			Debug.Trace("Simple Prostitution: DibelCustomer2 = " + getActorInfo(act))
 		endif
 	else
 		totalCustomers -= 1
 	endif
+
 	if dibelCustomerAlias3
 		act = dibelCustomerAlias3.getActorReference()
 		if !isFormValid(act) || (customerArr.find(act) > -1)
@@ -3288,11 +3285,11 @@ Function CheckAliases()
 			if iIndex > -1
 				customerArr[iIndex] = act
 			endif
-			Debug.Trace("Simple Prostitution: DibelCustomer3 = " + getActorInfo(act))
 		endif
 	else
 		totalCustomers -= 1
 	endif
+
 	if dibelCustomerAlias4
 		act = dibelCustomerAlias4.getActorReference()
 		if !isFormValid(act) || (customerArr.find(act) > -1)
@@ -3307,19 +3304,20 @@ Function CheckAliases()
 			totalCustomers -= 1
 		else
 			addSceneFlagToActor(act)
-			;iIndex = customerArr.find(none)
-			;if iIndex > -1
-			;	customerArr[iIndex] = act
-			;endif
-			Debug.Trace("Simple Prostitution: DibelCustomer4 = " + getActorInfo(act))
 		endif
 	else
 		totalCustomers -= 1
 	endif
+	
 	iTotalDibelCustomers = totalCustomers
 	if iTotalDibelCustomers < 1
 		dibelCustomerList.Revert()
 	endif
+
+	if bIsBusy
+		return
+	endif
+
 	if Assaulter
 		act = Assaulter.getActorReference()
 		if !isFormValid(act)
@@ -3332,10 +3330,15 @@ Function CheckAliases()
 			act.EvaluatePackage()
 		else
 			addSceneFlagToActor(act)
-			Debug.Trace("Simple Prostitution: Assaulter = " + getActorInfo(act))
 		endif
 	endif
+	
+	if bIsBusy
+		return
+	endif
+
 	CheckFakeSceneActors()
+	
 	Debug.trace("Simple Prostitution: Aliases were checked.")
 EndFunction
 
@@ -3402,18 +3405,8 @@ EndFunction
 
 
 
+
+
 Bool Function isCustomer(Actor akActor)
 	return (akActor.IsInFaction(WhoreCustomerFaction) || akActor.IsInFaction(DibelCustomerFaction))
-EndFunction
-
-String Function getActorInfo(Actor act)
-	if !act
-		return ""
-	endif
-	actorbase actbase = act.GetLeveledActorBase()
-	string sName = actbase.GetName()
-	if (sName == "") && bIsPO3ExtenderActive
-		sName = PO3_SKSEFunctions.GetFormEditorID(actbase)
-	endif
-	return ("( " + act + " | " + actbase  +  " ) : " + sName)
 EndFunction
