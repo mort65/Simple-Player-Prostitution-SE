@@ -318,8 +318,6 @@ Keyword Property BeggarClothing_kwd Auto
 Keyword Property ClothingBody_kwd Auto
 Keyword Property ArmorCuirass_kwd Auto
 associationType Property spouse  Auto
-Scene Property fakeScene Auto
-Quest Property fakeSceneQst Auto
 Quest Property pimpTracker Auto
 Float Property fWhoreMarkChance = 0.0 Auto Hidden Conditional
 Float Property fDibelMarkChance = 1.0 Auto Hidden Conditional
@@ -388,8 +386,6 @@ function shutDown()
 	if pimpTracker.isRunning()
 		pimpTracker.setstage(10)
 	endif
-	fakeScene.Stop()
-	fakeSceneQst.Stop()
 	currentAllowedLocations.Revert()
 	player.removeFromFaction(whoreFaction)
 	owner.clear()
@@ -506,6 +502,7 @@ function playerBegTo(Actor akActor, Bool bPay=True)
 	endif
 	if bPay
 		payBeggar(player)
+		debug.sendanimationevent(akActor, "IdleGive")
 		persuade(fBeggarPersuasionXPMult)
 	endif
 	setGlobalVaues()
@@ -632,7 +629,7 @@ Actor[] function formListToActorArray(FormList actorList)
 	return actors
 endFunction
 
-Bool Function bHaveGroupSex(String interface, Bool bAllowAggressive = False, Bool bAllowAllPositions = False, Bool bTryAllIntefs = False)
+Bool Function bHaveGroupSex(String interface, Bool bAllowAggressive = False, Bool bAllowAll = False)
 	if !currentCustomerList.GetSize()
 		return false
 	endif
@@ -675,14 +672,20 @@ Bool Function bHaveGroupSex(String interface, Bool bAllowAggressive = False, Boo
 				if iPosition < 0
 					iPosition = randInt(0,2)
 				endif
-				int iResult = haveSex(currentCustomerList.GetAt(0) as Actor, interface, bAllowAggressive, bAllowAllPositions)
+				int iResult = haveSex(currentCustomerList.GetAt(0) as Actor, interface, bAllowAggressive, bAllowAll)
 				iPositions[iIndex] = iResult
 				bResult = (iResult > -1)
+				if !bResult
+					currentCustomerList.revert()
+					partners = formListToActorArray(currentCustomerList)
+					Debug.Notification("Simple Prostitution: Couldn't start animation for the selected interface.")
+				endif
+				return bResult
 			else
 				if interface == "sexlab"
 					bResult = playerGroupSexSL(partners ,bAllowAggressive)
 					if !bResult
-						if bTryAllIntefs
+						if bTryAllInterfaces
 							bResult = playerGroupSexOS(partners ,bAllowAggressive)
 							if !bResult
 								bResult = playerGroupSexFG(partners)
@@ -696,7 +699,7 @@ Bool Function bHaveGroupSex(String interface, Bool bAllowAggressive = False, Boo
 				elseif interface == "ostim"
 					bResult = playerGroupSexOS(partners ,bAllowAggressive)
 					if !bResult
-						if bTryAllIntefs
+						if bTryAllInterfaces
 							bResult = playerGroupSexSL(partners ,bAllowAggressive)
 							if !bResult
 								bResult = playerGroupSexFG(partners)
@@ -710,7 +713,7 @@ Bool Function bHaveGroupSex(String interface, Bool bAllowAggressive = False, Boo
 				elseif interface == "flowergirls"
 					bResult = playerGroupSexFG(partners)
 					if !bResult
-						if bTryAllIntefs
+						if bTryAllInterfaces
 							bResult = playerGroupSexOS(partners ,bAllowAggressive)
 							if !bResult
 								bResult = playerGroupSexSL(partners)
@@ -770,11 +773,13 @@ function startSnitchFinder(Bool bCheckDibel)
 EndFunction
 
 Function setWhoreCustomer(Actor akActor, Bool bPay = False, Bool bPersuaded = True)
-	customerSpell.Cast(akActor, akActor)
-	if isCustomer(akActor)
+	if !akActor || isCustomer(akActor)
 		return
 	endif
 	int iPayment = 0
+	if (bPay || (akActor.GetCurrentScene() == None))
+		customerSpell.Cast(akActor, akActor)
+	endif
 	if bPay
 		if !player.GetActorBase().GetSex() && !akActor.GetLeveledActorBase().GetSex()
 			iWhorePosition = positionChooser(0, fWhoreAnalChance as Int, fWhoreOralChance as Int)
@@ -783,6 +788,7 @@ Function setWhoreCustomer(Actor akActor, Bool bPay = False, Bool bPersuaded = Tr
 		endif
 		if iWhorePosition > -1
 			iPayment = payWhore(player, iWhorePosition)
+			(iPayment > 0) && debug.sendanimationevent(akActor, "IdleGive")
 			if bPersuaded
 				persuade(fWhorePersuasionXPMult)
 			endif
@@ -824,9 +830,11 @@ Function setWhoreCustomer(Actor akActor, Bool bPay = False, Bool bPersuaded = Tr
 EndFunction
 
 Function setDibelCustomer(Actor akActor, bool bPay = true )
-	customerSpell.Cast(akActor, akActor)
-	if isCustomer(akActor)
+	if !akActor || isCustomer(akActor)
 		return
+	endif
+	if (bPay || (akActor.GetCurrentScene() == None))
+		customerSpell.Cast(akActor, akActor)
 	endif
 	int iPayment = 0
 	if bPay
@@ -837,6 +845,7 @@ Function setDibelCustomer(Actor akActor, bool bPay = true )
 		endif
 		if iDibelPosition > -1
 			iPayment = payDibel(player, iDibelPosition)
+			(iPayment > 0) && debug.sendanimationevent(akActor, "IdleGive")
 			persuade(fDibelPersuasionXPMult)
 		endif
 	endIf
@@ -1048,7 +1057,9 @@ Function rejectCusomer(Actor akCustomer)
 		clearWhorePositions()
 	endif 
 	if (iWhatToDo == 0)
-		if !bRejectBeggar && !bRejectApproach
+		if !bRejectBeggar && !bRejectApproach && (iTotalCustomerPaidGold > 0)
+			debug.sendanimationevent(player, "IdleGive")
+			utility.wait(1.0)
 			player.removeItem(gold, iTotalCustomerPaidGold, false, akCustomer)
 		endif
 	elseif iWhatToDo == 1
@@ -1106,8 +1117,6 @@ Function AssaultPlayer(Actor akAssaulter, Bool bEnslave = false, Bool bRape = fa
 		akAssaulter.Dismount()
 		Utility.wait(3.0)
 	endif
-	addSceneFlagToActor(akAssaulter)
-	addSceneFlagToActor(player)
 	If bIsPO3ExtenderActive
 		PO3_SKSEFunctions.PreventActorDetection(akAssaulter)
 		PO3_SKSEFunctions.PreventActorDetection(akAssaulter)
@@ -1228,8 +1237,6 @@ Function AssaultPlayer(Actor akAssaulter, Bool bEnslave = false, Bool bRape = fa
 			akAssaulter.equipItemEx(weap, 1)
 			utility.wait(0.5)
 		endif
-		removeSceneFlagFromActor(akAssaulter)
-		removeSceneFlagFromActor(player)
 		If bIsPO3ExtenderActive
 			PO3_SKSEFunctions.ResetActorDetection(akAssaulter)
 		Endif
@@ -1248,8 +1255,6 @@ Function AssaultPlayer(Actor akAssaulter, Bool bEnslave = false, Bool bRape = fa
 		utility.wait(0.5)
 	endif
 	akAssaulter.ClearLookAt()
-	removeSceneFlagFromActor(akAssaulter)
-	removeSceneFlagFromActor(player)
 	If bIsPO3ExtenderActive
 		PO3_SKSEFunctions.ResetActorDetection(akAssaulter)
 	Endif
@@ -1458,56 +1463,48 @@ Function clearCustomer()
 	if Customer
 		dibelCustomerAlias.Clear()
 		bIsPapyrusUtilActive && ActorUtil.RemovePackageOverride(Customer, FollowPackage)
-		removeSceneFlagFromActor(Customer)
 		Customer.EvaluatePackage()
 	endif
 	Customer = dibelCustomerAlias2.getActorReference()
 	if Customer
 		dibelCustomerAlias2.Clear()
 		bIsPapyrusUtilActive && ActorUtil.RemovePackageOverride(Customer, FollowPackage)
-		removeSceneFlagFromActor(Customer)
 		Customer.EvaluatePackage()
 	endif
 	Customer = dibelCustomerAlias3.getActorReference()
 	if Customer
 		dibelCustomerAlias3.Clear()
 		bIsPapyrusUtilActive && ActorUtil.RemovePackageOverride(Customer, FollowPackage)
-		removeSceneFlagFromActor(Customer)
 		Customer.EvaluatePackage()
 	endif
 	Customer = dibelCustomerAlias4.getActorReference()
 	if Customer
 		dibelCustomerAlias4.Clear()
 		bIsPapyrusUtilActive && ActorUtil.RemovePackageOverride(Customer, FollowPackage)
-		removeSceneFlagFromActor(Customer)
 		Customer.EvaluatePackage()
 	endif
 	Customer = whoreCustomerAlias.getActorReference()
 	if Customer
 		whoreCustomerAlias.Clear()
 		bIsPapyrusUtilActive && ActorUtil.RemovePackageOverride(Customer, FollowPackage)
-		removeSceneFlagFromActor(Customer)
 		Customer.EvaluatePackage()
 	endif
 	Customer = whoreCustomerAlias2.getActorReference()
 	if Customer
 		whoreCustomerAlias2.Clear()
 		bIsPapyrusUtilActive && ActorUtil.RemovePackageOverride(Customer, FollowPackage)
-		removeSceneFlagFromActor(Customer)
 		Customer.EvaluatePackage()
 	endif
 	Customer = whoreCustomerAlias3.getActorReference()
 	if Customer
 		whoreCustomerAlias3.Clear()
 		bIsPapyrusUtilActive && ActorUtil.RemovePackageOverride(Customer, FollowPackage)
-		removeSceneFlagFromActor(Customer)
 		Customer.EvaluatePackage()
 	endif
 	Customer = whoreCustomerAlias4.getActorReference()
 	if Customer
 		whoreCustomerAlias4.Clear()
 		bIsPapyrusUtilActive && ActorUtil.RemovePackageOverride(Customer, FollowPackage)
-		removeSceneFlagFromActor(Customer)
 		Customer.EvaluatePackage()
 	endif
 	whoreCustomerList.revert()
@@ -1521,28 +1518,24 @@ Function clearDibelCustomers()
 	if Customer
 		dibelCustomerAlias.Clear()
 		bIsPapyrusUtilActive && ActorUtil.RemovePackageOverride(Customer, FollowPackage)
-		removeSceneFlagFromActor(Customer)
 		Customer.EvaluatePackage()
 	endif
 	Customer = dibelCustomerAlias2.getActorReference()
 	if Customer
 		dibelCustomerAlias2.Clear()
 		bIsPapyrusUtilActive && ActorUtil.RemovePackageOverride(Customer, FollowPackage)
-		removeSceneFlagFromActor(Customer)
 		Customer.EvaluatePackage()
 	endif
 	Customer = dibelCustomerAlias3.getActorReference()
 	if Customer
 		dibelCustomerAlias3.Clear()
 		bIsPapyrusUtilActive && ActorUtil.RemovePackageOverride(Customer, FollowPackage)
-		removeSceneFlagFromActor(Customer)
 		Customer.EvaluatePackage()
 	endif
 	Customer = dibelCustomerAlias4.getActorReference()
 	if Customer
 		dibelCustomerAlias4.Clear()
 		bIsPapyrusUtilActive && ActorUtil.RemovePackageOverride(Customer, FollowPackage)
-		removeSceneFlagFromActor(Customer)
 		Customer.EvaluatePackage()
 	endif
 	dibelCustomerList.Revert()
@@ -1559,28 +1552,24 @@ Function clearWhoreCustomers()
 	if Customer
 		whoreCustomerAlias.Clear()
 		bIsPapyrusUtilActive && ActorUtil.RemovePackageOverride(Customer, FollowPackage)
-		removeSceneFlagFromActor(Customer)
 		Customer.EvaluatePackage()
 	endif
 	Customer = whoreCustomerAlias2.getActorReference()
 	if Customer
 		whoreCustomerAlias2.Clear()
 		bIsPapyrusUtilActive && ActorUtil.RemovePackageOverride(Customer, FollowPackage)
-		removeSceneFlagFromActor(Customer)
 		Customer.EvaluatePackage()
 	endif
 	Customer = whoreCustomerAlias3.getActorReference()
 	if Customer
 		whoreCustomerAlias3.Clear()
 		bIsPapyrusUtilActive && ActorUtil.RemovePackageOverride(Customer, FollowPackage)
-		removeSceneFlagFromActor(Customer)
 		Customer.EvaluatePackage()
 	endif
 	Customer = whoreCustomerAlias4.getActorReference()
 	if Customer
 		whoreCustomerAlias4.Clear()
 		bIsPapyrusUtilActive && ActorUtil.RemovePackageOverride(Customer, FollowPackage)
-		removeSceneFlagFromActor(Customer)
 		Customer.EvaluatePackage()
 	endif
 	whoreCustomerList.revert()
@@ -2415,7 +2404,6 @@ State Dibeling
 	Event OnBeginState()
 		bIsBusy = True
 		isDibel = true
-		string sInterface
 		if !isSnitchOK(dibelSnitch) && !playerHasDibelLicence()
 			startSnitchFinder(true)
 		endif
@@ -2435,12 +2423,7 @@ State Dibeling
 			endWhile
 			if dibelCustomerlist.GetSize() > 0
 				iPositions = iDibelPositions
-				sInterface = sGetCurAnimInteface()
-				if bHaveGroupSex(sInterface, bDibelAllowAggressive, bAllPosAllowed(fDibelVagChance,fDibelAnalChance,fDibelOralChance), false)
-					bResult = true
-				elseif bTryAllInterfaces
-					bResult = bHaveGroupSex(sInterface, bDibelAllowAggressive, bAllPosAllowed(fDibelVagChance,fDibelAnalChance,fDibelOralChance), true)
-				endif
+				bResult = bHaveGroupSex(sGetCurAnimInteface(), bDibelAllowAggressive, bAllPosAllowed(fDibelVagChance,fDibelAnalChance,fDibelOralChance))
 				if bResult
 					i = 0
 					int j = 0
@@ -2527,7 +2510,6 @@ State Whoring
 	Event OnBeginState()
 		bIsBusy = True
 		isWhore = True
-		String sInterface
 		if !isSnitchOK(whoreSnitch) && !playerHasWhoreLicense()
 			startSnitchFinder(false)
 		endif
@@ -2547,12 +2529,7 @@ State Whoring
 			endWhile
 			if (whoreCustomerlist.GetSize() > 0)
 				iPositions = iWhorePositions
-				sInterface = sGetCurAnimInteface()
-				if bHaveGroupSex(sInterface, bWhoreAllowAggressive, bAllPosAllowed(fWhoreVagChance,fWhoreAnalChance,fWhoreOralChance), false)
-					bResult = true
-				elseif bTryAllInterfaces
-					bResult = bHaveGroupSex(sInterface, bWhoreAllowAggressive, bAllPosAllowed(fWhoreVagChance,fWhoreAnalChance,fWhoreOralChance), true)
-				endif
+				bResult = bHaveGroupSex(sGetCurAnimInteface(), bWhoreAllowAggressive, bAllPosAllowed(fWhoreVagChance,fWhoreAnalChance,fWhoreOralChance))
 				if bResult
 					i = 0
 					int j = 0
@@ -3089,7 +3066,6 @@ Function forceRefAndPackageTo(Actor akActor, ReferenceAlias akRef, Package akPac
 		ActorUtil.AddPackageOverride(akActor, akPackage, 100, 1)
 	endif
 	akRef.ForceRefTo(akActor)
-	addSceneFlagToActor(akActor)
 EndFunction
 
 Function CheckAliases()
@@ -3097,8 +3073,6 @@ Function CheckAliases()
 		return
 	endif
 	actor act
-	actor[] customerArr = new Actor[8]
-	int iIndex
 	if Owner
 		act = Owner.getActorReference()
 		if !isFormValid(act) || act.isDead()
@@ -3113,211 +3087,137 @@ Function CheckAliases()
 		endif
 	endif
 
-	if bIsBusy
-		return
-	endif
-
 	int totalCustomers = 4
 	if whoreCustomerAlias
 		act = whoreCustomerAlias.getActorReference()
-		if !isFormValid(act)
+		if (!isFormValid(act))
 			whoreCustomerAlias.Clear()
 			totalCustomers -= 1
 		elseif act.isDead()
 			whoreCustomerAlias.Clear()
 			bIsPapyrusUtilActive && ActorUtil.RemovePackageOverride(act, FollowPackage)
-			removeSceneFlagFromActor(act)
 			act.EvaluatePackage()
 			whoreCustomerList.RemoveAddedForm(act)
 			totalCustomers -= 1
-		else
-			addSceneFlagToActor(act)
-			iIndex = customerArr.find(none)
-			if iIndex > -1
-				customerArr[iIndex] = act
-			endif
 		endif
 	else
 		totalCustomers -= 1
 	endif
-
 	if whoreCustomerAlias2
 		act = whoreCustomerAlias2.getActorReference()
-		if !isFormValid(act) || (customerArr.find(act) > -1)
+		if (!isFormValid(act))
 			whoreCustomerAlias2.Clear()
 			totalCustomers -= 1
 		elseif act.isDead()
 			whoreCustomerAlias2.Clear()
 			bIsPapyrusUtilActive && ActorUtil.RemovePackageOverride(act, FollowPackage)
-			removeSceneFlagFromActor(act)
 			act.EvaluatePackage()
 			whoreCustomerList.RemoveAddedForm(act)
 			totalCustomers -= 1
-		else
-			addSceneFlagToActor(act)
-			iIndex = customerArr.find(none)
-			if iIndex > -1
-				customerArr[iIndex] = act
-			endif
 		endif
 	else
 		totalCustomers -= 1
 	endif
-
-	
 	if whoreCustomerAlias3
 		act = whoreCustomerAlias3.getActorReference()
-		if !isFormValid(act) || (customerArr.find(act) > -1)
+		if (!isFormValid(act))
 			whoreCustomerAlias3.Clear()
 			totalCustomers -= 1
 		elseif act.isDead()
 			whoreCustomerAlias3.Clear()
 			bIsPapyrusUtilActive && ActorUtil.RemovePackageOverride(act, FollowPackage)
-			removeSceneFlagFromActor(act)
 			act.EvaluatePackage()
 			whoreCustomerList.RemoveAddedForm(act)
 			totalCustomers -= 1
-		else
-			addSceneFlagToActor(act)
-			iIndex = customerArr.find(none)
-			if iIndex > -1
-				customerArr[iIndex] = act
-			endif
 		endif
 	else
 		totalCustomers -= 1
 	endif
-
 	if whoreCustomerAlias4
 		act = whoreCustomerAlias4.getActorReference()
-		if !isFormValid(act) || (customerArr.find(act) > -1)
+		if (!isFormValid(act))
 			whoreCustomerAlias4.Clear()
 			totalCustomers -= 1
 		elseif act.isDead()
 			whoreCustomerAlias4.Clear()
 			bIsPapyrusUtilActive && ActorUtil.RemovePackageOverride(act, FollowPackage)
-			removeSceneFlagFromActor(act)
 			act.EvaluatePackage()
 			whoreCustomerList.RemoveAddedForm(act)
 			totalCustomers -= 1
-		else
-			addSceneFlagToActor(act)
-			iIndex = customerArr.find(none)
-			if iIndex > -1
-				customerArr[iIndex] = act
-			endif
 		endif
 	else
 		totalCustomers -= 1
 	endif
-
 	iTotalWhoreCustomers = totalCustomers
 	if iTotalWhoreCustomers < 1
 		whoreCustomerList.Revert()
 	endif
 
-	if bIsBusy
-		return
-	endif
-
 	totalCustomers = 4
 	if dibelCustomerAlias
 		act = dibelCustomerAlias.getActorReference()
-		if !isFormValid(act) || (customerArr.find(act) > -1)
+		if (!isFormValid(act))
 			dibelCustomerAlias.Clear()
 			totalCustomers -= 1
 		elseif act.isDead()
 			dibelCustomerAlias.Clear()
 			bIsPapyrusUtilActive && ActorUtil.RemovePackageOverride(act, FollowPackage)
-			removeSceneFlagFromActor(act)
 			act.EvaluatePackage()
 			dibelCustomerList.RemoveAddedForm(act)
 			totalCustomers -= 1
-		else
-			addSceneFlagToActor(act)
-			iIndex = customerArr.find(none)
-			if iIndex > -1
-				customerArr[iIndex] = act
-			endif
 		endif
 	else
 		totalCustomers -= 1
 	endif
-	
 	if dibelCustomerAlias2
 		act = dibelCustomerAlias2.getActorReference()
-		if !isFormValid(act) || (customerArr.find(act) > -1)
+		if (!isFormValid(act))
 			dibelCustomerAlias2.Clear()
 			totalCustomers -= 1
 		elseif act.isDead()
 			dibelCustomerAlias2.Clear()
 			bIsPapyrusUtilActive && ActorUtil.RemovePackageOverride(act, FollowPackage)
-			removeSceneFlagFromActor(act)
 			act.EvaluatePackage()
 			dibelCustomerList.RemoveAddedForm(act)
 			totalCustomers -= 1
-		else
-			addSceneFlagToActor(act)
-			iIndex = customerArr.find(none)
-			if iIndex > -1
-				customerArr[iIndex] = act
-			endif
 		endif
 	else
 		totalCustomers -= 1
 	endif
-
 	if dibelCustomerAlias3
 		act = dibelCustomerAlias3.getActorReference()
-		if !isFormValid(act) || (customerArr.find(act) > -1)
+		if (!isFormValid(act))
 			dibelCustomerAlias3.Clear()
 			totalCustomers -= 1
 		elseif act.isDead()
 			dibelCustomerAlias3.Clear()
 			bIsPapyrusUtilActive && ActorUtil.RemovePackageOverride(act, FollowPackage)
-			removeSceneFlagFromActor(act)
 			act.EvaluatePackage()
 			dibelCustomerList.RemoveAddedForm(act)
 			totalCustomers -= 1
-		else
-			addSceneFlagToActor(act)
-			iIndex = customerArr.find(none)
-			if iIndex > -1
-				customerArr[iIndex] = act
-			endif
 		endif
 	else
 		totalCustomers -= 1
 	endif
-
 	if dibelCustomerAlias4
 		act = dibelCustomerAlias4.getActorReference()
-		if !isFormValid(act) || (customerArr.find(act) > -1)
+		if (!isFormValid(act))
 			dibelCustomerAlias4.Clear()
 			totalCustomers -= 1
 		elseif act.isDead()
 			dibelCustomerAlias4.Clear()
 			bIsPapyrusUtilActive && ActorUtil.RemovePackageOverride(act, FollowPackage)
-			removeSceneFlagFromActor(act)
 			act.EvaluatePackage()
 			dibelCustomerList.RemoveAddedForm(act)
 			totalCustomers -= 1
-		else
-			addSceneFlagToActor(act)
 		endif
 	else
 		totalCustomers -= 1
 	endif
-	
 	iTotalDibelCustomers = totalCustomers
 	if iTotalDibelCustomers < 1
 		dibelCustomerList.Revert()
 	endif
-
-	if bIsBusy
-		return
-	endif
-
 	if Assaulter
 		act = Assaulter.getActorReference()
 		if !isFormValid(act)
@@ -3325,88 +3225,27 @@ Function CheckAliases()
 		elseif act.isDead() || (act.getParentCell() != player.getParentCell())
 			act.SetDontMove(false)
 			Assaulter.Clear()
-			removeSceneFlagFromActor(act)
 			bIsPapyrusUtilActive && ActorUtil.RemovePackageOverride(act, drawWeaponPackage)
 			act.EvaluatePackage()
-		else
-			addSceneFlagToActor(act)
 		endif
 	endif
-	
-	if bIsBusy
-		return
-	endif
-
-	CheckFakeSceneActors()
-	
 	Debug.trace("Simple Prostitution: Aliases were checked.")
 EndFunction
 
-
-function addSceneFlagToActor(Actor act)
-	{Flag actors as IsInScene so hopefully other mods leave them alone.}
-	if !act || act.HasKeywordstring("zzzmrt_FakeScene_KWD")
-		return
-	endIf
-	int iNumAlias = fakeSceneQst.GetNumAliases()
-	ReferenceAlias aliasRef
-	Actor ActorRef
-	Int iIndex = 0
-	While iIndex < iNumAlias
-		aliasRef = fakeSceneQst.GetNthAlias(iIndex) as ReferenceAlias
-		ActorRef = aliasRef.getReference() As Actor
-		if ActorRef == None
-			aliasRef.ForceRefTo(act)
-			fakeSceneQst.IsRunning() || fakeSceneQst.Start()
-			fakeScene.IsPlaying() || fakeScene.Start()
-			return
-		endif
-		iIndex += 1
-	endWhile
-EndFunction
-
-function removeSceneFlagFromActor(Actor act)
-	if !act || !act.HasKeywordstring("zzzmrt_FakeScene_KWD")
-		return
-	endIf
-	int iNumAlias = fakeSceneQst.GetNumAliases()
-	int iIndex = 0
-	ReferenceAlias aliasRef
-	While iIndex < iNumAlias
-		aliasRef = fakeSceneQst.GetNthAlias(iIndex) as ReferenceAlias
-		if (aliasRef.getReference() As Actor) == act
-			aliasRef.Clear()
-		endif
-		iIndex += 1
-	endWhile
-EndFunction
-
-Function CheckFakeSceneActors()
-	int iNumAlias = fakeSceneQst.GetNumAliases()
-	int iIndex = 0
-	ReferenceAlias aliasRef
-	Actor ActorRef
-	while iIndex < iNumAlias
-		aliasRef = fakeSceneQst.GetNthAlias(iIndex) as ReferenceAlias
-		ActorRef = aliasRef.getReference() As Actor
-		if ActorRef && (ActorRef != player)
-			if isCustomer(ActorRef)
-			elseif ActorRef == Assaulter.getReference() As Actor
-			elseif ActorRef == ApproachMonitorScr.approachingRef.getReference() As Actor
-			else
-				if (ActorRef.GetDialogueTarget() != player)
-					aliasRef.Clear()
-				endif
-			endif
-			iIndex += 1
-		endif
-	endWhile
-EndFunction
-
-
-
-
-
 Bool Function isCustomer(Actor akActor)
-	return (akActor.IsInFaction(WhoreCustomerFaction) || akActor.IsInFaction(DibelCustomerFaction))
+	if !akActor
+		return False
+	endif
+	if (whoreCustomerAlias.getReference() As Actor) && (akActor == (whoreCustomerAlias.getReference() As Actor))
+	elseif (whoreCustomerAlias2.getReference() As Actor) && (akActor == (whoreCustomerAlias2.getReference() As Actor))
+	elseif (whoreCustomerAlias3.getReference() As Actor) && (akActor == (whoreCustomerAlias3.getReference() As Actor))
+	elseif (whoreCustomerAlias4.getReference() As Actor) && (akActor == (whoreCustomerAlias4.getReference() As Actor))
+	elseif (dibelCustomerAlias.getReference() As Actor) && (akActor == (dibelCustomerAlias.getReference() As Actor))
+	elseif (dibelCustomerAlias2.getReference() As Actor) && (akActor == (dibelCustomerAlias2.getReference() As Actor))
+	elseif (dibelCustomerAlias3.getReference() As Actor) && (akActor == (dibelCustomerAlias3.getReference() As Actor))
+	elseif (dibelCustomerAlias4.getReference() As Actor) && (akActor == (dibelCustomerAlias4.getReference() As Actor))
+	else
+		return False
+	endif
+	return true
 EndFunction
