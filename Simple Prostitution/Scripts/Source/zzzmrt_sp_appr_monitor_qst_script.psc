@@ -1,5 +1,7 @@
 Scriptname zzzmrt_sp_appr_monitor_qst_script extends Quest  Conditional
 
+import zzzmrt_sp_utility
+
 ReferenceAlias property approachingRef auto
 Quest Property ApproachQst auto
 Actor property player auto
@@ -125,7 +127,8 @@ Bool Function canPlayerApproached()
 EndFunction
 
 Bool function canPunishPlayerForRejectingApproach(Actor akActor)
-	if !canPlayerApproached()
+	if !akActor
+	elseif !canPlayerApproached()
 	elseif player.IsBleedingOut()
 	elseif MainScript.isActorHavingSex(player)
 	elseif MainScript.isActorHavingSex(akActor)
@@ -137,8 +140,15 @@ Bool function canPunishPlayerForRejectingApproach(Actor akActor)
 	elseif akActor.GetCurrentScene() != None
 	elseif akActor.GetDistance(player) > 3000.0
 	elseif isPlayerBusyInMOA()
-	else		
-		return true
+	else 
+		if akActor.isInDialogueWithPlayer()
+			return true
+		else
+			actor targetAct = getPlayerDialogueTarget(player)
+			if !targetAct || (targetAct == akActor)
+				return true
+			endif
+		endif
 	endif
 	return false
 EndFunction
@@ -158,7 +168,14 @@ Bool Function canPunishPlayerForRejectingSexOffer(Actor akActor)
 	elseif player.IsInCombat()
 	elseif isPlayerBusyInMOA()
 	else
-		return true
+		if akActor.isInDialogueWithPlayer()
+			return true
+		else
+			actor targetAct = getPlayerDialogueTarget(player)
+			if !targetAct || (targetAct == akActor)
+				return true
+			endif
+		endif
 	endif
 	return False
 EndFunction

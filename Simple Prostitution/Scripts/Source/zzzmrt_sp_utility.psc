@@ -222,3 +222,16 @@ Bool function isPluginFound(string pluginName) Global
   endif
   return Game.IsPluginInstalled(pluginName)
 endfunction
+
+Actor Function getPlayerDialogueTarget(Actor kPlayerRef) Global
+  Actor kPlayerDialogueTarget
+  Int iLoopCount = 10
+  While iLoopCount > 0
+    iLoopCount -= 1
+    kPlayerDialogueTarget = Game.FindRandomActorFromRef(kPlayerRef , 200.0)
+    If kPlayerDialogueTarget && (kPlayerDialogueTarget != kPlayerRef) && kPlayerDialogueTarget.IsInDialogueWithPlayer() 
+      Return kPlayerDialogueTarget
+    EndIf
+  EndWhile
+  Return None
+EndFunction
