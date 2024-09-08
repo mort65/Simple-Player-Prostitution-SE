@@ -16,6 +16,6 @@ Event OnInit()
 		if sName == "" && MainScript.bIsPO3ExtenderActive
 			sName = PO3_SKSEFunctions.GetFormEditorID(approachingActor)
 		endif
-		Debug.trace("Simple Prostitution: " + approachingActor + " | " + approachingActorBase  +  " : " + sName + " approaching player.")
+		Debug.trace("Simple Prostitution: " + approachingActor + " | " + approachingActorBase  +  " : " + sName + " approaching player from this distance: " + approachingActor.GetDistance(MainScript.player))
     endif
 EndEvent

@@ -377,6 +377,10 @@ Package Property FollowPackage Auto
 Bool Property bOnlyLicensedApproach = true Auto Hidden Conditional
 Bool Property bOnlyLicensedBeggarSexOffer = true Auto Hidden Conditional
 
+Bool Property bOnlyLOSApproach = True Auto Hidden Conditional
+Float Property fMaxApproachDistance = 5000.0 Auto Hidden Conditional
+GlobalVariable Property maxApproachDistance Auto
+
 function shutDown()
 	stopApproach(true)
 	snitchDetector.stop()
@@ -513,7 +517,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-	return getBaseVersion() + 0.37
+	return getBaseVersion() + 0.38
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
@@ -1803,6 +1807,7 @@ function setGlobalVaues()
 	DibelFailureChance.SetValueInt(maxInt(0, 16 * MCMScript.iDibelSpeechDifficulty))
 	BeggarFailureChance.SetValueInt(maxInt(0, 16 * MCMScript.iBeggarSpeechDifficulty))
 	BeggarNoSexOfferChance.SetValueInt(maxInt(0, (100.0 - fBeggarSexOfferChance) as Int))
+	maxApproachDistance.SetValueInt(fMaxApproachDistance as Int)
 endfunction
 
 Int function positionChooser(int vaginalWeight = 50, int AnalWeight = 50, int oralWeight = 50)
@@ -1945,7 +1950,7 @@ Bool function bCanSnitch(Actor npc, Bool bComplete = true)
 	if !npc
 		return False
 	endif
-	if npc.isDead()
+	if npc.isDead() || npc.isDisabled()
 		return false
 	endif
 	if whoreCustomerlist.hasform(npc)

@@ -1286,7 +1286,6 @@ state BEG_FEMALE_RAPE_SLIDER
   event OnSliderAcceptST(float value)
     MainScript.fBeggingFemaleRapistChance = value
     _SetSliderOptionValueST(MainScript.fBeggingFemaleRapistChance, "$MRT_SP_BEG_FEMALE_RAPE_SLIDER2")
-    ;MainScript.setGlobalVaues()
   endevent
 
   event OnSliderOpenST()
@@ -2999,6 +2998,7 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
   MainScript.bMaleCustomerApproach = jsonutil.GetPathIntValue(settings_path, "bMaleCustomerApproach", MainScript.bMaleCustomerApproach as Int) 
   MainScript.bFemaleCustomerApproach = jsonutil.GetPathIntValue(settings_path, "bFemaleCustomerApproach", MainScript.bFemaleCustomerApproach as Int)
   MainScript.bOnlyInteriorApproach = jsonutil.GetPathIntValue(settings_path, "bOnlyInteriorApproach", MainScript.bOnlyInteriorApproach as Int)
+  MainScript.bOnlyLOSApproach = jsonutil.GetPathIntValue(settings_path, "bOnlyLOSApproach", MainScript.bOnlyLOSApproach as Int)
   MainScript.bOnlyWhoreClothingApproach = jsonutil.GetPathIntValue(settings_path, "bOnlyWhoreClothingApproach", MainScript.bOnlyWhoreClothingApproach as Int)
   MainScript.bOnlyLicensedApproach = jsonutil.GetPathIntValue(settings_path, "bOnlyLicensedApproach", MainScript.bOnlyLicensedApproach as Int)
   MainScript.bOnlyLicensedBeggarSexOffer = jsonutil.GetPathIntValue(settings_path, "bOnlyLicensedBeggarSexOffer", MainScript.bOnlyLicensedBeggarSexOffer as Int)
@@ -3093,6 +3093,7 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
   MainScript.fDibelRejectMaleReportChance = jsonutil.GetPathFloatValue(settings_path, "fDibelRejectMaleReportChance", MainScript.fDibelRejectMaleReportChance)
   MainScript.fDibelRejectFemaleReportChance = jsonutil.GetPathFloatValue(settings_path, "fDibelRejectFemaleReportChance", MainScript.fDibelRejectFemaleReportChance)
   MainScript.fCustomerApproachChance = jsonutil.GetPathFloatValue(settings_path, "fCustomerApproachChance", MainScript.fCustomerApproachChance)
+  MainScript.fMaxApproachDistance = jsonutil.GetPathFloatValue(settings_path, "fMaxApproachDistance", MainScript.fMaxApproachDistance)
   MainScript.fDibelRejectMaleMurderChance = jsonutil.GetPathFloatValue(settings_path, "fDibelRejectMaleMurderChance", MainScript.fDibelRejectMaleMurderChance)
   MainScript.fDibelRejectFemaleMurderChance = jsonutil.GetPathFloatValue(settings_path, "fDibelRejectFemaleMurderChance", MainScript.fDibelRejectFemaleMurderChance)
   MainScript.fWhoreRejectMaleMurderChance = jsonutil.GetPathFloatValue(settings_path, "fWhoreRejectMaleMurderChance", MainScript.fWhoreRejectMaleMurderChance)
@@ -3192,6 +3193,7 @@ Bool function saveUserSettingsPapyrus()
   jsonutil.SetPathIntValue(settings_path, "bFemaleCustomerApproach", MainScript.bFemaleCustomerApproach as Int)
   jsonutil.SetPathIntValue(settings_path, "bOnlyWhoreClothingApproach", MainScript.bOnlyWhoreClothingApproach as Int)
   jsonutil.SetPathIntValue(settings_path, "bOnlyInteriorApproach", MainScript.bOnlyInteriorApproach as Int)
+  jsonutil.SetPathIntValue(settings_path, "bOnlyLOSApproach", MainScript.bOnlyLOSApproach as Int)
   jsonutil.SetPathIntValue(settings_path, "bOnlyLicensedApproach", MainScript.bOnlyLicensedApproach as Int)  
   jsonutil.SetPathIntValue(settings_path, "bOnlyLicensedBeggarSexOffer", MainScript.bOnlyLicensedBeggarSexOffer as Int)
   jsonutil.SetPathIntValue(settings_path, "bOnlyInteriorBeggarOfferSex", MainScript.bOnlyInteriorBeggarOfferSex as Int)
@@ -3246,6 +3248,8 @@ Bool function saveUserSettingsPapyrus()
   jsonutil.SetPathFloatValue(settings_path, "fDDKeyCost", MainScript.fDDKeyCost)
   jsonutil.SetPathFloatValue(settings_path, "fDDKeyIncrement", MainScript.fDDKeyIncrement)
   jsonutil.SetPathFloatValue(settings_path, "fBeggarSexOfferChance", MainScript.fBeggarSexOfferChance)
+  jsonutil.SetPathFloatValue(settings_path, "fCustomerApproachChance", MainScript.fCustomerApproachChance)
+  jsonutil.SetPathFloatValue(settings_path, "fMaxApproachDistance", MainScript.fMaxApproachDistance)
 
   jsonutil.SetPathFloatValue(settings_path, "fWhoreRejectMaleAcceptChance", MainScript.fWhoreRejectMaleAcceptChance)
   jsonutil.SetPathFloatValue(settings_path, "fWhoreRejectFemaleAcceptChance", MainScript.fWhoreRejectFemaleAcceptChance)
@@ -3728,6 +3732,9 @@ event OnOptionSelect(int option)
   elseif option == OID_ONLY_INTERIOR_APPROACH
     MainScript.bOnlyInteriorApproach = !MainScript.bOnlyInteriorApproach
     SetToggleOptionValue(option, MainScript.bOnlyInteriorApproach)
+  elseif option == OID_ONLY_LOS_APPROACH
+    MainScript.bOnlyLOSApproach = !MainScript.bOnlyLOSApproach
+    SetToggleOptionValue(option, MainScript.bOnlyLOSApproach)
   elseif option == OID_ONLY_LICENSED_APPROACH
     MainScript.bOnlyLicensedApproach = !MainScript.bOnlyLicensedApproach
     SetToggleOptionValue(option, MainScript.bOnlyLicensedApproach) 
@@ -3776,6 +3783,8 @@ event OnOptionDefault(int option)
     MainScript.bOnlyWhoreClothingApproach = False
   elseif option == OID_ONLY_INTERIOR_APPROACH
     MainScript.bOnlyInteriorApproach = False
+  elseif option == OID_ONLY_LOS_APPROACH
+    MainScript.bOnlyLOSApproach = True
   elseif option == OID_ONLY_LICENSED_APPROACH
     MainScript.bOnlyLicensedApproach = True
   elseif option == OID_BEG_ONLY_LICENSED_SEX_OFFER
@@ -3862,6 +3871,8 @@ event OnOptionHighlight(int option)
     SetInfoText("$MRT_SP_DESC_CUSTOMER_APPROACH_INTERVAL_SLIDER")
   elseif option == OID_CUSTOMER_APPROACH_CHANCE 
     SetInfoText("$MRT_SP_DESC_CUSTOMER_APPROACH_CHANCE_SLIDER")
+  elseif option == OID_MAX_DISTANCE_APPROACH
+    SetInfoText("$MRT_SP_DESC_MAX_DISTANCE_APPROACH_SLIDER")
   elseif option == OID_FEMALE_CUSTOMER_APPROACH 
     SetInfoText("$MRT_SP_DESC_FEMALE_CUSTOMER_APPROACH")
   elseif option == OID_MALE_CUSTOMER_APPROACH
@@ -3882,6 +3893,8 @@ event OnOptionHighlight(int option)
     SetInfoText("$MRT_SP_DESC_ONLY_WHORE_CLOTHING_APPROACH")
   elseif option == OID_ONLY_INTERIOR_APPROACH
     SetInfoText("$MRT_SP_DESC_ONLY_INTERIOR_APPROACH")
+  elseif option == OID_ONLY_LOS_APPROACH
+    SetInfoText("$MRT_SP_DESC_ONLY_LOS_APPROACH")
   elseif option == OID_ONLY_LICENSED_APPROACH
     SetInfoText("$MRT_SP_DESC_ONLY_LICENSED_APPROACH_TOGGLE")
   elseif option == OID_BEG_ONLY_LICENSED_SEX_OFFER
@@ -4037,6 +4050,10 @@ event OnOptionSliderAccept(int option, float value)
   elseif option == OID_CUSTOMER_APPROACH_CHANCE 
     MainScript.fCustomerApproachChance = value
     SetSliderOptionValue(OID_CUSTOMER_APPROACH_CHANCE, MainScript.fCustomerApproachChance, "$MRT_SP_CUSTOMER_APPROACH_CHANCE_SLIDER2")
+  elseif option == OID_MAX_DISTANCE_APPROACH 
+    MainScript.fMaxApproachDistance = value
+    SetSliderOptionValue(OID_MAX_DISTANCE_APPROACH, MainScript.fMaxApproachDistance, "$MRT_SP_MAX_DISTANCE_APPROACH_SLIDER2")  
+    MainScript.setGlobalVaues()
   elseif option == OID_CRIME_BOUNTY 
     MainScript.iCrimeBounty = value as Int
     SetSliderOptionValue(OID_CRIME_BOUNTY, MainScript.iCrimeBounty, "$MRT_SP_CRIME_BOUNTY_SLIDER2")
@@ -4274,6 +4291,11 @@ event OnOptionSliderOpen(int option)
    SetSliderDialogDefaultValue(50.0)
    SetSliderDialogRange(0, 100)
    SetSliderDialogInterval(1)
+  elseif option == OID_MAX_DISTANCE_APPROACH 
+   SetSliderDialogStartValue(MainScript.fMaxApproachDistance)
+   SetSliderDialogDefaultValue(5000.0)
+   SetSliderDialogRange(500, 5000)
+   SetSliderDialogInterval(50)
   elseif option == OID_CRIME_BOUNTY
    SetSliderDialogStartValue(MainScript.iCrimeBounty)
    SetSliderDialogDefaultValue(50.0)
@@ -4460,8 +4482,10 @@ EndFunction
   OID_CUSTOMER_APPROACH_INTERVAL =  AddSliderOption("$MRT_SP_CUSTOMER_APPROACH_INTERVAL_SLIDER1", MainScript.iCustomerApproachTimer as Float, "$MRT_SP_CUSTOMER_APPROACH_INTERVAL_SLIDER2", flg)
   AddEmptyOption()
   OID_CUSTOMER_APPROACH_CHANCE =  AddSliderOption("$MRT_SP_CUSTOMER_APPROACH_CHANCE_SLIDER1", MainScript.fCustomerApproachChance, "$MRT_SP_CUSTOMER_APPROACH_CHANCE_SLIDER2", flg)
+  OID_MAX_DISTANCE_APPROACH = AddSliderOption("$MRT_SP_MAX_DISTANCE_APPROACH_SLIDER1", MainScript.fMaxApproachDistance, "$MRT_SP_MAX_DISTANCE_APPROACH_SLIDER2", flg)
   OID_MALE_CUSTOMER_APPROACH = AddToggleOption("$MRT_SP_MALE_CUSTOMER_APPROACH_TOGGLE", MainScript.bMaleCustomerApproach, flg)
   OID_FEMALE_CUSTOMER_APPROACH = AddToggleOption("$MRT_SP_FEMALE_CUSTOMER_APPROACH_TOGGLE", MainScript.bFemaleCustomerApproach, flg)
+  OID_ONLY_LOS_APPROACH = AddToggleOption("$MRT_SP_ONLY_LOS_APPROACH_TOGGLE", MainScript.bOnlyLOSApproach, flg)
   OID_ONLY_INTERIOR_APPROACH = AddToggleOption("$MRT_SP_ONLY_INTERIOR_APPROACH_TOGGLE", MainScript.bOnlyInteriorApproach, flg)
   OID_ONLY_LICENSED_APPROACH = AddToggleOption("$MRT_SP_ONLY_LICENSED_APPROACH_TOGGLE", MainScript.bOnlyLicensedApproach, flg)
   OID_ONLY_WHORE_CLOTHING_APPROACH = AddToggleOption("$MRT_SP_ONLY_WHORE_CLOTHING_APPROACH_TOGGLE", MainScript.bOnlyWhoreClothingApproach, flg)
@@ -4548,3 +4572,6 @@ Int OID_DEFAULT_REJ_MALE_MURDER
 Int OID_DEFAULT_REJ_FEMALE_MURDER
 Int OID_DEFAULT_REJ_THEFT_ONLYGOLD
 Int OID_BEG_REJ_WALKAWAY_CHECK
+
+Int OID_ONLY_LOS_APPROACH
+Int OID_MAX_DISTANCE_APPROACH
