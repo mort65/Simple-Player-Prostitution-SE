@@ -528,7 +528,6 @@ Function persuade(Float fSpeechSkillMult)
 	;Game.IncrementStat("Persuasions")
 endFunction
 
-
 Bool function bRandomSexWithPlayer(Actor akActor, Bool bAggressive = False)
 	if !akActor
 		return False

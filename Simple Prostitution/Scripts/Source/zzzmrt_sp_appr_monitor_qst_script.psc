@@ -59,6 +59,7 @@ Function updateApproach(Bool bReset = False)
 	endif
 
 	if !doReset
+	elseif (!MainScript.isWhore && !MainScript.isDibel)
 	elseif !canPlayerApproached()
 	elseif MainScript.randInt(0,99) < MainScript.fCustomerApproachChance as Int
 		ApproachQst.start()
