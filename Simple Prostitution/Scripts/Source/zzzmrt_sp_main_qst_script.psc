@@ -10,11 +10,13 @@ zzzmrt_sp_sexlab_interface property SexLabInterface auto
 zzzmrt_sp_ostim_interface property OStimInterface auto
 zzzmrt_sp_licenses_interface property LicensesInterface auto
 zzzmrt_sp_ddi_interface property DDI_Interface auto
+zzzmrt_sp_ddx_interface property DDX_Interface auto
 Quest Property OStimInterfaceQst Auto
 Quest Property FlowerGirlsInterfaceQst Auto
 Quest Property SexLabInterfaceQst Auto
 Quest Property LicensesInterfaceQst Auto
 Quest Property DDI_Interface_Qst Auto
+Quest Property DDX_Interface_Qst Auto
 zzzmrt_sp_mcm_qst_script property MCMScript auto
 zzzmrt_sp_appr_monitor_qst_script property ApproachMonitorScr Auto
 Bool Property bAssaulted = false Auto Hidden Conditional
@@ -79,6 +81,7 @@ Bool Property bDibelAllowAggressive=True Auto Hidden Conditional
 Bool Property bWhoreAllowAggressive=True Auto Hidden Conditional
 Bool Property bTryAllInterfaces=True Auto Hidden Conditional
 Bool Property bIsDDIntegrationActive=False Auto Hidden Conditional
+Bool Property bIsDDExpansionActive=False Auto Hidden Conditional
 ImageSpaceModifier property blackScreen auto
 Formlist property currentAllowedLocations auto
 Formlist property alwaysAllowedLocations auto
@@ -188,6 +191,9 @@ Float Property fBeggarSexOfferChance = 0.0 Auto Hidden Conditional
 Bool Property bFemaleCustomerApproach = True Auto Hidden Conditional
 Bool Property bMaleCustomerApproach = True Auto Hidden Conditional
 Float Property fCustomerApproachChance = 50.0 Auto Hidden Conditional
+ReferenceAlias Property entrapperAlias Auto
+
+Package Property entrapperPackage Auto
 
 
 Faction Property DibelCustomerFaction Auto
@@ -214,6 +220,7 @@ Float property fBeggarRejectMaleAssaultChance = 0.0 Auto Hidden Conditional
 Float property fBeggarRejectMaleTheftChance = 0.0 Auto Hidden Conditional
 Float property fBeggarRejectMaleSlaveryChance = 0.0 Auto Hidden Conditional
 Float property fBeggarRejectMaleMurderChance = 0.0 Auto Hidden Conditional
+Float property fBeggarRejectMaleDeviceChance = 100.0 Auto Hidden Conditional
 
 Float property fBeggarRejectFemaleAcceptChance = 100.0 Auto Hidden Conditional
 Float Property fBeggingFemaleRapistChance = 0.0 Auto Hidden Conditional
@@ -221,6 +228,7 @@ Float property fBeggarRejectFemaleAssaultChance = 0.0 Auto Hidden Conditional
 Float property fBeggarRejectFemaleTheftChance = 0.0 Auto Hidden Conditional
 Float property fBeggarRejectFemaleSlaveryChance = 0.0 Auto Hidden Conditional
 Float property fBeggarRejectFemaleMurderChance = 0.0 Auto Hidden Conditional
+Float property fBeggarRejectFemaleDeviceChance = 100.0 Auto Hidden Conditional
 
 Float property fWhoreRejectMaleAcceptChance = 100.0 Auto Hidden Conditional
 Float property fWhoreRejectMaleRapeChance = 0.0 Auto Hidden Conditional
@@ -229,6 +237,7 @@ Float property fWhoreRejectMaleTheftChance = 0.0 Auto Hidden Conditional
 Float property fWhoreRejectMaleReportChance = 0.0 Auto Hidden Conditional
 Float property fWhoreRejectMaleSlaveryChance = 0.0 Auto Hidden Conditional
 Float property fWhoreRejectMaleMurderChance = 0.0 Auto Hidden Conditional
+Float property fWhoreRejectMaleDeviceChance = 100.0 Auto Hidden Conditional
 
 Float property fWhoreRejectFemaleAcceptChance = 100.0 Auto Hidden Conditional
 Float property fWhoreRejectFemaleRapeChance = 0.0 Auto Hidden Conditional
@@ -237,6 +246,7 @@ Float property fWhoreRejectFemaleTheftChance = 0.0 Auto Hidden Conditional
 Float property fWhoreRejectFemaleReportChance = 0.0 Auto Hidden Conditional
 Float property fWhoreRejectFemaleSlaveryChance = 0.0 Auto Hidden Conditional
 Float property fWhoreRejectFemaleMurderChance = 0.0 Auto Hidden Conditional
+Float property fWhoreRejectFemaleDeviceChance = 100.0 Auto Hidden Conditional
 
 Float property fDibelRejectMaleAcceptChance = 100.0 Auto Hidden Conditional
 Float property fDibelRejectMaleRapeChance = 0.0 Auto Hidden Conditional
@@ -245,6 +255,7 @@ Float property fDibelRejectMaleTheftChance = 0.0 Auto Hidden Conditional
 Float property fDibelRejectMaleReportChance = 0.0 Auto Hidden Conditional
 Float property fDibelRejectMaleSlaveryChance = 0.0 Auto Hidden Conditional
 Float property fDibelRejectMaleMurderChance = 0.0 Auto Hidden Conditional
+Float property fDibelRejectMaleDeviceChance = 100.0 Auto Hidden Conditional
 
 Float property fDibelRejectFemaleAcceptChance = 100.0 Auto Hidden Conditional
 Float property fDibelRejectFemaleRapeChance = 0.0 Auto Hidden Conditional
@@ -253,6 +264,7 @@ Float property fDibelRejectFemaleTheftChance = 0.0 Auto Hidden Conditional
 Float property fDibelRejectFemaleReportChance = 0.0 Auto Hidden Conditional
 Float property fDibelRejectFemaleSlaveryChance = 0.0 Auto Hidden Conditional
 Float property fDibelRejectFemaleMurderChance = 0.0 Auto Hidden Conditional
+Float property fDibelRejectFemaleDeviceChance = 100.0 Auto Hidden Conditional
 
 Float property fDefaultRejectMaleAcceptChance = 100.0 Auto Hidden Conditional
 Float property fDefaultRejectMaleRapeChance = 0.0 Auto Hidden Conditional
@@ -260,6 +272,7 @@ Float property fDefaultRejectMaleAssaultChance = 0.0 Auto Hidden Conditional
 Float property fDefaultRejectMaleTheftChance = 0.0 Auto Hidden Conditional
 Float property fDefaultRejectMaleSlaveryChance = 0.0 Auto Hidden Conditional
 Float property fDefaultRejectMaleMurderChance = 0.0 Auto Hidden Conditional
+Float property fDefaultRejectMaleDeviceChance = 100.0 Auto Hidden Conditional
 
 Float property fDefaultRejectFemaleAcceptChance = 100.0 Auto Hidden Conditional
 Float property fDefaultRejectFemaleRapeChance = 0.0 Auto Hidden Conditional
@@ -267,6 +280,10 @@ Float property fDefaultRejectFemaleAssaultChance = 0.0 Auto Hidden Conditional
 Float property fDefaultRejectFemaleTheftChance = 0.0 Auto Hidden Conditional
 Float property fDefaultRejectFemaleSlaveryChance = 0.0 Auto Hidden Conditional
 Float property fDefaultRejectFemaleMurderChance = 0.0 Auto Hidden Conditional
+Float property fDefaultRejectFemaleDeviceChance = 100.0 Auto Hidden Conditional
+
+Float property fWhoreDeviceChance = 0.0 Auto Hidden Conditional
+Float property fDibelDeviceChance = 0.0 Auto Hidden Conditional
 
 
 Int property iCustomerApproachTimer = 3 Auto Hidden Conditional
@@ -342,6 +359,8 @@ Bool Property bWhoreRejectTheftOnlyGold = True Auto Hidden Conditional
 Bool Property bBeggarRejectTheftOnlyGold = True Auto Hidden Conditional
 Bool Property bDefaultRejectTheftOnlyGold = True Auto Hidden Conditional
 
+Int[] property iDeviceChanceArr Auto Hidden Conditional
+
 Bool bWhoreAnimEnded = False
 Bool bDibelAnimEnded = False
 Bool Property bLastBeggingSucceed = False Auto Hidden Conditional
@@ -357,6 +376,7 @@ Int Property iRejectAssaultChance = 0 Auto Hidden Conditional
 Int Property iRejectSlaveryChance = 0 Auto Hidden Conditional
 Int Property iRejectRapeChance = 0 Auto Hidden Conditional
 Int Property iRejectMurderChance = 0 Auto Hidden Conditional
+Int Property iRejectDeviceChance = 0 Auto Hidden Conditional
 Bool property bRejectTheftOnlyGold = True Auto Hidden Conditional
 Bool property bRejectDibel = False Auto Hidden Conditional
 Bool property bRejectWhore = False Auto Hidden Conditional
@@ -366,6 +386,8 @@ Bool property bRejectApproach = False Auto Hidden Conditional
 Bool Property bGuardsAreCruel = True Auto Hidden Conditional
 Bool Property bGuardsMayApproach = True Auto Hidden Conditional
 Bool Property bBeggarGuardsSexOffer = True Auto Hidden Conditional
+Bool Property bBeggarElderSexOffer = False Auto Hidden 
+Bool Property bEldersMayApproach = False Auto Hidden Conditional
 
 Int property iCrimeBounty = 50 Auto Hidden Conditional
 Int property iTotalCrimes = 0 Auto Hidden Conditional
@@ -379,7 +401,9 @@ Bool Property bOnlyLicensedBeggarSexOffer = true Auto Hidden Conditional
 
 Bool Property bOnlyLOSApproach = True Auto Hidden Conditional
 Float Property fMaxApproachDistance = 5000.0 Auto Hidden Conditional
-GlobalVariable Property maxApproachDistance Auto
+GlobalVariable Property maxApproachDistance Auto 
+
+Int Property iEntrapmentLevel = 0 Auto Hidden Conditional
 
 function shutDown()
 	stopApproach(true)
@@ -896,6 +920,7 @@ Function setRejectingCustomerResult(Actor akActor, Bool bWhore = False, Bool bDi
 	iRejectSlaveryChance = 0
 	iRejectRapeChance = 0
 	iRejectMurderChance = 0
+	iRejectDeviceChance = 0
 	if bDibel
 		if bFemaleNPC
 			iRejectAcceptChance = (fDibelRejectFemaleAcceptChance * 10.0) as Int
@@ -905,6 +930,7 @@ Function setRejectingCustomerResult(Actor akActor, Bool bWhore = False, Bool bDi
 			iRejectSlaveryChance = (fDibelRejectFemaleSlaveryChance * 10.0) as Int
 			iRejectRapeChance = (fDibelRejectFemaleRapeChance * 10.0) as Int
 			iRejectMurderChance = (fDibelRejectFemaleMurderChance * 10.0) as Int
+			iRejectDeviceChance = (fDibelRejectFemaleDeviceChance * 10.0) as Int
 		else
 			iRejectAcceptChance = (fDibelRejectMaleAcceptChance * 10.0) as Int
 			iRejectReportChance = (fDibelRejectMaleReportChance * 10.0) as Int
@@ -913,6 +939,7 @@ Function setRejectingCustomerResult(Actor akActor, Bool bWhore = False, Bool bDi
 			iRejectSlaveryChance = (fDibelRejectMaleSlaveryChance * 10.0) as Int
 			iRejectRapeChance = (fDibelRejectMaleRapeChance * 10.0) as Int
 			iRejectMurderChance = (fDibelRejectMaleMurderChance * 10.0) as Int
+			iRejectDeviceChance = (fDibelRejectMaleDeviceChance * 10.0) as Int
 		endif
 		bRejectTheftOnlyGold = bDibelRejectTheftOnlyGold
 	elseif bWhore
@@ -924,6 +951,7 @@ Function setRejectingCustomerResult(Actor akActor, Bool bWhore = False, Bool bDi
 			iRejectSlaveryChance = (fWhoreRejectFemaleSlaveryChance * 10.0) as Int
 			iRejectRapeChance = (fWhoreRejectFemaleRapeChance * 10.0) as Int
 			iRejectMurderChance = (fWhoreRejectFemaleMurderChance * 10.0) as Int
+			iRejectDeviceChance = (fWhoreRejectFemaleDeviceChance * 10.0) as Int
 		else
 			iRejectAcceptChance = (fWhoreRejectMaleAcceptChance * 10.0) as Int
 			iRejectReportChance = (fWhoreRejectMaleReportChance * 10.0) as Int
@@ -932,6 +960,7 @@ Function setRejectingCustomerResult(Actor akActor, Bool bWhore = False, Bool bDi
 			iRejectSlaveryChance = (fWhoreRejectMaleSlaveryChance * 10.0) as Int
 			iRejectRapeChance = (fWhoreRejectMaleRapeChance * 10.0) as Int
 			iRejectMurderChance = (fWhoreRejectMaleMurderChance * 10.0) as Int
+			iRejectDeviceChance = (fWhoreRejectMaleDeviceChance * 10.0) as Int
 		endif
 		bRejectTheftOnlyGold = bWhoreRejectTheftOnlyGold
 	elseif bBeggar
@@ -943,6 +972,7 @@ Function setRejectingCustomerResult(Actor akActor, Bool bWhore = False, Bool bDi
 			iRejectSlaveryChance = (fBeggarRejectFemaleSlaveryChance * 10.0) as Int
 			iRejectRapeChance = (fBeggingFemaleRapistChance * 10.0) as Int
 			iRejectMurderChance = (fBeggarRejectFemaleMurderChance * 10.0) as Int
+			iRejectDeviceChance = (fBeggarRejectFemaleDeviceChance * 10.0) as Int
 		else
 			iRejectAcceptChance = (fBeggarRejectMaleAcceptChance * 10.0) as Int
 			iRejectReportChance = 0
@@ -951,6 +981,7 @@ Function setRejectingCustomerResult(Actor akActor, Bool bWhore = False, Bool bDi
 			iRejectSlaveryChance = (fBeggarRejectMaleSlaveryChance * 10.0) as Int
 			iRejectRapeChance = (fBeggingMaleRapistChance * 10.0) as Int
 			iRejectMurderChance = (fBeggarRejectMaleMurderChance * 10.0) as Int
+			iRejectDeviceChance = (fBeggarRejectMaleDeviceChance * 10.0) as Int
 		endif
 		bRejectTheftOnlyGold = bBeggarRejectTheftOnlyGold
 	else
@@ -962,6 +993,7 @@ Function setRejectingCustomerResult(Actor akActor, Bool bWhore = False, Bool bDi
 			iRejectSlaveryChance = (fDefaultRejectFemaleSlaveryChance * 10.0) as Int
 			iRejectRapeChance = (fDefaultRejectFemaleRapeChance * 10.0) as Int
 			iRejectMurderChance = (fDefaultRejectFemaleMurderChance * 10.0) as Int
+			iRejectDeviceChance = (fDefaultRejectFemaleDeviceChance * 10.0) as Int
 		else
 			iRejectAcceptChance = (fDefaultRejectMaleAcceptChance * 10.0) as Int
 			iRejectReportChance = 0
@@ -970,8 +1002,13 @@ Function setRejectingCustomerResult(Actor akActor, Bool bWhore = False, Bool bDi
 			iRejectSlaveryChance = (fDefaultRejectMaleSlaveryChance * 10.0) as Int
 			iRejectRapeChance = (fDefaultRejectMaleRapeChance * 10.0) as Int
 			iRejectMurderChance = (fDefaultRejectMaleMurderChance * 10.0) as Int
+			iRejectDeviceChance = (fDefaultRejectMaleDeviceChance * 10.0) as Int
 		endif
 		bRejectTheftOnlyGold = bDefaultRejectTheftOnlyGold
+	endif
+
+	if !bIsDDExpansionActive || !bIsDDIntegrationActive
+		iRejectDeviceChance = 0
 	endif
 
 	if akActor.isGuard() && !bGuardsAreCruel
@@ -992,7 +1029,7 @@ Function setRejectingCustomerResult(Actor akActor, Bool bWhore = False, Bool bDi
 		iRejectReportChance = 0
 	endif
 
-	int[] resultWeights = new int[8]
+	int[] resultWeights = new int[9]
 	resultWeights[0] = iRejectAcceptChance
 	resultWeights[1] = iRejectReportChance
 	resultWeights[2] = iRejectTheftChance
@@ -1001,6 +1038,7 @@ Function setRejectingCustomerResult(Actor akActor, Bool bWhore = False, Bool bDi
 	resultWeights[5] = iRejectRapeChance
 	resultWeights[6] = minInt(iRejectRapeChance,iRejectTheftChance)
 	resultWeights[7] = iRejectMurderChance
+	resultWeights[8] = iRejectDeviceChance
 	iRand = weightedRandInt(resultWeights)
 
 	if (iRand == 3) ;Assault
@@ -1070,10 +1108,18 @@ Function rejectCusomer(Actor akCustomer)
 		if bRejectDibel
 			if !isSnitchOK(angryDibelCustomer)
 				angryDibelCustomer = akCustomer
+				if (randInt(0, 999) < iRejectDeviceChance)
+					iEntrapmentLevel = 3
+					entrapPlayer(akCustomer)
+				endif
 			endif
 		elseif bRejectWhore
 			if !isSnitchOK(angryWhoreCustomer)
 				angryWhoreCustomer = akCustomer
+				if (randInt(0, 999) < iRejectDeviceChance)
+					iEntrapmentLevel = 3
+					entrapPlayer(akCustomer)
+				endif
 			endif
 		endif
 	elseif iWhatToDo == 2
@@ -1104,6 +1150,13 @@ Function rejectCusomer(Actor akCustomer)
 		stealFromPlayer(akCustomer)
 		Utility.wait(0.5)
 		rapePlayer(akCustomer)
+	elseif iWhatToDo == 8
+		if randInt(0, 1)
+			iEntrapmentLevel = 3
+		else
+			iEntrapmentLevel = 2
+		endif
+		entrapPlayer(akCustomer)
 	endif
 	bIsBusy = false
 EndFunction
@@ -1132,6 +1185,9 @@ Function AssaultPlayer(Actor akAssaulter, Bool bEnslave = false, Bool bRape = fa
 		utility.wait(0.5)
 		StaggerSpell.Cast(player)
 		stealFromPlayer(akAssaulter)
+		Debug.SetGodMode(true)
+		Game.setPlayerAiDriven(true)
+		akAssaulter.SetDontMove(true)
 	endif
 	utility.wait(0.5)
 	forceRefAndPackageTo(akAssaulter, Assaulter, drawWeaponPackage)
@@ -1406,7 +1462,46 @@ Bool Function stealFromPlayer(Actor Thief)
 			endif
 		endif
 	EndIf
+	if (randInt(0, 999) < iRejectDeviceChance) || (!bRobbed && (iRejectDeviceChance > 0) && (randInt(0,999) < maxInt(500, 1000 - iRejectDeviceChance)))
+		iEntrapmentLevel = 2
+		entrapPlayer(Thief)
+	endif
 	return bRobbed
+EndFunction
+
+Function entrapPlayer(Actor akEntrapper)
+	if !bIsDDExpansionActive || !bIsDDIntegrationActive
+		return
+	endif
+	Debug.SetGodMode(true)
+	Game.setPlayerAiDriven(true)
+	if akEntrapper.IsOnMount()
+		akEntrapper.Dismount()
+		Utility.wait(3.0)
+	endif
+	akEntrapper.SetDontMove(true)
+	Utility.Wait(1.0)
+	setFaceToFace(player, akEntrapper)
+	Utility.Wait(0.5)
+	akEntrapper.SetLookAt(player)
+	Utility.Wait(0.5)
+	Debug.sendAnimationEvent(akEntrapper, "idleforcedefaultstate")
+	Utility.Wait(0.5)
+	forceRefAndPackageTo(akEntrapper, entrapperAlias, entrapperPackage)
+	akEntrapper.EvaluatePackage()
+	Utility.Wait(3.0)
+	DDX_Interface.lockRandomDeviceOnActor(player, iEntrapmentLevel, iDeviceChanceArr)
+	Utility.Wait(3.0)
+	entrapperAlias.clear()
+	if bIsPapyrusUtilActive
+		ActorUtil.RemovePackageOverride(akEntrapper, entrapperPackage)
+	endif
+	akEntrapper.ClearLookAt()
+	akEntrapper.EvaluatePackage()
+	akEntrapper.SetDontMove(false)
+	Game.setPlayerAiDriven(false)
+	Debug.SetGodMode(false)
+	iEntrapmentLevel = 0
 EndFunction
 
 Bool Function hasInvalidKeyword(Form kItem)
@@ -2636,7 +2731,7 @@ Auto State Init
 	endEvent
 
 	event OnEndState()
-		While (!FlowerGirlsInterface.bChecked || !SexLabInterface.bChecked || !OStimInterface.bChecked || !LicensesInterface.bChecked || !DDI_Interface.bChecked)
+		While (!FlowerGirlsInterface.bChecked || !SexLabInterface.bChecked || !OStimInterface.bChecked || !LicensesInterface.bChecked || !DDI_Interface.bChecked || !DDX_Interface.bChecked)
 			Utility.wait(0.2)
 		endWhile
 		MCMScript.loadSettingsAtStart()

@@ -90,12 +90,16 @@ function setVars()
   if !MainScript.DDI_Interface
     MainScript.DDI_Interface = MainScript.DDI_Interface_Qst as zzzmrt_sp_ddi_interface
   endIf
+  if !MainScript.DDX_Interface
+    MainScript.DDX_Interface = MainScript.DDX_Interface_Qst as zzzmrt_sp_ddx_interface
+  endIf
   !bInit && MainScript.setVars()
   MainScript.SexLabInterface.PlayerLoadsGame()
   MainScript.OStimInterface.PlayerLoadsGame()
   MainScript.FlowerGirlsInterface.PlayerLoadsGame()
   MainScript.LicensesInterface.PlayerLoadsGame()
   MainScript.DDI_Interface.PlayerLoadsGame()
+  MainScript.DDX_Interface.PlayerLoadsGame()
   MainScript.bIsPapyrusUtilActive = MainScript.bCheckPapyrusUtil()
   MainScript.bIsPO3ExtenderActive = MainScript.bCheckPO3Extender()
   MainScript.bIsPyramidUtilsOK = MainScript.bCheckPyramidUtils()
@@ -105,6 +109,7 @@ function setVars()
   MainScript.bIsFlowerGirlsActive = MainScript.FlowerGirlsInterface.GetIsInterfaceActive()
   MainScript.bIsLicensesActive = MainScript.LicensesInterface.GetIsInterfaceActive()
   MainScript.bIsDDIntegrationActive = MainScript.DDI_Interface.GetIsInterfaceActive()
+  MainScript.bIsDDExpansionActive = MainScript.DDX_Interface.GetIsInterfaceActive()
   MainScript.ApproachMonitorScr.PlayerLoadsGame()
 endfunction
 
