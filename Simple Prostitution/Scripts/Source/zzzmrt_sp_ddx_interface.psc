@@ -46,6 +46,21 @@ Bool Function isBlindfolded(Actor akActor)
   Return false
 EndFunction
 
+Bool function deviceHaveKeywordConflict(Actor akActor, Armor akDevice)
+  return false
+EndFunction
+
+Function lockDeviousDevice(Actor akActor, Armor akDevice, Bool bForce = False)
+EndFunction
+
+
+Bool Function TightenRandomDevice(Actor akActor, LeveledItem[] akDevices)
+  return False
+EndFunction
+
+function InflateRandomPlug(Actor akActor)
+endfunction
+
 function PlayerLoadsGame(Bool bForce = False)
   Debug.trace("Simple Prostitution: PlayerLoadsGame() triggered for " + self)
 
@@ -63,7 +78,6 @@ function PlayerLoadsGame(Bool bForce = False)
   endif
   bChecked = True
 endfunction
-
 
 state Installed
   
@@ -89,6 +103,22 @@ state Installed
   
   Bool Function isBlindfolded(Actor akActor)
     return zzzmrt_sp_int_ddx._isBlindfolded(zadxQuest, akActor)
+  endfunction
+
+  Bool function deviceHaveKeywordConflict(Actor akActor, Armor akDevice)
+    return zzzmrt_sp_int_ddx._deviceHaveKeywordConflict(zadxQuest, akActor, akDevice)
+  EndFunction
+
+  Function LockDeviousDevice(Actor akActor, Armor akDevice, Bool bForce = False)
+    zzzmrt_sp_int_ddx._LockDeviousDevice(zadxQuest, akActor, akDevice, bForce)
+  endfunction
+
+  Bool Function TightenRandomDevice(Actor akActor, LeveledItem[] akDevices)
+    return zzzmrt_sp_int_ddx._TightenRandomDevice(zadxQuest, akActor, akDevices)
+  EndFunction
+
+  function InflateRandomPlug(Actor akActor)
+    zzzmrt_sp_int_ddx._InflateRandomPlug(zadxQuest, akActor)
   endfunction
 
 endState

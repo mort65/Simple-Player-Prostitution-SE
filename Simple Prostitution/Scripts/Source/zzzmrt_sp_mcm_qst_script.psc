@@ -43,15 +43,16 @@ event OnConfigInit()
 endevent
 
 function initPages()
-  Pages = new String[8]
+  Pages = new String[9]
   pages[0] = "$MRT_SP_PAGE_GENERAL"
   pages[1] = "$MRT_SP_PAGE_PROSTITUTION"
   pages[2] = "$MRT_SP_PAGE_DIBEL"
   pages[3] = "$MRT_SP_PAGE_BEGGING"
-  pages[4] = "$MRT_SP_PAGE_STD"
-  pages[5] = "$MRT_SP_PAGE_INTEGRATION"
-  pages[6] = "$MRT_SP_PAGE_STATS"
-  pages[7] = "$MRT_SP_PAGE_DEBUG"
+  pages[4] = "$MRT_SP_PAGE_DD"
+  pages[5] = "$MRT_SP_PAGE_STD"
+  pages[6] = "$MRT_SP_PAGE_INTEGRATION"
+  pages[7] = "$MRT_SP_PAGE_STATS"
+  pages[8] = "$MRT_SP_PAGE_DEBUG"
 endfunction
 
 event OnGameReload()
@@ -164,11 +165,13 @@ event OnPageReset(String page)
     addEmptyOption()
     _AddTextOptionST("DEBUG_PAPYRUSUTIL_CHECK_TXT", "PapyrusUtil v3+", MainScript.bIsPapyrusUtilActive As String, flag)
     _AddTextOptionST("DEBUG_PYRAMIDUTILS_CHECK_TXT", "Pyramid Utils v2.0.5+", MainScript.bIsPyramidUtilsOK As String, flag)
-     _AddTextOptionST("DEBUG_PO3EXTENDER_CHECK_TXT", "PO3 Papyrus Extender v5+", MainScript.bIsPO3ExtenderActive As String, flag)
+    _AddTextOptionST("DEBUG_PO3EXTENDER_CHECK_TXT", "PO3 Papyrus Extender v5+", MainScript.bIsPO3ExtenderActive As String, flag)
     _AddTextOptionST("DEBUG_SEXLAB_CHECK_TXT", "$sexlab", MainScript.bIsSexlabActive As String, flag)
     _AddTextOptionST("DEBUG_FLOWERGIRLS_CHECK_TXT", "$flowergirls", MainScript.bIsFlowerGirlsActive As String, flag)
     _AddTextOptionST("DEBUG_OSTIM_CHECK_TXT", "$ostim_sa", MainScript.bIsOstimActive As String, flag)
     _AddTextOptionST("DEBUG_LICENSES_CHECK_TXT", "$licenses", MainScript.bIsLicensesActive As String, flag)
+    _AddTextOptionST("DEBUG_DDI_CHECK_TXT", "$DDIntegration", MainScript.bIsDDIntegrationActive As String, flag)
+    _AddTextOptionST("DEBUG_DDX_CHECK_TXT", "$DDExpansion", MainScript.bIsDDExpansionActive As String, flag)
   elseif (page == "$MRT_SP_PAGE_STATS")
     Mainscript.initStatArrs()
     if MainScript.bModEnabled
@@ -195,13 +198,13 @@ event OnPageReset(String page)
       flag = OPTION_FLAG_DISABLED
     endif
     _AddTextOptionST("STAT_WHORE_ORAL_PERK_REWARD_TXT", "$MRT_SP_PERK_REWARD_ORAL", sGetStatRewardText(2, False), flag)
-     if MainScript.bModEnabled && !bWhoreAnalPerkRewardReceived
+    if MainScript.bModEnabled && !bWhoreAnalPerkRewardReceived
       flag = OPTION_FLAG_NONE
     else
       flag = OPTION_FLAG_DISABLED
     endif   
     _AddTextOptionST("STAT_WHORE_ANAL_PERK_REWARD_TXT", "$MRT_SP_PERK_REWARD_ANAL", sGetStatRewardText(1, False), flag)
-     if MainScript.bModEnabled && !bWhoreVaginalPerkRewardReceived
+    if MainScript.bModEnabled && !bWhoreVaginalPerkRewardReceived
       flag = OPTION_FLAG_NONE
     else
       flag = OPTION_FLAG_DISABLED
@@ -225,19 +228,19 @@ event OnPageReset(String page)
     _AddTextOptionST("STAT_DIBEL_RACE_VAGINAL_TXT", "$MRT_SP_STAT_VAGINAL", sGetSexStatText(0, True, True), flag)
     addEmptyOption()
     _AddHeaderOption("$MRT_SP_HEAD_DIBEL_REWARD_STATS")
-     if MainScript.bModEnabled && !bDibelOralPerkRewardReceived
+    if MainScript.bModEnabled && !bDibelOralPerkRewardReceived
       flag = OPTION_FLAG_NONE
     else
       flag = OPTION_FLAG_DISABLED
     endif 
     _AddTextOptionST("STAT_DIBEL_ORAL_PERK_REWARD_TXT", "$MRT_SP_PERK_REWARD_ORAL", sGetStatRewardText(2, True), flag)
-     if MainScript.bModEnabled && !bDibelAnalPerkRewardReceived
+    if MainScript.bModEnabled && !bDibelAnalPerkRewardReceived
       flag = OPTION_FLAG_NONE
     else
       flag = OPTION_FLAG_DISABLED
     endif 
     _AddTextOptionST("STAT_DIBEL_ANAL_PERK_REWARD_TXT", "$MRT_SP_PERK_REWARD_ANAL", sGetStatRewardText(1, True), flag)
-     if MainScript.bModEnabled && !bDibelVaginalPerkRewardReceived
+    if MainScript.bModEnabled && !bDibelVaginalPerkRewardReceived
       flag = OPTION_FLAG_NONE
     else
       flag = OPTION_FLAG_DISABLED
@@ -329,7 +332,19 @@ event OnPageReset(String page)
     AddSliderOptionST("SPEECH_BEG_BONUS_MAX_MULT_SLIDER", "$MRT_SP_SPEECH_BEG_BONUS_MAX_MULT_SLIDER1", MainScript.fMaxSpeechBegBonusMult, "$MRT_SP_SPEECH_BEG_BONUS_MAX_MULT_SLIDER2", flag)
     AddMenuOptionST("BEG_ACCEPT_DIFFICULTY_MENU", "$MRT_SP_BEG_ACCEPT_DIFFICULTY_MENU", sGetSpeechDifficultyArr()[iBeggarSpeechDifficulty], flag)
     AddSliderOptionST("SPEECH_BEG_XP_MULT_SLIDER", "$MRT_SP_SPEECH_BEG_XP_MULT_SLIDER1", MainScript.fBeggarPersuasionXPMult, "$MRT_SP_SPEECH_BEG_XP_MULT_SLIDER2", flag)
+    if MainScript.bModEnabled && (MainScript.bIsDDIntegrationActive && MainScript.bIsDDExpansionActive)
+      flag = OPTION_FLAG_NONE
+    else
+      flag = OPTION_FLAG_DISABLED
+    endIf   
+    OID_BEG_DD_CHANCE = AddSliderOption("$MRT_SP_BEG_DD_CHANCE_SLIDER1", MainScript.fBeggarDeviceChance, "$MRT_SP_BEG_DD_CHANCE_SLIDER2", flag)
+    OID_BEG_ENTRAPMENT_LVL_M = AddMenuOption("$MRT_SP_BEG_ENTRAPMENT_LVL", sGetEntrapmentLevels()[MainScript.iBeggarEntrapmentLevel], flag)
     SetCursorPosition(1)
+    if (MainScript.bModEnabled)
+      flag = OPTION_FLAG_NONE
+    else
+      flag = OPTION_FLAG_DISABLED
+    endif
     _AddHeaderOption("$MRT_SP_HEAD_BEG_WHORE")
     AddSliderOptionST("BEG_SEX_OFFER_SLIDER", "$MRT_SP_BEG_SEX_OFFER_SLIDER1", MainScript.fBeggarSexOfferChance, "$MRT_SP_BEG_SEX_OFFER_SLIDER2", flag)
     _AddToggleOptionST("BEGGING_MALE_SEX_OFFER_TOGGLE", "$MRT_SP_BEGGING_MALE_SEX_OFFER_TOGGLE", MainScript.bBeggingMaleSexOffer, flag)
@@ -337,9 +352,19 @@ event OnPageReset(String page)
     OID_BEG_ONLY_LICENSED_SEX_OFFER = AddToggleOption("$MRT_SP_BEG_ONLY_LICENSED_SEX_OFFER", MainScript.bOnlyLicensedBeggarSexOffer, flag)
     OID_BEG_ONLY_INTERIOR_SEX_OFFER = AddToggleOption("$MRT_SP_BEG_ONLY_INTERIOR_SEX_OFFER", MainScript.bOnlyInteriorBeggarOfferSex, flag)
     OID_BEG_GUARDS_SEX_OFFER = AddToggleOption("$MRT_SP_BEG_GUARDS_SEX_OFFER", MainScript.bBeggarGuardsSexOffer, flag)
+    OID_BEG_ELDER_SEX_OFFER = AddToggleOption("$MRT_SP_BEG_ELDER_SEX_OFFER", MainScript.bBeggarElderSexOffer, flag)
     AddEmptyOption()
     beggarRejectOptions(flag)
 
+  elseif (page == "$MRT_SP_PAGE_DD")
+    SetTitleText("$MRT_SP_PAGE_DD")
+    _AddHeaderOption("$MRT_SP_HEAD_DD")
+    if (MainScript.bModEnabled && MainScript.bIsDDIntegrationActive && MainScript.bIsDDExpansionActive)
+      flag = OPTION_FLAG_NONE
+    else
+      flag = OPTION_FLAG_DISABLED
+    endif
+    DD_Options(flag)
   elseif (page == "$MRT_SP_PAGE_STD")
     SetTitleText("$MRT_SP_PAGE_STD")
     _AddHeaderOption("$MRT_SP_HEAD_STD")
@@ -392,6 +417,13 @@ event OnPageReset(String page)
     AddMenuOptionST("DIBEL_ACCEPT_DIFFICULTY_MENU", "$MRT_SP_DIBEL_ACCEPT_DIFFICULTY_MENU", sGetSpeechDifficultyArr()[iDibelSpeechDifficulty], flag)
     AddSliderOptionST("SPEECH_DIBEL_XP_MULT_SLIDER", "$MRT_SP_SPEECH_DIBEL_XP_MULT_SLIDER1", MainScript.fDibelPersuasionXPMult, "$MRT_SP_SPEECH_DIBEL_XP_MULT_SLIDER2", flag)
     AddSliderOptionST("DIBEL_MARK_CHANCE_SLIDER", "$MRT_SP_DIBEL_MARK_CHANCE_SLIDER1", Mainscript.fDibelMarkChance, "$MRT_SP_DIBEL_MARK_CHANCE_SLIDER2", flag)
+    if MainScript.bModEnabled && (MainScript.bIsDDIntegrationActive && MainScript.bIsDDExpansionActive)
+      flag = OPTION_FLAG_NONE
+    else
+      flag = OPTION_FLAG_DISABLED
+    endIf  
+    OID_DIBEL_DD_CHANCE = AddSliderOption("$MRT_SP_DIBEL_DD_CHANCE_SLIDER1", MainScript.fDibelDeviceChance, "$MRT_SP_DIBEL_DD_CHANCE_SLIDER2", flag)
+    OID_DIBEL_ENTRAPMENT_LVL_M = AddMenuOption("$MRT_SP_DIBEL_ENTRAPMENT_LVL", sGetEntrapmentLevels()[MainScript.iDibelEntrapmentLevel], flag)
     SetCursorPosition(1)
     if MainScript.bModEnabled
       flag = OPTION_FLAG_NONE
@@ -447,6 +479,13 @@ event OnPageReset(String page)
     AddMenuOptionST("WHORE_ACCEPT_DIFFICULTY_MENU", "$MRT_SP_WHORE_ACCEPT_DIFFICULTY_MENU", sGetSpeechDifficultyArr()[iWhoreSpeechDifficulty], flag)
     AddSliderOptionST("SPEECH_WHORE_XP_MULT_SLIDER", "$MRT_SP_SPEECH_WHORE_XP_MULT_SLIDER1", MainScript.fWhorePersuasionXPMult, "$MRT_SP_SPEECH_WHORE_XP_MULT_SLIDER2", flag)
     AddSliderOptionST("WHORE_MARK_CHANCE_SLIDER", "$MRT_SP_WHORE_MARK_CHANCE_SLIDER1", Mainscript.fWhoreMarkChance, "$MRT_SP_WHORE_MARK_CHANCE_SLIDER2", flag)
+    if MainScript.bModEnabled && (MainScript.bIsDDIntegrationActive && MainScript.bIsDDExpansionActive)
+      flag = OPTION_FLAG_NONE
+    else
+      flag = OPTION_FLAG_DISABLED
+    endIf
+    OID_WHORE_DD_CHANCE = AddSliderOption("$MRT_SP_WHORE_DD_CHANCE_SLIDER1", MainScript.fWhoreDeviceChance, "$MRT_SP_WHORE_DD_CHANCE_SLIDER2", flag)
+    OID_WHORE_ENTRAPMENT_LVL_M = AddMenuOption("$MRT_SP_WHORE_ENTRAPMENT_LVL", sGetEntrapmentLevels()[MainScript.iWhoreEntrapmentLevel], flag)
     SetCursorPosition(1)
     if MainScript.bModEnabled
       flag = OPTION_FLAG_NONE
@@ -481,17 +520,17 @@ event OnVersionUpdate(Int version)
   endif
 endevent
 
-  Event OnConfigClose()
-    if setModVars
-      Mainscript.setVars()
-      setModVars = false
-    else
-      if MainScript.fWhoreOwnerShare > 0.0 && !Mainscript.pimpTracker.isRunning()
-        Mainscript.pimpTracker.start()
-      endif
+Event OnConfigClose()
+  if setModVars
+    Mainscript.setVars()
+    setModVars = false
+  else
+    if MainScript.fWhoreOwnerShare > 0.0 && !Mainscript.pimpTracker.isRunning()
+      Mainscript.pimpTracker.start()
     endif
-    Mainscript.ApproachMonitorScr.playerHasLicense()
-  endEvent
+  endif
+  Mainscript.ApproachMonitorScr.playerHasLicense()
+endEvent
 
 String[] function sGetAnimInerfaceMethodArr()
   String[] sAnimInterfaceMethods = new String[3]
@@ -558,15 +597,15 @@ String[] function sGetRaceNameArr()
 EndFunction
 
 string[] Function sGetSpeechDifficultyArr()
-	String[] sSpeechDifficulties = Utility.CreateStringArray(7)
+  String[] sSpeechDifficulties = Utility.CreateStringArray(7)
   sSpeechDifficulties[0] = "$MRT_SP_SpeechDiff_Disabled"
-	sSpeechDifficulties[1] = "$MRT_SP_SpeechDiff_VeryEasy"
-	sSpeechDifficulties[2] = "$MRT_SP_SpeechDiff_Easy"
-	sSpeechDifficulties[3] = "$MRT_SP_SpeechDiff_Average"
-	sSpeechDifficulties[4] = "$MRT_SP_SpeechDiff_Hard"
-	sSpeechDifficulties[5] = "$MRT_SP_SpeechDiff_Harder"
-	sSpeechDifficulties[6] = "$MRT_SP_SpeechDiff_VeryHard"
-	return sSpeechDifficulties
+  sSpeechDifficulties[1] = "$MRT_SP_SpeechDiff_VeryEasy"
+  sSpeechDifficulties[2] = "$MRT_SP_SpeechDiff_Easy"
+  sSpeechDifficulties[3] = "$MRT_SP_SpeechDiff_Average"
+  sSpeechDifficulties[4] = "$MRT_SP_SpeechDiff_Hard"
+  sSpeechDifficulties[5] = "$MRT_SP_SpeechDiff_Harder"
+  sSpeechDifficulties[6] = "$MRT_SP_SpeechDiff_VeryHard"
+  return sSpeechDifficulties
 EndFunction
 
 Int function iGetCurAnimInterface()
@@ -741,7 +780,7 @@ state BEGGING_CLOTHING_TOGGLE
 endstate
 
 State BEGGING_MALE_SEX_OFFER_TOGGLE
-    event OnDefaultST()
+  event OnDefaultST()
     MainScript.bBeggingMaleSexOffer = False
     ForcePageReset()
   endevent
@@ -757,7 +796,7 @@ State BEGGING_MALE_SEX_OFFER_TOGGLE
 EndState
 
 State BEGGING_FEMALE_SEX_OFFER_TOGGLE
-    event OnDefaultST()
+  event OnDefaultST()
     MainScript.bBeggingFemaleSexOffer = False
     ForcePageReset()
   endevent
@@ -832,14 +871,14 @@ state BEG_PAY_MAX_SLIDER
     MainScript.fBegPayMax = value
     _SetSliderOptionValueST(MainScript.fBegPayMax, "$MRT_SP_BEG_PAY_MAX_SLIDER2")
   endevent
-	
-	event OnSliderOpenST()
-		SetSliderDialogStartValue(MainScript.fBegPayMax)
-		SetSliderDialogDefaultValue(5.0)
-		SetSliderDialogRange(0, 1000)
-		SetSliderDialogInterval(1)
-	endEvent
-  
+
+  event OnSliderOpenST()
+    SetSliderDialogStartValue(MainScript.fBegPayMax)
+    SetSliderDialogDefaultValue(5.0)
+    SetSliderDialogRange(0, 1000)
+    SetSliderDialogInterval(1)
+  endEvent
+
 endstate
 
 state BEG_PAY_MIN_SLIDER
@@ -856,11 +895,11 @@ state BEG_PAY_MIN_SLIDER
   endevent
 
   event OnSliderOpenST()
-		SetSliderDialogStartValue(MainScript.fBegPayMin)
-		SetSliderDialogDefaultValue(1.0)
-		SetSliderDialogRange(0, 1000)
-		SetSliderDialogInterval(1)
-	endEvent
+    SetSliderDialogStartValue(MainScript.fBegPayMin)
+    SetSliderDialogDefaultValue(1.0)
+    SetSliderDialogRange(0, 1000)
+    SetSliderDialogInterval(1)
+  endEvent
 endstate
 
 State CITIZEN_REPORT_CHANCE_SLIDER
@@ -902,7 +941,7 @@ State SEX_AFTER_OFFERING_TOGGLE
     MainScript.bSexAfterOffering = True
     ForcePageReset()
   endevent
-  
+
   event OnHighlightST()
     SetInfoText("$MRT_SP_DESC_SEX_AFTER_OFFERING_TOGGLE")
   endevent
@@ -943,11 +982,11 @@ state DIBEL_ANAL_PAY_SLIDER
   endevent
 
   event OnSliderOpenST()
-		SetSliderDialogStartValue(MainScript.fDibelAnalPay)
-		SetSliderDialogDefaultValue(15.0)
-		SetSliderDialogRange(0, 1000)
-		SetSliderDialogInterval(1)
-	endEvent
+    SetSliderDialogStartValue(MainScript.fDibelAnalPay)
+    SetSliderDialogDefaultValue(15.0)
+    SetSliderDialogRange(0, 1000)
+    SetSliderDialogInterval(1)
+  endEvent
 endstate
 
 state DIBEL_ANAL_CHANCE_SLIDER
@@ -1017,11 +1056,11 @@ state DIBEL_ORAL_PAY_SLIDER
   endevent
 
   event OnSliderOpenST()
-		SetSliderDialogStartValue(MainScript.fDibelOralPay)
-		SetSliderDialogDefaultValue(10.0)
-		SetSliderDialogRange(0, 1000)
-		SetSliderDialogInterval(1)
-	endEvent
+    SetSliderDialogStartValue(MainScript.fDibelOralPay)
+    SetSliderDialogDefaultValue(10.0)
+    SetSliderDialogRange(0, 1000)
+    SetSliderDialogInterval(1)
+  endEvent
 endstate
 
 state DIBEL_ORAL_CHANCE_SLIDER
@@ -1075,11 +1114,11 @@ state DIBEL_VAG_PAY_SLIDER
   endevent
 
   event OnSliderOpenST()
-		SetSliderDialogStartValue(MainScript.fDibelVagPay)
-		SetSliderDialogDefaultValue(20.0)
-		SetSliderDialogRange(0, 1000)
-		SetSliderDialogInterval(1)
-	endEvent
+    SetSliderDialogStartValue(MainScript.fDibelVagPay)
+    SetSliderDialogDefaultValue(20.0)
+    SetSliderDialogRange(0, 1000)
+    SetSliderDialogInterval(1)
+  endEvent
 endstate
 
 state DIBEL_VAG_CHANCE_SLIDER
@@ -1138,13 +1177,13 @@ state SPEECH_BEG_BONUS_MAX_MULT_SLIDER
     MainScript.fMaxSpeechBegBonusMult = value
     _SetSliderOptionValueST(MainScript.fMaxSpeechBegBonusMult, "$MRT_SP_SPEECH_BEG_BONUS_MAX_MULT_SLIDER2")
   endevent
- 
+
   event OnSliderOpenST()
-		SetSliderDialogStartValue(MainScript.fMaxSpeechBegBonusMult)
-		SetSliderDialogDefaultValue(0.5)
-		SetSliderDialogRange(0, 10)
-		SetSliderDialogInterval(0.1)
-	endEvent
+    SetSliderDialogStartValue(MainScript.fMaxSpeechBegBonusMult)
+    SetSliderDialogDefaultValue(0.5)
+    SetSliderDialogRange(0, 10)
+    SetSliderDialogInterval(0.1)
+  endEvent
 endstate
 
 state SPEECH_BEG_BONUS_MIN_MULT_SLIDER
@@ -1161,11 +1200,11 @@ state SPEECH_BEG_BONUS_MIN_MULT_SLIDER
   endevent
 
   event OnSliderOpenST()
-		SetSliderDialogStartValue(MainScript.fMinSpeechBegBonusMult)
-		SetSliderDialogDefaultValue(0.0)
-		SetSliderDialogRange(0, 10)
-		SetSliderDialogInterval(0.1)
-	endEvent
+    SetSliderDialogStartValue(MainScript.fMinSpeechBegBonusMult)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 10)
+    SetSliderDialogInterval(0.1)
+  endEvent
 endstate
 
 state SPEECH_DIBEL_XP_MULT_SLIDER
@@ -1310,11 +1349,11 @@ state SPEECH_DIBEL_BONUS_MAX_MULT_SLIDER
   endevent
 
   event OnSliderOpenST()
-		SetSliderDialogStartValue(MainScript.fMaxSpeechDibelBonusMult)
-		SetSliderDialogDefaultValue(1.50)
-		SetSliderDialogRange(0, 10)
-		SetSliderDialogInterval(0.1)
-	endEvent
+    SetSliderDialogStartValue(MainScript.fMaxSpeechDibelBonusMult)
+    SetSliderDialogDefaultValue(1.50)
+    SetSliderDialogRange(0, 10)
+    SetSliderDialogInterval(0.1)
+  endEvent
 endstate
 
 state SPEECH_DIBEL_BONUS_MIN_MULT_SLIDER
@@ -1331,11 +1370,11 @@ state SPEECH_DIBEL_BONUS_MIN_MULT_SLIDER
   endevent
 
   event OnSliderOpenST()
-		SetSliderDialogStartValue(MainScript.fMinSpeechDibelBonusMult)
-		SetSliderDialogDefaultValue(0.8)
-		SetSliderDialogRange(0, 10)
-		SetSliderDialogInterval(0.1)
-	endEvent
+    SetSliderDialogStartValue(MainScript.fMinSpeechDibelBonusMult)
+    SetSliderDialogDefaultValue(0.8)
+    SetSliderDialogRange(0, 10)
+    SetSliderDialogInterval(0.1)
+  endEvent
 endstate
 
 state SPEECH_WHORE_BONUS_MAX_MULT_SLIDER
@@ -1352,11 +1391,11 @@ state SPEECH_WHORE_BONUS_MAX_MULT_SLIDER
   endevent
 
   event OnSliderOpenST()
-		SetSliderDialogStartValue(MainScript.fMaxSpeechWhoreBonusMult)
-		SetSliderDialogDefaultValue(1.20)
-		SetSliderDialogRange(0, 10)
-		SetSliderDialogInterval(0.1)
-	endEvent
+    SetSliderDialogStartValue(MainScript.fMaxSpeechWhoreBonusMult)
+    SetSliderDialogDefaultValue(1.20)
+    SetSliderDialogRange(0, 10)
+    SetSliderDialogInterval(0.1)
+  endEvent
 endstate
 
 state SPEECH_WHORE_BONUS_MIN_MULT_SLIDER
@@ -1373,11 +1412,11 @@ state SPEECH_WHORE_BONUS_MIN_MULT_SLIDER
   endevent
 
   event OnSliderOpenST()
-		SetSliderDialogStartValue(MainScript.fMinSpeechWhoreBonusMult)
-		SetSliderDialogDefaultValue(0.6)
-		SetSliderDialogRange(0, 10)
-		SetSliderDialogInterval(0.1)
-	endEvent
+    SetSliderDialogStartValue(MainScript.fMinSpeechWhoreBonusMult)
+    SetSliderDialogDefaultValue(0.6)
+    SetSliderDialogRange(0, 10)
+    SetSliderDialogInterval(0.1)
+  endEvent
 endstate
 
 state WHORE_ANAL_PAY_SLIDER
@@ -1394,11 +1433,11 @@ state WHORE_ANAL_PAY_SLIDER
   endevent
 
   event OnSliderOpenST()
-		SetSliderDialogStartValue(MainScript.fWhoreAnalPay)
-		SetSliderDialogDefaultValue(10.0)
-		SetSliderDialogRange(0, 1000)
-		SetSliderDialogInterval(1)
-	endEvent
+    SetSliderDialogStartValue(MainScript.fWhoreAnalPay)
+    SetSliderDialogDefaultValue(10.0)
+    SetSliderDialogRange(0, 1000)
+    SetSliderDialogInterval(1)
+  endEvent
 endstate
 
 state WHORE_ANAL_CHANCE_SLIDER
@@ -1533,11 +1572,11 @@ state WHORE_ORAL_PAY_SLIDER
   endevent
 
   event OnSliderOpenST()
-		SetSliderDialogStartValue(MainScript.fWhoreOralPay)
-		SetSliderDialogDefaultValue(5.0)
-		SetSliderDialogRange(0, 1000)
-		SetSliderDialogInterval(1)
-	endEvent
+    SetSliderDialogStartValue(MainScript.fWhoreOralPay)
+    SetSliderDialogDefaultValue(5.0)
+    SetSliderDialogRange(0, 1000)
+    SetSliderDialogInterval(1)
+  endEvent
 endstate
 
 state NORMAL_STD_INFECT_CHANCE_SLIDER
@@ -1846,13 +1885,13 @@ state WHORE_OWNER_SHARE_SLIDER
 endstate
 
 state WHORE_MARK_CHANCE_SLIDER
-    event OnDefaultST()
+  event OnDefaultST()
   endevent
 
   event OnHighlightST()
     SetInfoText("$MRT_SP_DESC_WHORE_MARK_CHANCE_SLIDER")
   endevent
-  
+
   event OnSliderAcceptST(float value)
     MainScript.fWhoreMarkChance = value
     _SetSliderOptionValueST(MainScript.fWhoreMarkChance, "$MRT_SP_WHORE_MARK_CHANCE_SLIDER2")
@@ -1867,13 +1906,13 @@ state WHORE_MARK_CHANCE_SLIDER
 endState
 
 state DIBEL_MARK_CHANCE_SLIDER
-    event OnDefaultST()
+  event OnDefaultST()
   endevent
 
   event OnHighlightST()
     SetInfoText("$MRT_SP_DESC_DIBEL_MARK_CHANCE_SLIDER")
   endevent
-  
+
   event OnSliderAcceptST(float value)
     MainScript.fDibelMarkChance = value
     _SetSliderOptionValueST(MainScript.fDibelMarkChance, "$MRT_SP_DIBEL_MARK_CHANCE_SLIDER2")
@@ -2155,11 +2194,11 @@ state WHORE_VAG_PAY_SLIDER
   endevent
 
   event OnSliderOpenST()
-		SetSliderDialogStartValue(MainScript.fWhoreVagPay)
-		SetSliderDialogDefaultValue(15.0)
-		SetSliderDialogRange(0, 1000)
-		SetSliderDialogInterval(1)
-	endEvent
+    SetSliderDialogStartValue(MainScript.fWhoreVagPay)
+    SetSliderDialogDefaultValue(15.0)
+    SetSliderDialogRange(0, 1000)
+    SetSliderDialogInterval(1)
+  endEvent
 endstate
 
 state WHORE_VAG_CHANCE_SLIDER
@@ -2202,7 +2241,7 @@ State EXTRATAGS_SEXLAB_ORAL_MF_INPUT
       ForcePageReset()
     endif
   endEvent
-  
+
   event OnHighlightST()
     SetInfoText("$MRT_SP_DESC_EXTRATAGS_SEXLAB_ORAL_MF_INPUT")
   endevent
@@ -2227,7 +2266,7 @@ State EXTRATAGS_SEXLAB_ORAL_MM_INPUT
       ForcePageReset()
     endif
   endEvent
-  
+
   event OnHighlightST()
     SetInfoText("$MRT_SP_DESC_EXTRATAGS_SEXLAB_ORAL_MM_INPUT")
   endevent
@@ -2252,7 +2291,7 @@ State EXTRATAGS_SEXLAB_ORAL_FF_INPUT
       ForcePageReset()
     endif
   endEvent
-  
+
   event OnHighlightST()
     SetInfoText("$MRT_SP_DESC_EXTRATAGS_SEXLAB_ORAL_FF_INPUT")
   endevent
@@ -2277,7 +2316,7 @@ State EXTRATAGS_SEXLAB_ANAL_MF_INPUT
       ForcePageReset()
     endif
   endEvent
-  
+
   event OnHighlightST()
     SetInfoText("$MRT_SP_DESC_EXTRATAGS_SEXLAB_ANAL_MF_INPUT")
   endevent
@@ -2302,7 +2341,7 @@ State EXTRATAGS_SEXLAB_ANAL_FF_INPUT
       ForcePageReset()
     endif
   endEvent
-  
+
   event OnHighlightST()
     SetInfoText("$MRT_SP_DESC_EXTRATAGS_SEXLAB_ANAL_FF_INPUT")
   endevent
@@ -2327,7 +2366,7 @@ State EXTRATAGS_SEXLAB_ANAL_MM_INPUT
       ForcePageReset()
     endif
   endEvent
-  
+
   event OnHighlightST()
     SetInfoText("$MRT_SP_DESC_EXTRATAGS_SEXLAB_ANAL_MM_INPUT")
   endevent
@@ -2352,7 +2391,7 @@ State EXTRATAGS_SEXLAB_VAGINAL_MF_INPUT
       ForcePageReset()
     endif
   endEvent
-  
+
   event OnHighlightST()
     SetInfoText("$MRT_SP_DESC_EXTRATAGS_SEXLAB_VAGINAL_MF_INPUT")
   endevent
@@ -2377,7 +2416,7 @@ State EXTRATAGS_SEXLAB_VAGINAL_FF_INPUT
       ForcePageReset()
     endif
   endEvent
-  
+
   event OnHighlightST()
     SetInfoText("$MRT_SP_DESC_EXTRATAGS_SEXLAB_VAGINAL_FF_INPUT")
   endevent
@@ -2402,7 +2441,7 @@ State EXTRATAGS_OSTIM_ORAL_MF_INPUT
       ForcePageReset()
     endif
   endEvent
-  
+
   event OnHighlightST()
     SetInfoText("$MRT_SP_DESC_EXTRATAGS_OSTIM_ORAL_MF_INPUT")
   endevent
@@ -2427,7 +2466,7 @@ State EXTRATAGS_OSTIM_ORAL_MM_INPUT
       ForcePageReset()
     endif
   endEvent
-  
+
   event OnHighlightST()
     SetInfoText("$MRT_SP_DESC_EXTRATAGS_OSTIM_ORAL_MM_INPUT")
   endevent
@@ -2452,7 +2491,7 @@ State EXTRATAGS_OSTIM_ORAL_FF_INPUT
       ForcePageReset()
     endif
   endEvent
-  
+
   event OnHighlightST()
     SetInfoText("$MRT_SP_DESC_EXTRATAGS_OSTIM_ORAL_FF_INPUT")
   endevent
@@ -2477,7 +2516,7 @@ State EXTRATAGS_OSTIM_ANAL_MF_INPUT
       ForcePageReset()
     endif
   endEvent
-  
+
   event OnHighlightST()
     SetInfoText("$MRT_SP_DESC_EXTRATAGS_OSTIM_ANAL_MF_INPUT")
   endevent
@@ -2502,7 +2541,7 @@ State EXTRATAGS_OSTIM_ANAL_FF_INPUT
       ForcePageReset()
     endif
   endEvent
-  
+
   event OnHighlightST()
     SetInfoText("$MRT_SP_DESC_EXTRATAGS_OSTIM_ANAL_FF_INPUT")
   endevent
@@ -2527,7 +2566,7 @@ State EXTRATAGS_OSTIM_ANAL_MM_INPUT
       ForcePageReset()
     endif
   endEvent
-  
+
   event OnHighlightST()
     SetInfoText("$MRT_SP_DESC_EXTRATAGS_OSTIM_ANAL_MM_INPUT")
   endevent
@@ -2552,7 +2591,7 @@ State EXTRATAGS_OSTIM_VAGINAL_MF_INPUT
       ForcePageReset()
     endif
   endEvent
-  
+
   event OnHighlightST()
     SetInfoText("$MRT_SP_DESC_EXTRATAGS_OSTIM_VAGINAL_MF_INPUT")
   endevent
@@ -2577,7 +2616,7 @@ State EXTRATAGS_OSTIM_VAGINAL_FF_INPUT
       ForcePageReset()
     endif
   endEvent
-  
+
   event OnHighlightST()
     SetInfoText("$MRT_SP_DESC_EXTRATAGS_OSTIM_VAGINAL_FF_INPUT")
   endevent
@@ -2767,7 +2806,7 @@ State WHORE_TAG_CHEST_CLOTH_TXT
           saveData_WhoreClothing_KWD(chestArmor)
         endif
         ForcePageReset()
-	  endif	
+      endif	
     endif
   endFunction
 
@@ -2911,7 +2950,7 @@ state LOAD_USER_SETTING_TXT
     if ShowMessage("Do you want to load user settings?", true, "$Accept", "$Cancel")
       if loadUserSettingsPapyrus()
         setModVars = true
-		    ForcePageReset()
+        ForcePageReset()
         ShowMessage("User settings loaded successfully.", false, "$Accept", "$Cancel")
       else
         ShowMessage("Failed to load user settings.", false, "$Accept", "$Cancel")
@@ -3009,7 +3048,7 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
   MainScript.bBeggarGuardsSexOffer = jsonutil.GetPathIntValue(settings_path, "bBeggarGuardsSexOffer", MainScript.bBeggarGuardsSexOffer as Int)
 
 
-  
+
   iBeggarSpeechDifficulty = jsonutil.GetPathIntValue(settings_path, "iBeggarSpeechDifficulty", iBeggarSpeechDifficulty)
   iWhoreSpeechDifficulty = jsonutil.GetPathIntValue(settings_path, "iWhoreSpeechDifficulty", iWhoreSpeechDifficulty)
   iDibelSpeechDifficulty = jsonutil.GetPathIntValue(settings_path, "iDibelSpeechDifficulty", iDibelSpeechDifficulty)
@@ -3079,7 +3118,7 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
   MainScript.fWhoreRejectFemaleSlaveryChance = jsonutil.GetPathFloatValue(settings_path, "fWhoreRejectFemaleSlaveryChance", MainScript.fWhoreRejectFemaleSlaveryChance)
   MainScript.fWhoreRejectMaleReportChance = jsonutil.GetPathFloatValue(settings_path, "fWhoreRejectMaleReportChance", MainScript.fWhoreRejectMaleReportChance)
   MainScript.fWhoreRejectFemaleReportChance = jsonutil.GetPathFloatValue(settings_path, "fWhoreRejectFemaleReportChance", MainScript.fWhoreRejectFemaleReportChance)
- 
+
   MainScript.fDibelRejectMaleAcceptChance = jsonutil.GetPathFloatValue(settings_path, "fDibelRejectMaleAcceptChance", MainScript.fDibelRejectMaleAcceptChance)
   MainScript.fDibelRejectFemaleAcceptChance = jsonutil.GetPathFloatValue(settings_path, "fDibelRejectFemaleAcceptChance", MainScript.fDibelRejectFemaleAcceptChance)
   MainScript.fDibelRejectMaleRapeChance = jsonutil.GetPathFloatValue(settings_path, "fDibelRejectMaleRapeChance", MainScript.fDibelRejectMaleRapeChance)
@@ -3142,7 +3181,7 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
   MainScript.sExtraTags_OS_Anal_MM = jsonutil.GetPathStringValue(settings_path, "sExtraTags_OS_Anal_MM", MainScript.sExtraTags_OS_Anal_MM)
   MainScript.sExtraTags_OS_Vaginal_MF = jsonutil.GetPathStringValue(settings_path, "sExtraTags_OS_Vaginal_MF", MainScript.sExtraTags_OS_Vaginal_MF)
   MainScript.sExtraTags_OS_Vaginal_FF = jsonutil.GetPathStringValue(settings_path, "sExtraTags_OS_Vaginal_FF", MainScript.sExtraTags_OS_Vaginal_FF)
-  
+
   return true
 
 endFunction
@@ -3201,14 +3240,14 @@ Bool function saveUserSettingsPapyrus()
   jsonutil.SetPathIntValue(settings_path, "bBeggarRejectWalkAwayCheck", MainScript.bBeggarRejectWalkAwayCheck as Int)
   jsonutil.SetPathIntValue(settings_path, "bGuardsMayApproach", MainScript.bGuardsMayApproach as Int)
   jsonutil.SetPathIntValue(settings_path, "bBeggarGuardsSexOffer", MainScript.bBeggarGuardsSexOffer as Int)
- 
+
   jsonutil.SetPathIntValue(settings_path, "iBeggarSpeechDifficulty", iBeggarSpeechDifficulty)
   jsonutil.SetPathIntValue(settings_path, "iWhoreSpeechDifficulty", iWhoreSpeechDifficulty)
   jsonutil.SetPathIntValue(settings_path, "iDibelSpeechDifficulty", iDibelSpeechDifficulty)
   jsonutil.SetPathIntValue(settings_path, "iAnimInterfaceMethod", iAnimInterfaceMethod)
   jsonutil.SetPathIntValue(settings_path, "iCustomerApproachTimer", MainScript.iCustomerApproachTimer)
   jsonutil.SetPathIntValue(settings_path, "iCrimeBounty", MainScript.iCrimeBounty)
-  
+
   jsonutil.SetPathFloatValue(settings_path, "fWhoreOwnerShare", MainScript.fWhoreOwnerShare)
   jsonutil.SetPathFloatValue(settings_path, "fBegPayMin", MainScript.fBegPayMin)
   jsonutil.SetPathFloatValue(settings_path, "fBegPayMax", MainScript.fBegPayMax)
@@ -3319,7 +3358,7 @@ Bool function saveUserSettingsPapyrus()
   jsonutil.SetPathFloatValue(settings_path, "fWhoreSTDInfectChance", MainScript.fWhoreSTDInfectChance)
   jsonutil.SetPathFloatValue(settings_path, "fDibelSTDInfectChance", MainScript.fDibelSTDInfectChance)
   jsonutil.SetPathFloatValue(settings_path, "fNormalSTDInfectChance", MainScript.fNormalSTDInfectChance)
-  
+
   jsonutil.SetPathStringValue(settings_path, "sExtraTags_SL_Oral_MF", MainScript.sExtraTags_SL_Oral_MF)
   jsonutil.SetPathStringValue(settings_path, "sExtraTags_SL_Oral_FF", MainScript.sExtraTags_SL_Oral_FF)
   jsonutil.SetPathStringValue(settings_path, "sExtraTags_SL_Oral_MM", MainScript.sExtraTags_SL_Oral_MM)
@@ -3666,31 +3705,31 @@ EndFunction
 
 Function removeDibelRewards()
   if iTotalRefundableOfferedMarks < 1
-	  return
-	endif
-	actor player = MainScript.player
-  if iTotalHealthRecieved > 0
-    Player.RestoreActorValue("Health", iTotalHealthRecieved)
-    Player.SetActorValue("Health", maxFloat(1.0, Player.GetBaseActorValue("Health") - iTotalHealthRecieved))
-    iTotalHealthRecieved = 0
-  endif
-  if iTotalMagickaRecieved > 0
-    Player.RestoreActorValue("Magicka", iTotalMagickaRecieved)
-    Player.SetActorValue("Magicka", maxFloat(1.0,Player.GetBaseActorValue("Magicka") - iTotalMagickaRecieved))
-    iTotalMagickaRecieved = 0
-  endif
-  if iTotalStaminaRecieved > 0
-    Player.RestoreActorValue("Stamina", iTotalStaminaRecieved)
-    Player.SetActorValue("Stamina", maxFloat(1.0, Player.GetBaseActorValue("Stamina") - iTotalStaminaRecieved))
-    iTotalStaminaRecieved = 0
-  endif
-  if iTotalCarryWeightRecieved > 0
-    Player.ModActorValue("CarryWeight", -iTotalCarryWeightRecieved)
-    iTotalCarryWeightRecieved = 0
-  endif
-  player.Additem(MainScript.dibelMark, iTotalRefundableOfferedMarks)
-  iTotalOfferedMarks -= iTotalRefundableOfferedMarks
-  iTotalRefundableOfferedMarks = 0
+   return
+ endif
+ actor player = MainScript.player
+ if iTotalHealthRecieved > 0
+  Player.RestoreActorValue("Health", iTotalHealthRecieved)
+  Player.SetActorValue("Health", maxFloat(1.0, Player.GetBaseActorValue("Health") - iTotalHealthRecieved))
+  iTotalHealthRecieved = 0
+endif
+if iTotalMagickaRecieved > 0
+  Player.RestoreActorValue("Magicka", iTotalMagickaRecieved)
+  Player.SetActorValue("Magicka", maxFloat(1.0,Player.GetBaseActorValue("Magicka") - iTotalMagickaRecieved))
+  iTotalMagickaRecieved = 0
+endif
+if iTotalStaminaRecieved > 0
+  Player.RestoreActorValue("Stamina", iTotalStaminaRecieved)
+  Player.SetActorValue("Stamina", maxFloat(1.0, Player.GetBaseActorValue("Stamina") - iTotalStaminaRecieved))
+  iTotalStaminaRecieved = 0
+endif
+if iTotalCarryWeightRecieved > 0
+  Player.ModActorValue("CarryWeight", -iTotalCarryWeightRecieved)
+  iTotalCarryWeightRecieved = 0
+endif
+player.Additem(MainScript.dibelMark, iTotalRefundableOfferedMarks)
+iTotalOfferedMarks -= iTotalRefundableOfferedMarks
+iTotalRefundableOfferedMarks = 0
 EndFunction
 
 function ForceCloseMenu()
@@ -3720,6 +3759,9 @@ event OnOptionSelect(int option)
   elseif option == OID_BEG_GUARDS_SEX_OFFER
     MainScript.bBeggarGuardsSexOffer = !MainScript.bBeggarGuardsSexOffer
     SetToggleOptionValue(option, MainScript.bBeggarGuardsSexOffer)
+  elseif option == OID_BEG_ELDER_SEX_OFFER
+    MainScript.bBeggarElderSexOffer = !MainScript.bBeggarElderSexOffer
+    SetToggleOptionValue(option, MainScript.bBeggarElderSexOffer)
   elseif option == OID_MALE_CUSTOMER_APPROACH
     MainScript.bMaleCustomerApproach = !MainScript.bMaleCustomerApproach
     SetToggleOptionValue(option, MainScript.bMaleCustomerApproach)
@@ -3750,6 +3792,9 @@ event OnOptionSelect(int option)
   elseif option == OID_GUARDS_MAY_APPROACH
     MainScript.bGuardsMayApproach = !MainScript.bGuardsMayApproach
     SetToggleOptionValue(option, MainScript.bGuardsMayApproach)
+  elseif option == OID_ELDER_MAY_APPROACH
+    MainScript.bEldersMayApproach = !MainScript.bEldersMayApproach
+    SetToggleOptionValue(option, MainScript.bEldersMayApproach)
   endif
   ForcePageReset()
 EndEvent
@@ -3773,6 +3818,9 @@ event OnOptionDefault(int option)
   elseif option == OID_BEG_GUARDS_SEX_OFFER
     MainScript.bBeggarGuardsSexOffer = True
     SetToggleOptionValue(option, MainScript.bBeggarGuardsSexOffer)
+  elseif option == OID_BEG_ELDER_SEX_OFFER
+    MainScript.bBeggarElderSexOffer = True
+    SetToggleOptionValue(option, MainScript.bBeggarElderSexOffer)
   elseif option == OID_MALE_CUSTOMER_APPROACH
     MainScript.bMaleCustomerApproach = True
     SetToggleOptionValue(option, MainScript.bMaleCustomerApproach)
@@ -3798,6 +3846,9 @@ event OnOptionDefault(int option)
   elseif option == OID_GUARDS_MAY_APPROACH
     MainScript.bGuardsMayApproach = true
     SetToggleOptionValue(option, MainScript.bGuardsMayApproach)
+  elseif option == OID_ELDER_MAY_APPROACH
+    MainScript.bEldersMayApproach = true
+    SetToggleOptionValue(option, MainScript.bEldersMayApproach)
   endif
   ForcePageReset()
 EndEvent
@@ -3878,72 +3929,72 @@ event OnOptionHighlight(int option)
   elseif option == OID_MALE_CUSTOMER_APPROACH
     SetInfoText("$MRT_SP_DESC_MALE_CUSTOMER_APPROACH")
   elseif option == OID_BEG_ONLY_INTERIOR_SEX_OFFER
-     SetInfoText("$MRT_SP_DESC_BEG_REJ_ONLY_INTERIOR_SEX_OFFER")
-  elseif option == OID_BEG_GUARDS_SEX_OFFER
-     SetInfoText("$MRT_SP_DESC_BEG_GUARDS_SEX_OFFER")
-  elseif option == OID_BEG_REJ_THEFT_ONLYGOLD
-     SetInfoText("$MRT_SP_DESC_BEG_REJ_THEFT_ONLYGOLD")
-  elseif option == OID_BEG_REJ_WALKAWAY_CHECK
-     SetInfoText("$MRT_SP_DESC_BEG_REJ_WALKAWAY_CHECK")
-  elseif option == OID_WHORE_REJ_THEFT_ONLYGOLD
-    SetInfoText("$MRT_SP_DESC_WHORE_REJ_THEFT_ONLYGOLD")
-  elseif option == OID_DIBEL_REJ_THEFT_ONLYGOLD
-    SetInfoText("$MRT_SP_DESC_DIBEL_REJ_THEFT_ONLYGOLD")
-  elseif option == OID_ONLY_WHORE_CLOTHING_APPROACH
-    SetInfoText("$MRT_SP_DESC_ONLY_WHORE_CLOTHING_APPROACH")
-  elseif option == OID_ONLY_INTERIOR_APPROACH
-    SetInfoText("$MRT_SP_DESC_ONLY_INTERIOR_APPROACH")
-  elseif option == OID_ONLY_LOS_APPROACH
-    SetInfoText("$MRT_SP_DESC_ONLY_LOS_APPROACH")
-  elseif option == OID_ONLY_LICENSED_APPROACH
-    SetInfoText("$MRT_SP_DESC_ONLY_LICENSED_APPROACH_TOGGLE")
-  elseif option == OID_BEG_ONLY_LICENSED_SEX_OFFER
-    SetInfoText("$MRT_SP_DESC_BEG_ONLY_LICENSED_SEX_OFFER")
-  Elseif option == OID_CRIME_BOUNTY
-    SetInfoText("$MRT_SP_DESC_CRIME_BOUNTY")
-  elseif option == OID_DIBEL_REJ_MALE_MURDER
-    SetInfoText("$MRT_SP_DESC_DIBEL_REJ_MALE_MURDER_SLIDER")
-  elseif option == OID_DIBEL_REJ_FEMALE_MURDER
-    SetInfoText("$MRT_SP_DESC_DIBEL_REJ_FEMALE_MURDER_SLIDER")
-  elseif option == OID_WHORE_REJ_MALE_MURDER
-    SetInfoText("$MRT_SP_DESC_WHORE_REJ_MALE_MURDER_SLIDER")
-  elseif option == OID_WHORE_REJ_FEMALE_MURDER
-    SetInfoText("$MRT_SP_DESC_WHORE_REJ_FEMALE_MURDER_SLIDER")
-  elseif option == OID_BEG_REJ_MALE_MURDER
-    SetInfoText("$MRT_SP_DESC_BEG_REJ_MALE_MURDER_SLIDER")
-  elseif option == OID_BEG_REJ_FEMALE_MURDER
-    SetInfoText("$MRT_SP_DESC_BEG_REJ_FEMALE_MURDER_SLIDER")
-  elseif option == OID_DEFAULT_REJ_MALE_MURDER
-    SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_MALE_MURDER_SLIDER")
-  elseif option == OID_DEFAULT_REJ_FEMALE_MURDER
-    SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_FEMALE_MURDER_SLIDER")
-  elseif option == OID_DEFAULT_REJ_MALE_ACCEPT
-    SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_MALE_ACCEPT_SLIDER")
-  elseif option == OID_DEFAULT_REJ_FEMALE_ACCEPT
-    SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_FEMALE_ACCEPT_SLIDER")
-  elseif option == OID_DEFAULT_REJ_MALE_RAPE
-    SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_MALE_RAPE_SLIDER")
-  elseif option == OID_DEFAULT_REJ_FEMALE_RAPE
-    SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_FEMALE_RAPE_SLIDER")
-  elseif option == OID_DEFAULT_REJ_MALE_THEFT
-    SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_MALE_THEFT_SLIDER")
-  elseif option == OID_DEFAULT_REJ_FEMALE_THEFT
-    SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_FEMALE_THEFT_SLIDER")
-  elseif option == OID_DEFAULT_REJ_MALE_ASSAULT
-    SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_MALE_ASSAULT_SLIDER")
-  elseif option == OID_DEFAULT_REJ_FEMALE_ASSAULT
-    SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_FEMALE_ASSAULT_SLIDER")
-  elseif option == OID_DEFAULT_REJ_MALE_SLAVERY
-    SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_MALE_SLAVERY_SLIDER")
-  elseif option == OID_DEFAULT_REJ_FEMALE_SLAVERY
-    SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_FEMALE_SLAVERY_SLIDER")
-  elseif option == OID_DEFAULT_REJ_THEFT_ONLYGOLD
-    SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_THEFT_ONLYGOLD")
-  elseif option == OID_CRUEL_GUARDS_APPROACH
-    SetInfoText("$MRT_SP_DESC_CRUEL_GUARDS_APPROACH")
-  elseif option == OID_GUARDS_MAY_APPROACH
-    SetInfoText("$MRT_SP_DESC_GUARDS_MAY_APPROACH")
-  endif
+   SetInfoText("$MRT_SP_DESC_BEG_REJ_ONLY_INTERIOR_SEX_OFFER")
+ elseif option == OID_BEG_GUARDS_SEX_OFFER
+   SetInfoText("$MRT_SP_DESC_BEG_GUARDS_SEX_OFFER")
+ elseif option == OID_BEG_REJ_THEFT_ONLYGOLD
+   SetInfoText("$MRT_SP_DESC_BEG_REJ_THEFT_ONLYGOLD")
+ elseif option == OID_BEG_REJ_WALKAWAY_CHECK
+   SetInfoText("$MRT_SP_DESC_BEG_REJ_WALKAWAY_CHECK")
+ elseif option == OID_WHORE_REJ_THEFT_ONLYGOLD
+  SetInfoText("$MRT_SP_DESC_WHORE_REJ_THEFT_ONLYGOLD")
+elseif option == OID_DIBEL_REJ_THEFT_ONLYGOLD
+  SetInfoText("$MRT_SP_DESC_DIBEL_REJ_THEFT_ONLYGOLD")
+elseif option == OID_ONLY_WHORE_CLOTHING_APPROACH
+  SetInfoText("$MRT_SP_DESC_ONLY_WHORE_CLOTHING_APPROACH")
+elseif option == OID_ONLY_INTERIOR_APPROACH
+  SetInfoText("$MRT_SP_DESC_ONLY_INTERIOR_APPROACH")
+elseif option == OID_ONLY_LOS_APPROACH
+  SetInfoText("$MRT_SP_DESC_ONLY_LOS_APPROACH")
+elseif option == OID_ONLY_LICENSED_APPROACH
+  SetInfoText("$MRT_SP_DESC_ONLY_LICENSED_APPROACH_TOGGLE")
+elseif option == OID_BEG_ONLY_LICENSED_SEX_OFFER
+  SetInfoText("$MRT_SP_DESC_BEG_ONLY_LICENSED_SEX_OFFER")
+Elseif option == OID_CRIME_BOUNTY
+  SetInfoText("$MRT_SP_DESC_CRIME_BOUNTY")
+elseif option == OID_DIBEL_REJ_MALE_MURDER
+  SetInfoText("$MRT_SP_DESC_DIBEL_REJ_MALE_MURDER_SLIDER")
+elseif option == OID_DIBEL_REJ_FEMALE_MURDER
+  SetInfoText("$MRT_SP_DESC_DIBEL_REJ_FEMALE_MURDER_SLIDER")
+elseif option == OID_WHORE_REJ_MALE_MURDER
+  SetInfoText("$MRT_SP_DESC_WHORE_REJ_MALE_MURDER_SLIDER")
+elseif option == OID_WHORE_REJ_FEMALE_MURDER
+  SetInfoText("$MRT_SP_DESC_WHORE_REJ_FEMALE_MURDER_SLIDER")
+elseif option == OID_BEG_REJ_MALE_MURDER
+  SetInfoText("$MRT_SP_DESC_BEG_REJ_MALE_MURDER_SLIDER")
+elseif option == OID_BEG_REJ_FEMALE_MURDER
+  SetInfoText("$MRT_SP_DESC_BEG_REJ_FEMALE_MURDER_SLIDER")
+elseif option == OID_DEFAULT_REJ_MALE_MURDER
+  SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_MALE_MURDER_SLIDER")
+elseif option == OID_DEFAULT_REJ_FEMALE_MURDER
+  SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_FEMALE_MURDER_SLIDER")
+elseif option == OID_DEFAULT_REJ_MALE_ACCEPT
+  SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_MALE_ACCEPT_SLIDER")
+elseif option == OID_DEFAULT_REJ_FEMALE_ACCEPT
+  SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_FEMALE_ACCEPT_SLIDER")
+elseif option == OID_DEFAULT_REJ_MALE_RAPE
+  SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_MALE_RAPE_SLIDER")
+elseif option == OID_DEFAULT_REJ_FEMALE_RAPE
+  SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_FEMALE_RAPE_SLIDER")
+elseif option == OID_DEFAULT_REJ_MALE_THEFT
+  SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_MALE_THEFT_SLIDER")
+elseif option == OID_DEFAULT_REJ_FEMALE_THEFT
+  SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_FEMALE_THEFT_SLIDER")
+elseif option == OID_DEFAULT_REJ_MALE_ASSAULT
+  SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_MALE_ASSAULT_SLIDER")
+elseif option == OID_DEFAULT_REJ_FEMALE_ASSAULT
+  SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_FEMALE_ASSAULT_SLIDER")
+elseif option == OID_DEFAULT_REJ_MALE_SLAVERY
+  SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_MALE_SLAVERY_SLIDER")
+elseif option == OID_DEFAULT_REJ_FEMALE_SLAVERY
+  SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_FEMALE_SLAVERY_SLIDER")
+elseif option == OID_DEFAULT_REJ_THEFT_ONLYGOLD
+  SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_THEFT_ONLYGOLD")
+elseif option == OID_CRUEL_GUARDS_APPROACH
+  SetInfoText("$MRT_SP_DESC_CRUEL_GUARDS_APPROACH")
+elseif option == OID_GUARDS_MAY_APPROACH
+  SetInfoText("$MRT_SP_DESC_GUARDS_MAY_APPROACH")
+endif
 endevent
 
 event OnOptionSliderAccept(int option, float value)
@@ -4088,14 +4139,14 @@ event OnOptionSliderAccept(int option, float value)
   elseif option == OID_DEFAULT_REJ_FEMALE_RAPE
     MainScript.fDefaultRejectFemaleRapeChance = value
     SetSliderOptionValue(OID_DEFAULT_REJ_FEMALE_RAPE, MainScript.fDefaultRejectFemaleRapeChance, "$MRT_SP_DEFAULT_REJ_FEMALE_RAPE_SLIDER2")  
-  
+
   elseif option == OID_DEFAULT_REJ_MALE_THEFT
     MainScript.fDefaultRejectMaleTheftChance = value
     SetSliderOptionValue(OID_DEFAULT_REJ_MALE_THEFT, MainScript.fDefaultRejectMaleTheftChance, "$MRT_SP_BEG_REJ_MALE_THEFT_SLIDER2")
   elseif option == OID_DEFAULT_REJ_FEMALE_THEFT
     MainScript.fDefaultRejectFemaleTheftChance = value
     SetSliderOptionValue(OID_DEFAULT_REJ_FEMALE_THEFT, MainScript.fDefaultRejectFemaleTheftChance, "$MRT_SP_BEG_REJ_FEMALE_THEFT_SLIDER2")  
- 
+
   elseif option == OID_DEFAULT_REJ_MALE_ASSAULT
     MainScript.fDefaultRejectMaleAssaultChance = value
     SetSliderOptionValue(OID_DEFAULT_REJ_MALE_ASSAULT, MainScript.fDefaultRejectMaleAssaultChance, "$MRT_SP_BEG_REJ_MALE_ASSAULT_SLIDER2")
@@ -4116,8 +4167,125 @@ event OnOptionSliderAccept(int option, float value)
   elseif option == OID_DEFAULT_REJ_FEMALE_MURDER
     MainScript.fDefaultRejectFemaleMurderChance = value
     SetSliderOptionValue(OID_DEFAULT_REJ_FEMALE_MURDER, MainScript.fDefaultRejectFemaleMurderChance, "$MRT_SP_BEG_REJ_FEMALE_MURDER_SLIDER2")
-  endif
-  ForcePageReset()
+
+  elseif option == OID_DEVIOUS_COLLAR
+    MainScript.fDeviousCollarChance = value
+    SetSliderOptionValue(OID_DEVIOUS_COLLAR, MainScript.fDeviousCollarChance, "$MRT_SP_DEVIOUS_COLLAR_SLIDER2")
+    setModVars = true
+  elseif option == OID_DEVIOUS_BRA
+    MainScript.fDeviousChastityBrasChance = value
+    SetSliderOptionValue(OID_DEVIOUS_BRA, MainScript.fDeviousChastityBrasChance, "$MRT_SP_DEVIOUS_BRA_SLIDER2")
+    setModVars = true
+  elseif option == OID_DEVIOUS_HOOD
+   MainScript.fDeviousHoodChance = value
+   SetSliderOptionValue(OID_DEVIOUS_HOOD, MainScript.fDeviousHoodChance, "$MRT_SP_DEVIOUS_HOOD_SLIDER2") 
+   setModVars = true   
+ elseif option == OID_DEVIOUS_SUIT
+   MainScript.fDeviousSuitsChance = value
+   SetSliderOptionValue(OID_DEVIOUS_SUIT, MainScript.fDeviousSuitsChance, "$MRT_SP_DEVIOUS_SUIT_SLIDER2")
+   setModVars = true
+ elseif option == OID_DEVIOUS_BOOTS
+   MainScript.fDeviousBootsChance = value
+   SetSliderOptionValue(OID_DEVIOUS_BOOTS, MainScript.fDeviousBootsChance, "$MRT_SP_DEVIOUS_BOOTS_SLIDER2")
+   setModVars = true
+ elseif option == OID_DEVIOUS_CORSET
+   MainScript.fDeviousCorsetChance = value
+   SetSliderOptionValue(OID_DEVIOUS_CORSET, MainScript.fDeviousCorsetChance, "$MRT_SP_DEVIOUS_CORSET_SLIDER2")
+   setModVars = true
+ elseif option == OID_DEVIOUS_HARNESS
+   MainScript.fDeviousHarnessesChance = value
+   SetSliderOptionValue(OID_DEVIOUS_HARNESS, MainScript.fDeviousHarnessesChance, "$MRT_SP_DEVIOUS_HARNESS_SLIDER2")
+   setModVars = true
+ elseif option == OID_DEVIOUS_VAG_PRC
+   MainScript.fDeviousVaginalPiercingChance = value
+   SetSliderOptionValue(OID_DEVIOUS_VAG_PRC, MainScript.fDeviousVaginalPiercingChance, "$MRT_SP_DEVIOUS_VAG_PRC_SLIDER2")
+   setModVars = true
+ elseif option == OID_DEVIOUS_NIP_PRC
+   MainScript.fDeviousNipplePiercingChance = value
+   SetSliderOptionValue(OID_DEVIOUS_NIP_PRC, MainScript.fDeviousNipplePiercingChance, "$MRT_SP_DEVIOUS_NIP_PRC_SLIDER2")
+   setModVars = true
+ elseif option == OID_DEVIOUS_ANL_PLUG
+   MainScript.fDeviousAnalPlugChance = value
+   SetSliderOptionValue(OID_DEVIOUS_ANL_PLUG, MainScript.fDeviousAnalPlugChance, "$MRT_SP_DEVIOUS_ANL_PLUG_SLIDER2")
+   setModVars = true
+ elseif option == OID_DEVIOUS_VAG_PLUG
+   MainScript.fDeviousVaginalPlugChance = value
+   SetSliderOptionValue(OID_DEVIOUS_VAG_PLUG, MainScript.fDeviousVaginalPlugChance, "$MRT_SP_DEVIOUS_VAG_PLUG_SLIDER2")
+   setModVars = true
+ elseif option == OID_DEVIOUS_ARM_CUF
+   MainScript.fDeviousArmCuffChance = value
+   SetSliderOptionValue(OID_DEVIOUS_ARM_CUF, MainScript.fDeviousArmCuffChance, "$MRT_SP_DEVIOUS_ARM_CUF_SLIDER2")
+   setModVars = true
+ elseif option == OID_DEVIOUS_LEG_CUF
+   MainScript.fDeviousLegCuffChance = value
+   SetSliderOptionValue(OID_DEVIOUS_LEG_CUF, MainScript.fDeviousLegCuffChance, "$MRT_SP_DEVIOUS_LEG_CUF_SLIDER2")
+   setModVars = true
+ elseif option == OID_DEVIOUS_GAG_RING
+   MainScript.fDeviousGagRingChance = value
+   SetSliderOptionValue(OID_DEVIOUS_GAG_RING, MainScript.fDeviousGagRingChance, "$MRT_SP_DEVIOUS_GAG_RING_SLIDER2")
+   setModVars = true
+ elseif option == OID_DEVIOUS_GAG_ALL
+   MainScript.fDeviousGagAllChance = value
+   SetSliderOptionValue(OID_DEVIOUS_GAG_ALL, MainScript.fDeviousGagAllChance, "$MRT_SP_DEVIOUS_GAG_ALL_SLIDER2")
+   setModVars = true
+ elseif option == OID_DEVIOUS_HEAVY_RESTRAINT
+  MainScript.fDeviousHeavyRestraintChance = value
+  SetSliderOptionValue(OID_DEVIOUS_HEAVY_RESTRAINT, MainScript.fDeviousHeavyRestraintChance, "$MRT_SP_DEVIOUS_HEAVY_RESTRAINT_SLIDER2")
+  setModVars = true
+elseif option == OID_DEVIOUS_BLINDFOLD
+  MainScript.fDeviousBlindfoldChance = value
+  SetSliderOptionValue(OID_DEVIOUS_BLINDFOLD, MainScript.fDeviousBlindfoldChance, "$MRT_SP_DEVIOUS_BLINDFOLD_SLIDER2")
+  setModVars = true
+elseif option == OID_DEVIOUS_GLOVES
+  MainScript.fDeviousGlovesChance = value
+  SetSliderOptionValue(OID_DEVIOUS_GLOVES, MainScript.fDeviousGlovesChance, "$MRT_SP_DEVIOUS_GLOVES_SLIDER2")
+  setModVars = true
+elseif option == OID_DEVIOUS_BELT_OPEN
+  MainScript.fDeviousChastityBeltOpenChance = value
+  SetSliderOptionValue(OID_DEVIOUS_BELT_OPEN, MainScript.fDeviousChastityBeltOpenChance, "$MRT_SP_DEVIOUS_BELT_OPEN_SLIDER2")
+  setModVars = true
+elseif option == OID_DEVIOUS_BELT_CLOSE
+  MainScript.fDeviousChastityBeltCloseChance = value
+  SetSliderOptionValue(OID_DEVIOUS_BELT_CLOSE, MainScript.fDeviousChastityBeltCloseChance, "$MRT_SP_DEVIOUS_BELT_CLOSE_SLIDER2")
+  setModVars = true
+elseif option == OID_DEFAULT_REJ_MALE_DD
+  MainScript.fDefaultRejectMaleDeviceChance = value
+  SetSliderOptionValue(OID_DEFAULT_REJ_MALE_DD, MainScript.fDefaultRejectMaleDeviceChance, "$MRT_SP_DEFAULT_REJ_MALE_DD_SLIDER2")
+elseif option == OID_DEFAULT_REJ_FEMALE_DD
+  MainScript.fDefaultRejectFemaleDeviceChance = value
+  SetSliderOptionValue(OID_DEFAULT_REJ_FEMALE_DD, MainScript.fDefaultRejectFemaleDeviceChance, "$MRT_SP_DEFAULT_REJ_FEMALE_DD_SLIDER2")
+elseif option == OID_BEG_REJ_FEMALE_DD
+  MainScript.fBeggarRejectFemaleDeviceChance = value
+  SetSliderOptionValue(OID_BEG_REJ_FEMALE_DD, MainScript.fBeggarRejectFemaleDeviceChance, "$MRT_SP_BEG_REJ_FEMALE_DD_SLIDER2")
+elseif option == OID_BEG_REJ_MALE_DD
+  MainScript.fBeggarRejectMaleDeviceChance = value
+  SetSliderOptionValue(OID_BEG_REJ_MALE_DD, MainScript.fBeggarRejectMaleDeviceChance, "$MRT_SP_BEG_REJ_MALE_DD_SLIDER2")
+elseif option == OID_WHORE_REJ_FEMALE_DD
+  MainScript.fWhoreRejectFemaleDeviceChance = value
+  SetSliderOptionValue(OID_WHORE_REJ_FEMALE_DD, MainScript.fWhoreRejectFemaleDeviceChance, "$MRT_SP_WHORE_REJ_FEMALE_DD_SLIDER2")
+elseif option == OID_WHORE_REJ_MALE_DD
+  MainScript.fWhoreRejectMaleDeviceChance = value
+  SetSliderOptionValue(OID_WHORE_REJ_MALE_DD, MainScript.fWhoreRejectMaleDeviceChance, "$MRT_SP_WHORE_REJ_MALE_DD_SLIDER2")
+elseif option == OID_DIBEL_REJ_FEMALE_DD
+  MainScript.fDibelRejectFemaleDeviceChance = value
+  SetSliderOptionValue(OID_DIBEL_REJ_FEMALE_DD, MainScript.fDibelRejectFemaleDeviceChance, "$MRT_SP_DIBEL_REJ_FEMALE_DD_SLIDER2")
+elseif option == OID_DIBEL_REJ_MALE_DD
+  MainScript.fDibelRejectMaleDeviceChance = value
+  SetSliderOptionValue(OID_DIBEL_REJ_MALE_DD, MainScript.fDibelRejectMaleDeviceChance, "$MRT_SP_DIBEL_REJ_MALE_DD_SLIDER2")
+elseif option == OID_DIBEL_DD_CHANCE
+  MainScript.fDibelDeviceChance = value
+  SetSliderOptionValue(OID_DIBEL_DD_CHANCE, MainScript.fDibelDeviceChance, "$MRT_SP_DIBEL_DD_CHANCE_SLIDER2")
+elseif option == OID_BEG_DD_CHANCE
+  MainScript.fBeggarDeviceChance = value
+  SetSliderOptionValue(OID_BEG_DD_CHANCE, MainScript.fBeggarDeviceChance, "$MRT_SP_BEG_DD_CHANCE_SLIDER2")
+elseif option == OID_DIBEL_DD_CHANCE
+  MainScript.fDibelDeviceChance = value
+  SetSliderOptionValue(OID_DIBEL_DD_CHANCE, MainScript.fDibelDeviceChance, "$MRT_SP_DIBEL_DD_CHANCE_SLIDER2")
+elseif option == OID_WHORE_DD_CHANCE
+  MainScript.fWhoreDeviceChance = value
+  SetSliderOptionValue(OID_WHORE_DD_CHANCE, MainScript.fWhoreDeviceChance, "$MRT_SP_WHORE_DD_CHANCE_SLIDER2")
+endif
+ForcePageReset()
 EndEvent
 
 event OnOptionSliderOpen(int option)
@@ -4212,15 +4380,15 @@ event OnOptionSliderOpen(int option)
     SetSliderDialogRange(0, 100)
     SetSliderDialogInterval(0.1)
   elseif option == OID_WHORE_REJ_MALE_SLAVERY
-   SetSliderDialogStartValue(MainScript.fWhoreRejectMaleSlaveryChance)
-   SetSliderDialogDefaultValue(0.0)
-   SetSliderDialogRange(0, 100)
-   SetSliderDialogInterval(0.1)
+    SetSliderDialogStartValue(MainScript.fWhoreRejectMaleSlaveryChance)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
   elseif option == OID_WHORE_REJ_FEMALE_SLAVERY
-   SetSliderDialogStartValue(MainScript.fWhoreRejectFemaleSlaveryChance)
-   SetSliderDialogDefaultValue(0.0)
-   SetSliderDialogRange(0, 100)
-   SetSliderDialogInterval(0.1)
+    SetSliderDialogStartValue(MainScript.fWhoreRejectFemaleSlaveryChance)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
   elseif option == OID_DIBEL_REJ_MALE_ACCEPT
     SetSliderDialogStartValue(MainScript.fDibelRejectMaleAcceptChance)
     SetSliderDialogDefaultValue(100.0)
@@ -4272,212 +4440,488 @@ event OnOptionSliderOpen(int option)
     SetSliderDialogRange(0, 100)
     SetSliderDialogInterval(0.1)
   elseif option == OID_DIBEL_REJ_MALE_SLAVERY
-   SetSliderDialogStartValue(MainScript.fDibelRejectMaleSlaveryChance)
-   SetSliderDialogDefaultValue(0.0)
-   SetSliderDialogRange(0, 100)
-   SetSliderDialogInterval(0.1)
+    SetSliderDialogStartValue(MainScript.fDibelRejectMaleSlaveryChance)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
   elseif option == OID_DIBEL_REJ_FEMALE_SLAVERY
-   SetSliderDialogStartValue(MainScript.fDibelRejectFemaleSlaveryChance)
-   SetSliderDialogDefaultValue(0.0)
-   SetSliderDialogRange(0, 100)
-   SetSliderDialogInterval(0.1)
+    SetSliderDialogStartValue(MainScript.fDibelRejectFemaleSlaveryChance)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
   elseif option == OID_CUSTOMER_APPROACH_INTERVAL
-   SetSliderDialogStartValue(MainScript.iCustomerApproachTimer)
-   SetSliderDialogDefaultValue(3.0)
-   SetSliderDialogRange(0, 48)
-   SetSliderDialogInterval(1)
+    SetSliderDialogStartValue(MainScript.iCustomerApproachTimer)
+    SetSliderDialogDefaultValue(3.0)
+    SetSliderDialogRange(0, 48)
+    SetSliderDialogInterval(1)
   elseif option == OID_CUSTOMER_APPROACH_CHANCE 
-   SetSliderDialogStartValue(MainScript.fCustomerApproachChance)
-   SetSliderDialogDefaultValue(50.0)
-   SetSliderDialogRange(0, 100)
-   SetSliderDialogInterval(1)
+    SetSliderDialogStartValue(MainScript.fCustomerApproachChance)
+    SetSliderDialogDefaultValue(50.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(1)
   elseif option == OID_MAX_DISTANCE_APPROACH 
-   SetSliderDialogStartValue(MainScript.fMaxApproachDistance)
-   SetSliderDialogDefaultValue(5000.0)
-   SetSliderDialogRange(500, 5000)
-   SetSliderDialogInterval(50)
+    SetSliderDialogStartValue(MainScript.fMaxApproachDistance)
+    SetSliderDialogDefaultValue(5000.0)
+    SetSliderDialogRange(500, 5000)
+    SetSliderDialogInterval(50)
   elseif option == OID_CRIME_BOUNTY
-   SetSliderDialogStartValue(MainScript.iCrimeBounty)
-   SetSliderDialogDefaultValue(50.0)
-   SetSliderDialogRange(1, 500)
-   SetSliderDialogInterval(1)
+    SetSliderDialogStartValue(MainScript.iCrimeBounty)
+    SetSliderDialogDefaultValue(50.0)
+    SetSliderDialogRange(1, 500)
+    SetSliderDialogInterval(1)
   elseif option == OID_DIBEL_REJ_MALE_MURDER
-   SetSliderDialogStartValue(MainScript.fDibelRejectMaleMurderChance)
-   SetSliderDialogDefaultValue(0.0)
-   SetSliderDialogRange(0, 100)
-   SetSliderDialogInterval(0.1)
+    SetSliderDialogStartValue(MainScript.fDibelRejectMaleMurderChance)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
   elseif option == OID_DIBEL_REJ_FEMALE_MURDER
-   SetSliderDialogStartValue(MainScript.fDibelRejectFemaleMurderChance)
-   SetSliderDialogDefaultValue(0.0)
-   SetSliderDialogRange(0, 100)
-   SetSliderDialogInterval(0.1)
+    SetSliderDialogStartValue(MainScript.fDibelRejectFemaleMurderChance)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
   elseif option == OID_WHORE_REJ_MALE_MURDER
-   SetSliderDialogStartValue(MainScript.fWhoreRejectMaleMurderChance)
-   SetSliderDialogDefaultValue(0.0)
-   SetSliderDialogRange(0, 100)
-   SetSliderDialogInterval(0.1)
+    SetSliderDialogStartValue(MainScript.fWhoreRejectMaleMurderChance)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
   elseif option == OID_WHORE_REJ_FEMALE_MURDER
-   SetSliderDialogStartValue(MainScript.fWhoreRejectFemaleMurderChance)
-   SetSliderDialogDefaultValue(0.0)
-   SetSliderDialogRange(0, 100)
-   SetSliderDialogInterval(0.1)
+    SetSliderDialogStartValue(MainScript.fWhoreRejectFemaleMurderChance)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
   elseif option == OID_BEG_REJ_MALE_MURDER
-   SetSliderDialogStartValue(MainScript.fBeggarRejectMaleMurderChance)
-   SetSliderDialogDefaultValue(0.0)
-   SetSliderDialogRange(0, 100)
-   SetSliderDialogInterval(0.1)
+    SetSliderDialogStartValue(MainScript.fBeggarRejectMaleMurderChance)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
   elseif option == OID_BEG_REJ_FEMALE_MURDER
-   SetSliderDialogStartValue(MainScript.fBeggarRejectFemaleMurderChance)
-   SetSliderDialogDefaultValue(0.0)
-   SetSliderDialogRange(0, 100)
-   SetSliderDialogInterval(0.1)
-
+    SetSliderDialogStartValue(MainScript.fBeggarRejectFemaleMurderChance)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
   elseif option == OID_DEFAULT_REJ_MALE_ACCEPT
-   SetSliderDialogStartValue(MainScript.fDefaultRejectMaleAcceptChance)
-   SetSliderDialogDefaultValue(100.0)
-   SetSliderDialogRange(0, 100)
-   SetSliderDialogInterval(0.1)
+    SetSliderDialogStartValue(MainScript.fDefaultRejectMaleAcceptChance)
+    SetSliderDialogDefaultValue(100.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
   elseif option == OID_DEFAULT_REJ_FEMALE_ACCEPT
-   SetSliderDialogStartValue(MainScript.fDefaultRejectFemaleAcceptChance)
-   SetSliderDialogDefaultValue(100.0)
-   SetSliderDialogRange(0, 100)
-   SetSliderDialogInterval(0.1)
+    SetSliderDialogStartValue(MainScript.fDefaultRejectFemaleAcceptChance)
+    SetSliderDialogDefaultValue(100.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
   elseif option == OID_DEFAULT_REJ_MALE_RAPE
-   SetSliderDialogStartValue(MainScript.fDefaultRejectMaleRapeChance)
-   SetSliderDialogDefaultValue(0.0)
-   SetSliderDialogRange(0, 100)
-   SetSliderDialogInterval(0.1)
+    SetSliderDialogStartValue(MainScript.fDefaultRejectMaleRapeChance)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
   elseif option == OID_DEFAULT_REJ_FEMALE_RAPE
-   SetSliderDialogStartValue(MainScript.fDefaultRejectFemaleRapeChance)
-   SetSliderDialogDefaultValue(0.0)
-   SetSliderDialogRange(0, 100)
-   SetSliderDialogInterval(0.1)
+    SetSliderDialogStartValue(MainScript.fDefaultRejectFemaleRapeChance)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
   elseif option == OID_DEFAULT_REJ_MALE_THEFT
-   SetSliderDialogStartValue(MainScript.fDefaultRejectMaleTheftChance)
-   SetSliderDialogDefaultValue(0.0)
-   SetSliderDialogRange(0, 100)
-   SetSliderDialogInterval(0.1)
+    SetSliderDialogStartValue(MainScript.fDefaultRejectMaleTheftChance)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
   elseif option == OID_DEFAULT_REJ_FEMALE_THEFT
-   SetSliderDialogStartValue(MainScript.fDefaultRejectFemaleTheftChance)
-   SetSliderDialogDefaultValue(0.0)
-   SetSliderDialogRange(0, 100)
-   SetSliderDialogInterval(0.1)
+    SetSliderDialogStartValue(MainScript.fDefaultRejectFemaleTheftChance)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
   elseif option == OID_DEFAULT_REJ_MALE_ASSAULT
-   SetSliderDialogStartValue(MainScript.fDefaultRejectMaleAssaultChance)
-   SetSliderDialogDefaultValue(0.0)
-   SetSliderDialogRange(0, 100)
-   SetSliderDialogInterval(0.1)
+    SetSliderDialogStartValue(MainScript.fDefaultRejectMaleAssaultChance)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
   elseif option == OID_DEFAULT_REJ_FEMALE_ASSAULT
-   SetSliderDialogStartValue(MainScript.fDefaultRejectFemaleAssaultChance)
-   SetSliderDialogDefaultValue(0.0)
-   SetSliderDialogRange(0, 100)
-   SetSliderDialogInterval(0.1)
+    SetSliderDialogStartValue(MainScript.fDefaultRejectFemaleAssaultChance)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
   elseif option == OID_DEFAULT_REJ_MALE_SLAVERY
-   SetSliderDialogStartValue(MainScript.fDefaultRejectMaleSlaveryChance)
-   SetSliderDialogDefaultValue(0.0)
-   SetSliderDialogRange(0, 100)
-   SetSliderDialogInterval(0.1)
+    SetSliderDialogStartValue(MainScript.fDefaultRejectMaleSlaveryChance)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
   elseif option == OID_DEFAULT_REJ_FEMALE_SLAVERY
-   SetSliderDialogStartValue(MainScript.fDefaultRejectFemaleSlaveryChance)
-   SetSliderDialogDefaultValue(0.0)
-   SetSliderDialogRange(0, 100)
-   SetSliderDialogInterval(0.1)
+    SetSliderDialogStartValue(MainScript.fDefaultRejectFemaleSlaveryChance)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
   elseif option == OID_DEFAULT_REJ_MALE_MURDER
-   SetSliderDialogStartValue(MainScript.fDefaultRejectMaleMurderChance)
-   SetSliderDialogDefaultValue(0.0)
-   SetSliderDialogRange(0, 100)
-   SetSliderDialogInterval(0.1)
+    SetSliderDialogStartValue(MainScript.fDefaultRejectMaleMurderChance)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
   elseif option == OID_DEFAULT_REJ_FEMALE_MURDER
-   SetSliderDialogStartValue(MainScript.fDefaultRejectFemaleMurderChance)
-   SetSliderDialogDefaultValue(0.0)
-   SetSliderDialogRange(0, 100)
-   SetSliderDialogInterval(0.1)
+    SetSliderDialogStartValue(MainScript.fDefaultRejectFemaleMurderChance)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
+  elseif option == OID_DEVIOUS_COLLAR
+    SetSliderDialogStartValue(MainScript.fDeviousCollarChance)
+    SetSliderDialogDefaultValue(50.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
+  elseif option == OID_DEVIOUS_BRA
+    SetSliderDialogStartValue(MainScript.fDeviousChastityBrasChance)
+    SetSliderDialogDefaultValue(50.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
+  elseif option == OID_DEVIOUS_HOOD
+    SetSliderDialogStartValue(MainScript.fDeviousHoodChance)
+    SetSliderDialogDefaultValue(50.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
+  elseif option == OID_DEVIOUS_SUIT
+    SetSliderDialogStartValue(MainScript.fDeviousSuitsChance)
+    SetSliderDialogDefaultValue(50.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
+  elseif option == OID_DEVIOUS_BOOTS
+    SetSliderDialogStartValue(MainScript.fDeviousBootsChance)
+    SetSliderDialogDefaultValue(50.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
+  elseif option == OID_DEVIOUS_GLOVES
+    SetSliderDialogStartValue(MainScript.fDeviousGlovesChance)
+    SetSliderDialogDefaultValue(50.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
+  elseif option == OID_DEVIOUS_CORSET
+    SetSliderDialogStartValue(MainScript.fDeviousCorsetChance)
+    SetSliderDialogDefaultValue(50.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
+  elseif option == OID_DEVIOUS_HARNESS
+    SetSliderDialogStartValue(MainScript.fDeviousHarnessesChance)
+    SetSliderDialogDefaultValue(50.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
+  elseif option == OID_DEVIOUS_VAG_PRC
+    SetSliderDialogStartValue(MainScript.fDeviousVaginalPiercingChance)
+    SetSliderDialogDefaultValue(50.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
+  elseif option == OID_DEVIOUS_NIP_PRC
+    SetSliderDialogStartValue(MainScript.fDeviousNipplePiercingChance)
+    SetSliderDialogDefaultValue(50.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
+  elseif option == OID_DEVIOUS_ANL_PLUG
+    SetSliderDialogStartValue(MainScript.fDeviousAnalPlugChance)
+    SetSliderDialogDefaultValue(50.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
+  elseif option == OID_DEVIOUS_VAG_PLUG
+    SetSliderDialogStartValue(MainScript.fDeviousVaginalPlugChance)
+    SetSliderDialogDefaultValue(50.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
+  elseif option == OID_DEVIOUS_ARM_CUF
+    SetSliderDialogStartValue(MainScript.fDeviousArmCuffChance)
+    SetSliderDialogDefaultValue(50.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
+  elseif option == OID_DEVIOUS_LEG_CUF
+    SetSliderDialogStartValue(MainScript.fDeviousLegCuffChance)
+    SetSliderDialogDefaultValue(50.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
+  elseif option == OID_DEVIOUS_GAG_RING
+    SetSliderDialogStartValue(MainScript.fDeviousGagRingChance)
+    SetSliderDialogDefaultValue(50.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
+  elseif option == OID_DEVIOUS_GAG_ALL
+    SetSliderDialogStartValue(MainScript.fDeviousGagAllChance)
+    SetSliderDialogDefaultValue(50.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
+  elseif option == OID_DEVIOUS_HEAVY_RESTRAINT
+    SetSliderDialogStartValue(MainScript.fDeviousHeavyRestraintChance)
+    SetSliderDialogDefaultValue(50.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
+  elseif option == OID_DEVIOUS_BLINDFOLD
+    SetSliderDialogStartValue(MainScript.fDeviousBlindfoldChance)
+    SetSliderDialogDefaultValue(50.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
+  elseif option == OID_DEVIOUS_BELT_OPEN
+    SetSliderDialogStartValue(MainScript.fDeviousChastityBeltOpenChance)
+    SetSliderDialogDefaultValue(50.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
+  elseif option == OID_DEVIOUS_BELT_CLOSE
+    SetSliderDialogStartValue(MainScript.fDeviousChastityBeltCloseChance)
+    SetSliderDialogDefaultValue(50.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
+  elseif option == OID_BEG_REJ_FEMALE_DD
+    SetSliderDialogStartValue(MainScript.fBeggarRejectFemaleDeviceChance)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
+  elseif option == OID_BEG_REJ_MALE_DD
+    SetSliderDialogStartValue(MainScript.fBeggarRejectMaleDeviceChance)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
+  elseif option == OID_WHORE_REJ_MALE_DD
+    SetSliderDialogStartValue(MainScript.fWhoreRejectMaleDeviceChance)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
+  elseif option == OID_WHORE_REJ_FEMALE_DD
+    SetSliderDialogStartValue(MainScript.fWhoreRejectFemaleDeviceChance)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
+  elseif option == OID_DIBEL_REJ_FEMALE_DD
+    SetSliderDialogStartValue(MainScript.fDibelRejectFemaleDeviceChance)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
+  elseif option == OID_DIBEL_REJ_MALE_DD
+    SetSliderDialogStartValue(MainScript.fDibelRejectMaleDeviceChance)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
+  elseif option == OID_DEFAULT_REJ_FEMALE_DD
+    SetSliderDialogStartValue(MainScript.fDefaultRejectFemaleDeviceChance)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
+  elseif option == OID_DEFAULT_REJ_MALE_DD
+    SetSliderDialogStartValue(MainScript.fDefaultRejectMaleDeviceChance)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
+  elseif option == OID_BEG_DD_CHANCE
+    SetSliderDialogStartValue(MainScript.fBeggarDeviceChance)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
+  elseif option == OID_WHORE_DD_CHANCE
+    SetSliderDialogStartValue(MainScript.fWhoreDeviceChance)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
+  elseif option == OID_DIBEL_DD_CHANCE
+    SetSliderDialogStartValue(MainScript.fDibelDeviceChance)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)
   endif
 EndEvent
 
+event OnOptionMenuOpen(Int option)
+  if (option == OID_DEFAULT_REJ_ENTRAPMENT_LVL_M)
+    SetMenuDialogoptions(sGetEntrapmentLevels())
+    SetMenuDialogStartIndex(MainScript.iDefaultRejectEntrapmentLevel)
+    SetMenuDialogDefaultIndex(1)
+  elseif (option == OID_BEG_REJ_ENTRAPMENT_LVL_M)
+    SetMenuDialogoptions(sGetEntrapmentLevels())
+    SetMenuDialogStartIndex(MainScript.iBeggarRejectEntrapmentLevel)
+    SetMenuDialogDefaultIndex(1)
+  elseif (option == OID_DIBEL_REJ_ENTRAPMENT_LVL_M)
+    SetMenuDialogoptions(sGetEntrapmentLevels())
+    SetMenuDialogStartIndex(MainScript.iDibelRejectEntrapmentLevel)
+    SetMenuDialogDefaultIndex(1)
+  elseif (option == OID_WHORE_REJ_ENTRAPMENT_LVL_M)
+    SetMenuDialogoptions(sGetEntrapmentLevels())
+    SetMenuDialogStartIndex(MainScript.iWhoreRejectEntrapmentLevel)
+    SetMenuDialogDefaultIndex(1)
+  elseif (option == OID_WHORE_ENTRAPMENT_LVL_M)
+    SetMenuDialogoptions(sGetEntrapmentLevels())
+    SetMenuDialogStartIndex(MainScript.iWhoreEntrapmentLevel)
+    SetMenuDialogDefaultIndex(0)
+  elseif (option == OID_DIBEL_ENTRAPMENT_LVL_M)
+    SetMenuDialogoptions(sGetEntrapmentLevels())
+    SetMenuDialogStartIndex(MainScript.iDibelEntrapmentLevel)
+    SetMenuDialogDefaultIndex(0)
+  elseif (option == OID_BEG_ENTRAPMENT_LVL_M)
+    SetMenuDialogoptions(sGetEntrapmentLevels())
+    SetMenuDialogStartIndex(MainScript.iBeggarEntrapmentLevel)
+    SetMenuDialogDefaultIndex(0)
+  endIf
+endevent
+
+event OnOptionMenuAccept(Int option, Int index)
+  if (option == OID_DEFAULT_REJ_ENTRAPMENT_LVL_M)
+    MainScript.iDefaultRejectEntrapmentLevel = index
+    SetMenuOptionValue(OID_DEFAULT_REJ_ENTRAPMENT_LVL_M, sGetEntrapmentLevels()[MainScript.iDefaultRejectEntrapmentLevel]) 
+  elseif (option == OID_BEG_REJ_ENTRAPMENT_LVL_M)
+    MainScript.iBeggarRejectEntrapmentLevel = index
+    SetMenuOptionValue(OID_BEG_REJ_ENTRAPMENT_LVL_M, sGetEntrapmentLevels()[MainScript.iBeggarRejectEntrapmentLevel])
+  elseif (option == OID_DIBEL_REJ_ENTRAPMENT_LVL_M)
+    MainScript.iDibelRejectEntrapmentLevel = index
+    SetMenuOptionValue(OID_DIBEL_REJ_ENTRAPMENT_LVL_M, sGetEntrapmentLevels()[MainScript.iDibelRejectEntrapmentLevel])
+  elseif (option == OID_WHORE_REJ_ENTRAPMENT_LVL_M)
+    MainScript.iWhoreRejectEntrapmentLevel = index
+    SetMenuOptionValue(OID_WHORE_REJ_ENTRAPMENT_LVL_M, sGetEntrapmentLevels()[MainScript.iWhoreRejectEntrapmentLevel])
+  elseif (option == OID_WHORE_ENTRAPMENT_LVL_M)
+    MainScript.iWhoreEntrapmentLevel = index
+    SetMenuOptionValue(OID_WHORE_ENTRAPMENT_LVL_M, sGetEntrapmentLevels()[MainScript.iWhoreEntrapmentLevel])
+  elseif (option == OID_DIBEL_ENTRAPMENT_LVL_M)
+    MainScript.iDibelEntrapmentLevel = index
+    SetMenuOptionValue(OID_DIBEL_ENTRAPMENT_LVL_M, sGetEntrapmentLevels()[MainScript.iDibelEntrapmentLevel])
+  elseif (option == OID_BEG_ENTRAPMENT_LVL_M)
+    MainScript.iBeggarEntrapmentLevel = index
+    SetMenuOptionValue(OID_BEG_ENTRAPMENT_LVL_M, sGetEntrapmentLevels()[MainScript.iBeggarEntrapmentLevel])
+  endif
+  ;ForcePageReset()
+endevent
+
 
 function beggarRejectOptions(Int iflag)
+  int flg = iflag
   _AddHeaderOption("$MRT_SP_HEAD_REJECT")
-  OID_BEG_REJ_MALE_ACCEPT = AddSliderOption("$MRT_SP_BEG_REJ_MALE_ACCEPT_SLIDER1", MainScript.fBeggarRejectMaleAcceptChance, "$MRT_SP_BEG_REJ_MALE_ACCEPT_SLIDER2", iflag)
-  AddSliderOptionST("BEG_MALE_RAPE_SLIDER", "$MRT_SP_BEG_MALE_RAPE_SLIDER1", MainScript.fBeggingMaleRapistChance, "$MRT_SP_BEG_MALE_RAPE_SLIDER2", iflag)
-  OID_BEG_REJ_MALE_ASSAULT = AddSliderOption("$MRT_SP_BEG_REJ_MALE_ASSAULT_SLIDER1", MainScript.fBeggarRejectMaleAssaultChance, "$MRT_SP_BEG_REJ_MALE_ASSAULT_SLIDER2", iflag)
-  OID_BEG_REJ_MALE_THEFT = AddSliderOption("$MRT_SP_BEG_REJ_MALE_THEFT_SLIDER1", MainScript.fBeggarRejectMaleTheftChance, "$MRT_SP_BEG_REJ_MALE_THEFT_SLIDER2", iflag)
-  OID_BEG_REJ_MALE_SLAVERY = AddSliderOption("$MRT_SP_BEG_REJ_MALE_SLAVERY_SLIDER1", MainScript.fBeggarRejectMaleSlaveryChance, "$MRT_SP_BEG_REJ_MALE_SLAVERY_SLIDER2", iflag)
-  OID_BEG_REJ_MALE_MURDER = AddSliderOption("$MRT_SP_BEG_REJ_MALE_MURDER_SLIDER1", MainScript.fBeggarRejectMaleMurderChance, "$MRT_SP_BEG_REJ_MALE_MURDER_SLIDER2", iflag) 
+  OID_BEG_REJ_MALE_ACCEPT = AddSliderOption("$MRT_SP_BEG_REJ_MALE_ACCEPT_SLIDER1", MainScript.fBeggarRejectMaleAcceptChance, "$MRT_SP_BEG_REJ_MALE_ACCEPT_SLIDER2", flg)
+  AddSliderOptionST("BEG_MALE_RAPE_SLIDER", "$MRT_SP_BEG_MALE_RAPE_SLIDER1", MainScript.fBeggingMaleRapistChance, "$MRT_SP_BEG_MALE_RAPE_SLIDER2", flg)
+  OID_BEG_REJ_MALE_ASSAULT = AddSliderOption("$MRT_SP_BEG_REJ_MALE_ASSAULT_SLIDER1", MainScript.fBeggarRejectMaleAssaultChance, "$MRT_SP_BEG_REJ_MALE_ASSAULT_SLIDER2", flg)
+  OID_BEG_REJ_MALE_THEFT = AddSliderOption("$MRT_SP_BEG_REJ_MALE_THEFT_SLIDER1", MainScript.fBeggarRejectMaleTheftChance, "$MRT_SP_BEG_REJ_MALE_THEFT_SLIDER2", flg)
+  OID_BEG_REJ_MALE_SLAVERY = AddSliderOption("$MRT_SP_BEG_REJ_MALE_SLAVERY_SLIDER1", MainScript.fBeggarRejectMaleSlaveryChance, "$MRT_SP_BEG_REJ_MALE_SLAVERY_SLIDER2", flg)
+  OID_BEG_REJ_MALE_MURDER = AddSliderOption("$MRT_SP_BEG_REJ_MALE_MURDER_SLIDER1", MainScript.fBeggarRejectMaleMurderChance, "$MRT_SP_BEG_REJ_MALE_MURDER_SLIDER2", flg) 
+  if (iflag == OPTION_FLAG_NONE) && (MainScript.bIsDDIntegrationActive && MainScript.bIsDDExpansionActive)
+    flg = OPTION_FLAG_NONE
+  else
+    flg = OPTION_FLAG_DISABLED
+  endIf   
+  OID_BEG_REJ_MALE_DD = AddSliderOption("$MRT_SP_BEG_REJ_MALE_DD_SLIDER1", MainScript.fBeggarRejectMaleDeviceChance, "$MRT_SP_BEG_REJ_MALE_DD_SLIDER2", flg)
+  flg = iflag
   AddEmptyOption()
-  OID_BEG_REJ_FEMALE_ACCEPT = AddSliderOption( "$MRT_SP_BEG_REJ_FEMALE_ACCEPT_SLIDER1", MainScript.fBeggarRejectFemaleAcceptChance, "$MRT_SP_BEG_REJ_FEMALE_ACCEPT_SLIDER2", iflag)
-  AddSliderOptionST("BEG_FEMALE_RAPE_SLIDER", "$MRT_SP_BEG_FEMALE_RAPE_SLIDER1", MainScript.fBeggingFemaleRapistChance, "$MRT_SP_BEG_FEMALE_RAPE_SLIDER2", iflag)    
-  OID_BEG_REJ_FEMALE_ASSAULT = AddSliderOption("$MRT_SP_BEG_REJ_FEMALE_ASSAULT_SLIDER1", MainScript.fBeggarRejectFemaleAssaultChance, "$MRT_SP_BEG_REJ_FEMALE_ASSAULT_SLIDER2", iflag)    
-  OID_BEG_REJ_FEMALE_THEFT = AddSliderOption("$MRT_SP_BEG_REJ_FEMALE_THEFT_SLIDER1", MainScript.fBeggarRejectFemaleTheftChance, "$MRT_SP_BEG_REJ_FEMALE_THEFT_SLIDER2", iflag)
-  OID_BEG_REJ_FEMALE_MURDER = AddSliderOption("$MRT_SP_BEG_REJ_FEMALE_MURDER_SLIDER1", MainScript.fBeggarRejectFemaleMurderChance, "$MRT_SP_BEG_REJ_FEMALE_MURDER_SLIDER2", iflag) 
-  OID_BEG_REJ_FEMALE_SLAVERY = AddSliderOption("$MRT_SP_BEG_REJ_FEMALE_SLAVERY_SLIDER1", MainScript.fBeggarRejectFemaleSlaveryChance, "$MRT_SP_BEG_REJ_FEMALE_SLAVERY_SLIDER2", iflag) 
+  OID_BEG_REJ_FEMALE_ACCEPT = AddSliderOption( "$MRT_SP_BEG_REJ_FEMALE_ACCEPT_SLIDER1", MainScript.fBeggarRejectFemaleAcceptChance, "$MRT_SP_BEG_REJ_FEMALE_ACCEPT_SLIDER2", flg)
+  AddSliderOptionST("BEG_FEMALE_RAPE_SLIDER", "$MRT_SP_BEG_FEMALE_RAPE_SLIDER1", MainScript.fBeggingFemaleRapistChance, "$MRT_SP_BEG_FEMALE_RAPE_SLIDER2", flg)    
+  OID_BEG_REJ_FEMALE_ASSAULT = AddSliderOption("$MRT_SP_BEG_REJ_FEMALE_ASSAULT_SLIDER1", MainScript.fBeggarRejectFemaleAssaultChance, "$MRT_SP_BEG_REJ_FEMALE_ASSAULT_SLIDER2", flg)    
+  OID_BEG_REJ_FEMALE_THEFT = AddSliderOption("$MRT_SP_BEG_REJ_FEMALE_THEFT_SLIDER1", MainScript.fBeggarRejectFemaleTheftChance, "$MRT_SP_BEG_REJ_FEMALE_THEFT_SLIDER2", flg)
+  OID_BEG_REJ_FEMALE_MURDER = AddSliderOption("$MRT_SP_BEG_REJ_FEMALE_MURDER_SLIDER1", MainScript.fBeggarRejectFemaleMurderChance, "$MRT_SP_BEG_REJ_FEMALE_MURDER_SLIDER2", flg) 
+  OID_BEG_REJ_FEMALE_SLAVERY = AddSliderOption("$MRT_SP_BEG_REJ_FEMALE_SLAVERY_SLIDER1", MainScript.fBeggarRejectFemaleSlaveryChance, "$MRT_SP_BEG_REJ_FEMALE_SLAVERY_SLIDER2", flg) 
+  if (iflag == OPTION_FLAG_NONE) && (MainScript.bIsDDIntegrationActive && MainScript.bIsDDExpansionActive)
+    flg = OPTION_FLAG_NONE
+  else
+    flg = OPTION_FLAG_DISABLED
+  endIf    
+  OID_BEG_REJ_FEMALE_DD = AddSliderOption("$MRT_SP_BEG_REJ_FEMALE_DD_SLIDER1", MainScript.fBeggarRejectFemaleDeviceChance, "$MRT_SP_BEG_REJ_FEMALE_DD_SLIDER2", flg)
   AddEmptyOption()
-  OID_BEG_REJ_THEFT_ONLYGOLD = AddToggleOption("$MRT_SP_BEG_REJ_THEFT_ONLYGOLD_TOGGLE", MainScript.bBeggarRejectTheftOnlyGold, iflag)
-  OID_BEG_REJ_WALKAWAY_CHECK = AddToggleOption("$MRT_SP_BEG_REJ_WALKAWAY_CHECK", MainScript.bBeggarRejectWalkAwayCheck, iflag)
+  OID_BEG_REJ_ENTRAPMENT_LVL_M = AddMenuOption("$MRT_SP_BEG_REJ_ENTRAPMENT_LVL", sGetEntrapmentLevels()[MainScript.iBeggarRejectEntrapmentLevel], flg)
+  flg = iflag
+  OID_BEG_REJ_THEFT_ONLYGOLD = AddToggleOption("$MRT_SP_BEG_REJ_THEFT_ONLYGOLD_TOGGLE", MainScript.bBeggarRejectTheftOnlyGold, flg)
+  OID_BEG_REJ_WALKAWAY_CHECK = AddToggleOption("$MRT_SP_BEG_REJ_WALKAWAY_CHECK", MainScript.bBeggarRejectWalkAwayCheck, flg)
 EndFunction
 
 function whoreRejectOptions(Int iflag)
+  int flg = iflag
   _AddHeaderOption("$MRT_SP_HEAD_REJECT")
-  OID_WHORE_REJ_MALE_ACCEPT = AddSliderOption("$MRT_SP_WHORE_REJ_MALE_ACCEPT_SLIDER1", MainScript.fWhoreRejectMaleAcceptChance, "$MRT_SP_WHORE_REJ_MALE_ACCEPT_SLIDER2", iflag)
-  OID_WHORE_REJ_MALE_RAPE = AddSliderOption("$MRT_SP_WHORE_REJ_MALE_RAPE_SLIDER1", MainScript.fWhoreRejectMaleRapeChance, "$MRT_SP_WHORE_REJ_MALE_RAPE_SLIDER2", iflag)
-  OID_WHORE_REJ_MALE_ASSAULT = AddSliderOption("$MRT_SP_WHORE_REJ_MALE_ASSAULT_SLIDER1", MainScript.fWhoreRejectMaleAssaultChance, "$MRT_SP_WHORE_REJ_MALE_ASSAULT_SLIDER2", iflag)
-  OID_WHORE_REJ_MALE_THEFT = AddSliderOption( "$MRT_SP_WHORE_REJ_MALE_THEFT_SLIDER1", MainScript.fWhoreRejectMaleTheftChance, "$MRT_SP_WHORE_REJ_MALE_THEFT_SLIDER2", iflag)
-  OID_WHORE_REJ_MALE_REPORT = AddSliderOption("$MRT_SP_WHORE_REJ_MALE_REPORT_SLIDER1", MainScript.fWhoreRejectMaleReportChance, "$MRT_SP_WHORE_REJ_MALE_REPORT_SLIDER2", iflag)
-  OID_WHORE_REJ_MALE_MURDER = AddSliderOption("$MRT_SP_WHORE_REJ_MALE_MURDER_SLIDER1", MainScript.fWhoreRejectMaleMurderChance, "$MRT_SP_WHORE_REJ_MALE_MURDER_SLIDER2", iflag) 
-  OID_WHORE_REJ_MALE_SLAVERY = AddSliderOption("$MRT_SP_WHORE_REJ_MALE_SLAVERY_SLIDER1", MainScript.fWhoreRejectMaleSlaveryChance, "$MRT_SP_WHORE_REJ_MALE_SLAVERY_SLIDER2", iflag)
+  OID_WHORE_REJ_MALE_ACCEPT = AddSliderOption("$MRT_SP_WHORE_REJ_MALE_ACCEPT_SLIDER1", MainScript.fWhoreRejectMaleAcceptChance, "$MRT_SP_WHORE_REJ_MALE_ACCEPT_SLIDER2", flg)
+  OID_WHORE_REJ_MALE_RAPE = AddSliderOption("$MRT_SP_WHORE_REJ_MALE_RAPE_SLIDER1", MainScript.fWhoreRejectMaleRapeChance, "$MRT_SP_WHORE_REJ_MALE_RAPE_SLIDER2", flg)
+  OID_WHORE_REJ_MALE_ASSAULT = AddSliderOption("$MRT_SP_WHORE_REJ_MALE_ASSAULT_SLIDER1", MainScript.fWhoreRejectMaleAssaultChance, "$MRT_SP_WHORE_REJ_MALE_ASSAULT_SLIDER2", flg)
+  OID_WHORE_REJ_MALE_THEFT = AddSliderOption( "$MRT_SP_WHORE_REJ_MALE_THEFT_SLIDER1", MainScript.fWhoreRejectMaleTheftChance, "$MRT_SP_WHORE_REJ_MALE_THEFT_SLIDER2", flg)
+  OID_WHORE_REJ_MALE_REPORT = AddSliderOption("$MRT_SP_WHORE_REJ_MALE_REPORT_SLIDER1", MainScript.fWhoreRejectMaleReportChance, "$MRT_SP_WHORE_REJ_MALE_REPORT_SLIDER2", flg)
+  OID_WHORE_REJ_MALE_MURDER = AddSliderOption("$MRT_SP_WHORE_REJ_MALE_MURDER_SLIDER1", MainScript.fWhoreRejectMaleMurderChance, "$MRT_SP_WHORE_REJ_MALE_MURDER_SLIDER2", flg) 
+  OID_WHORE_REJ_MALE_SLAVERY = AddSliderOption("$MRT_SP_WHORE_REJ_MALE_SLAVERY_SLIDER1", MainScript.fWhoreRejectMaleSlaveryChance, "$MRT_SP_WHORE_REJ_MALE_SLAVERY_SLIDER2", flg)
+  if (iflag == OPTION_FLAG_NONE) && (MainScript.bIsDDIntegrationActive && MainScript.bIsDDExpansionActive)
+    flg = OPTION_FLAG_NONE
+  else
+    flg = OPTION_FLAG_DISABLED
+  endIf   
+  OID_WHORE_REJ_MALE_DD = AddSliderOption("$MRT_SP_WHORE_REJ_MALE_DD_SLIDER1", MainScript.fWhoreRejectMaleDeviceChance, "$MRT_SP_WHORE_REJ_MALE_DD_SLIDER2", flg)
+  flg = iflag
   AddEmptyOption()
-  OID_WHORE_REJ_FEMALE_ACCEPT = AddSliderOption("$MRT_SP_WHORE_REJ_FEMALE_ACCEPT_SLIDER1", MainScript.fWhoreRejectFemaleAcceptChance, "$MRT_SP_WHORE_REJ_FEMALE_ACCEPT_SLIDER2", iflag)        
-  OID_WHORE_REJ_FEMALE_RAPE = AddSliderOption("$MRT_SP_WHORE_REJ_FEMALE_RAPE_SLIDER1", MainScript.fWhoreRejectFemaleRapeChance, "$MRT_SP_WHORE_REJ_FEMALE_RAPE_SLIDER2", iflag)
-  OID_WHORE_REJ_FEMALE_ASSAULT = AddSliderOption("$MRT_SP_WHORE_REJ_FEMALE_ASSAULT_SLIDER1", MainScript.fWhoreRejectFemaleAssaultChance, "$MRT_SP_WHORE_REJ_FEMALE_ASSAULT_SLIDER2", iflag)    
-  OID_WHORE_REJ_FEMALE_THEFT = AddSliderOption("$MRT_SP_WHORE_REJ_FEMALE_THEFT_SLIDER1", MainScript.fWhoreRejectFemaleTheftChance, "$MRT_SP_WHORE_REJ_FEMALE_THEFT_SLIDER2", iflag)
-  OID_WHORE_REJ_FEMALE_REPORT = AddSliderOption("$MRT_SP_WHORE_REJ_FEMALE_REPORT_SLIDER1", MainScript.fWhoreRejectFemaleReportChance, "$MRT_SP_WHORE_REJ_FEMALE_REPORT_SLIDER2", iflag)   
-  OID_WHORE_REJ_FEMALE_MURDER = AddSliderOption("$MRT_SP_WHORE_REJ_FEMALE_MURDER_SLIDER1", MainScript.fWhoreRejectFemaleMurderChance, "$MRT_SP_WHORE_REJ_FEMALE_MURDER_SLIDER2", iflag) 
-  OID_WHORE_REJ_FEMALE_SLAVERY = AddSliderOption("$MRT_SP_WHORE_REJ_FEMALE_SLAVERY_SLIDER1", MainScript.fWhoreRejectFemaleSlaveryChance, "$MRT_SP_WHORE_REJ_FEMALE_SLAVERY_SLIDER2", iflag) 
+  OID_WHORE_REJ_FEMALE_ACCEPT = AddSliderOption("$MRT_SP_WHORE_REJ_FEMALE_ACCEPT_SLIDER1", MainScript.fWhoreRejectFemaleAcceptChance, "$MRT_SP_WHORE_REJ_FEMALE_ACCEPT_SLIDER2", flg)        
+  OID_WHORE_REJ_FEMALE_RAPE = AddSliderOption("$MRT_SP_WHORE_REJ_FEMALE_RAPE_SLIDER1", MainScript.fWhoreRejectFemaleRapeChance, "$MRT_SP_WHORE_REJ_FEMALE_RAPE_SLIDER2", flg)
+  OID_WHORE_REJ_FEMALE_ASSAULT = AddSliderOption("$MRT_SP_WHORE_REJ_FEMALE_ASSAULT_SLIDER1", MainScript.fWhoreRejectFemaleAssaultChance, "$MRT_SP_WHORE_REJ_FEMALE_ASSAULT_SLIDER2", flg)    
+  OID_WHORE_REJ_FEMALE_THEFT = AddSliderOption("$MRT_SP_WHORE_REJ_FEMALE_THEFT_SLIDER1", MainScript.fWhoreRejectFemaleTheftChance, "$MRT_SP_WHORE_REJ_FEMALE_THEFT_SLIDER2", flg)
+  OID_WHORE_REJ_FEMALE_REPORT = AddSliderOption("$MRT_SP_WHORE_REJ_FEMALE_REPORT_SLIDER1", MainScript.fWhoreRejectFemaleReportChance, "$MRT_SP_WHORE_REJ_FEMALE_REPORT_SLIDER2", flg)   
+  OID_WHORE_REJ_FEMALE_MURDER = AddSliderOption("$MRT_SP_WHORE_REJ_FEMALE_MURDER_SLIDER1", MainScript.fWhoreRejectFemaleMurderChance, "$MRT_SP_WHORE_REJ_FEMALE_MURDER_SLIDER2", flg) 
+  OID_WHORE_REJ_FEMALE_SLAVERY = AddSliderOption("$MRT_SP_WHORE_REJ_FEMALE_SLAVERY_SLIDER1", MainScript.fWhoreRejectFemaleSlaveryChance, "$MRT_SP_WHORE_REJ_FEMALE_SLAVERY_SLIDER2", flg) 
+  if (iflag == OPTION_FLAG_NONE) && (MainScript.bIsDDIntegrationActive && MainScript.bIsDDExpansionActive)
+    flg = OPTION_FLAG_NONE
+  else
+    flg = OPTION_FLAG_DISABLED
+  endIf  
+  OID_WHORE_REJ_FEMALE_DD = AddSliderOption("$MRT_SP_WHORE_REJ_FEMALE_DD_SLIDER1", MainScript.fWhoreRejectFemaleDeviceChance, "$MRT_SP_WHORE_REJ_FEMALE_DD_SLIDER2", flg)
   AddEmptyOption()
-  OID_WHORE_REJ_THEFT_ONLYGOLD = AddToggleOption("$MRT_SP_WHORE_REJ_THEFT_ONLYGOLD_TOGGLE", MainScript.bWhoreRejectTheftOnlyGold, iflag)
+  OID_WHORE_REJ_ENTRAPMENT_LVL_M = AddMenuOption("$MRT_SP_WHORE_REJ_ENTRAPMENT_LVL", sGetEntrapmentLevels()[MainScript.iWhoreRejectEntrapmentLevel], flg)
+  flg = iflag
+  OID_WHORE_REJ_THEFT_ONLYGOLD = AddToggleOption("$MRT_SP_WHORE_REJ_THEFT_ONLYGOLD_TOGGLE", MainScript.bWhoreRejectTheftOnlyGold, flg)
 EndFunction
 
 function dibelRejectOptions(Int iflag)
+  Int flg = iflag
   _AddHeaderOption("$MRT_SP_HEAD_REJECT")
-  OID_DIBEL_REJ_MALE_ACCEPT = AddSliderOption("$MRT_SP_DIBEL_REJ_MALE_ACCEPT_SLIDER1", MainScript.fDibelRejectMaleAcceptChance, "$MRT_SP_DIBEL_REJ_MALE_ACCEPT_SLIDER2", iflag)
-  OID_DIBEL_REJ_MALE_RAPE = AddSliderOption("$MRT_SP_DIBEL_REJ_MALE_RAPE_SLIDER1", MainScript.fDibelRejectMaleRapeChance, "$MRT_SP_DIBEL_REJ_MALE_RAPE_SLIDER2", iflag)
-  OID_DIBEL_REJ_MALE_ASSAULT = AddSliderOption("$MRT_SP_DIBEL_REJ_MALE_ASSAULT_SLIDER1", MainScript.fDibelRejectMaleAssaultChance, "$MRT_SP_DIBEL_REJ_MALE_ASSAULT_SLIDER2", iflag)
-  OID_DIBEL_REJ_MALE_THEFT = AddSliderOption( "$MRT_SP_DIBEL_REJ_MALE_THEFT_SLIDER1", MainScript.fDibelRejectMaleTheftChance, "$MRT_SP_DIBEL_REJ_MALE_THEFT_SLIDER2", iflag)
-  OID_DIBEL_REJ_MALE_REPORT = AddSliderOption("$MRT_SP_DIBEL_REJ_MALE_REPORT_SLIDER1", MainScript.fDibelRejectMaleReportChance, "$MRT_SP_DIBEL_REJ_MALE_REPORT_SLIDER2", iflag)
-  OID_DIBEL_REJ_MALE_MURDER = AddSliderOption("$MRT_SP_DIBEL_REJ_MALE_MURDER_SLIDER1", MainScript.fDibelRejectMaleMurderChance, "$MRT_SP_DIBEL_REJ_MALE_MURDER_SLIDER2", iflag) 
-  OID_DIBEL_REJ_MALE_SLAVERY = AddSliderOption("$MRT_SP_DIBEL_REJ_MALE_SLAVERY_SLIDER1", MainScript.fDibelRejectMaleSlaveryChance, "$MRT_SP_DIBEL_REJ_MALE_SLAVERY_SLIDER2", iflag)
+  OID_DIBEL_REJ_MALE_ACCEPT = AddSliderOption("$MRT_SP_DIBEL_REJ_MALE_ACCEPT_SLIDER1", MainScript.fDibelRejectMaleAcceptChance, "$MRT_SP_DIBEL_REJ_MALE_ACCEPT_SLIDER2", flg)
+  OID_DIBEL_REJ_MALE_RAPE = AddSliderOption("$MRT_SP_DIBEL_REJ_MALE_RAPE_SLIDER1", MainScript.fDibelRejectMaleRapeChance, "$MRT_SP_DIBEL_REJ_MALE_RAPE_SLIDER2", flg)
+  OID_DIBEL_REJ_MALE_ASSAULT = AddSliderOption("$MRT_SP_DIBEL_REJ_MALE_ASSAULT_SLIDER1", MainScript.fDibelRejectMaleAssaultChance, "$MRT_SP_DIBEL_REJ_MALE_ASSAULT_SLIDER2", flg)
+  OID_DIBEL_REJ_MALE_THEFT = AddSliderOption( "$MRT_SP_DIBEL_REJ_MALE_THEFT_SLIDER1", MainScript.fDibelRejectMaleTheftChance, "$MRT_SP_DIBEL_REJ_MALE_THEFT_SLIDER2", flg)
+  OID_DIBEL_REJ_MALE_REPORT = AddSliderOption("$MRT_SP_DIBEL_REJ_MALE_REPORT_SLIDER1", MainScript.fDibelRejectMaleReportChance, "$MRT_SP_DIBEL_REJ_MALE_REPORT_SLIDER2", flg)
+  OID_DIBEL_REJ_MALE_MURDER = AddSliderOption("$MRT_SP_DIBEL_REJ_MALE_MURDER_SLIDER1", MainScript.fDibelRejectMaleMurderChance, "$MRT_SP_DIBEL_REJ_MALE_MURDER_SLIDER2", flg) 
+  OID_DIBEL_REJ_MALE_SLAVERY = AddSliderOption("$MRT_SP_DIBEL_REJ_MALE_SLAVERY_SLIDER1", MainScript.fDibelRejectMaleSlaveryChance, "$MRT_SP_DIBEL_REJ_MALE_SLAVERY_SLIDER2", flg)
+  if (iflag == OPTION_FLAG_NONE) && (MainScript.bIsDDIntegrationActive && MainScript.bIsDDExpansionActive)
+    flg = OPTION_FLAG_NONE
+  else
+    flg = OPTION_FLAG_DISABLED
+  endIf   
+  OID_DIBEL_REJ_MALE_DD = AddSliderOption("$MRT_SP_DIBEL_REJ_MALE_DD_SLIDER1", MainScript.fDibelRejectMaleDeviceChance, "$MRT_SP_DIBEL_REJ_MALE_DD_SLIDER2", flg)
+  flg = iflag
   AddEmptyOption()
-  OID_DIBEL_REJ_FEMALE_ACCEPT = AddSliderOption("$MRT_SP_DIBEL_REJ_FEMALE_ACCEPT_SLIDER1", MainScript.fDibelRejectFemaleAcceptChance, "$MRT_SP_DIBEL_REJ_FEMALE_ACCEPT_SLIDER2", iflag)        
-  OID_DIBEL_REJ_FEMALE_RAPE = AddSliderOption("$MRT_SP_DIBEL_REJ_FEMALE_RAPE_SLIDER1", MainScript.fDibelRejectFemaleRapeChance, "$MRT_SP_DIBEL_REJ_FEMALE_RAPE_SLIDER2", iflag)
-  OID_DIBEL_REJ_FEMALE_ASSAULT = AddSliderOption("$MRT_SP_DIBEL_REJ_FEMALE_ASSAULT_SLIDER1", MainScript.fDibelRejectFemaleAssaultChance, "$MRT_SP_DIBEL_REJ_FEMALE_ASSAULT_SLIDER2", iflag)    
-  OID_DIBEL_REJ_FEMALE_THEFT = AddSliderOption("$MRT_SP_DIBEL_REJ_FEMALE_THEFT_SLIDER1", MainScript.fDibelRejectFemaleTheftChance, "$MRT_SP_DIBEL_REJ_FEMALE_THEFT_SLIDER2", iflag)
-  OID_DIBEL_REJ_FEMALE_REPORT = AddSliderOption("$MRT_SP_DIBEL_REJ_FEMALE_REPORT_SLIDER1", MainScript.fDibelRejectFemaleReportChance, "$MRT_SP_DIBEL_REJ_FEMALE_REPORT_SLIDER2", iflag)   
-  OID_DIBEL_REJ_FEMALE_MURDER = AddSliderOption("$MRT_SP_DIBEL_REJ_FEMALE_MURDER_SLIDER1", MainScript.fDibelRejectFemaleMurderChance, "$MRT_SP_DIBEL_REJ_FEMALE_MURDER_SLIDER2", iflag) 
-  OID_DIBEL_REJ_FEMALE_SLAVERY = AddSliderOption("$MRT_SP_DIBEL_REJ_FEMALE_SLAVERY_SLIDER1", MainScript.fDibelRejectFemaleSlaveryChance, "$MRT_SP_DIBEL_REJ_FEMALE_SLAVERY_SLIDER2", iflag) 
+  OID_DIBEL_REJ_FEMALE_ACCEPT = AddSliderOption("$MRT_SP_DIBEL_REJ_FEMALE_ACCEPT_SLIDER1", MainScript.fDibelRejectFemaleAcceptChance, "$MRT_SP_DIBEL_REJ_FEMALE_ACCEPT_SLIDER2", flg)        
+  OID_DIBEL_REJ_FEMALE_RAPE = AddSliderOption("$MRT_SP_DIBEL_REJ_FEMALE_RAPE_SLIDER1", MainScript.fDibelRejectFemaleRapeChance, "$MRT_SP_DIBEL_REJ_FEMALE_RAPE_SLIDER2", flg)
+  OID_DIBEL_REJ_FEMALE_ASSAULT = AddSliderOption("$MRT_SP_DIBEL_REJ_FEMALE_ASSAULT_SLIDER1", MainScript.fDibelRejectFemaleAssaultChance, "$MRT_SP_DIBEL_REJ_FEMALE_ASSAULT_SLIDER2", flg)    
+  OID_DIBEL_REJ_FEMALE_THEFT = AddSliderOption("$MRT_SP_DIBEL_REJ_FEMALE_THEFT_SLIDER1", MainScript.fDibelRejectFemaleTheftChance, "$MRT_SP_DIBEL_REJ_FEMALE_THEFT_SLIDER2", flg)
+  OID_DIBEL_REJ_FEMALE_REPORT = AddSliderOption("$MRT_SP_DIBEL_REJ_FEMALE_REPORT_SLIDER1", MainScript.fDibelRejectFemaleReportChance, "$MRT_SP_DIBEL_REJ_FEMALE_REPORT_SLIDER2", flg)   
+  OID_DIBEL_REJ_FEMALE_MURDER = AddSliderOption("$MRT_SP_DIBEL_REJ_FEMALE_MURDER_SLIDER1", MainScript.fDibelRejectFemaleMurderChance, "$MRT_SP_DIBEL_REJ_FEMALE_MURDER_SLIDER2", flg) 
+  OID_DIBEL_REJ_FEMALE_SLAVERY = AddSliderOption("$MRT_SP_DIBEL_REJ_FEMALE_SLAVERY_SLIDER1", MainScript.fDibelRejectFemaleSlaveryChance, "$MRT_SP_DIBEL_REJ_FEMALE_SLAVERY_SLIDER2", flg) 
+  if (iflag == OPTION_FLAG_NONE) && (MainScript.bIsDDIntegrationActive && MainScript.bIsDDExpansionActive)
+    flg = OPTION_FLAG_NONE
+  else
+    flg = OPTION_FLAG_DISABLED
+  endIf    
+  OID_DIBEL_REJ_FEMALE_DD = AddSliderOption("$MRT_SP_DIBEL_REJ_MALE_DD_SLIDER1", MainScript.fDibelRejectFemaleDeviceChance, "$MRT_SP_DIBEL_REJ_FEMALE_DD_SLIDER2", flg)
   AddEmptyOption()
-  OID_DIBEL_REJ_THEFT_ONLYGOLD = AddToggleOption("$MRT_SP_DIBEL_REJ_THEFT_ONLYGOLD_TOGGLE", MainScript.bDibelRejectTheftOnlyGold, iflag)
+  flg = iflag
+  OID_DIBEL_REJ_ENTRAPMENT_LVL_M = AddMenuOption("$MRT_SP_DIBEL_REJ_ENTRAPMENT_LVL", sGetEntrapmentLevels()[MainScript.iDibelRejectEntrapmentLevel], flg)
+  OID_DIBEL_REJ_THEFT_ONLYGOLD = AddToggleOption("$MRT_SP_DIBEL_REJ_THEFT_ONLYGOLD_TOGGLE", MainScript.bDibelRejectTheftOnlyGold, flg)
 EndFunction
 
 function defaultRejectOptions(Int iflag)
+  int flg = iflag
   _AddHeaderOption("$MRT_SP_HEAD_REJECT_DEFAULT")
-  OID_DEFAULT_REJ_MALE_ACCEPT = AddSliderOption("$MRT_SP_DEFAULT_REJ_MALE_ACCEPT_SLIDER1", MainScript.fDefaultRejectMaleAcceptChance, "$MRT_SP_DIBEL_REJ_MALE_ACCEPT_SLIDER2", iflag)
-  OID_DEFAULT_REJ_MALE_RAPE = AddSliderOption("$MRT_SP_DEFAULT_REJ_MALE_RAPE_SLIDER1", MainScript.fDefaultRejectMaleRapeChance, "$MRT_SP_DEFAULT_REJ_MALE_RAPE_SLIDER2", iflag)
-  OID_DEFAULT_REJ_MALE_ASSAULT = AddSliderOption("$MRT_SP_DEFAULT_REJ_MALE_ASSAULT_SLIDER1", MainScript.fDefaultRejectMaleAssaultChance, "$MRT_SP_DEFAULT_REJ_MALE_ASSAULT_SLIDER2", iflag)
-  OID_DEFAULT_REJ_MALE_THEFT = AddSliderOption( "$MRT_SP_DEFAULT_REJ_MALE_THEFT_SLIDER1", MainScript.fDefaultRejectMaleTheftChance, "$MRT_SP_DEFAULT_REJ_MALE_THEFT_SLIDER2", iflag)
-  OID_DEFAULT_REJ_MALE_MURDER = AddSliderOption("$MRT_SP_DEFAULT_REJ_MALE_MURDER_SLIDER1", MainScript.fDefaultRejectMaleMurderChance, "$MRT_SP_DEFAULT_REJ_MALE_MURDER_SLIDER2", iflag) 
-  OID_DEFAULT_REJ_MALE_SLAVERY = AddSliderOption("$MRT_SP_DEFAULT_REJ_MALE_SLAVERY_SLIDER1", MainScript.fDefaultRejectMaleSlaveryChance, "$MRT_SP_DEFAULT_REJ_MALE_SLAVERY_SLIDER2", iflag)
+  OID_DEFAULT_REJ_MALE_ACCEPT = AddSliderOption("$MRT_SP_DEFAULT_REJ_MALE_ACCEPT_SLIDER1", MainScript.fDefaultRejectMaleAcceptChance, "$MRT_SP_DIBEL_REJ_MALE_ACCEPT_SLIDER2", flg)
+  OID_DEFAULT_REJ_MALE_RAPE = AddSliderOption("$MRT_SP_DEFAULT_REJ_MALE_RAPE_SLIDER1", MainScript.fDefaultRejectMaleRapeChance, "$MRT_SP_DEFAULT_REJ_MALE_RAPE_SLIDER2", flg)
+  OID_DEFAULT_REJ_MALE_ASSAULT = AddSliderOption("$MRT_SP_DEFAULT_REJ_MALE_ASSAULT_SLIDER1", MainScript.fDefaultRejectMaleAssaultChance, "$MRT_SP_DEFAULT_REJ_MALE_ASSAULT_SLIDER2", flg)
+  OID_DEFAULT_REJ_MALE_THEFT = AddSliderOption( "$MRT_SP_DEFAULT_REJ_MALE_THEFT_SLIDER1", MainScript.fDefaultRejectMaleTheftChance, "$MRT_SP_DEFAULT_REJ_MALE_THEFT_SLIDER2", flg)
+  OID_DEFAULT_REJ_MALE_MURDER = AddSliderOption("$MRT_SP_DEFAULT_REJ_MALE_MURDER_SLIDER1", MainScript.fDefaultRejectMaleMurderChance, "$MRT_SP_DEFAULT_REJ_MALE_MURDER_SLIDER2", flg) 
+  OID_DEFAULT_REJ_MALE_SLAVERY = AddSliderOption("$MRT_SP_DEFAULT_REJ_MALE_SLAVERY_SLIDER1", MainScript.fDefaultRejectMaleSlaveryChance, "$MRT_SP_DEFAULT_REJ_MALE_SLAVERY_SLIDER2", flg)
+  if (iflag == OPTION_FLAG_NONE) && (MainScript.bIsDDIntegrationActive && MainScript.bIsDDExpansionActive)
+    flg = OPTION_FLAG_NONE
+  else
+    flg = OPTION_FLAG_DISABLED
+  endIf   
+  OID_DEFAULT_REJ_MALE_DD = AddSliderOption("$MRT_SP_DEFAULT_REJ_MALE_DD_SLIDER1", MainScript.fDefaultRejectMaleDeviceChance, "$MRT_SP_DEFAULT_REJ_MALE_DD_SLIDER2", flg)
+  flg = iflag
   AddEmptyOption()
-  OID_DEFAULT_REJ_FEMALE_ACCEPT = AddSliderOption("$MRT_SP_DEFAULT_REJ_FEMALE_ACCEPT_SLIDER1", MainScript.fDefaultRejectFemaleAcceptChance, "$MRT_SP_DEFAULT_REJ_FEMALE_ACCEPT_SLIDER2", iflag)        
-  OID_DEFAULT_REJ_FEMALE_RAPE = AddSliderOption("$MRT_SP_DEFAULT_REJ_FEMALE_RAPE_SLIDER1", MainScript.fDefaultRejectFemaleRapeChance, "$MRT_SP_DEFAULT_REJ_FEMALE_RAPE_SLIDER2", iflag)
-  OID_DEFAULT_REJ_FEMALE_ASSAULT = AddSliderOption("$MRT_SP_DEFAULT_REJ_FEMALE_ASSAULT_SLIDER1", MainScript.fDefaultRejectFemaleAssaultChance, "$MRT_SP_DEFAULT_REJ_FEMALE_ASSAULT_SLIDER2", iflag)    
-  OID_DEFAULT_REJ_FEMALE_THEFT = AddSliderOption("$MRT_SP_DEFAULT_REJ_FEMALE_THEFT_SLIDER1", MainScript.fDefaultRejectFemaleTheftChance, "$MRT_SP_DEFAULT_REJ_FEMALE_THEFT_SLIDER2", iflag)
-  OID_DEFAULT_REJ_FEMALE_MURDER = AddSliderOption("$MRT_SP_DEFAULT_REJ_FEMALE_MURDER_SLIDER1", MainScript.fDefaultRejectFemaleMurderChance, "$MRT_SP_DEFAULT_REJ_FEMALE_MURDER_SLIDER2", iflag) 
-  OID_DEFAULT_REJ_FEMALE_SLAVERY = AddSliderOption("$MRT_SP_DEFAULT_REJ_FEMALE_SLAVERY_SLIDER1", MainScript.fDefaultRejectFemaleSlaveryChance, "$MRT_SP_DEFAULT_REJ_FEMALE_SLAVERY_SLIDER2", iflag) 
+  OID_DEFAULT_REJ_FEMALE_ACCEPT = AddSliderOption("$MRT_SP_DEFAULT_REJ_FEMALE_ACCEPT_SLIDER1", MainScript.fDefaultRejectFemaleAcceptChance, "$MRT_SP_DEFAULT_REJ_FEMALE_ACCEPT_SLIDER2", flg)        
+  OID_DEFAULT_REJ_FEMALE_RAPE = AddSliderOption("$MRT_SP_DEFAULT_REJ_FEMALE_RAPE_SLIDER1", MainScript.fDefaultRejectFemaleRapeChance, "$MRT_SP_DEFAULT_REJ_FEMALE_RAPE_SLIDER2", flg)
+  OID_DEFAULT_REJ_FEMALE_ASSAULT = AddSliderOption("$MRT_SP_DEFAULT_REJ_FEMALE_ASSAULT_SLIDER1", MainScript.fDefaultRejectFemaleAssaultChance, "$MRT_SP_DEFAULT_REJ_FEMALE_ASSAULT_SLIDER2", flg)    
+  OID_DEFAULT_REJ_FEMALE_THEFT = AddSliderOption("$MRT_SP_DEFAULT_REJ_FEMALE_THEFT_SLIDER1", MainScript.fDefaultRejectFemaleTheftChance, "$MRT_SP_DEFAULT_REJ_FEMALE_THEFT_SLIDER2", flg)
+  OID_DEFAULT_REJ_FEMALE_MURDER = AddSliderOption("$MRT_SP_DEFAULT_REJ_FEMALE_MURDER_SLIDER1", MainScript.fDefaultRejectFemaleMurderChance, "$MRT_SP_DEFAULT_REJ_FEMALE_MURDER_SLIDER2", flg) 
+  OID_DEFAULT_REJ_FEMALE_SLAVERY = AddSliderOption("$MRT_SP_DEFAULT_REJ_FEMALE_SLAVERY_SLIDER1", MainScript.fDefaultRejectFemaleSlaveryChance, "$MRT_SP_DEFAULT_REJ_FEMALE_SLAVERY_SLIDER2", flg) 
+  if (iflag == OPTION_FLAG_NONE) && (MainScript.bIsDDIntegrationActive && MainScript.bIsDDExpansionActive)
+    flg = OPTION_FLAG_NONE
+  else
+    flg = OPTION_FLAG_DISABLED
+  endIf  
+  OID_DEFAULT_REJ_FEMALE_DD = AddSliderOption("$MRT_SP_DEFAULT_REJ_FEMALE_DD_SLIDER1", MainScript.fDefaultRejectFemaleDeviceChance, "$MRT_SP_DEFAULT_REJ_FEMALE_DD_SLIDER2", flg) 
   AddEmptyOption()
-  OID_DEFAULT_REJ_THEFT_ONLYGOLD = AddToggleOption("$MRT_SP_DEFAULT_REJ_THEFT_ONLYGOLD_TOGGLE", MainScript.bDefaultRejectTheftOnlyGold, iflag)
+  OID_DEFAULT_REJ_ENTRAPMENT_LVL_M = AddMenuOption("$MRT_SP_DEFAULT_REJ_ENTRAPMENT_LVL", sGetEntrapmentLevels()[MainScript.iDefaultRejectEntrapmentLevel], flg)
+  flg = iflag
+  OID_DEFAULT_REJ_THEFT_ONLYGOLD = AddToggleOption("$MRT_SP_DEFAULT_REJ_THEFT_ONLYGOLD_TOGGLE", MainScript.bDefaultRejectTheftOnlyGold, flg)
 EndFunction
 
- Function approachOptions(Int iflag)
+Function approachOptions(Int iflag)
   int flg = iflag
   OID_CUSTOMER_APPROACH_INTERVAL =  AddSliderOption("$MRT_SP_CUSTOMER_APPROACH_INTERVAL_SLIDER1", MainScript.iCustomerApproachTimer as Float, "$MRT_SP_CUSTOMER_APPROACH_INTERVAL_SLIDER2", flg)
   AddEmptyOption()
@@ -4496,7 +4940,42 @@ EndFunction
     flg = OPTION_FLAG_DISABLED
   endIf
   OID_CRUEL_GUARDS_APPROACH = AddToggleOption("$MRT_SP_CRUEL_GUARDS_APPROACH_TOGGLE", MainScript.bGuardsAreCruel, flg)
+  flg = iflag
+  OID_ELDER_MAY_APPROACH = AddToggleOption("$MRT_SP_ELDER_MAY_APPROACH_TOGGLE", MainScript.bEldersMayApproach, flg)
 EndFunction
+
+Function DD_Options(Int iFlag)
+  int flg = iFlag
+  OID_DEVIOUS_NIP_PRC = AddSliderOption("$MRT_SP_DEVIOUS_NIP_PRC_SLIDER1", MainScript.fDeviousNipplePiercingChance, "$MRT_SP_DEVIOUS_NIP_PRC_SLIDER2", flg)
+  OID_DEVIOUS_VAG_PRC = AddSliderOption("$MRT_SP_DEVIOUS_VAG_PRC_SLIDER1", MainScript.fDeviousVaginalPiercingChance, "$MRT_SP_DEVIOUS_VAG_PRC_SLIDER2", flg)
+  OID_DEVIOUS_ANL_PLUG = AddSliderOption("$MRT_SP_DEVIOUS_ANL_PLUG_SLIDER1", MainScript.fDeviousAnalPlugChance, "$MRT_SP_DEVIOUS_ANL_PLUG_SLIDER2", flg)
+  OID_DEVIOUS_VAG_PLUG = AddSliderOption("$MRT_SP_DEVIOUS_VAG_PLUG_SLIDER1", MainScript.fDeviousVaginalPlugChance, "$MRT_SP_DEVIOUS_VAG_PLUG_SLIDER2", flg)
+  OID_DEVIOUS_ARM_CUF = AddSliderOption("$MRT_SP_DEVIOUS_ARM_CUF_SLIDER1", MainScript.fDeviousArmCuffChance, "$MRT_SP_DEVIOUS_ARM_CUF_SLIDER2", flg)
+  OID_DEVIOUS_LEG_CUF = AddSliderOption("$MRT_SP_DEVIOUS_LEG_CUF_SLIDER1", MainScript.fDeviousLegCuffChance, "$MRT_SP_DEVIOUS_LEG_CUF_SLIDER2", flg)
+  OID_DEVIOUS_COLLAR = AddSliderOption("$MRT_SP_DEVIOUS_COLLAR_SLIDER1", MainScript.fDeviousCollarChance, "$MRT_SP_DEVIOUS_COLLAR_SLIDER2", flg)
+  OID_DEVIOUS_GLOVES = AddSliderOption("$MRT_SP_DEVIOUS_GLOVES_SLIDER1", MainScript.fDeviousGlovesChance, "$MRT_SP_DEVIOUS_GLOVES_SLIDER2", flg)
+  OID_DEVIOUS_BOOTS = AddSliderOption("$MRT_SP_DEVIOUS_BOOTS_SLIDER1", MainScript.fDeviousBootsChance, "$MRT_SP_DEVIOUS_BOOTS_SLIDER2", flg)
+  OID_DEVIOUS_CORSET = AddSliderOption("$MRT_SP_DEVIOUS_CORSET_SLIDER1", MainScript.fDeviousCorsetChance, "$MRT_SP_DEVIOUS_CORSET_SLIDER2", flg)
+  OID_DEVIOUS_HARNESS = AddSliderOption("$MRT_SP_DEVIOUS_HARNESS_SLIDER1", MainScript.fDeviousHarnessesChance, "$MRT_SP_DEVIOUS_HARNESS_SLIDER2", flg)
+  OID_DEVIOUS_GAG_RING = AddSliderOption("$MRT_SP_DEVIOUS_GAG_RING_SLIDER1", MainScript.fDeviousGagRingChance, "$MRT_SP_DEVIOUS_GAG_RING_SLIDER2", flg)
+  OID_DEVIOUS_GAG_ALL = AddSliderOption("$MRT_SP_DEVIOUS_GAG_ALL_SLIDER1", MainScript.fDeviousGagAllChance, "$MRT_SP_DEVIOUS_GAG_ALL_SLIDER2", flg)
+  OID_DEVIOUS_BELT_OPEN = AddSliderOption("$MRT_SP_DEVIOUS_BELT_OPEN_SLIDER1", MainScript.fDeviousChastityBeltOpenChance, "$MRT_SP_DEVIOUS_BELT_OPEN_SLIDER2", flg)
+  OID_DEVIOUS_BELT_CLOSE = AddSliderOption("$MRT_SP_DEVIOUS_BELT_CLOSE_SLIDER1", MainScript.fDeviousChastityBeltCloseChance, "$MRT_SP_DEVIOUS_BELT_CLOSE_SLIDER2", flg)
+  OID_DEVIOUS_BRA = AddSliderOption("$MRT_SP_DEVIOUS_BRA_SLIDER1", MainScript.fDeviousChastityBrasChance, "$MRT_SP_DEVIOUS_BRA_SLIDER2", flg)
+  OID_DEVIOUS_HOOD = AddSliderOption("$MRT_SP_DEVIOUS_HOOD_SLIDER1", MainScript.fDeviousHoodChance, "$MRT_SP_DEVIOUS_HOOD_SLIDER2", flg)
+  OID_DEVIOUS_BLINDFOLD = AddSliderOption("$MRT_SP_DEVIOUS_BLINDFOLD_SLIDER1", MainScript.fDeviousBlindfoldChance, "$MRT_SP_DEVIOUS_BLINDFOLD_SLIDER2", flg)
+  OID_DEVIOUS_HEAVY_RESTRAINT = AddSliderOption("$MRT_SP_DEVIOUS_HEAVY_RESTRAINT_SLIDER1", MainScript.fDeviousHeavyRestraintChance, "$MRT_SP_DEVIOUS_HEAVY_RESTRAINT_SLIDER2", flg)
+  OID_DEVIOUS_SUIT = AddSliderOption("$MRT_SP_DEVIOUS_SUIT_SLIDER1", MainScript.fDeviousSuitsChance, "$MRT_SP_DEVIOUS_SUIT_SLIDER2", flg)
+EndFunction
+
+String[] function sGetEntrapmentLevels()
+  String[] sEntrapmentLevels = new String[4]
+  sEntrapmentLevels[0] = "$DD_ENTRAPMENT_LVL1"
+  sEntrapmentLevels[1] = "$DD_ENTRAPMENT_LVL2"
+  sEntrapmentLevels[2] = "$DD_ENTRAPMENT_LVL3"
+  sEntrapmentLevels[3] = "$DD_ENTRAPMENT_LVL4"
+  return sEntrapmentLevels
+endfunction
 
 Int OID_BEG_GUARDS_SEX_OFFER
 Int OID_GUARDS_MAY_APPROACH
@@ -4575,3 +5054,49 @@ Int OID_BEG_REJ_WALKAWAY_CHECK
 
 Int OID_ONLY_LOS_APPROACH
 Int OID_MAX_DISTANCE_APPROACH
+
+Int OID_DEVIOUS_VAG_PRC
+Int OID_DEVIOUS_NIP_PRC
+Int OID_DEVIOUS_VAG_PLUG
+Int OID_DEVIOUS_ANL_PLUG
+Int OID_DEVIOUS_ARM_CUF
+Int OID_DEVIOUS_LEG_CUF
+Int OID_DEVIOUS_COLLAR
+Int OID_DEVIOUS_GLOVES
+Int OID_DEVIOUS_BOOTS
+Int OID_DEVIOUS_CORSET
+Int OID_DEVIOUS_HARNESS
+Int OID_DEVIOUS_GAG_RING
+Int OID_DEVIOUS_GAG_ALL
+Int OID_DEVIOUS_BELT_OPEN
+Int OID_DEVIOUS_BELT_CLOSE
+Int OID_DEVIOUS_BRA
+Int OID_DEVIOUS_HOOD
+Int OID_DEVIOUS_BLINDFOLD
+Int OID_DEVIOUS_HEAVY_RESTRAINT
+Int OID_DEVIOUS_SUIT
+Int OID_BEG_ELDER_SEX_OFFER
+Int OID_ELDER_MAY_APPROACH
+
+Int OID_BEG_REJ_ENTRAPMENT_LVL_M
+Int OID_WHORE_REJ_ENTRAPMENT_LVL_M
+Int OID_DIBEL_REJ_ENTRAPMENT_LVL_M
+Int OID_DEFAULT_REJ_ENTRAPMENT_LVL_M
+
+Int OID_BEG_ENTRAPMENT_LVL_M
+Int OID_WHORE_ENTRAPMENT_LVL_M
+Int OID_DIBEL_ENTRAPMENT_LVL_M
+Int OID_DEFAULT_ENTRAPMENT_LVL_M
+
+Int OID_WHORE_DD_CHANCE
+Int OID_DIBEL_DD_CHANCE
+Int OID_BEG_DD_CHANCE
+
+Int OID_BEG_REJ_FEMALE_DD
+Int OID_BEG_REJ_MALE_DD
+Int OID_WHORE_REJ_FEMALE_DD
+Int OID_WHORE_REJ_MALE_DD
+Int OID_DIBEL_REJ_FEMALE_DD
+Int OID_DIBEL_REJ_MALE_DD
+Int OID_DEFAULT_REJ_FEMALE_DD
+Int OID_DEFAULT_REJ_MALE_DD
