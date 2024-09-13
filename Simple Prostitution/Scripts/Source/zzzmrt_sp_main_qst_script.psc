@@ -1544,7 +1544,8 @@ Function entrapPlayer(Actor akEntrapper)
 	if !bIsDDExpansionActive || !bIsDDIntegrationActive
 		return
 	elseif akEntrapper && (akEntrapper != player)
-		if (getPlayerDialogueTarget(player) != akEntrapper)
+		actor dialogueTarget = getPlayerDialogueTarget(player)
+		if (dialogueTarget && (dialogueTarget != akEntrapper))
 			return
 		endif
 		bAnimEntrapper = (!isActorHavingSex(akEntrapper) && !isActorHavingSex(player) && !akEntrapper.GetCurrentScene() && (akEntrapper.GetSitState() != 3))
@@ -1571,6 +1572,10 @@ Function entrapPlayer(Actor akEntrapper)
 		Utility.Wait(1.0)
 		forceRefAndPackageTo(akEntrapper, entrapperAlias, entrapperPackage)
 	endif
+	Bool vagPlugged = DDX_Interface.isVaginallyPlugged(player)
+	Bool anlPlugged = DDX_Interface.isAnallyPlugged(player)
+	debug.trace("was Anal Plugged: "+ anlPlugged)
+	debug.trace("was Vaginal Plugged: "+ vagPlugged)
 	float fTimeStart = Utility.GetCurrentRealTime()
 	Bool bResult = DDX_Interface.lockRandomDeviceOnActor(player, iEntrapmentLevel, iDeviceChanceArr)
 	float fTimeEnd = Utility.GetCurrentRealTime()
@@ -1588,7 +1593,12 @@ Function entrapPlayer(Actor akEntrapper)
 		akEntrapper.EvaluatePackage()
 		akEntrapper.SetDontMove(false)
 	endif
-	if !bResult
+	if bResult
+		if (!vagPlugged && DDX_Interface.isVaginallyPlugged(player)) || (!anlPlugged && DDX_Interface.isAnallyPlugged(player))
+			debug.trace("Plugged.")
+			DDX_Interface.MoanAndPlayHornyAnimation(player)
+		endif
+	else
 		DDX_Interface.InflateRandomPlug(player)
 	endif
 	Game.setPlayerAiDriven(false)

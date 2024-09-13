@@ -30,6 +30,18 @@ Bool Function lockRandomDeviceOnActor(Actor akActor, Int iLevel = 0, Int[] chanc
   Return false
 endfunction
 
+Bool function isAnallyPlugged(Actor akActor)
+	return False
+endfunction
+
+Bool function isVaginallyPlugged(Actor akActor)
+	return False
+endfunction
+
+Bool function isPlugged(Actor akActor)
+	return False
+endfunction
+
 Bool Function isBounded(Actor akActor)
   Return false
 EndFunction
@@ -57,6 +69,9 @@ EndFunction
 Bool Function TightenRandomDevice(Actor akActor, LeveledItem[] akDevices)
   return False
 EndFunction
+
+Function MoanAndPlayHornyAnimation(Actor akActor)
+endfunction
 
 function InflateRandomPlug(Actor akActor)
 endfunction
@@ -88,8 +103,20 @@ state Installed
   Bool Function lockRandomDeviceOnActor(Actor akActor, Int iLevel = 0, Int[] chanceArray)
     return zzzmrt_sp_int_ddx._lockRandomDeviceOnActor(zadxQuest, akActor,  iLevel, chanceArray)
   endfunction
-
-  Bool Function isBounded(Actor akActor)
+	
+	Bool function isPlugged(Actor akActor)
+     return zzzmrt_sp_int_ddx._isPlugged(zadxQuest, akActor)
+  endfunction 
+	
+	Bool function isAnallyPlugged(Actor akActor)
+     return zzzmrt_sp_int_ddx._isAnallyPlugged(zadxQuest, akActor)
+  endfunction 
+	
+	Bool function isVaginallyPlugged(Actor akActor)
+     return zzzmrt_sp_int_ddx._isVaginallyPlugged(zadxQuest, akActor)
+  endfunction 
+	
+	Bool Function isBounded(Actor akActor)
     return zzzmrt_sp_int_ddx._isBounded(zadxQuest, akActor)
   endfunction
   
@@ -120,5 +147,9 @@ state Installed
   function InflateRandomPlug(Actor akActor)
     zzzmrt_sp_int_ddx._InflateRandomPlug(zadxQuest, akActor)
   endfunction
+	
+	Function MoanAndPlayHornyAnimation(Actor akActor)
+		zzzmrt_sp_int_ddx._MoanAndPlayHornyAnimation(zadxQuest, akActor)
+	endfunction
 
 endState

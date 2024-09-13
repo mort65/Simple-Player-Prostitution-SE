@@ -3046,15 +3046,23 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
   MainScript.bBeggarRejectWalkAwayCheck = jsonutil.GetPathIntValue(settings_path, "bBeggarRejectWalkAwayCheck", MainScript.bBeggarRejectWalkAwayCheck as Int)
   MainScript.bGuardsMayApproach = jsonutil.GetPathIntValue(settings_path, "bGuardsMayApproach", MainScript.bGuardsMayApproach as Int)
   MainScript.bBeggarGuardsSexOffer = jsonutil.GetPathIntValue(settings_path, "bBeggarGuardsSexOffer", MainScript.bBeggarGuardsSexOffer as Int)
-
-
+  MainScript.bEldersMayApproach = jsonutil.GetPathIntValue(settings_path, "bEldersMayApproach", MainScript.bEldersMayApproach as int)
+  MainScript.bBeggarElderSexOffer = jsonutil.GetPathIntValue(settings_path, "bBeggarElderSexOffer", MainScript.bBeggarElderSexOffer as int)
 
   iBeggarSpeechDifficulty = jsonutil.GetPathIntValue(settings_path, "iBeggarSpeechDifficulty", iBeggarSpeechDifficulty)
   iWhoreSpeechDifficulty = jsonutil.GetPathIntValue(settings_path, "iWhoreSpeechDifficulty", iWhoreSpeechDifficulty)
   iDibelSpeechDifficulty = jsonutil.GetPathIntValue(settings_path, "iDibelSpeechDifficulty", iDibelSpeechDifficulty)
   iAnimInterfaceMethod = jsonutil.GetPathIntValue(settings_path, "iAnimInterfaceMethod", iAnimInterfaceMethod)
+  
   MainScript.iCustomerApproachTimer = jsonutil.GetPathIntValue(settings_path, "iCustomerApproachTimer", MainScript.iCustomerApproachTimer)
   MainScript.iCrimeBounty = jsonutil.GetPathIntValue(settings_path, "iCrimeBounty", MainScript.iCrimeBounty)
+  MainScript.iDefaultRejectEntrapmentLevel = jsonutil.GetPathIntValue(settings_path, "iDefaultRejectEntrapmentLevel", MainScript.iDefaultRejectEntrapmentLevel)
+  MainScript.iDibelRejectEntrapmentLevel = jsonutil.GetPathIntValue(settings_path,  "iDibelRejectEntrapmentLevel", MainScript.iDibelRejectEntrapmentLevel)
+  MainScript.iWhoreRejectEntrapmentLevel = jsonutil.GetPathIntValue(settings_path, "iWhoreRejectEntrapmentLevel", MainScript.iWhoreRejectEntrapmentLevel)
+  MainScript.iBeggarRejectEntrapmentLevel = jsonutil.GetPathIntValue(settings_path, "iBeggarRejectEntrapmentLevel", MainScript.iBeggarRejectEntrapmentLevel)
+  MainScript.iWhoreEntrapmentLevel = jsonutil.GetPathIntValue(settings_path, "iWhoreEntrapmentLevel", MainScript.iWhoreEntrapmentLevel)
+  MainScript.iDibelEntrapmentLevel = jsonutil.GetPathIntValue(settings_path, "iDibelEntrapmentLevel", MainScript.iDibelEntrapmentLevel)
+  MainScript.iBeggarEntrapmentLevel = jsonutil.GetPathIntValue(settings_path, "iBeggarEntrapmentLevel", MainScript.iBeggarEntrapmentLevel)
 
   MainScript.fWhoreOwnerShare = jsonutil.GetPathFloatValue(settings_path, "fWhoreOwnerShare", MainScript.fWhoreOwnerShare)
   MainScript.fBegPayMin = jsonutil.GetPathFloatValue(settings_path, "fBegPayMin", MainScript.fBegPayMin)
@@ -3165,6 +3173,41 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
   MainScript.fDibelSTDInfectChance = jsonutil.GetPathFloatValue(settings_path, "fDibelSTDInfectChance", MainScript.fDibelSTDInfectChance)
   MainScript.fNormalSTDInfectChance = jsonutil.GetPathFloatValue(settings_path, "fNormalSTDInfectChance", MainScript.fNormalSTDInfectChance)
 
+  MainScript.fDeviousSuitsChance = jsonutil.GetPathFloatValue(settings_path, "fDeviousSuitsChance", MainScript.fDeviousSuitsChance)
+  MainScript.fDeviousHeavyRestraintChance = jsonutil.GetPathFloatValue(settings_path, "fDeviousHeavyRestraintChance", MainScript.fDeviousHeavyRestraintChance)
+  MainScript.fDeviousBlindfoldChance = jsonutil.GetPathFloatValue(settings_path, "fDeviousBlindfoldChance", MainScript.fDeviousBlindfoldChance)
+  MainScript.fDeviousHoodChance = jsonutil.GetPathFloatValue(settings_path, "fDeviousHoodChance", MainScript.fDeviousHoodChance)
+  MainScript.fDeviousChastityBrasChance = jsonutil.GetPathFloatValue(settings_path, "fDeviousChastityBrasChance", MainScript.fDeviousChastityBrasChance)
+  MainScript.fDeviousChastityBeltCloseChance = jsonutil.GetPathFloatValue(settings_path, "fDeviousChastityBeltCloseChance", MainScript.fDeviousChastityBeltCloseChance)
+  MainScript.fDeviousChastityBeltOpenChance = jsonutil.GetPathFloatValue(settings_path, "fDeviousChastityBeltOpenChance", MainScript.fDeviousChastityBeltOpenChance)
+  MainScript.fDeviousGagAllChance = jsonutil.GetPathFloatValue(settings_path, "fDeviousGagAllChance", MainScript.fDeviousGagAllChance)
+  MainScript.fDeviousGagRingChance = jsonutil.GetPathFloatValue(settings_path, "fDeviousGagRingChance", MainScript.fDeviousGagRingChance)
+  MainScript.fDeviousHarnessesChance = jsonutil.GetPathFloatValue(settings_path, "fDeviousHarnessesChance", MainScript.fDeviousHarnessesChance)
+  MainScript.fDeviousCorsetChance = jsonutil.GetPathFloatValue(settings_path, "fDeviousCorsetChance", MainScript.fDeviousCorsetChance)
+  MainScript.fDeviousBootsChance = jsonutil.GetPathFloatValue(settings_path, "fDeviousBootsChance", MainScript.fDeviousBootsChance)
+  MainScript.fDeviousGlovesChance   = jsonutil.GetPathFloatValue(settings_path, "fDeviousGlovesChance", MainScript.fDeviousGlovesChance)
+  MainScript.fDeviousCollarChance = jsonutil.GetPathFloatValue(settings_path, "fDeviousCollarChance", MainScript.fDeviousCollarChance)
+  MainScript.fDeviousLegCuffChance = jsonutil.GetPathFloatValue(settings_path, "fDeviousLegCuffChance", MainScript.fDeviousLegCuffChance)
+  MainScript.fDeviousArmCuffChance = jsonutil.GetPathFloatValue(settings_path, "fDeviousArmCuffChance", MainScript.fDeviousArmCuffChance)
+  MainScript.fDeviousVaginalPlugChance = jsonutil.GetPathFloatValue(settings_path, "fDeviousVaginalPlugChance", MainScript.fDeviousVaginalPlugChance)
+  MainScript.fDeviousAnalPlugChance = jsonutil.GetPathFloatValue(settings_path, "fDeviousAnalPlugChance", MainScript.fDeviousAnalPlugChance)
+  MainScript.fDeviousVaginalPiercingChance = jsonutil.GetPathFloatValue(settings_path, "fDeviousVaginalPiercingChance", MainScript.fDeviousVaginalPiercingChance)
+  MainScript.fDeviousNipplePiercingChance = jsonutil.GetPathFloatValue(settings_path, "fDeviousNipplePiercingChance", MainScript.fDeviousNipplePiercingChance)
+  MainScript.fDefaultRejectMaleDeviceChance = jsonutil.GetPathFloatValue(settings_path, "fDefaultRejectMaleDeviceChance", MainScript.fDefaultRejectMaleDeviceChance)
+  MainScript.fDefaultRejectFemaleDeviceChance = jsonutil.GetPathFloatValue(settings_path, "fDefaultRejectFemaleDeviceChance", MainScript.fDefaultRejectFemaleDeviceChance)
+  MainScript.fWhoreRejectMaleDeviceChance = jsonutil.GetPathFloatValue(settings_path, "fWhoreRejectMaleDeviceChance", MainScript.fWhoreRejectMaleDeviceChance)
+  MainScript.fWhoreRejectFemaleSlaveryChance = jsonutil.GetPathFloatValue(settings_path, "fWhoreRejectFemaleSlaveryChance", MainScript.fWhoreRejectFemaleSlaveryChance)
+  MainScript.fBeggarRejectMaleDeviceChance = jsonutil.GetPathFloatValue(settings_path, "fBeggarRejectMaleDeviceChance", MainScript.fBeggarRejectMaleDeviceChance)
+  MainScript.fBeggarRejectFemaleDeviceChance = jsonutil.GetPathFloatValue(settings_path, "fBeggarRejectFemaleDeviceChance", MainScript.fBeggarRejectFemaleDeviceChance)
+  MainScript.fDibelRejectMaleDeviceChance = jsonutil.GetPathFloatValue(settings_path, "fDibelRejectMaleDeviceChance", MainScript.fDibelRejectMaleDeviceChance)
+  MainScript.fDibelRejectFemaleDeviceChance = jsonutil.GetPathFloatValue(settings_path, "fDibelRejectFemaleDeviceChance", MainScript.fDibelRejectFemaleDeviceChance)
+  MainScript.fWhoreDeviceChance = jsonutil.GetPathFloatValue(settings_path, "fWhoreDeviceChance", MainScript.fWhoreDeviceChance)
+  MainScript.fDibelDeviceChance = jsonutil.GetPathFloatValue(settings_path, "fDibelDeviceChance", MainScript.fDibelDeviceChance)
+  MainScript.fBeggarDeviceChance = jsonutil.GetPathFloatValue(settings_path, "fBeggarDeviceChance", MainScript.fBeggarDeviceChance)
+
+
+
+
   MainScript.sExtraTags_SL_Oral_MF = jsonutil.GetPathStringValue(settings_path, "sExtraTags_SL_Oral_MF", MainScript.sExtraTags_SL_Oral_MF)
   MainScript.sExtraTags_SL_Oral_FF = jsonutil.GetPathStringValue(settings_path, "sExtraTags_SL_Oral_FF", MainScript.sExtraTags_SL_Oral_FF)
   MainScript.sExtraTags_SL_Oral_MM = jsonutil.GetPathStringValue(settings_path, "sExtraTags_SL_Oral_MM", MainScript.sExtraTags_SL_Oral_MM)
@@ -3240,6 +3283,8 @@ Bool function saveUserSettingsPapyrus()
   jsonutil.SetPathIntValue(settings_path, "bBeggarRejectWalkAwayCheck", MainScript.bBeggarRejectWalkAwayCheck as Int)
   jsonutil.SetPathIntValue(settings_path, "bGuardsMayApproach", MainScript.bGuardsMayApproach as Int)
   jsonutil.SetPathIntValue(settings_path, "bBeggarGuardsSexOffer", MainScript.bBeggarGuardsSexOffer as Int)
+  jsonutil.SetPathIntValue(settings_path, "bEldersMayApproach", MainScript.bEldersMayApproach as Int)
+  jsonutil.SetPathIntValue(settings_path, "bBeggarElderSexOffer", MainScript.bBeggarElderSexOffer as Int)
 
   jsonutil.SetPathIntValue(settings_path, "iBeggarSpeechDifficulty", iBeggarSpeechDifficulty)
   jsonutil.SetPathIntValue(settings_path, "iWhoreSpeechDifficulty", iWhoreSpeechDifficulty)
@@ -3247,6 +3292,14 @@ Bool function saveUserSettingsPapyrus()
   jsonutil.SetPathIntValue(settings_path, "iAnimInterfaceMethod", iAnimInterfaceMethod)
   jsonutil.SetPathIntValue(settings_path, "iCustomerApproachTimer", MainScript.iCustomerApproachTimer)
   jsonutil.SetPathIntValue(settings_path, "iCrimeBounty", MainScript.iCrimeBounty)
+
+  jsonutil.SetPathIntValue(settings_path, "iDefaultRejectEntrapmentLevel", MainScript.iDefaultRejectEntrapmentLevel)
+  jsonutil.SetPathIntValue(settings_path, "iDibelRejectEntrapmentLevel", MainScript.iDibelRejectEntrapmentLevel)
+  jsonutil.SetPathIntValue(settings_path, "iWhoreRejectEntrapmentLevel", MainScript.iWhoreRejectEntrapmentLevel)
+  jsonutil.SetPathIntValue(settings_path, "iBeggarRejectEntrapmentLevel", MainScript.iBeggarRejectEntrapmentLevel)
+  jsonutil.SetPathIntValue(settings_path, "iWhoreEntrapmentLevel", MainScript.iWhoreEntrapmentLevel)
+  jsonutil.SetPathIntValue(settings_path, "iDibelEntrapmentLevel", MainScript.iDibelEntrapmentLevel)
+  jsonutil.SetPathIntValue(settings_path, "iBeggarEntrapmentLevel", MainScript.iBeggarEntrapmentLevel)
 
   jsonutil.SetPathFloatValue(settings_path, "fWhoreOwnerShare", MainScript.fWhoreOwnerShare)
   jsonutil.SetPathFloatValue(settings_path, "fBegPayMin", MainScript.fBegPayMin)
@@ -3358,6 +3411,38 @@ Bool function saveUserSettingsPapyrus()
   jsonutil.SetPathFloatValue(settings_path, "fWhoreSTDInfectChance", MainScript.fWhoreSTDInfectChance)
   jsonutil.SetPathFloatValue(settings_path, "fDibelSTDInfectChance", MainScript.fDibelSTDInfectChance)
   jsonutil.SetPathFloatValue(settings_path, "fNormalSTDInfectChance", MainScript.fNormalSTDInfectChance)
+
+  jsonutil.SetPathFloatValue(settings_path, "fDeviousSuitsChance", MainScript.fDeviousSuitsChance)
+  jsonutil.SetPathFloatValue(settings_path, "fDeviousHeavyRestraintChance", MainScript.fDeviousHeavyRestraintChance)
+  jsonutil.SetPathFloatValue(settings_path, "fDeviousBlindfoldChance", MainScript.fDeviousBlindfoldChance)
+  jsonutil.SetPathFloatValue(settings_path, "fDeviousHoodChance", MainScript.fDeviousHoodChance)
+  jsonutil.SetPathFloatValue(settings_path, "fDeviousChastityBrasChance", MainScript.fDeviousChastityBrasChance)
+  jsonutil.SetPathFloatValue(settings_path, "fDeviousChastityBeltCloseChance", MainScript.fDeviousChastityBeltCloseChance)
+  jsonutil.SetPathFloatValue(settings_path, "fDeviousChastityBeltOpenChance", MainScript.fDeviousChastityBeltOpenChance)
+  jsonutil.SetPathFloatValue(settings_path, "fDeviousGagAllChance", MainScript.fDeviousGagAllChance)
+  jsonutil.SetPathFloatValue(settings_path, "fDeviousGagRingChance", MainScript.fDeviousGagRingChance)
+  jsonutil.SetPathFloatValue(settings_path, "fDeviousHarnessesChance", MainScript.fDeviousHarnessesChance)
+  jsonutil.SetPathFloatValue(settings_path, "fDeviousCorsetChance", MainScript.fDeviousCorsetChance)
+  jsonutil.SetPathFloatValue(settings_path, "fDeviousBootsChance", MainScript.fDeviousBootsChance)
+  jsonutil.SetPathFloatValue(settings_path, "fDeviousGlovesChance", MainScript.fDeviousGlovesChance)
+  jsonutil.SetPathFloatValue(settings_path, "fDeviousCollarChance", MainScript.fDeviousCollarChance)
+  jsonutil.SetPathFloatValue(settings_path, "fDeviousLegCuffChance", MainScript.fDeviousLegCuffChance)
+  jsonutil.SetPathFloatValue(settings_path, "fDeviousArmCuffChance", MainScript.fDeviousArmCuffChance)
+  jsonutil.SetPathFloatValue(settings_path, "fDeviousVaginalPlugChance", MainScript.fDeviousVaginalPlugChance)
+  jsonutil.SetPathFloatValue(settings_path, "fDeviousAnalPlugChance", MainScript.fDeviousAnalPlugChance)
+  jsonutil.SetPathFloatValue(settings_path, "fDeviousVaginalPiercingChance", MainScript.fDeviousVaginalPiercingChance)
+  jsonutil.SetPathFloatValue(settings_path, "fDeviousNipplePiercingChance", MainScript.fDeviousNipplePiercingChance)
+  jsonutil.SetPathFloatValue(settings_path, "fDefaultRejectMaleDeviceChance", MainScript.fDefaultRejectMaleDeviceChance)
+  jsonutil.SetPathFloatValue(settings_path, "fDefaultRejectFemaleDeviceChance", MainScript.fDefaultRejectFemaleDeviceChance)
+  jsonutil.SetPathFloatValue(settings_path, "fWhoreRejectMaleDeviceChance", MainScript.fWhoreRejectMaleDeviceChance)
+  jsonutil.SetPathFloatValue(settings_path, "fWhoreRejectFemaleSlaveryChance", MainScript.fWhoreRejectFemaleSlaveryChance)
+  jsonutil.SetPathFloatValue(settings_path, "fBeggarRejectMaleDeviceChance", MainScript.fBeggarRejectMaleDeviceChance)
+  jsonutil.SetPathFloatValue(settings_path, "fBeggarRejectFemaleDeviceChance", MainScript.fBeggarRejectFemaleDeviceChance)
+  jsonutil.SetPathFloatValue(settings_path, "fDibelRejectMaleDeviceChance", MainScript.fDibelRejectMaleDeviceChance)
+  jsonutil.SetPathFloatValue(settings_path, "fDibelRejectFemaleDeviceChance", MainScript.fDibelRejectFemaleDeviceChance)
+  jsonutil.SetPathFloatValue(settings_path, "fWhoreDeviceChance", MainScript.fWhoreDeviceChance)
+  jsonutil.SetPathFloatValue(settings_path, "fDibelDeviceChance", MainScript.fDibelDeviceChance)
+  jsonutil.SetPathFloatValue(settings_path, "fBeggarDeviceChance", MainScript.fBeggarDeviceChance)
 
   jsonutil.SetPathStringValue(settings_path, "sExtraTags_SL_Oral_MF", MainScript.sExtraTags_SL_Oral_MF)
   jsonutil.SetPathStringValue(settings_path, "sExtraTags_SL_Oral_FF", MainScript.sExtraTags_SL_Oral_FF)
@@ -3929,72 +4014,153 @@ event OnOptionHighlight(int option)
   elseif option == OID_MALE_CUSTOMER_APPROACH
     SetInfoText("$MRT_SP_DESC_MALE_CUSTOMER_APPROACH")
   elseif option == OID_BEG_ONLY_INTERIOR_SEX_OFFER
-   SetInfoText("$MRT_SP_DESC_BEG_REJ_ONLY_INTERIOR_SEX_OFFER")
- elseif option == OID_BEG_GUARDS_SEX_OFFER
-   SetInfoText("$MRT_SP_DESC_BEG_GUARDS_SEX_OFFER")
- elseif option == OID_BEG_REJ_THEFT_ONLYGOLD
-   SetInfoText("$MRT_SP_DESC_BEG_REJ_THEFT_ONLYGOLD")
- elseif option == OID_BEG_REJ_WALKAWAY_CHECK
-   SetInfoText("$MRT_SP_DESC_BEG_REJ_WALKAWAY_CHECK")
- elseif option == OID_WHORE_REJ_THEFT_ONLYGOLD
-  SetInfoText("$MRT_SP_DESC_WHORE_REJ_THEFT_ONLYGOLD")
-elseif option == OID_DIBEL_REJ_THEFT_ONLYGOLD
-  SetInfoText("$MRT_SP_DESC_DIBEL_REJ_THEFT_ONLYGOLD")
-elseif option == OID_ONLY_WHORE_CLOTHING_APPROACH
-  SetInfoText("$MRT_SP_DESC_ONLY_WHORE_CLOTHING_APPROACH")
-elseif option == OID_ONLY_INTERIOR_APPROACH
-  SetInfoText("$MRT_SP_DESC_ONLY_INTERIOR_APPROACH")
-elseif option == OID_ONLY_LOS_APPROACH
-  SetInfoText("$MRT_SP_DESC_ONLY_LOS_APPROACH")
-elseif option == OID_ONLY_LICENSED_APPROACH
-  SetInfoText("$MRT_SP_DESC_ONLY_LICENSED_APPROACH_TOGGLE")
-elseif option == OID_BEG_ONLY_LICENSED_SEX_OFFER
-  SetInfoText("$MRT_SP_DESC_BEG_ONLY_LICENSED_SEX_OFFER")
-Elseif option == OID_CRIME_BOUNTY
-  SetInfoText("$MRT_SP_DESC_CRIME_BOUNTY")
-elseif option == OID_DIBEL_REJ_MALE_MURDER
-  SetInfoText("$MRT_SP_DESC_DIBEL_REJ_MALE_MURDER_SLIDER")
-elseif option == OID_DIBEL_REJ_FEMALE_MURDER
-  SetInfoText("$MRT_SP_DESC_DIBEL_REJ_FEMALE_MURDER_SLIDER")
-elseif option == OID_WHORE_REJ_MALE_MURDER
-  SetInfoText("$MRT_SP_DESC_WHORE_REJ_MALE_MURDER_SLIDER")
-elseif option == OID_WHORE_REJ_FEMALE_MURDER
-  SetInfoText("$MRT_SP_DESC_WHORE_REJ_FEMALE_MURDER_SLIDER")
-elseif option == OID_BEG_REJ_MALE_MURDER
-  SetInfoText("$MRT_SP_DESC_BEG_REJ_MALE_MURDER_SLIDER")
-elseif option == OID_BEG_REJ_FEMALE_MURDER
-  SetInfoText("$MRT_SP_DESC_BEG_REJ_FEMALE_MURDER_SLIDER")
-elseif option == OID_DEFAULT_REJ_MALE_MURDER
-  SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_MALE_MURDER_SLIDER")
-elseif option == OID_DEFAULT_REJ_FEMALE_MURDER
-  SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_FEMALE_MURDER_SLIDER")
-elseif option == OID_DEFAULT_REJ_MALE_ACCEPT
-  SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_MALE_ACCEPT_SLIDER")
-elseif option == OID_DEFAULT_REJ_FEMALE_ACCEPT
-  SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_FEMALE_ACCEPT_SLIDER")
-elseif option == OID_DEFAULT_REJ_MALE_RAPE
-  SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_MALE_RAPE_SLIDER")
-elseif option == OID_DEFAULT_REJ_FEMALE_RAPE
-  SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_FEMALE_RAPE_SLIDER")
-elseif option == OID_DEFAULT_REJ_MALE_THEFT
-  SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_MALE_THEFT_SLIDER")
-elseif option == OID_DEFAULT_REJ_FEMALE_THEFT
-  SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_FEMALE_THEFT_SLIDER")
-elseif option == OID_DEFAULT_REJ_MALE_ASSAULT
-  SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_MALE_ASSAULT_SLIDER")
-elseif option == OID_DEFAULT_REJ_FEMALE_ASSAULT
-  SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_FEMALE_ASSAULT_SLIDER")
-elseif option == OID_DEFAULT_REJ_MALE_SLAVERY
-  SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_MALE_SLAVERY_SLIDER")
-elseif option == OID_DEFAULT_REJ_FEMALE_SLAVERY
-  SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_FEMALE_SLAVERY_SLIDER")
-elseif option == OID_DEFAULT_REJ_THEFT_ONLYGOLD
-  SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_THEFT_ONLYGOLD")
-elseif option == OID_CRUEL_GUARDS_APPROACH
-  SetInfoText("$MRT_SP_DESC_CRUEL_GUARDS_APPROACH")
-elseif option == OID_GUARDS_MAY_APPROACH
-  SetInfoText("$MRT_SP_DESC_GUARDS_MAY_APPROACH")
-endif
+    SetInfoText("$MRT_SP_DESC_BEG_REJ_ONLY_INTERIOR_SEX_OFFER")
+  elseif option == OID_BEG_GUARDS_SEX_OFFER
+    SetInfoText("$MRT_SP_DESC_BEG_GUARDS_SEX_OFFER")
+  elseif option == OID_BEG_REJ_THEFT_ONLYGOLD
+    SetInfoText("$MRT_SP_DESC_BEG_REJ_THEFT_ONLYGOLD")
+  elseif option == OID_BEG_REJ_WALKAWAY_CHECK
+    SetInfoText("$MRT_SP_DESC_BEG_REJ_WALKAWAY_CHECK")
+  elseif option == OID_WHORE_REJ_THEFT_ONLYGOLD
+	  SetInfoText("$MRT_SP_DESC_WHORE_REJ_THEFT_ONLYGOLD")
+  elseif option == OID_DIBEL_REJ_THEFT_ONLYGOLD
+   SetInfoText("$MRT_SP_DESC_DIBEL_REJ_THEFT_ONLYGOLD")
+  elseif option == OID_ONLY_WHORE_CLOTHING_APPROACH
+    SetInfoText("$MRT_SP_DESC_ONLY_WHORE_CLOTHING_APPROACH")
+  elseif option == OID_ONLY_INTERIOR_APPROACH
+    SetInfoText("$MRT_SP_DESC_ONLY_INTERIOR_APPROACH")
+  elseif option == OID_ONLY_LOS_APPROACH
+    SetInfoText("$MRT_SP_DESC_ONLY_LOS_APPROACH")
+  elseif option == OID_ONLY_LICENSED_APPROACH
+    SetInfoText("$MRT_SP_DESC_ONLY_LICENSED_APPROACH_TOGGLE")
+  elseif option == OID_BEG_ONLY_LICENSED_SEX_OFFER
+    SetInfoText("$MRT_SP_DESC_BEG_ONLY_LICENSED_SEX_OFFER")
+  elseif option == OID_CRIME_BOUNTY
+    SetInfoText("$MRT_SP_DESC_CRIME_BOUNTY")
+  elseif option == OID_DIBEL_REJ_MALE_MURDER
+    SetInfoText("$MRT_SP_DESC_DIBEL_REJ_MALE_MURDER_SLIDER")
+  elseif option == OID_DIBEL_REJ_FEMALE_MURDER
+    SetInfoText("$MRT_SP_DESC_DIBEL_REJ_FEMALE_MURDER_SLIDER")
+  elseif option == OID_WHORE_REJ_MALE_MURDER
+    SetInfoText("$MRT_SP_DESC_WHORE_REJ_MALE_MURDER_SLIDER")
+  elseif option == OID_WHORE_REJ_FEMALE_MURDER
+    SetInfoText("$MRT_SP_DESC_WHORE_REJ_FEMALE_MURDER_SLIDER")
+  elseif option == OID_BEG_REJ_MALE_MURDER
+    SetInfoText("$MRT_SP_DESC_BEG_REJ_MALE_MURDER_SLIDER")
+  elseif option == OID_BEG_REJ_FEMALE_MURDER
+    SetInfoText("$MRT_SP_DESC_BEG_REJ_FEMALE_MURDER_SLIDER")
+  elseif option == OID_DEFAULT_REJ_MALE_MURDER
+    SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_MALE_MURDER_SLIDER")
+  elseif option == OID_DEFAULT_REJ_FEMALE_MURDER
+    SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_FEMALE_MURDER_SLIDER")
+  elseif option == OID_DEFAULT_REJ_MALE_ACCEPT
+    SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_MALE_ACCEPT_SLIDER")
+  elseif option == OID_DEFAULT_REJ_FEMALE_ACCEPT
+    SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_FEMALE_ACCEPT_SLIDER")
+  elseif option == OID_DEFAULT_REJ_MALE_RAPE
+    SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_MALE_RAPE_SLIDER")
+  elseif option == OID_DEFAULT_REJ_FEMALE_RAPE
+    SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_FEMALE_RAPE_SLIDER")
+  elseif option == OID_DEFAULT_REJ_MALE_THEFT
+    SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_MALE_THEFT_SLIDER")
+  elseif option == OID_DEFAULT_REJ_FEMALE_THEFT
+    SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_FEMALE_THEFT_SLIDER")
+  elseif option == OID_DEFAULT_REJ_MALE_ASSAULT
+    SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_MALE_ASSAULT_SLIDER")
+  elseif option == OID_DEFAULT_REJ_FEMALE_ASSAULT
+    SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_FEMALE_ASSAULT_SLIDER")
+  elseif option == OID_DEFAULT_REJ_MALE_SLAVERY
+    SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_MALE_SLAVERY_SLIDER")
+  elseif option == OID_DEFAULT_REJ_FEMALE_SLAVERY
+    SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_FEMALE_SLAVERY_SLIDER")
+  elseif option == OID_DEFAULT_REJ_THEFT_ONLYGOLD
+    SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_THEFT_ONLYGOLD")
+  elseif option == OID_CRUEL_GUARDS_APPROACH
+    SetInfoText("$MRT_SP_DESC_CRUEL_GUARDS_APPROACH")
+  elseif option == OID_GUARDS_MAY_APPROACH
+    SetInfoText("$MRT_SP_DESC_GUARDS_MAY_APPROACH")
+  
+  elseif option == OID_DEVIOUS_VAG_PRC
+    SetInfoText("$MRT_SP_DESC_DEVIOUS_VAG_PRC")
+  elseif option == OID_DEVIOUS_NIP_PRC
+    SetInfoText("$MRT_SP_DESC_DEVIOUS_NIP_PRC")
+  elseif option == OID_DEVIOUS_VAG_PLUG
+    SetInfoText("$MRT_SP_DESC_DEVIOUS_VAG_PLUG")
+  elseif option == OID_DEVIOUS_ANL_PLUG
+    SetInfoText("$MRT_SP_DESC_EVIOUS_ANL_PLUG")
+  elseif option == OID_DEVIOUS_ARM_CUF
+    SetInfoText("$MRT_SP_DESC_DEVIOUS_ARM_CUF")
+  elseif option == OID_DEVIOUS_LEG_CUF
+    SetInfoText("$MRT_SP_DESC_DEVIOUS_LEG_CUF")
+  elseif option == OID_DEVIOUS_COLLAR
+    SetInfoText("$MRT_SP_DESC_DEVIOUS_COLLAR")
+  elseif option == OID_DEVIOUS_GLOVES
+    SetInfoText("$MRT_SP_DESC_DEVIOUS_GLOVES")
+  elseif option == OID_DEVIOUS_BOOTS
+    SetInfoText("$MRT_SP_DESC_DEVIOUS_BOOTS")
+  elseif option == OID_DEVIOUS_CORSET
+    SetInfoText("$MRT_SP_DESC_DEVIOUS_CORSET")
+  elseif option == OID_DEVIOUS_HARNESS
+    SetInfoText("$MRT_SP_DESC_DEVIOUS_HARNESS")
+  elseif option == OID_DEVIOUS_GAG_RING
+    SetInfoText("$MRT_SP_DESC_DEVIOUS_GAG_RING")
+  elseif option == OID_DEVIOUS_GAG_ALL
+    SetInfoText("$MRT_SP_DESC_DEVIOUS_GAG_ALL")
+  elseif option == OID_DEVIOUS_BELT_OPEN
+    SetInfoText("$MRT_SP_DESC_DEVIOUS_BELT_OPEN")
+  elseif option == OID_DEVIOUS_BELT_CLOSE
+    SetInfoText("$MRT_SP_DESC_DEVIOUS_BELT_CLOSE")
+  elseif option == OID_DEVIOUS_BRA
+    SetInfoText("$MRT_SP_DESC_DEVIOUS_BRA")
+  elseif option == OID_DEVIOUS_HOOD
+    SetInfoText("$MRT_SP_DESC_DEVIOUS_HOOD")
+  elseif option == OID_DEVIOUS_BLINDFOLD
+    SetInfoText("$MRT_SP_DESC_DEVIOUS_BLINDFOLD")
+  elseif option == OID_DEVIOUS_HEAVY_RESTRAINT
+    SetInfoText("$MRT_SP_DESC_DEVIOUS_HEAVY_RESTRAINT")
+  elseif option == OID_DEVIOUS_SUIT
+    SetInfoText("$MRT_SP_DESC_DEVIOUS_SUIT")
+  elseif option == OID_BEG_ELDER_SEX_OFFER
+    SetInfoText("$MRT_SP_DESC_BEG_ELDER_SEX_OFFER")
+  elseif option == OID_ELDER_MAY_APPROACH
+    SetInfoText("$MRT_SP_DESC_ELDER_MAY_APPROACH")
+  elseif option == OID_BEG_REJ_ENTRAPMENT_LVL_M
+    SetInfoText("$MRT_SP_DESC_BEG_REJ_ENTRAPMENT_LVL_M")
+  elseif option == OID_WHORE_REJ_ENTRAPMENT_LVL_M
+    SetInfoText("$MRT_SP_DESC_WHORE_REJ_ENTRAPMENT_LVL_M")
+  elseif option == OID_DIBEL_REJ_ENTRAPMENT_LVL_M
+    SetInfoText("$MRT_SP_DESC_DIBEL_REJ_ENTRAPMENT_LVL_M")
+  elseif option == OID_DEFAULT_REJ_ENTRAPMENT_LVL_M
+    SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_ENTRAPMENT_LVL_M")
+  elseif option == OID_BEG_ENTRAPMENT_LVL_M
+    SetInfoText("$MRT_SP_DESC_BEG_ENTRAPMENT_LVL_M")
+  elseif option == OID_WHORE_ENTRAPMENT_LVL_M
+    SetInfoText("$MRT_SP_DESC_WHORE_ENTRAPMENT_LVL_M")
+  elseif option == OID_DIBEL_ENTRAPMENT_LVL_M
+    SetInfoText("$MRT_SP_DESC_DIBEL_ENTRAPMENT_LVL_M")
+  elseif option == OID_WHORE_DD_CHANCE
+    SetInfoText("$MRT_SP_DESC_WHORE_DD_CHANCE")
+  elseif option == OID_DIBEL_DD_CHANCE
+    SetInfoText("$MRT_SP_DESC_DIBEL_DD_CHANCE")
+  elseif option == OID_BEG_DD_CHANCE
+    SetInfoText("$MRT_SP_DESC_BEG_DD_CHANCE")
+  elseif option == OID_BEG_REJ_FEMALE_DD
+    SetInfoText("$MRT_SP_DESC_BEG_REJ_FEMALE_DD")
+  elseif option == OID_BEG_REJ_MALE_DD
+    SetInfoText("$MRT_SP_DESC_BEG_REJ_MALE_DD")
+  elseif option == OID_WHORE_REJ_FEMALE_DD
+    SetInfoText("$MRT_SP_DESC_WHORE_REJ_FEMALE_DD")
+  elseif option == OID_WHORE_REJ_MALE_DD
+    SetInfoText("$MRT_SP_DESC_WHORE_REJ_MALE_DD")
+  elseif option == OID_DIBEL_REJ_FEMALE_DD
+    SetInfoText("$MRT_SP_DESC_DIBEL_REJ_FEMALE_DD")
+  elseif option == OID_DIBEL_REJ_MALE_DD
+    SetInfoText("$MRT_SP_DESC_DIBEL_REJ_MALE_DD")
+  elseif option == OID_DEFAULT_REJ_FEMALE_DD
+    SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_FEMALE_DD")
+  elseif option == OID_DEFAULT_REJ_MALE_DD
+    SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_MALE_DD")
+	endif
 endevent
 
 event OnOptionSliderAccept(int option, float value)
@@ -5086,7 +5252,6 @@ Int OID_DEFAULT_REJ_ENTRAPMENT_LVL_M
 Int OID_BEG_ENTRAPMENT_LVL_M
 Int OID_WHORE_ENTRAPMENT_LVL_M
 Int OID_DIBEL_ENTRAPMENT_LVL_M
-Int OID_DEFAULT_ENTRAPMENT_LVL_M
 
 Int OID_WHORE_DD_CHANCE
 Int OID_DIBEL_DD_CHANCE

@@ -142,9 +142,37 @@ Bool Function _LockRandomDeviceOnActor(Quest zdxQuest, Actor akActor, Int iLevel
 	if DX.libs.GetWornDeviceFuzzyMatch(akActor, Dev_kw) == None
 		DX.libs.LockDevice(akActor, dev, false)
 		utility.wait(0.2)
+		if dev.GetName()
+			Debug.Notification("Simple Prostitution: " + dev.GetName() + " equipped.")
+			Debug.Trace("Simple Prostitution: " + dev.GetName() + " equipped.")
+		endif
 		return true
 	endif
 	return false
+EndFunction
+
+Bool Function _IsPlugged(Quest zdxQuest, Actor akActor) Global
+	zadDeviceLists DX = zdxQuest as zadDeviceLists
+	if !akActor || !DX
+		return False
+	endif
+	return (akActor.WornHasKeyword(DX.libs.zad_DeviousPlug))
+EndFunction
+
+Bool Function _IsVaginallyPlugged(Quest zdxQuest, Actor akActor) Global
+	zadDeviceLists DX = zdxQuest as zadDeviceLists
+	if !akActor || !DX
+		return False
+	endif
+	return (akActor.WornHasKeyword(DX.libs.zad_DeviousPlugVaginal))
+EndFunction
+
+Bool Function _IsAnallyPlugged(Quest zdxQuest, Actor akActor) Global
+	zadDeviceLists DX = zdxQuest as zadDeviceLists
+	if !akActor || !DX
+		return False
+	endif
+	return (akActor.WornHasKeyword(DX.libs.zad_DeviousPlugAnal))
 EndFunction
 
 Bool Function _IsBounded(Quest zdxQuest, Actor akActor) Global
@@ -244,4 +272,21 @@ Function _InflateRandomPlug(Quest zdxQuest, Actor akActor) Global
 	elseif utility.randomint(0,1) && akActor.WornHasKeyword(DX.libs.zad_kw_InflatablePlugVaginal)
 		DX.libs.InflateVaginalPlug(akActor)			
 	endif
+EndFunction
+
+Function _MoanAndPlayHornyAnimation(Quest zdxQuest, Actor akActor) Global
+	zadDeviceLists DX = zdxQuest as zadDeviceLists
+	if !akActor || !DX
+		return
+	endif
+  If DX.libs.IsAnimating(akActor)
+		return
+	EndIf	
+	; don't play the animation in combat if it's the player
+	actor player = Game.GetPlayer()
+	if (akActor == player) && player.IsInCombat()
+		return 
+	Endif	
+	DX.libs.SexlabMoan(akActor)	
+	DX.libs.PlayHornyAnimation(akActor)	
 EndFunction
