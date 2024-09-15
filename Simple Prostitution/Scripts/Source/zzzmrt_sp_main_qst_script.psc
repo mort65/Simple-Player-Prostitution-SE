@@ -1170,7 +1170,6 @@ Function rejectCusomer(Actor akCustomer)
 			if !isSnitchOK(angryDibelCustomer)
 				angryDibelCustomer = akCustomer
 				if (randInt(0, 999) < iRejectDeviceChance)
-					debug.trace("entrapPlayer from bRejectDibel")
 					entrapPlayer(akCustomer)
 				endif
 			endif
@@ -1178,7 +1177,6 @@ Function rejectCusomer(Actor akCustomer)
 			if !isSnitchOK(angryWhoreCustomer)
 				angryWhoreCustomer = akCustomer
 				if (randInt(0, 999) < iRejectDeviceChance)
-					debug.trace("entrapPlayer from bRejectWhore")
 					entrapPlayer(akCustomer)
 				endif
 			endif
@@ -1212,7 +1210,6 @@ Function rejectCusomer(Actor akCustomer)
 		Utility.wait(0.5)
 		rapePlayer(akCustomer)
 	elseif iWhatToDo == 8
-		debug.trace("entrapPlayer from iWhatToDo 8")
 		entrapPlayer(akCustomer)
 	endif
 	bIsBusy = false
@@ -1528,7 +1525,6 @@ Bool Function stealFromPlayer(Actor Thief)
 		endif
 	EndIf
 	if  (randInt(0, 999) < iRejectDeviceChance) || (!bRobbed && (iRejectDeviceChance > 0))
-		debug.trace("entrapPlayer from bRobbed")
 		entrapPlayer(Thief)
 	endif
 	return bRobbed
@@ -1581,8 +1577,6 @@ Function entrapPlayer(Actor akEntrapper)
 	endif
 	Bool vagPlugged = DDX_Interface.isVaginallyPlugged(player)
 	Bool anlPlugged = DDX_Interface.isAnallyPlugged(player)
-	debug.trace("was Anal Plugged: "+ anlPlugged)
-	debug.trace("was Vaginal Plugged: "+ vagPlugged)
 	float fTimeStart = Utility.GetCurrentRealTime()
 	Bool bResult = DDX_Interface.lockRandomDeviceOnActor(player, iEntrapmentLevel, iDeviceChanceArr, iDeviousDeviceSet - 1)
 	float fTimeEnd = Utility.GetCurrentRealTime()
@@ -1602,7 +1596,6 @@ Function entrapPlayer(Actor akEntrapper)
 	endif
 	if bResult
 		if (!vagPlugged && DDX_Interface.isVaginallyPlugged(player)) || (!anlPlugged && DDX_Interface.isAnallyPlugged(player))
-			debug.trace("Plugged.")
 			DDX_Interface.MoanAndPlayHornyAnimation(player)
 		endif
 	else
@@ -2681,7 +2674,6 @@ State Dibeling
 			if dibelCustomerlist.GetSize() == 0
 				if randInt(0, 999) < (fDibelDeviceChance * 10) as Int
 					iEntrapmentLevel = iDibelEntrapmentLevel
-					debug.trace("entrapPlayer from Dibeling on_spp_sexlab_Sex_End")
 					entrapPlayer(player)
 				endif
 				GoToState("")
@@ -2697,7 +2689,6 @@ State Dibeling
 		if dibelCustomerlist.GetSize() == 0
 			if randInt(0, 999) < (fDibelDeviceChance * 10) as Int
 				iEntrapmentLevel = iDibelEntrapmentLevel
-				debug.trace("entrapPlayer from Dibeling on_spp_ostim_Sex_End")
 				entrapPlayer(player)
 			endif
 			GoToState("")
@@ -2712,7 +2703,6 @@ State Dibeling
 		if dibelCustomerlist.GetSize() == 0
 			if randInt(0, 999) < (fDibelDeviceChance * 10) as Int
 				iEntrapmentLevel = iDibelEntrapmentLevel
-				debug.trace("entrapPlayer from Dibeling onUpdate")
 				entrapPlayer(player)
 			endif
 			GoToState("")
@@ -2802,7 +2792,6 @@ State Whoring
 			if whoreCustomerlist.GetSize() == 0
 				if randInt(0, 999) < (fWhoreDeviceChance * 10) as Int
 					iEntrapmentLevel = iWhoreEntrapmentLevel
-					debug.trace("entrapPlayer from Whoring on_spp_sexlab_Sex_End")
 					entrapPlayer(player)
 				endif
 				GoToState("")
@@ -2818,7 +2807,6 @@ State Whoring
 		if whoreCustomerlist.GetSize() == 0
 			if randInt(0, 999) < (fWhoreDeviceChance * 10) as Int
 				iEntrapmentLevel = iWhoreEntrapmentLevel
-				debug.trace("entrapPlayer from Whoring on_spp_ostim_Sex_End")
 				entrapPlayer(player)
 			endif
 			GoToState("")
@@ -2833,7 +2821,6 @@ State Whoring
 		if whoreCustomerlist.GetSize() == 0
 			if randInt(0, 999) < (fWhoreDeviceChance * 10) as Int
 				iEntrapmentLevel = iWhoreEntrapmentLevel
-				debug.trace("entrapPlayer from Whoring onUpdate")
 				entrapPlayer(player)
 			endif
 			GoToState("")

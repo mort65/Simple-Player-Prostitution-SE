@@ -70,17 +70,13 @@ int function haveSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor partner, 
 				endif
 			endif
 		endif
-    endwhile
-    string myAnim = ""
-    if anim2
-    	if anim && Utility.randomInt(0,1)
-    		myAnim = anim
-    	else
-    		myAnim = anim2
-    	endif
-    else
-    	myAnim = anim
-    endif
+  endwhile
+	string myAnim = ""
+	if anim2
+			myAnim = anim2
+	else
+		myAnim = anim
+	endif
 	if myAnim && (OThread.QuickStart(actors, StartingAnimation = myAnim) > -1)
 		return Position
 	else

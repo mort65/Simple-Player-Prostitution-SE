@@ -3065,6 +3065,7 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
   MainScript.iWhoreEntrapmentLevel = jsonutil.GetPathIntValue(settings_path, "iWhoreEntrapmentLevel", MainScript.iWhoreEntrapmentLevel)
   MainScript.iDibelEntrapmentLevel = jsonutil.GetPathIntValue(settings_path, "iDibelEntrapmentLevel", MainScript.iDibelEntrapmentLevel)
   MainScript.iBeggarEntrapmentLevel = jsonutil.GetPathIntValue(settings_path, "iBeggarEntrapmentLevel", MainScript.iBeggarEntrapmentLevel)
+	MainScript.iDeviousDeviceSet = jsonutil.GetPathIntValue(settings_path, "iDeviousDeviceSet", MainScript.iDeviousDeviceSet)
 
   MainScript.fWhoreOwnerShare = jsonutil.GetPathFloatValue(settings_path, "fWhoreOwnerShare", MainScript.fWhoreOwnerShare)
   MainScript.fBegPayMin = jsonutil.GetPathFloatValue(settings_path, "fBegPayMin", MainScript.fBegPayMin)
@@ -3302,7 +3303,8 @@ Bool function saveUserSettingsPapyrus()
   jsonutil.SetPathIntValue(settings_path, "iWhoreEntrapmentLevel", MainScript.iWhoreEntrapmentLevel)
   jsonutil.SetPathIntValue(settings_path, "iDibelEntrapmentLevel", MainScript.iDibelEntrapmentLevel)
   jsonutil.SetPathIntValue(settings_path, "iBeggarEntrapmentLevel", MainScript.iBeggarEntrapmentLevel)
-
+	Jsonutil.SetPathIntValue(settings_path, "iDeviousDeviceSet", MainScript.iDeviousDeviceSet)
+	
   jsonutil.SetPathFloatValue(settings_path, "fWhoreOwnerShare", MainScript.fWhoreOwnerShare)
   jsonutil.SetPathFloatValue(settings_path, "fBegPayMin", MainScript.fBegPayMin)
   jsonutil.SetPathFloatValue(settings_path, "fBegPayMax", MainScript.fBegPayMax)

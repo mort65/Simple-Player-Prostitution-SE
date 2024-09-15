@@ -11,7 +11,6 @@ Bool Function _LockRandomDeviceOnActor(Quest zdxQuest, Actor akActor, Int iLevel
 	if !akActor || !DX
 		return False
 	endif
-	Debug.trace("iLevel: "+ iLevel)
 
 	Bool isFemale = (akActor.GetLeveledActorBase().GetSex() == 1)
 	
@@ -57,7 +56,6 @@ Bool Function _LockRandomDeviceOnActor(Quest zdxQuest, Actor akActor, Int iLevel
 		;devices[19] = DX.zad_dev_All
 	endif
 
-	Debug.trace("devices: " + devs)
 	Int[] deviceChances = new Int[20]
 
 	deviceChances[0]  = (!(DX.libs.GetWornDeviceFuzzyMatch(akActor, DX.libs.zad_DeviousPiercingsNipple) As Bool) && !akActor.WornHasKeyword(DX.libs.zad_DeviousPiercingsNipple)) as Int
@@ -106,12 +104,10 @@ Bool Function _LockRandomDeviceOnActor(Quest zdxQuest, Actor akActor, Int iLevel
 		endWhile
 	endif
 
-	Debug.trace("deviceChances: " + deviceChances)
 	int iResult
 
 	iResult = weightedRandInt(deviceChances)
 
-	Debug.trace("iResult: " + iResult)
 	if (iResult < 0) || iResult > (devs.Length - 1)
 		return False
 	endif
@@ -126,14 +122,10 @@ Bool Function _LockRandomDeviceOnActor(Quest zdxQuest, Actor akActor, Int iLevel
 		return False
 	endif
 	keyWord Dev_kw = DX.libs.GetDeviceKeyword(dev)
-
-	Debug.trace("Device: " + dev)
-	Debug.trace("Device Name: " + dev.GetName())
 	
 	if akActor.WornHasKeyword(DX.libs.zad_Lockable)
 		Armor rn_Dev = DX.libs.GetRenderedDevice(dev)
 		if _deviceHaveKeywordConflict(zdxQuest, akActor, rn_Dev)
-			Debug.trace("Device has keyword conflict: "+ rn_Dev)
 			int i = 0
 			if Dev_LVLI as LeveledItem
 				while (i < 5) && _deviceHaveKeywordConflict(zdxQuest, akActor, rn_Dev)
@@ -144,24 +136,19 @@ Bool Function _LockRandomDeviceOnActor(Quest zdxQuest, Actor akActor, Int iLevel
 				endwhile
 			endif
 			if _deviceHaveKeywordConflict(zdxQuest, akActor, rn_Dev)
-				Debug.trace("Could not find devious armor with selected keyword without keyword conflict.")
+				Debug.trace("Simple Prostitution: Could not find devious Device without keyword conflict. keyword = " + Dev_kw)
 				return _TightenRandomDevice(zdxQuest, akActor, devs)
 			endif
 		endif
-		Debug.trace("Device rendered: " + rn_Dev)
-		debug.trace("rendered device keywords: "+ rn_Dev.getkeywords())
 		Int rn_SlotMask = rn_Dev.GetSlotMask()
-		Debug.trace("Device rendered: rSlotMask: " + rn_SlotMask)
 		int thisSlot = 0x01
 		int slotsChecked = 0xc1423f72 ;sum of slots without any DD item
 		while (thisSlot < 0x80000000)
 			if (Math.LogicalAnd(slotsChecked, thisSlot) != thisSlot) ;only check devious slots
 				Armor thisArmor = akActor.GetWornForm(thisSlot) as Armor
 				if (thisArmor)
-					debug.trace("thisArmor: "+ thisArmor)
-					;debug.trace("thisArmor keywords: "+ (thisArmor as form).getkeywords())
 					if thisArmor.hasKeyword(DX.libs.zad_Lockable) && (Math.LogicalAnd(rn_SlotMask, thisSlot) == thisSlot)
-						Debug.trace("Device has conflict in slot: "+ thisSlot)
+						Debug.trace("Simple Prostitution: Device has conflict with equipped DD items in slot: "+ thisSlot)
 						return _TightenRandomDevice(zdxQuest, akActor, devs)
 					endif
 				else ;no armor was found on this slot

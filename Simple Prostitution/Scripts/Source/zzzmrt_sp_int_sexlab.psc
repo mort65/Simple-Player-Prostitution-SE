@@ -108,11 +108,7 @@ int function haveSexWithPlayerSL(Quest SexLabQuestFramework, Actor Partner, Int 
     endif
     myAnims = anims
   else
-    if anims.Length == 0
       myAnims = anims2
-    else
-      myAnims = SexLab.MergeAnimationLists(anims,anims2)
-    endif
   endif
   sexActors = SexLab.SortActors(sexActors, true)
 
