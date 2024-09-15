@@ -215,6 +215,20 @@ Bool function isFormValid(Form akForm) Global
   return akForm && (akForm != None) && (akForm.getFormID() != 0)
 endfunction
 
+Bool function isFormArrayHasInvalid(Form[] akFormArr) Global
+  {checks if the form array has empty or unusable item.}
+	int i = akFormArr.length
+	form item
+	while i > 0
+		i -= 1
+		item = akFormArr[i]
+		if (!item || (item == None) || (item.getFormID() == 0))
+			return true
+		endif
+	endWhile
+  return False
+endfunction
+
 Bool function isPluginFound(string pluginName) Global
   {Checks if the plugin installed. Works for LE and SE}
   if SKSE.GetVersion() < 2

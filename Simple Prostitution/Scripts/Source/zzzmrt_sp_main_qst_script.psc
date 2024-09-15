@@ -404,6 +404,8 @@ Int Property iWhoreRejectEntrapmentLevel = 1 Auto Hidden Conditional
 Int Property iDibelRejectEntrapmentLevel = 1 Auto Hidden Conditional
 Int Property iDefaultRejectEntrapmentLevel = 1 Auto Hidden Conditional
 
+Int Property iDeviousDeviceSet = 0 Auto Hidden Conditional
+
 Int Property iBeggarEntrapmentLevel = 0 Auto Hidden Conditional
 Int Property iWhoreEntrapmentLevel = 0 Auto Hidden Conditional
 Int Property iDibelEntrapmentLevel = 0 Auto Hidden Conditional
@@ -1544,7 +1546,12 @@ Function entrapPlayer(Actor akEntrapper)
 	if !bIsDDExpansionActive || !bIsDDIntegrationActive
 		return
 	elseif akEntrapper && (akEntrapper != player)
-		actor dialogueTarget = getPlayerDialogueTarget(player)
+		actor dialogueTarget
+		if bIsPyramidUtilsOK
+			dialogueTarget = PyramidUtils.GetPlayerSpeechTarget()
+		else
+			dialogueTarget = getPlayerDialogueTarget(player)
+		endif
 		if (dialogueTarget && (dialogueTarget != akEntrapper))
 			return
 		endif
@@ -1577,7 +1584,7 @@ Function entrapPlayer(Actor akEntrapper)
 	debug.trace("was Anal Plugged: "+ anlPlugged)
 	debug.trace("was Vaginal Plugged: "+ vagPlugged)
 	float fTimeStart = Utility.GetCurrentRealTime()
-	Bool bResult = DDX_Interface.lockRandomDeviceOnActor(player, iEntrapmentLevel, iDeviceChanceArr)
+	Bool bResult = DDX_Interface.lockRandomDeviceOnActor(player, iEntrapmentLevel, iDeviceChanceArr, iDeviousDeviceSet - 1)
 	float fTimeEnd = Utility.GetCurrentRealTime()
 	float fTotalTime = fTimeEnd - fTimeStart
 	Debug.Trace("Simple Prostitution: It took " + fTotalTime + " seconds to add DD device.")

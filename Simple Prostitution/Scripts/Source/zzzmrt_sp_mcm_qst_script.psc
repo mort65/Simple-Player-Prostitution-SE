@@ -365,6 +365,8 @@ event OnPageReset(String page)
       flag = OPTION_FLAG_DISABLED
     endif
     DD_Options(flag)
+		SetCursorPosition(1)
+		OID_DD_Set_M = AddMenuOption("$MRT_SP_DD_Set_M", sGetDDSets()[MainScript.iDeviousDeviceSet], flag)
   elseif (page == "$MRT_SP_PAGE_STD")
     SetTitleText("$MRT_SP_PAGE_STD")
     _AddHeaderOption("$MRT_SP_HEAD_STD")
@@ -4134,6 +4136,8 @@ event OnOptionHighlight(int option)
     SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_ENTRAPMENT_LVL_M")
   elseif option == OID_BEG_ENTRAPMENT_LVL_M
     SetInfoText("$MRT_SP_DESC_BEG_ENTRAPMENT_LVL_M")
+	elseif option == OID_DD_Set_M
+    SetInfoText("$MRT_SP_DESC_DD_Set_M")
   elseif option == OID_WHORE_ENTRAPMENT_LVL_M
     SetInfoText("$MRT_SP_DESC_WHORE_ENTRAPMENT_LVL_M")
   elseif option == OID_DIBEL_ENTRAPMENT_LVL_M
@@ -4912,6 +4916,10 @@ event OnOptionMenuOpen(Int option)
     SetMenuDialogoptions(sGetEntrapmentLevels())
     SetMenuDialogStartIndex(MainScript.iBeggarEntrapmentLevel)
     SetMenuDialogDefaultIndex(0)
+  elseif (option == OID_DD_Set_M)
+    SetMenuDialogoptions(sGetDDSets())
+    SetMenuDialogStartIndex(MainScript.iDeviousDeviceSet)
+    SetMenuDialogDefaultIndex(0)
   endIf
 endevent
 
@@ -4937,6 +4945,9 @@ event OnOptionMenuAccept(Int option, Int index)
   elseif (option == OID_BEG_ENTRAPMENT_LVL_M)
     MainScript.iBeggarEntrapmentLevel = index
     SetMenuOptionValue(OID_BEG_ENTRAPMENT_LVL_M, sGetEntrapmentLevels()[MainScript.iBeggarEntrapmentLevel])
+  elseif (option == OID_DD_Set_M)
+    MainScript.iDeviousDeviceSet = index
+    SetMenuOptionValue(OID_DD_Set_M, sGetDDSets()[MainScript.iDeviousDeviceSet])
   endif
   ;ForcePageReset()
 endevent
@@ -5143,6 +5154,18 @@ String[] function sGetEntrapmentLevels()
   return sEntrapmentLevels
 endfunction
 
+string[] function sGetDDSets()
+	String[] sDDsets = new string[7]
+	sDDsets[0] = "$DD_Set_None"
+	sDDsets[1] = "$DD_Set_Black_Leather"
+	sDDsets[2] = "$DD_Set_White_Leather"
+	sDDsets[3] = "$DD_Set_Red_Leather"
+	sDDsets[4] = "$DD_Set_Black_Ebonite"
+	sDDsets[5] = "$DD_Set_White_Ebonite"
+	sDDsets[6] = "$DD_Set_Red_Ebonite"
+	return sDDsets
+endfunction
+
 Int OID_BEG_GUARDS_SEX_OFFER
 Int OID_GUARDS_MAY_APPROACH
 Int OID_CRUEL_GUARDS_APPROACH
@@ -5265,3 +5288,5 @@ Int OID_DIBEL_REJ_FEMALE_DD
 Int OID_DIBEL_REJ_MALE_DD
 Int OID_DEFAULT_REJ_FEMALE_DD
 Int OID_DEFAULT_REJ_MALE_DD
+
+Int OID_DD_Set_M

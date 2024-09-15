@@ -2,6 +2,8 @@ Scriptname zzzmrt_sp_player_qst_script extends ReferenceAlias
 
 zzzmrt_sp_main_qst_script property MainScript auto
 
+import zzzmrt_sp_utility
+
 Bool bCheckVars = False
 Bool bInit = False
 
@@ -111,19 +113,6 @@ function setVars()
   MainScript.bIsDDIntegrationActive = MainScript.DDI_Interface.GetIsInterfaceActive()
   MainScript.bIsDDExpansionActive = MainScript.DDX_Interface.GetIsInterfaceActive()
   MainScript.ApproachMonitorScr.PlayerLoadsGame()
-
-  ;formlist ddx_blackleather = Game.GetFormFromFile(0x800, "formlist_ddx.esp") as formlist
-  ;Debug.trace("ddx_blackleather: "+ ddx_blackleather)
-  ;if ddx_blackleather
-  ;  int i = 0
-  ;  while i < ddx_blackleather.getSize()
-  ;    armor dev = ddx_blackleather.getAt(i) as Armor
-  ;    debug.trace("dev armor: "+ dev)
-  ;    MainScript.DDX_Interface.lockDeviousDevice(Mainscript.player, dev, false)
-  ;    Utility.wait(0.5)
-  ;    i += 1
-  ;  endWhile
-  ;endif
 endfunction
 
 

@@ -2,7 +2,7 @@ Scriptname zzzmrt_sp_int_ddx Hidden
 
 import zzzmrt_sp_utility
 
-Bool Function _LockRandomDeviceOnActor(Quest zdxQuest, Actor akActor, Int iLevel = 0, Int[] weightedChanceArray) Global
+Bool Function _LockRandomDeviceOnActor(Quest zdxQuest, Actor akActor, Int iLevel = 0, Int[] weightedChanceArray, LeveledItem corsets_regular, Form[] devArray = None) Global
 	;iLevel 3 = Everything Allowed
 	;iLevel 2 = No Heavy restraint, Blindfold, Hood and Suit
 	;iLevel 1 = No Heavy restraint, Blindfold, Hood, Suit, closed belt, bra and gag other than ringed gaged
@@ -15,30 +15,49 @@ Bool Function _LockRandomDeviceOnActor(Quest zdxQuest, Actor akActor, Int iLevel
 
 	Bool isFemale = (akActor.GetLeveledActorBase().GetSex() == 1)
 	
-	LeveledItem[] devices = new LeveledItem[20]
-	devices[00] = DX.zad_dev_piercings_nipple
-	devices[01] = DX.zad_dev_piercings_vaginal
-	devices[02] = DX.zad_dev_plugs_anal
-	devices[03] = DX.zad_dev_plugs_vaginal
-	devices[04] = DX.zad_dev_armcuffs
-	devices[05] = DX.zad_dev_legcuffs
-	devices[06] = DX.zad_dev_collars
-	devices[07] = DX.zad_dev_gloves
-	devices[08] = DX.zad_dev_boots
-	devices[09] = DX.zad_dev_corsets
-	devices[10] = DX.zad_dev_harnesses
-	devices[11] = DX.zad_dev_gags_ring
-	devices[12] = DX.zad_dev_chastitybelts_open
-	devices[13] = DX.zad_dev_chastitybelts_closed
-	devices[14] = DX.zad_dev_chastitybras
-	devices[15] = DX.zad_dev_gags
-	devices[16] = DX.zad_dev_hoods
-	devices[17] = DX.zad_dev_blindfolds
-	devices[18] = DX.zad_dev_heavyrestraints
-	devices[19] = DX.zad_dev_suits
-	;devices[19] = DX.zad_dev_All
+	Form[] devs = new Form[20]
+	devs[00] = DX.zad_dev_piercings_nipple
+	devs[01] = DX.zad_dev_piercings_vaginal
+	devs[02] = DX.zad_dev_plugs_anal
+	devs[03] = DX.zad_dev_plugs_vaginal
+	if devArray && devArray.length == 16
+		devs[04] = devArray[00]
+		devs[05] = devArray[01]
+		devs[06] = devArray[02]
+		devs[07] = devArray[03]
+		devs[08] = devArray[04]
+		devs[09] = devArray[05]
+		devs[10] = devArray[06]
+		devs[11] = devArray[07]
+		devs[12] = devArray[08]
+		devs[13] = devArray[09]
+		devs[14] = devArray[10]
+		devs[15] = devArray[11]
+		devs[16] = devArray[12]
+		devs[17] = devArray[13]
+		devs[18] = devArray[14]
+		devs[19] = devArray[15]
+	else
+		devs[04] = DX.zad_dev_armcuffs
+		devs[05] = DX.zad_dev_legcuffs
+		devs[06] = DX.zad_dev_collars
+		devs[07] = DX.zad_dev_gloves
+		devs[08] = DX.zad_dev_boots
+		devs[09] = DX.zad_dev_corsets
+		devs[10] = DX.zad_dev_harnesses
+		devs[11] = DX.zad_dev_gags_ring
+		devs[12] = DX.zad_dev_chastitybelts_open
+		devs[13] = DX.zad_dev_chastitybelts_closed
+		devs[14] = DX.zad_dev_chastitybras
+		devs[15] = DX.zad_dev_gags
+		devs[16] = DX.zad_dev_hoods
+		devs[17] = DX.zad_dev_blindfolds
+		devs[18] = DX.zad_dev_heavyrestraints
+		devs[19] = DX.zad_dev_suits
+		;devices[19] = DX.zad_dev_All
+	endif
 
-	Debug.trace("devices: " + devices)
+	Debug.trace("devices: " + devs)
 	Int[] deviceChances = new Int[20]
 
 	deviceChances[0]  = (!(DX.libs.GetWornDeviceFuzzyMatch(akActor, DX.libs.zad_DeviousPiercingsNipple) As Bool) && !akActor.WornHasKeyword(DX.libs.zad_DeviousPiercingsNipple)) as Int
@@ -63,11 +82,15 @@ Bool Function _LockRandomDeviceOnActor(Quest zdxQuest, Actor akActor, Int iLevel
 	deviceChances[18] = ((iLevel > 2) && !(DX.libs.GetWornDeviceFuzzyMatch(akActor, DX.libs.zad_DeviousArmbinder) As Bool) && !akActor.WornHasKeyword(DX.libs.zad_DeviousArmbinder)) As Int
 	deviceChances[19] = ((iLevel > 2) && !(DX.libs.GetWornDeviceFuzzyMatch(akActor, DX.libs.zad_DeviousStraitJacket) As Bool) && !akActor.WornHasKeyword(DX.libs.zad_DeviousStraitJacket)) As Int
 	deviceChances[19] = (deviceChances[19] && !(DX.libs.GetWornDeviceFuzzyMatch(akActor, DX.libs.zad_DeviousSuit) As Bool) && !akActor.WornHasKeyword(DX.libs.zad_DeviousSuit)) As Int
+	
+	if ((deviceChances[12] == 0) || (deviceChances[13] == 0)) && (devs[9] as LeveledItem) ; chastity corset not allowed
+		devs[9] = corsets_regular
+	endif
 
 	int iEmpty = deviceChances.Find(1)
 
 	if iEmpty < 0
-		return _TightenRandomDevice(zdxQuest, akActor, Devices)
+		return _TightenRandomDevice(zdxQuest, akActor, devs)
 	endif
 
 	if weightedChanceArray
@@ -89,11 +112,19 @@ Bool Function _LockRandomDeviceOnActor(Quest zdxQuest, Actor akActor, Int iLevel
 	iResult = weightedRandInt(deviceChances)
 
 	Debug.trace("iResult: " + iResult)
-	if (iResult < 0) || iResult > (devices.Length - 1)
+	if (iResult < 0) || iResult > (devs.Length - 1)
 		return False
 	endif
-	LeveledItem Dev_LVLI = devices[iResult]
-	Armor dev = DX.GetRandomDevice(Dev_LVLI)
+	Armor dev
+	LeveledItem Dev_LVLI
+	if devs[iResult] as Armor
+		dev = devs[iResult] as Armor
+	elseif devs[iResult] as LeveledItem
+		Dev_LVLI = devs[iResult] as LeveledItem
+		dev = DX.GetRandomDevice(Dev_LVLI)
+	else
+		return False
+	endif
 	keyWord Dev_kw = DX.libs.GetDeviceKeyword(dev)
 
 	Debug.trace("Device: " + dev)
@@ -104,15 +135,17 @@ Bool Function _LockRandomDeviceOnActor(Quest zdxQuest, Actor akActor, Int iLevel
 		if _deviceHaveKeywordConflict(zdxQuest, akActor, rn_Dev)
 			Debug.trace("Device has keyword conflict: "+ rn_Dev)
 			int i = 0
-			while (i < 5) && _deviceHaveKeywordConflict(zdxQuest, akActor, rn_Dev)
-				dev = DX.GetRandomDevice(Dev_LVLI)
-				Dev_kw = DX.libs.GetDeviceKeyword(dev)
-				rn_Dev = DX.libs.GetRenderedDevice(dev)
-				i += 1
-			endwhile
+			if Dev_LVLI as LeveledItem
+				while (i < 5) && _deviceHaveKeywordConflict(zdxQuest, akActor, rn_Dev)
+					dev = DX.GetRandomDevice(Dev_LVLI)
+					Dev_kw = DX.libs.GetDeviceKeyword(dev)
+					rn_Dev = DX.libs.GetRenderedDevice(dev)
+					i += 1
+				endwhile
+			endif
 			if _deviceHaveKeywordConflict(zdxQuest, akActor, rn_Dev)
 				Debug.trace("Could not find devious armor with selected keyword without keyword conflict.")
-				return _TightenRandomDevice(zdxQuest, akActor, Devices)
+				return _TightenRandomDevice(zdxQuest, akActor, devs)
 			endif
 		endif
 		Debug.trace("Device rendered: " + rn_Dev)
@@ -129,7 +162,7 @@ Bool Function _LockRandomDeviceOnActor(Quest zdxQuest, Actor akActor, Int iLevel
 					;debug.trace("thisArmor keywords: "+ (thisArmor as form).getkeywords())
 					if thisArmor.hasKeyword(DX.libs.zad_Lockable) && (Math.LogicalAnd(rn_SlotMask, thisSlot) == thisSlot)
 						Debug.trace("Device has conflict in slot: "+ thisSlot)
-						return _TightenRandomDevice(zdxQuest, akActor, Devices)
+						return _TightenRandomDevice(zdxQuest, akActor, devs)
 					endif
 				else ;no armor was found on this slot
 					slotsChecked += thisSlot
@@ -246,13 +279,20 @@ Function _LockDeviousDevice(Quest zdxQuest, Actor akActor, Armor akDevice, Bool 
 	DX.libs.LockDevice(akActor, akDevice, bForce)
 EndFunction
 
-Bool Function _TightenRandomDevice(Quest zdxQuest, Actor akActor, LeveledItem[] akDevices) Global
+Bool Function _TightenRandomDevice(Quest zdxQuest, Actor akActor, Form[] akDevices) Global
 	zadDeviceLists DX = zdxQuest as zadDeviceLists
 	if !akActor || !DX || !akDevices || (akDevices.Length == 0)
 		return false
 	endif
 	int i = utility.randomint(0,akDevices.Length - 1)
-	Armor rnd_Dev = DX.GetRandomDevice(akDevices[i])
+	Armor rnd_Dev
+	if akDevices[i] as armor
+		rnd_Dev = akDevices[i] as armor
+	elseif akDevices[i] as LeveledItem
+		rnd_Dev = DX.GetRandomDevice(akDevices[i] as LeveledItem)
+	else 
+		return False
+	endif
 	keyWord rnd_Dev_kw = DX.libs.GetDeviceKeyword(rnd_Dev)
 	Armor equippedDev = DX.libs.GetWornDeviceFuzzyMatch(akActor, rnd_Dev_kw)
 	if (equippedDev != None) && DX.libs.CanTightenDevice(akActor, equippedDev)
