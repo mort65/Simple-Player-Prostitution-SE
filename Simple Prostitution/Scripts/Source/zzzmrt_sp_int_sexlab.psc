@@ -70,6 +70,9 @@ int function haveSexWithPlayerSL(Quest SexLabQuestFramework, Actor Partner, Int 
   Int iExtraTagsIndex = iGetExtraTagsIndex(Position, sGenders)
   if (iExtraTagsIndex > -1) && sExtraTags[iExtraTagsIndex]
     anims2 = SexLab.GetAnimationsByTags(2, sExtraTags[iExtraTagsIndex] + ",", "", RequireAll=bRequireAllTags[iExtraTagsIndex])
+		if anims2.length == 0
+			Debug.trace("Simple Prostitution: [SexLab] couldn't find any animation with these tags: " + sExtraTags[iExtraTagsIndex])
+		endif
   endif
   if Position == 0
     sType = "vaginal"

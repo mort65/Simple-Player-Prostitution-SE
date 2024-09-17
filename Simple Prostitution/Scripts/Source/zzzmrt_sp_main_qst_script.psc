@@ -11,12 +11,14 @@ zzzmrt_sp_ostim_interface property OStimInterface auto
 zzzmrt_sp_licenses_interface property LicensesInterface auto
 zzzmrt_sp_ddi_interface property DDI_Interface auto
 zzzmrt_sp_ddx_interface property DDX_Interface auto
+zzzmrt_sp_slsfr_interface property SLSFR_Interface auto
 Quest Property OStimInterfaceQst Auto
 Quest Property FlowerGirlsInterfaceQst Auto
 Quest Property SexLabInterfaceQst Auto
 Quest Property LicensesInterfaceQst Auto
 Quest Property DDI_Interface_Qst Auto
 Quest Property DDX_Interface_Qst Auto
+Quest Property SLSFR_Interface_Qst Auto
 zzzmrt_sp_mcm_qst_script property MCMScript auto
 zzzmrt_sp_appr_monitor_qst_script property ApproachMonitorScr Auto
 Bool Property bAssaulted = false Auto Hidden Conditional
@@ -82,6 +84,7 @@ Bool Property bWhoreAllowAggressive=True Auto Hidden Conditional
 Bool Property bTryAllInterfaces=True Auto Hidden Conditional
 Bool Property bIsDDIntegrationActive=False Auto Hidden Conditional
 Bool Property bIsDDExpansionActive=False Auto Hidden Conditional
+Bool Property bIs_SLSFR_Active=False Auto Hidden Conditional
 ImageSpaceModifier property blackScreen auto
 Formlist property currentAllowedLocations auto
 Formlist property alwaysAllowedLocations auto
@@ -191,6 +194,7 @@ Float Property fBeggarSexOfferChance = 0.0 Auto Hidden Conditional
 Bool Property bFemaleCustomerApproach = True Auto Hidden Conditional
 Bool Property bMaleCustomerApproach = True Auto Hidden Conditional
 Float Property fCustomerApproachChance = 50.0 Auto Hidden Conditional
+Bool Property bBeggarPlayerIsKnownWhore = False Auto Hidden Conditional
 ReferenceAlias Property entrapperAlias Auto
 
 Package Property entrapperPackage Auto
@@ -283,14 +287,18 @@ Float property fDefaultRejectFemaleDeviceChance = 0.0 Auto Hidden Conditional
 
 Int property iCustomerApproachTimer = 3 Auto Hidden Conditional
 Bool property bDibelCustomerApproach = False Auto Hidden Conditional
-Bool property isDibel = False Auto Hidden Conditional ;for starting customer approach and checking dibel license
-Bool property isWhore = False Auto Hidden Conditional ;for starting customer approach
 Int Property iTotalCustomerPaidGold = 0 Auto Hidden Conditional
 Bool property bRejectAssaultRape = False Auto Hidden Conditional
 Bool property bRejectAssaultTheft = False Auto Hidden Conditional
 Bool property bOnlyInteriorApproach = False Auto Hidden Conditional
 Bool property bOnlyWhoreClothingApproach = False Auto Hidden Conditional
 Bool property bOnlyInteriorBeggarOfferSex = False Auto Hidden Conditional
+Float property fSLSFR_MinApproachRequiredFame = 50.0 Auto hidden Conditional
+Float property fSLSFR_MinBeggarSexOfferRequiredFame = 25.0 Auto hidden Conditional
+Float property fSLSFR_MinGainFame = 1.0 Auto hidden Conditional
+Float property fSLSFR_MaxGainFame = 10.0 Auto hidden Conditional
+Float property fSLSFR_FameGainChance = 100.0 Auto hidden Conditional
+
 FormList Property whoreClothingList Auto
 
 Formlist Property raceList Auto
@@ -435,6 +443,15 @@ Float property fDeviousBlindfoldChance = 50.0 Auto hidden Conditional
 Float property fDeviousHeavyRestraintChance = 50.0 Auto hidden Conditional
 Float property fDeviousSuitsChance = 50.0 Auto hidden Conditional
 
+;Current player status
+GlobalVariable property isWhoring_g Auto
+GlobalVariable property isDibeling_g Auto
+GlobalVariable property isWhore_g Auto
+GlobalVariable property isDibel_g Auto
+
+Bool property isDibel = False Auto Hidden Conditional ;for starting customer approach and checking dibel license
+Bool property isWhore = False Auto Hidden Conditional ;for starting customer approach
+
 function shutDown()
 	stopApproach(true)
 	snitchDetector.stop()
@@ -454,6 +471,8 @@ function shutDown()
 	bIsBusy = False
 	isDibel = false
 	isWhore = false
+	isWhore_g.SetValueInt(0)
+	isDibel_g.SetValueInt(0)
 	GoToState("")
 EndFunction
 
@@ -538,6 +557,7 @@ function AllowProstitution(Actor akOwner)
 			player.AddToFaction(whoreFaction)
 		endif
 		isWhore = true
+		isWhore_g.SetValueInt(1)
 		if (Owner.getActorReference() != None) && (Owner.getActorReference() != akOwner)
 			iCurrentOwnerSeptims = 0
 			currentOwnerSeptimDisplay.SetValueInt(0)
@@ -598,7 +618,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-	return getBaseVersion() + 0.39
+	return getBaseVersion() + 0.40
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
@@ -911,6 +931,7 @@ Function setWhoreCustomer(Actor akActor, Bool bPay = False, Bool bPersuaded = Tr
 		whoreCustomerList.AddForm(akActor)
 		iTotalWhoreCustomers = whoreCustomerList.GetSize()
 	endif
+	SLSFR_Interface.SLSFR_toggle_WhoreFlag(isPlayerDibeling() || isPlayerWhoring())
 EndFunction
 
 Function setDibelCustomer(Actor akActor, bool bPay = true )
@@ -962,6 +983,7 @@ Function setDibelCustomer(Actor akActor, bool bPay = true )
 		dibelCustomerList.AddForm(akActor)
 		iTotalDibelCustomers = dibelCustomerList.GetSize()
 	endif
+	SLSFR_Interface.SLSFR_toggle_WhoreFlag(isPlayerDibeling() || isPlayerWhoring())
 EndFunction
 
 Function setRejectingCustomerResult(Actor akActor, Bool bWhore = False, Bool bDibel = False, Bool bBeggar = False, Bool bApproach = False)
@@ -1714,6 +1736,7 @@ Function clearCustomer()
 	dibelCustomerList.Revert()
 	iTotalWhoreCustomers = 0
 	iTotalDibelCustomers = 0
+	SLSFR_Interface.SLSFR_toggle_WhoreFlag(isPlayerDibeling() || isPlayerWhoring())
 EndFunction
 
 Function clearDibelCustomers()
@@ -1748,6 +1771,7 @@ Function clearDibelCustomers()
 	iPaidGoldDibelCustomer3 = 0
 	iPaidGoldDibelCustomer4 = 0
 	iPaidGoldAllDibelCustomers = 0
+	SLSFR_Interface.SLSFR_toggle_WhoreFlag(isPlayerDibeling() || isPlayerWhoring())
 EndFunction
 
 Function clearWhoreCustomers()
@@ -1782,6 +1806,7 @@ Function clearWhoreCustomers()
 	iPaidGoldCustomer3 = 0
 	iPaidGoldCustomer4 = 0
 	iPaidGoldAllCustomers = 0
+	SLSFR_Interface.SLSFR_toggle_WhoreFlag(isPlayerDibeling() || isPlayerWhoring())
 EndFunction
 
 function clearPositions()
@@ -2608,6 +2633,7 @@ State Dibeling
 	Event OnBeginState()
 		bIsBusy = True
 		isDibel = true
+		isDibel_g.SetValueInt(1)
 		if !isSnitchOK(dibelSnitch) && !playerHasDibelLicence()
 			startSnitchFinder(true)
 		endif
@@ -2672,6 +2698,9 @@ State Dibeling
 			startInfectingPlayer(GetState(), iDibelPartners)
 			bDibelAnimEnded = true
 			if dibelCustomerlist.GetSize() == 0
+				;if randInt(0, 999) < (fSLSFR_FameGainChance * 10) as Int
+				;	SLSFR_Interface.SLSFR_ManualWhoreFameGain()
+				;endif
 				if randInt(0, 999) < (fDibelDeviceChance * 10) as Int
 					iEntrapmentLevel = iDibelEntrapmentLevel
 					entrapPlayer(player)
@@ -2687,6 +2716,9 @@ State Dibeling
 		startInfectingPlayer(GetState(), iDibelPartners)
 		bDibelAnimEnded = true
 		if dibelCustomerlist.GetSize() == 0
+			if randInt(0, 999) < (fSLSFR_FameGainChance * 10) as Int
+				SLSFR_Interface.SLSFR_ManualWhoreFameGain(fSLSFR_MinGainFame as Int, fSLSFR_MaxGainFame as Int)
+			endif
 			if randInt(0, 999) < (fDibelDeviceChance * 10) as Int
 				iEntrapmentLevel = iDibelEntrapmentLevel
 				entrapPlayer(player)
@@ -2701,6 +2733,9 @@ State Dibeling
 		startInfectingPlayer(GetState(), iDibelPartners)
 		bDibelAnimEnded = true
 		if dibelCustomerlist.GetSize() == 0
+			if randInt(0, 999) < (fSLSFR_FameGainChance * 10) as Int
+				SLSFR_Interface.SLSFR_ManualWhoreFameGain(fSLSFR_MinGainFame as Int, fSLSFR_MaxGainFame as Int)
+			endif
 			if randInt(0, 999) < (fDibelDeviceChance * 10) as Int
 				iEntrapmentLevel = iDibelEntrapmentLevel
 				entrapPlayer(player)
@@ -2726,6 +2761,7 @@ State Whoring
 	Event OnBeginState()
 		bIsBusy = True
 		isWhore = True
+		isWhore_g.SetValueInt(1)
 		if !isSnitchOK(whoreSnitch) && !playerHasWhoreLicense()
 			startSnitchFinder(false)
 		endif
@@ -2790,6 +2826,9 @@ State Whoring
 			startInfectingPlayer(GetState(), iWhorePartners)
 			bWhoreAnimEnded = true
 			if whoreCustomerlist.GetSize() == 0
+				;if randInt(0, 999) < (fSLSFR_FameGainChance * 10) as Int
+				;	SLSFR_Interface.SLSFR_ManualWhoreFameGain()
+				;endif
 				if randInt(0, 999) < (fWhoreDeviceChance * 10) as Int
 					iEntrapmentLevel = iWhoreEntrapmentLevel
 					entrapPlayer(player)
@@ -2805,6 +2844,9 @@ State Whoring
 		startInfectingPlayer(GetState(), iWhorePartners)
 		bWhoreAnimEnded = true
 		if whoreCustomerlist.GetSize() == 0
+			if randInt(0, 999) < (fSLSFR_FameGainChance * 10) as Int
+				SLSFR_Interface.SLSFR_ManualWhoreFameGain(fSLSFR_MinGainFame as Int, fSLSFR_MaxGainFame as Int)
+			endif
 			if randInt(0, 999) < (fWhoreDeviceChance * 10) as Int
 				iEntrapmentLevel = iWhoreEntrapmentLevel
 				entrapPlayer(player)
@@ -2819,6 +2861,9 @@ State Whoring
 		startInfectingPlayer(GetState(), iWhorePartners)
 		bWhoreAnimEnded = true
 		if whoreCustomerlist.GetSize() == 0
+			if randInt(0, 999) < (fSLSFR_FameGainChance * 10) as Int
+				SLSFR_Interface.SLSFR_ManualWhoreFameGain(fSLSFR_MinGainFame as Int, fSLSFR_MaxGainFame as Int)
+			endif
 			if randInt(0, 999) < (fWhoreDeviceChance * 10) as Int
 				iEntrapmentLevel = iWhoreEntrapmentLevel
 				entrapPlayer(player)
@@ -2860,8 +2905,8 @@ Auto State Init
 	endEvent
 
 	event OnEndState()
-		While (!FlowerGirlsInterface.bChecked || !SexLabInterface.bChecked || !OStimInterface.bChecked || !LicensesInterface.bChecked || !DDI_Interface.bChecked || !DDX_Interface.bChecked)
-			Utility.wait(0.2)
+		While (!FlowerGirlsInterface.bChecked || !SexLabInterface.bChecked || !OStimInterface.bChecked || !LicensesInterface.bChecked || !DDI_Interface.bChecked || !DDX_Interface.bChecked || !SLSFR_Interface.bChecked)
+			Utility.wait(0.5)
 		endWhile
 		MCMScript.loadSettingsAtStart()
 		SetVars()
@@ -3479,3 +3524,40 @@ Bool Function isCustomer(Actor akActor)
 	endif
 	return true
 EndFunction
+
+
+Bool function isPlayerWhoring()
+	if (whoreCustomerAlias.getReference() As Actor)
+	elseif (whoreCustomerAlias2.getReference() As Actor)
+	elseif (whoreCustomerAlias3.getReference() As Actor)
+	elseif (whoreCustomerAlias4.getReference() As Actor)
+	else
+		isWhoring_g.SetValueInt(0)
+		return False
+	endif
+	isWhoring_g.SetValueInt(1)
+	return true
+endfunction
+
+Bool function isPlayerDibeling()
+	if (dibelCustomerAlias.getReference() As Actor)
+	elseif (dibelCustomerAlias2.getReference() as Actor)
+	elseif (dibelCustomerAlias3.getReference() As Actor)
+	elseif (dibelCustomerAlias4.getReference() As Actor)
+	else
+		isDibeling_g.SetValueInt(0)
+		return False
+	endif
+	isDibeling_g.SetValueInt(1)
+	return true
+endfunction
+
+Bool Function isPlayerKnownWhore(Bool bBegging = False)
+	if bBegging
+		bBeggarPlayerIsKnownWhore = (!bIs_SLSFR_Active || (SLSFR_Interface.getWhoreFame() >= fSLSFR_MinBeggarSexOfferRequiredFame))
+		return bBeggarPlayerIsKnownWhore
+	elseif (isWhore || isDibel)
+		return (!bIs_SLSFR_Active || (SLSFR_Interface.getWhoreFame() >= fSLSFR_MinApproachRequiredFame))
+	endif
+	return False
+endfunction

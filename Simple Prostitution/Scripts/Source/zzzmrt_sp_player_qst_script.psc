@@ -36,6 +36,7 @@ endevent
 
 Event OnCellLoad()
   MainScript.GoToState("")
+	MainScript.toggle_SLSFR_WhoreFlag(MainScript.isPlayerDibeling() || MainScript.isPlayerWhoring())
 EndEvent
 
 Event OnLocationChange(Location akOldLoc, Location akNewLoc)
@@ -44,6 +45,7 @@ Event OnLocationChange(Location akOldLoc, Location akNewLoc)
   MainScript.stopApproach(true)
   MainScript.startCalcSTDCurePrice()
   MainScript.CheckAliases()
+	MainScript.toggle_SLSFR_WhoreFlag(MainScript.isPlayerDibeling() || MainScript.isPlayerWhoring())
   if (MainScript.whoreSnitch || MainScript.dibelSnitch || MainScript.angryDibelCustomer || MainScript.angryWhoreCustomer)
     RegisterForSingleUpdate(utility.randomFloat(10.0,30.0)) 
   endif
@@ -95,6 +97,9 @@ function setVars()
   if !MainScript.DDX_Interface
     MainScript.DDX_Interface = MainScript.DDX_Interface_Qst as zzzmrt_sp_ddx_interface
   endIf
+  if !MainScript.SLSFR_Interface
+    MainScript.SLSFR_Interface = MainScript.SLSFR_Interface_Qst as zzzmrt_sp_slsfr_interface
+  endIf
   !bInit && MainScript.setVars()
   MainScript.SexLabInterface.PlayerLoadsGame()
   MainScript.OStimInterface.PlayerLoadsGame()
@@ -102,6 +107,7 @@ function setVars()
   MainScript.LicensesInterface.PlayerLoadsGame()
   MainScript.DDI_Interface.PlayerLoadsGame()
   MainScript.DDX_Interface.PlayerLoadsGame()
+	MainScript.SLSFR_Interface.PlayerLoadsGame()
   MainScript.bIsPapyrusUtilActive = MainScript.bCheckPapyrusUtil()
   MainScript.bIsPO3ExtenderActive = MainScript.bCheckPO3Extender()
   MainScript.bIsPyramidUtilsOK = MainScript.bCheckPyramidUtils()
@@ -112,6 +118,7 @@ function setVars()
   MainScript.bIsLicensesActive = MainScript.LicensesInterface.GetIsInterfaceActive()
   MainScript.bIsDDIntegrationActive = MainScript.DDI_Interface.GetIsInterfaceActive()
   MainScript.bIsDDExpansionActive = MainScript.DDX_Interface.GetIsInterfaceActive()
+	MainScript.bIs_SLSFR_Active = MainScript.SLSFR_Interface.GetIsInterfaceActive()
   MainScript.ApproachMonitorScr.PlayerLoadsGame()
 endfunction
 

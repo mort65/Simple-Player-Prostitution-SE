@@ -14,7 +14,7 @@ Form[] White_Ebonite_Set
 Form[] Red_Ebonite_Set
 
 event OnEndState()
-  Utility.Wait(5.0) ; Wait before entering active state to help avoid making function calls to scripts that may not have initialized yet. 
+  Utility.Wait(5.0)
   setVars()
 endevent
 

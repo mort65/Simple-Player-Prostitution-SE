@@ -172,6 +172,7 @@ event OnPageReset(String page)
     _AddTextOptionST("DEBUG_LICENSES_CHECK_TXT", "$licenses", MainScript.bIsLicensesActive As String, flag)
     _AddTextOptionST("DEBUG_DDI_CHECK_TXT", "$DDIntegration", MainScript.bIsDDIntegrationActive As String, flag)
     _AddTextOptionST("DEBUG_DDX_CHECK_TXT", "$DDExpansion", MainScript.bIsDDExpansionActive As String, flag)
+		_AddTextOptionST("DEBUG_SLSFR_CHECK_TXT", "$SLSF_RELOADED", MainScript.bIs_SLSFR_Active As String, flag)
   elseif (page == "$MRT_SP_PAGE_STATS")
     Mainscript.initStatArrs()
     if MainScript.bModEnabled
@@ -295,26 +296,35 @@ event OnPageReset(String page)
     addEmptyOption()
     SetCursorPosition(1)
     _AddHeaderOption("$MRT_SP_HEAD_INTEGRATION_LICENSE")
-    if MainScript.bModEnabled && MainScript.bWhoreEnabled
+    if MainScript.bModEnabled
       flag = OPTION_FLAG_NONE
     else
       flag = OPTION_FLAG_DISABLED
     endif
     _AddToggleOptionST("WHORE_NEED_LICENSE_TOGGLE", "$MRT_SP_WHORE_NEED_LICENSE_TOGGLE", MainScript.bWhoreNeedLicense, flag)
-    if MainScript.bModEnabled && MainScript.bDibelEnabled
-      flag = OPTION_FLAG_NONE
-    else
-      flag = OPTION_FLAG_DISABLED
-    endif
     _AddToggleOptionST("DIBEL_NEED_LICENSE_TOGGLE", "$MRT_SP_DIBEL_NEED_LICENSE_TOGGLE", MainScript.bDibelNeedLicense, flag)
-    if MainScript.bModEnabled && (MainScript.bDibelEnabled || MainScript.bWhoreEnabled) 
-      flag = OPTION_FLAG_NONE
-    else
-      flag = OPTION_FLAG_DISABLED
-    endif
     AddSliderOptionST("CITIZEN_REPORT_CHANCE_SLIDER", "$MRT_SP_CITIZEN_REPORT_CHANCE_SLIDER1", MainScript.fCitizenReportChance, "$MRT_SP_CITIZEN_REPORT_CHANCE_SLIDER2", flag)
     AddSliderOptionST("GUARD_REPORT_CHANCE_SLIDER", "$MRT_SP_GUARD_REPORT_CHANCE_SLIDER1", MainScript.fGuardReportChance, "$MRT_SP_GUARD_REPORT_CHANCE_SLIDER2", flag)
-  elseif (page == "$MRT_SP_PAGE_BEGGING")
+		addEmptyOption()
+		_AddHeaderOption("$MRT_SP_HEAD_INTEGRATION_SLSFR")
+	  if MainScript.bModEnabled && MainScript.bIs_SLSFR_Active
+      flag = OPTION_FLAG_NONE
+    else
+      flag = OPTION_FLAG_DISABLED
+    endif	
+		OID_SLSFR_MIN_APPROACH_REQ_FAME = AddSliderOption("$MRT_SP_SLSFR_MIN_APPROACH_REQ_FAME_SLIDER1", MainScript.fSLSFR_MinApproachRequiredFame, "$MRT_SP_SLSFR_MIN_APPROACH_REQ_FAME_SLIDER2", flag)
+		OID_SLSFR_MIN_BEGGAR_SEX_OFFER_REQ_FAME = AddSliderOption("$MRT_SP_SLSFR_MIN_BEGGAR_SEX_OFFER_REQ_Fame_SLIDER1", MainScript.fSLSFR_MinBeggarSexOfferRequiredFame, "$MRT_SP_SLSFR_MIN_BEGGAR_SEX_OFFER_REQ_Fame_SLIDER2", flag)
+		if MainScript.bModEnabled && MainScript.bIs_SLSFR_Active && (MainScript.bIsFlowerGirlsActive || MainScript.bIsOstimActive)
+      flag = OPTION_FLAG_NONE
+    else
+      flag = OPTION_FLAG_DISABLED
+    endif	
+		OID_SLSFR_MIN_FAME_GAIN = AddSliderOption("$MRT_SP_SLSFR_MIN_FAME_GAIN_SLIDER1", MainScript.fSLSFR_MinGainFame, "$MRT_SP_SLSFR_MIN_FAME_GAIN_SLIDER2", flag)
+		OID_SLSFR_MAX_FAME_GAIN = AddSliderOption("$MRT_SP_SLSFR_MAX_FAME_GAIN_SLIDER1", MainScript.fSLSFR_MaxGainFame, "$MRT_SP_SLSFR_MAX_FAME_GAIN_SLIDER2", flag)
+		OID_SLSFR_FAME_GAIN_CHANCE = AddSliderOption("$MRT_SP_SLSFR_FAME_GAIN_CHANCE_SLIDER1", MainScript.fSLSFR_FameGainChance, "$MRT_SP_SLSFR_FAME_GAIN_CHANCE_SLIDER2", flag)
+		
+		
+	elseif (page == "$MRT_SP_PAGE_BEGGING")
     SetTitleText("$MRT_SP_PAGE_BEGGING")
     _AddHeaderOption("$MRT_SP_HEAD_BEG")
     if (MainScript.bModEnabled)
@@ -3207,9 +3217,11 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
   MainScript.fWhoreDeviceChance = jsonutil.GetPathFloatValue(settings_path, "fWhoreDeviceChance", MainScript.fWhoreDeviceChance)
   MainScript.fDibelDeviceChance = jsonutil.GetPathFloatValue(settings_path, "fDibelDeviceChance", MainScript.fDibelDeviceChance)
   MainScript.fBeggarDeviceChance = jsonutil.GetPathFloatValue(settings_path, "fBeggarDeviceChance", MainScript.fBeggarDeviceChance)
-
-
-
+	MainScript.fSLSFR_MinApproachRequiredFame = jsonutil.GetPathFloatValue(settings_path, "fSLSFR_MinApproachRequiredFame", MainScript.fSLSFR_MinApproachRequiredFame)
+	MainScript.fSLSFR_MinBeggarSexOfferRequiredFame = jsonutil.GetPathFloatValue(settings_path, "fSLSFR_MinBeggarSexOfferRequiredFame", MainScript.fSLSFR_MinBeggarSexOfferRequiredFame)
+	MainScript.fSLSFR_MinGainFame = jsonutil.GetPathFloatValue(settings_path, "fSLSFR_MinGainFame", MainScript.fSLSFR_MinGainFame)
+	MainScript.fSLSFR_MaxGainFame = jsonutil.GetPathFloatValue(settings_path, "fSLSFR_MaxGainFame", MainScript.fSLSFR_MaxGainFame)
+	MainScript.fSLSFR_FameGainChance = jsonutil.GetPathFloatValue(settings_path, "fSLSFR_FameGainChance", MainScript.fSLSFR_FameGainChance)
 
   MainScript.sExtraTags_SL_Oral_MF = jsonutil.GetPathStringValue(settings_path, "sExtraTags_SL_Oral_MF", MainScript.sExtraTags_SL_Oral_MF)
   MainScript.sExtraTags_SL_Oral_FF = jsonutil.GetPathStringValue(settings_path, "sExtraTags_SL_Oral_FF", MainScript.sExtraTags_SL_Oral_FF)
@@ -3447,6 +3459,11 @@ Bool function saveUserSettingsPapyrus()
   jsonutil.SetPathFloatValue(settings_path, "fWhoreDeviceChance", MainScript.fWhoreDeviceChance)
   jsonutil.SetPathFloatValue(settings_path, "fDibelDeviceChance", MainScript.fDibelDeviceChance)
   jsonutil.SetPathFloatValue(settings_path, "fBeggarDeviceChance", MainScript.fBeggarDeviceChance)
+	jsonutil.SetPathFloatValue(settings_path, "fSLSFR_MinApproachRequiredFame", MainScript.fSLSFR_MinApproachRequiredFame)
+	jsonutil.SetPathFloatValue(settings_path, "fSLSFR_MinBeggarSexOfferRequiredFame", MainScript.fSLSFR_MinBeggarSexOfferRequiredFame)
+	jsonutil.SetPathFloatValue(settings_path, "fSLSFR_MinGainFame", MainScript.fSLSFR_MinGainFame)
+	jsonutil.SetPathFloatValue(settings_path, "fSLSFR_MaxGainFame", MainScript.fSLSFR_MaxGainFame)
+	jsonutil.SetPathFloatValue(settings_path, "fSLSFR_FameGainChance", MainScript.fSLSFR_FameGainChance)
 
   jsonutil.SetPathStringValue(settings_path, "sExtraTags_SL_Oral_MF", MainScript.sExtraTags_SL_Oral_MF)
   jsonutil.SetPathStringValue(settings_path, "sExtraTags_SL_Oral_FF", MainScript.sExtraTags_SL_Oral_FF)
@@ -4166,6 +4183,16 @@ event OnOptionHighlight(int option)
     SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_FEMALE_DD")
   elseif option == OID_DEFAULT_REJ_MALE_DD
     SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_MALE_DD")
+  elseif option == OID_SLSFR_MIN_APPROACH_REQ_FAME
+    SetInfoText("$MRT_SP_DESC_SLSFR_Min_APPROACH_REQ_Fame")
+	 elseif option == OID_SLSFR_MIN_BEGGAR_SEX_OFFER_REQ_FAME
+    SetInfoText("$MRT_SP_DESC_SLSFR_Min_Beggar_Sex_Offer_REQ_FAME")
+  elseif option == OID_SLSFR_MIN_FAME_GAIN
+    SetInfoText("$MRT_SP_DESC_SLSFR_SLSFR_MIN_FAME_GAIN")
+	elseif option == OID_SLSFR_MAX_FAME_GAIN
+    SetInfoText("$MRT_SP_DESC_SLSFR_SLSFR_MAX_FAME_GAIN")
+	elseif option == OID_SLSFR_FAME_GAIN_CHANCE 
+    SetInfoText("$MRT_SP_DESC_SLSFR_SLSFR_FAME_GAIN_CHANCE")
 	endif
 endevent
 
@@ -4456,6 +4483,21 @@ elseif option == OID_DIBEL_DD_CHANCE
 elseif option == OID_WHORE_DD_CHANCE
   MainScript.fWhoreDeviceChance = value
   SetSliderOptionValue(OID_WHORE_DD_CHANCE, MainScript.fWhoreDeviceChance, "$MRT_SP_WHORE_DD_CHANCE_SLIDER2")
+elseif option == OID_SLSFR_MIN_APPROACH_REQ_FAME
+  MainScript.fSLSFR_MinApproachRequiredFame = value
+  SetSliderOptionValue(OID_SLSFR_MIN_APPROACH_REQ_FAME, MainScript.fSLSFR_MinApproachRequiredFame, "$MRT_SP_SLSFR_MIN_APPROACH_REQ_FAME_SLIDER2")
+elseif option == OID_SLSFR_MIN_BEGGAR_SEX_OFFER_REQ_FAME
+  MainScript.fSLSFR_MinBeggarSexOfferRequiredFame = value
+  SetSliderOptionValue(OID_SLSFR_MIN_BEGGAR_SEX_OFFER_REQ_FAME, MainScript.fSLSFR_MinBeggarSexOfferRequiredFame, "$MRT_SP_SLSFR_MIN_BEGGAR_SEX_OFFER_REQ_Fame_SLIDER2")
+elseif option == OID_SLSFR_MIN_FAME_GAIN 
+  MainScript.fSLSFR_MinGainFame = value
+  SetSliderOptionValue(OID_SLSFR_MIN_FAME_GAIN , MainScript.fSLSFR_MinGainFame, "$MRT_SP_SLSFR_MIN_FAME_GAIN_SLIDER2")
+elseif option == OID_SLSFR_Max_FAME_GAIN 
+  MainScript.fSLSFR_MaxGainFame = value
+  SetSliderOptionValue(OID_SLSFR_Max_FAME_GAIN , MainScript.fSLSFR_MaxGainFame, "$MRT_SP_SLSFR_MAX_FAME_GAIN_SLIDER2")
+elseif option == OID_SLSFR_FAME_GAIN_CHANCE 
+  MainScript.fSLSFR_FameGainChance = value
+  SetSliderOptionValue(OID_SLSFR_FAME_GAIN_CHANCE , MainScript.fSLSFR_FameGainChance, "$MRT_SP_SLSFR_MAX_FAME_GAIN_CHANCE_SLIDER2")
 endif
 ForcePageReset()
 EndEvent
@@ -4886,6 +4928,31 @@ event OnOptionSliderOpen(int option)
     SetSliderDialogDefaultValue(0.0)
     SetSliderDialogRange(0, 100)
     SetSliderDialogInterval(0.1)
+	elseif option == OID_SLSFR_MIN_APPROACH_REQ_FAME
+    SetSliderDialogStartValue(MainScript.fSLSFR_MinApproachRequiredFame)
+    SetSliderDialogDefaultValue(50.0)
+    SetSliderDialogRange(0, 150)
+    SetSliderDialogInterval(1)
+	elseif option == OID_SLSFR_MIN_BEGGAR_SEX_OFFER_REQ_FAME
+    SetSliderDialogStartValue(MainScript.fSLSFR_MinBeggarSexOfferRequiredFame)
+    SetSliderDialogDefaultValue(25.0)
+    SetSliderDialogRange(0, 150)
+    SetSliderDialogInterval(1)
+	elseif option == OID_SLSFR_MIN_FAME_GAIN
+		SetSliderDialogStartValue(MainScript.fSLSFR_MinGainFame)
+		SetSliderDialogDefaultValue(1.0)
+		SetSliderDialogRange(0, 20)
+		SetSliderDialogInterval(1)
+	elseif option == OID_SLSFR_MAX_FAME_GAIN
+		SetSliderDialogStartValue(MainScript.fSLSFR_MaxGainFame)
+		SetSliderDialogDefaultValue(10.0)
+		SetSliderDialogRange(0, 20)
+		SetSliderDialogInterval(1)
+	elseif option == OID_SLSFR_FAME_GAIN_CHANCE
+		SetSliderDialogStartValue(MainScript.fSLSFR_FameGainChance)
+		SetSliderDialogDefaultValue(100.0)
+		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(0.1)
   endif
 EndEvent
 
@@ -5292,3 +5359,9 @@ Int OID_DEFAULT_REJ_FEMALE_DD
 Int OID_DEFAULT_REJ_MALE_DD
 
 Int OID_DD_Set_M
+
+Int OID_SLSFR_MIN_APPROACH_REQ_FAME
+Int OID_SLSFR_MIN_BEGGAR_SEX_OFFER_REQ_FAME
+Int OID_SLSFR_FAME_GAIN_CHANCE
+Int OID_SLSFR_MAX_FAME_GAIN
+Int OID_SLSFR_MIN_FAME_GAIN

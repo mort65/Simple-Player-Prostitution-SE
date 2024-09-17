@@ -51,6 +51,9 @@ int function haveSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor partner, 
 		else
 			anim2 = getRandomAnimation(actors, sExtraTags[iExtraTagsIndex] + ",")
 		endif
+		if !anim2
+			Debug.trace("Simple Prostitution: [OStim] couldn't find any animation with these tags: " + sExtraTags[iExtraTagsIndex])
+		endif
 	endif
 	int i = 20
 	while !anim && i > 0
