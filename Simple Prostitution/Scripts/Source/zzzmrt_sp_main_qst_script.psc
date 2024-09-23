@@ -1603,7 +1603,7 @@ Function entrapPlayer(Actor akEntrapper)
 	Bool bResult = DDX_Interface.lockRandomDeviceOnActor(player, iEntrapmentLevel, iDeviceChanceArr, iDeviousDeviceSet - 1)
 	float fTimeEnd = Utility.GetCurrentRealTime()
 	float fTotalTime = fTimeEnd - fTimeStart
-	Debug.Trace("Simple Prostitution: It took " + fTotalTime + " seconds to add DD device.")
+	;Debug.Trace("Simple Prostitution: It took " + fTotalTime + " seconds to add DD device.")
 	if bAnimEntrapper
 		if (fTotalTime < 2.5)
 			Utility.Wait(3.0 - fTotalTime)

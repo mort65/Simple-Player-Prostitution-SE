@@ -7,7 +7,6 @@ Function Fragment_1(ObjectReference akSpeakerRef)
 Actor akSpeaker = akSpeakerRef as Actor
 ;BEGIN CODE
 zzzmrt_sp_main_qst_script MainScript = GetOwningQuest() As zzzmrt_sp_main_qst_script
-debug.trace("entrapPlayer from " + self)
 MainScript.entrapPlayerBeggar(akspeaker)
 ;END CODE
 EndFunction
