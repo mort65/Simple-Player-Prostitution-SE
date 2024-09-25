@@ -36,7 +36,7 @@ endevent
 
 Event OnCellLoad()
   MainScript.GoToState("")
-	MainScript.toggle_SLSFR_WhoreFlag(MainScript.isPlayerDibeling() || MainScript.isPlayerWhoring())
+	MainScript.SLSFR_Interface.SLSFR_toggle_WhoreFlag(MainScript.isPlayerDibeling() || MainScript.isPlayerWhoring())
 EndEvent
 
 Event OnLocationChange(Location akOldLoc, Location akNewLoc)
@@ -45,7 +45,7 @@ Event OnLocationChange(Location akOldLoc, Location akNewLoc)
   MainScript.stopApproach(true)
   MainScript.startCalcSTDCurePrice()
   MainScript.CheckAliases()
-	MainScript.toggle_SLSFR_WhoreFlag(MainScript.isPlayerDibeling() || MainScript.isPlayerWhoring())
+	MainScript.SLSFR_Interface.SLSFR_toggle_WhoreFlag(MainScript.isPlayerDibeling() || MainScript.isPlayerWhoring())
   if (MainScript.whoreSnitch || MainScript.dibelSnitch || MainScript.angryDibelCustomer || MainScript.angryWhoreCustomer)
     RegisterForSingleUpdate(utility.randomFloat(10.0,30.0)) 
   endif
