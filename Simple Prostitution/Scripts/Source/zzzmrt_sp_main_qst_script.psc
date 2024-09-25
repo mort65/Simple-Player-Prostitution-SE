@@ -618,7 +618,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-	return getBaseVersion() + 0.40
+	return getBaseVersion() + 0.41
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
@@ -1564,12 +1564,7 @@ Function entrapPlayer(Actor akEntrapper)
 	if !bIsDDExpansionActive || !bIsDDIntegrationActive
 		return
 	elseif akEntrapper && (akEntrapper != player)
-		actor dialogueTarget
-		if bIsPyramidUtilsOK
-			dialogueTarget = PyramidUtils.GetPlayerSpeechTarget()
-		else
-			dialogueTarget = getPlayerDialogueTarget(player)
-		endif
+		actor dialogueTarget = getPlayerDialogueTarget(bIsPyramidUtilsOK)
 		if (dialogueTarget && (dialogueTarget != akEntrapper))
 			return
 		endif

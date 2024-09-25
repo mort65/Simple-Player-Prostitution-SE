@@ -126,8 +126,8 @@ Bool Function _LockRandomDeviceOnActor(Quest zdxQuest, Actor akActor, Int iLevel
 	if akActor.WornHasKeyword(DX.libs.zad_Lockable)
 		Armor rn_Dev = DX.libs.GetRenderedDevice(dev)
 		if _deviceHaveKeywordConflict(zdxQuest, akActor, rn_Dev)
-			int i = 0
 			if Dev_LVLI as LeveledItem
+				int i = 0
 				while (i < 5) && _deviceHaveKeywordConflict(zdxQuest, akActor, rn_Dev)
 					dev = DX.GetRandomDevice(Dev_LVLI)
 					Dev_kw = DX.libs.GetDeviceKeyword(dev)

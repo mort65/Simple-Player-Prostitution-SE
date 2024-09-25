@@ -179,17 +179,17 @@ endfunction
 Form[] function getDevArr(Int setIndex)
 	form[] devArr
 	if setIndex == 0
-		return Black_Leather_Set
+		devArr = Black_Leather_Set
 	elseif setIndex == 1
-		return White_Leather_Set
+		devArr = White_Leather_Set
 	elseif setIndex == 2
-		return Red_Leather_Set
+		devArr = Red_Leather_Set
 	elseif setIndex == 3
-		return Black_Ebonite_Set
+		devArr = Black_Ebonite_Set
 	elseif setIndex == 4
-		return White_Ebonite_Set
+		devArr = White_Ebonite_Set
 	elseif setIndex == 5
-		return Red_Ebonite_Set
+		devArr = Red_Ebonite_Set
 	endif
 	return devArr
 endfunction

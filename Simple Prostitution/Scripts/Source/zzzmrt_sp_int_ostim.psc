@@ -25,10 +25,10 @@ int function haveSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor partner, 
 	if isPlayerFemale && !isPartnerFemale
 		sGenders = "MF"
 		actors[0] = partner
-		actors[1] = Game.GetPlayer()
+		actors[1] = player
 	elseif !isPlayerFemale && isPartnerFemale
 		sGenders = "MF"
-		actors[0] = Game.GetPlayer()
+		actors[0] = player
 		actors[1] = partner
 	else
 		if isPlayerFemale
@@ -37,11 +37,11 @@ int function haveSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor partner, 
 			sGenders = "MM"
 		endif
 		if Utility.randomInt(0,1)
-			actors[0] = Game.GetPlayer()
+			actors[0] = player
 			actors[1] = partner
 		else
 			actors[0] = partner
-			actors[1] = Game.GetPlayer()
+			actors[1] = player
 		endif
 	endif
 	Int iExtraTagsIndex = iGetExtraTagsIndex(Position, sGenders)

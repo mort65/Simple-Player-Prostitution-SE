@@ -237,13 +237,18 @@ Bool function isPluginFound(string pluginName) Global
   return Game.IsPluginInstalled(pluginName)
 endfunction
 
-Actor Function getPlayerDialogueTarget(Actor kPlayerRef) Global
-  Actor kPlayerDialogueTarget
+Actor Function getPlayerDialogueTarget(Bool bPyramidUtil = False) Global
+	{Obtains the actor that player is currently in dialogue with.}
+	if bPyramidUtil
+		return PyramidUtils.GetPlayerSpeechTarget()
+	endif
+	Actor kPlayer = Game.GetPlayer()
+	Actor kPlayerDialogueTarget
   Int iLoopCount = 10
   While iLoopCount > 0
     iLoopCount -= 1
-    kPlayerDialogueTarget = Game.FindRandomActorFromRef(kPlayerRef , 200.0)
-    If kPlayerDialogueTarget && (kPlayerDialogueTarget != kPlayerRef) && kPlayerDialogueTarget.IsInDialogueWithPlayer() 
+    kPlayerDialogueTarget = Game.FindRandomActorFromRef(kPlayer , 200.0)
+    If kPlayerDialogueTarget && (kPlayerDialogueTarget != kPlayer) && kPlayerDialogueTarget.IsInDialogueWithPlayer() 
       Return kPlayerDialogueTarget
     EndIf
   EndWhile

@@ -145,7 +145,7 @@ Bool function canPunishPlayerForRejectingApproach(Actor akActor)
 		if akActor.isInDialogueWithPlayer()
 			return true
 		else
-			actor targetAct = getPlayerDialogueTarget(player)
+			actor targetAct = getPlayerDialogueTarget(MainScript.bIsPyramidUtilsOK)
 			if !targetAct || (targetAct == akActor)
 				return true
 			endif
@@ -172,7 +172,7 @@ Bool Function canPunishPlayerForRejectingSexOffer(Actor akActor)
 		if akActor.isInDialogueWithPlayer()
 			return true
 		else
-			actor targetAct = getPlayerDialogueTarget(player)
+			actor targetAct = getPlayerDialogueTarget(MainScript.bIsPyramidUtilsOK)
 			if !targetAct || (targetAct == akActor)
 				return true
 			endif
