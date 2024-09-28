@@ -6,18 +6,21 @@ ReferenceAlias property approachingRef auto
 Quest Property ApproachQst auto
 Actor property player auto
 zzzmrt_sp_main_qst_script property MainScript auto
+Formlist property checkedActors Auto
+Bool property bCustomerCanApproach = false Auto Hidden Conditional
 
 Bool property hasWhoreLicense = False Auto Hidden Conditional
 Bool property hasDibelLicense = False Auto Hidden Conditional
 Bool property hasLicense = False Auto Hidden Conditional
 Bool property playerHavingSex = false Auto Hidden Conditional
 Bool property actorHavingSex = False Auto Hidden Conditional
+Bool property bIsActorAroused = False Auto Hidden Conditional
 Bool property playerWearingWhoreClothing = false Auto Hidden Conditional
 Bool property playerIsBusyInMOA = false Auto Hidden Conditional
 
 Event OnUpdateGameTime()
 	debug.trace("Simple Prostitution: OnUpdateGameTime() triggered for "+ self)
-	updateApproach(True)
+	updateApproach(true)
 EndEvent
 
 Function PlayerLoadsGame()
@@ -42,30 +45,82 @@ Function stopApproach(Bool bConfirm = true)
 EndFunction
 
 Function updateApproach(Bool bReset = False)
-	actor approachingActor = approachingRef.getref() as actor
-	Bool doReset = bReset
-	if approachingRef
-		if ApproachQst.IsRunning()
+	Bool doReset = (bReset && !MainScript.bRejecting)
+	actor approachingActor
+	Form approachingActorBase
+	int iArousal = 0
+	if ApproachQst.IsRunning()
+		if approachingRef
+			approachingActor = approachingRef.GetReference() as actor
+			approachingActorBase = approachingActor.GetLeveledActorBase()
 			if approachingActor.GetDialogueTarget() == player
 				doReset = false
 			else
 				stopApproach(doReset)
 			endif
 		endIf
-	endIf
+	endif
 	
-	if MainScript.iCustomerApproachTimer < 1
+	if MainScript.fCustomerApproachTimer < 0.2
 		return
 	endif
 
 	if !doReset
 	elseif !MainScript.isPlayerKnownWhore(False)
+	elseif !MainScript.isPlayerAroused()
 	elseif !canPlayerApproached()
 	elseif MainScript.randInt(0,99) < MainScript.fCustomerApproachChance as Int
+		checkedActors.revert()
+		bCustomerCanApproach = false
 		ApproachQst.start()
+		if ApproachQst.IsRunning()
+			if MainScript.bIs_SLA_Active && (MainScript.iSLA_MinApproachArousal > 0)
+				int i = 14
+				approachingActor = approachingRef.GetReference() as actor
+				approachingActorBase = approachingActor.GetLeveledActorBase()
+				iArousal = MainScript.SLA_Interface.GetActorArousal(approachingActor)
+				while i > 0 && ApproachQst.IsRunning() && approachingActor && (iArousal < MainScript.iSLA_MinApproachArousal)
+					i -= 1
+					if approachingActorBase
+						checkedActors.AddForm(approachingActorBase)
+					endif
+					ApproachQst.stop()
+					While ApproachQst.IsRunning()
+						Utility.WaitMenuMode(0.1)
+					EndWhile
+					ApproachQst.start()
+					if ApproachQst.IsRunning()
+						approachingActor = approachingRef.GetReference() as actor
+						approachingActorBase = approachingActor.GetLeveledActorBase()
+						iArousal = MainScript.SLA_Interface.GetActorArousal(approachingActor)
+					endif
+				EndWhile
+				if ApproachQst.IsRunning() && approachingActor && (iArousal >= MainScript.iSLA_MinApproachArousal)
+					bCustomerCanApproach = true
+				else
+					stopApproach(true)
+				endif
+			else
+				bCustomerCanApproach = true
+			endif
+			if bCustomerCanApproach
+				if approachingActor
+					String sName = approachingActorBase.GetName()
+					if sName == "" && MainScript.bIsPO3ExtenderActive
+						sName = PO3_SKSEFunctions.GetFormEditorID(approachingActor)
+					endif
+					string msg = "Simple Prostitution: " + approachingActor + " | " + approachingActorBase  +  " : " + sName + " approaching player from : " + approachingActor.GetDistance(MainScript.player)
+					if (MainScript.bIs_SLA_Active && MainScript.iSLA_MinApproachArousal > 0)
+						msg = msg + " with this arousal: " +  iArousal
+					endif
+					Debug.trace(msg)
+				endif
+			endif
+		endif
+		checkedActors.revert()
 	endif
 	
-	self.RegisterForSingleUpdateGameTime(MainScript.iCustomerApproachTimer)
+	self.RegisterForSingleUpdateGameTime(MainScript.fCustomerApproachTimer)
 EndFunction
 
 Bool Function playerHasLicense()
@@ -102,11 +157,13 @@ Function checkPlayerStatus()
 	isplayerWearingWhoreClothing()
 	playerHasLicense()
 	playerHavingSex = MainScript.isActorHavingSex(player)
+	MainScript.isPlayerAroused()
 	checkMOAStatus()
 EndFunction
 
 Function checkActorStatus(Actor akActor)
 	actorHavingSex = MainScript.isActorHavingSex(akActor)
+	bIsActorAroused = (!MainScript.bIs_SLA_Active || ((MainScript.iSLA_MinApproachArousal == 0) || (MainScript.SLA_Interface.GetActorArousal(akActor) >= MainScript.iSLA_MinApproachArousal)))
 EndFunction
 
 Function checkStatus(Actor akActor)

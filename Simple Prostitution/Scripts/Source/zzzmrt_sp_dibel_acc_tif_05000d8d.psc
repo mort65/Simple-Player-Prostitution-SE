@@ -7,7 +7,7 @@ Function Fragment_1(ObjectReference akSpeakerRef)
 Actor akSpeaker = akSpeakerRef as Actor
 ;BEGIN CODE
 zzzmrt_sp_main_qst_script MainScript = GetOwningQuest() As zzzmrt_sp_main_qst_script
-MainScript.setDibelCustomer(akSpeaker, true)
+MainScript.checkDibelCustomer(akSpeaker)
 ;END CODE
 EndFunction
 ;END FRAGMENT

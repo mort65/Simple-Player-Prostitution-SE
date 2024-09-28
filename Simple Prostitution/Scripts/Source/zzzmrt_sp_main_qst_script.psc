@@ -12,6 +12,8 @@ zzzmrt_sp_licenses_interface property LicensesInterface auto
 zzzmrt_sp_ddi_interface property DDI_Interface auto
 zzzmrt_sp_ddx_interface property DDX_Interface auto
 zzzmrt_sp_slsfr_interface property SLSFR_Interface auto
+zzzmrt_sp_sla_interface property SLA_Interface auto
+Quest Property SLA_Interface_Qst Auto
 Quest Property OStimInterfaceQst Auto
 Quest Property FlowerGirlsInterfaceQst Auto
 Quest Property SexLabInterfaceQst Auto
@@ -85,6 +87,7 @@ Bool Property bTryAllInterfaces=True Auto Hidden Conditional
 Bool Property bIsDDIntegrationActive=False Auto Hidden Conditional
 Bool Property bIsDDExpansionActive=False Auto Hidden Conditional
 Bool Property bIs_SLSFR_Active=False Auto Hidden Conditional
+Bool Property bIs_SLA_Active=False Auto Hidden Conditional
 ImageSpaceModifier property blackScreen auto
 Formlist property currentAllowedLocations auto
 Formlist property alwaysAllowedLocations auto
@@ -136,6 +139,7 @@ Float property fWhoreVagChance=50.0 auto Hidden Conditional
 Float Property fWhoreOwnerShare = 0.0 auto Hidden Conditional
 Int Property iCurrentOwnerSeptims = 0 Auto Hidden Conditional
 GlobalVariable property currentOwnerSeptimDisplay auto Conditional
+Spell property ApproachDelaySpell Auto
 
 String Property sExtraTags_SL_Oral_MF = "" auto Hidden Conditional
 String Property sExtraTags_SL_Oral_MM = "" auto Hidden Conditional
@@ -200,6 +204,7 @@ ReferenceAlias Property entrapperAlias Auto
 Package Property entrapperPackage Auto
 Faction Property DibelCustomerFaction Auto
 Faction Property WhoreCustomerFaction Auto
+Bool property bRejecting = False Auto Hidden Conditional
 
 
 Int Property iPaidGoldCustomer1 = 0 Auto Hidden Conditional
@@ -286,6 +291,7 @@ Float property fDefaultRejectFemaleDeviceChance = 0.0 Auto Hidden Conditional
 
 
 Int property iCustomerApproachTimer = 3 Auto Hidden Conditional
+Float property fCustomerApproachTimer = 3.0 Auto Hidden Conditional
 Bool property bDibelCustomerApproach = False Auto Hidden Conditional
 Int Property iTotalCustomerPaidGold = 0 Auto Hidden Conditional
 Bool property bRejectAssaultRape = False Auto Hidden Conditional
@@ -300,6 +306,17 @@ Float property fSLSFR_MaxGainFame = 10.0 Auto hidden Conditional
 Float property fSLSFR_FameGainChance = 100.0 Auto hidden Conditional
 
 FormList Property whoreClothingList Auto
+
+Bool Property bISWhoreCustomerAroused = False Auto hidden Conditional
+Bool Property bIsDibelCustomerAroused = False Auto hidden Conditional
+Bool Property bIsBeggarHelperArroused = False Auto hidden Conditional
+Bool Property bIsPCAroused = False Auto hidden Conditional
+
+Int property iSLA_MinApproachArousal = 0 Auto Hidden Conditional
+Int property iSLA_MinWhoreCustomerArousal = 0 Auto Hidden Conditional
+Int property iSLA_MinDibelCustomerArousal = 0 Auto Hidden Conditional
+Int property iSLA_MinBeggarSexOfferArousal = 0 Auto Hidden Conditional
+Int property iSLA_MinPCArousal = 0 Auto Hidden Conditional
 
 Formlist Property raceList Auto
 Formlist Property vampireRacelist Auto
@@ -618,7 +635,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-	return getBaseVersion() + 0.41
+	return getBaseVersion() + 0.42
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
@@ -988,6 +1005,7 @@ EndFunction
 
 Function setRejectingCustomerResult(Actor akActor, Bool bWhore = False, Bool bDibel = False, Bool bBeggar = False, Bool bApproach = False)
 	bIsBusy = true
+	bRejecting = true
 	int iRand 
 	bRejectAssaultRape = False
 	bRejectAssaultTheft = False
@@ -1140,7 +1158,9 @@ Function setRejectingCustomerResult(Actor akActor, Bool bWhore = False, Bool bDi
 endfunction
 
 Function rejectCusomer(Actor akCustomer)
+	gotostate("rejecting")
 	bIsBusy = true
+	bRejecting = true
 	int iWhatToDo
 	if bRejectDibel
 		if dibelCustomerAlias.getActorReference()
@@ -1234,7 +1254,11 @@ Function rejectCusomer(Actor akCustomer)
 	elseif iWhatToDo == 8
 		entrapPlayer(akCustomer)
 	endif
+	ApproachDelaySpell.cast(akCustomer)
+	iWhoringRejectResult = -1
 	bIsBusy = false
+	bRejecting = false
+	gotostate("")
 EndFunction
 
 Function SetFaceToFace(Actor akActor1, Actor akActor2, float fDistance = 75.0)
@@ -2749,6 +2773,9 @@ State Dibeling
 
 	Function offerDibelMarks(Actor akActor)
 	endFunction
+	
+	Function rejectCusomer(Actor akCustomer)
+	endfunction
 
 EndState
 
@@ -2877,6 +2904,9 @@ State Whoring
 
 	Function offerDibelMarks(Actor akActor)
 	endFunction
+	
+	Function rejectCusomer(Actor akCustomer)
+	endfunction
 
 EndState
 
@@ -2900,7 +2930,7 @@ Auto State Init
 	endEvent
 
 	event OnEndState()
-		While (!FlowerGirlsInterface.bChecked || !SexLabInterface.bChecked || !OStimInterface.bChecked || !LicensesInterface.bChecked || !DDI_Interface.bChecked || !DDX_Interface.bChecked || !SLSFR_Interface.bChecked)
+		While (!FlowerGirlsInterface.bChecked || !SexLabInterface.bChecked || !OStimInterface.bChecked || !LicensesInterface.bChecked || !DDI_Interface.bChecked || !DDX_Interface.bChecked || !SLSFR_Interface.bChecked || !SLA_Interface.bChecked)
 			Utility.wait(0.5)
 		endWhile
 		MCMScript.loadSettingsAtStart()
@@ -2915,6 +2945,9 @@ Auto State Init
 
 	Function offerDibelMarks(Actor akActor)
 	endFunction
+	
+	Function rejectCusomer(Actor akCustomer)
+	endfunction
 EndState
 
 State offeringToDibella
@@ -2948,6 +2981,9 @@ State offeringToDibella
 
 	Function offerDibelMarks(Actor akActor)
 	endFunction
+	
+	Function rejectCusomer(Actor akCustomer)
+	endfunction
 EndState
 
 State raped
@@ -2988,8 +3024,16 @@ State raped
 
 	Function rapePlayer(Actor akAggressor)
 	endFunction
+	
+	Function rejectCusomer(Actor akCustomer)
+	endfunction
 
 EndState
+
+State rejecting
+	Function rejectCusomer(Actor akCustomer)
+	endfunction
+endstate
 
 Bool function GetDibellanRewards(Int aiMessage=0, Int aiButton=0)
 	int iMarkCount = player.getItemCount(dibelMark)
@@ -3555,4 +3599,28 @@ Bool Function isPlayerKnownWhore(Bool bBegging = False)
 		return (!bIs_SLSFR_Active || (SLSFR_Interface.getWhoreFame() >= fSLSFR_MinApproachRequiredFame))
 	endif
 	return False
+endfunction
+
+
+function checkWhoreCustomer(Actor akCustomer)
+	bISWhoreCustomerAroused = (!bIs_SLA_Active || ((iSLA_MinWhoreCustomerArousal == 0) || (SLA_Interface.GetActorArousal(akCustomer) >= iSLA_MinWhoreCustomerArousal)))
+endfunction
+
+function checkDibelCustomer(Actor akCustomer)
+	bIsDibelCustomerAroused = (!bIs_SLA_Active || ((iSLA_MinDibelCustomerArousal == 0) || (SLA_Interface.GetActorArousal(akCustomer) >= iSLA_MinDibelCustomerArousal)))
+endfunction
+
+function checkBeggarCustomer(Actor akCustomer)
+	isPlayerKnownWhore(True)
+	ApproachMonitorScr.playerHasLicense()
+	ApproachMonitorScr.checkMOAStatus()
+	ApproachMonitorScr.playerHavingSex = isActorHavingSex(player)
+	ApproachMonitorScr.actorHavingSex = isActorHavingSex(akCustomer)
+	bIsBeggarHelperArroused = (!bIs_SLA_Active || ((iSLA_MinBeggarSexOfferArousal == 0) || (SLA_Interface.GetActorArousal(akCustomer) >= iSLA_MinBeggarSexOfferArousal)))
+	isPlayerAroused()
+endfunction
+
+Bool function isPlayerAroused()
+	bIsPCAroused = (!bIs_SLA_Active || ((iSLA_MinPCArousal == 0) || (SLA_Interface.GetActorArousal(player) >= iSLA_MinPCArousal)))
+	return bIsPCAroused
 endfunction

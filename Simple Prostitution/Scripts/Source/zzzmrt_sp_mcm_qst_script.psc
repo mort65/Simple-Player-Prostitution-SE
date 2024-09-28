@@ -173,6 +173,7 @@ event OnPageReset(String page)
     _AddTextOptionST("DEBUG_DDI_CHECK_TXT", "$DDIntegration", MainScript.bIsDDIntegrationActive As String, flag)
     _AddTextOptionST("DEBUG_DDX_CHECK_TXT", "$DDExpansion", MainScript.bIsDDExpansionActive As String, flag)
 		_AddTextOptionST("DEBUG_SLSFR_CHECK_TXT", "$SLSF_RELOADED", MainScript.bIs_SLSFR_Active As String, flag)
+		AddTextOption("$SL_AROUSED", MainScript.bIs_SLA_Active As String, flag)
   elseif (page == "$MRT_SP_PAGE_STATS")
     Mainscript.initStatArrs()
     if MainScript.bModEnabled
@@ -296,7 +297,7 @@ event OnPageReset(String page)
     addEmptyOption()
     SetCursorPosition(1)
     _AddHeaderOption("$MRT_SP_HEAD_INTEGRATION_LICENSE")
-    if MainScript.bModEnabled
+    if MainScript.bModEnabled && MainScript.bIsLicensesActive
       flag = OPTION_FLAG_NONE
     else
       flag = OPTION_FLAG_DISABLED
@@ -305,6 +306,20 @@ event OnPageReset(String page)
     _AddToggleOptionST("DIBEL_NEED_LICENSE_TOGGLE", "$MRT_SP_DIBEL_NEED_LICENSE_TOGGLE", MainScript.bDibelNeedLicense, flag)
     AddSliderOptionST("CITIZEN_REPORT_CHANCE_SLIDER", "$MRT_SP_CITIZEN_REPORT_CHANCE_SLIDER1", MainScript.fCitizenReportChance, "$MRT_SP_CITIZEN_REPORT_CHANCE_SLIDER2", flag)
     AddSliderOptionST("GUARD_REPORT_CHANCE_SLIDER", "$MRT_SP_GUARD_REPORT_CHANCE_SLIDER1", MainScript.fGuardReportChance, "$MRT_SP_GUARD_REPORT_CHANCE_SLIDER2", flag)
+		
+		addEmptyOption()
+		_AddHeaderOption("$MRT_SP_HEAD_INTEGRATION_SLA")
+		
+		if MainScript.bModEnabled && MainScript.bIs_SLA_Active
+      flag = OPTION_FLAG_NONE
+    else
+      flag = OPTION_FLAG_DISABLED
+    endif	
+		OID_SLA_MIN_PC_AROUSAL = AddSliderOption("$MRT_SP_SLA_MIN_PC_AROUSAL_SLIDER1", MainScript.iSLA_MinPCArousal, "$MRT_SP_SLA_MIN_PC_AROUSAL_SLIDER2", flag)
+		OID_SLA_MIN_APPROACH_AROUSAL = AddSliderOption("$MRT_SP_SLA_MIN_APPROACH_AROUSAL_SLIDER1", MainScript.iSLA_MinApproachArousal, "$MRT_SP_SLA_MIN_APPROACH_AROUSAL_SLIDER2", flag)
+		OID_SLA_MIN_WHORE_CUSTOMER_AROUSAL = AddSliderOption("$MRT_SP_SLA_MIN_WHORE_CUSTOMER_AROUSAL_SLIDER1", MainScript.iSLA_MinWhoreCustomerArousal, "$MRT_SP_SLA_MIN_WHORE_CUSTOMER_AROUSAL_SLIDER2", flag)
+		OID_SLA_MIN_DIBEL_CUSTOMER_AROUSAL = AddSliderOption("$MRT_SP_SLA_MIN_DIBEL_CUSTOMER_AROUSAL_SLIDER1", MainScript.iSLA_MinDibelCustomerArousal, "$MRT_SP_SLA_MIN_DIBEL_CUSTOMER_AROUSAL_SLIDER2", flag)
+		OID_SLA_MIN_BEGGAR_SEX_OFFER_AROUSAL = AddSliderOption("$MRT_SP_SLA_MIN_BEGGAR_SEX_OFFER_AROUSAL_SLIDER1", MainScript.iSLA_MinBeggarSexOfferArousal, "$MRT_SP_SLA_MIN_BEGGAR_SEX_OFFER_AROUSAL_SLIDER2", flag)
 		addEmptyOption()
 		_AddHeaderOption("$MRT_SP_HEAD_INTEGRATION_SLSFR")
 	  if MainScript.bModEnabled && MainScript.bIs_SLSFR_Active
@@ -3066,7 +3081,6 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
   iDibelSpeechDifficulty = jsonutil.GetPathIntValue(settings_path, "iDibelSpeechDifficulty", iDibelSpeechDifficulty)
   iAnimInterfaceMethod = jsonutil.GetPathIntValue(settings_path, "iAnimInterfaceMethod", iAnimInterfaceMethod)
   
-  MainScript.iCustomerApproachTimer = jsonutil.GetPathIntValue(settings_path, "iCustomerApproachTimer", MainScript.iCustomerApproachTimer)
   MainScript.iCrimeBounty = jsonutil.GetPathIntValue(settings_path, "iCrimeBounty", MainScript.iCrimeBounty)
   MainScript.iDefaultRejectEntrapmentLevel = jsonutil.GetPathIntValue(settings_path, "iDefaultRejectEntrapmentLevel", MainScript.iDefaultRejectEntrapmentLevel)
   MainScript.iDibelRejectEntrapmentLevel = jsonutil.GetPathIntValue(settings_path,  "iDibelRejectEntrapmentLevel", MainScript.iDibelRejectEntrapmentLevel)
@@ -3076,7 +3090,14 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
   MainScript.iDibelEntrapmentLevel = jsonutil.GetPathIntValue(settings_path, "iDibelEntrapmentLevel", MainScript.iDibelEntrapmentLevel)
   MainScript.iBeggarEntrapmentLevel = jsonutil.GetPathIntValue(settings_path, "iBeggarEntrapmentLevel", MainScript.iBeggarEntrapmentLevel)
 	MainScript.iDeviousDeviceSet = jsonutil.GetPathIntValue(settings_path, "iDeviousDeviceSet", MainScript.iDeviousDeviceSet)
+	
+	MainScript.iSLA_MinPCArousal = jsonutil.GetPathIntValue(settings_path, "iSLA_MinPCArousal", MainScript.iSLA_MinPCArousal)
+	MainScript.iSLA_MinApproachArousal = jsonutil.GetPathIntValue(settings_path, "iSLA_MinApproachArousal", MainScript.iSLA_MinApproachArousal)
+	MainScript.iSLA_MinBeggarSexOfferArousal = jsonutil.GetPathIntValue(settings_path, "iSLA_MinBeggarSexOfferArousal", MainScript.iSLA_MinBeggarSexOfferArousal)
+	MainScript.iSLA_MinWhoreCustomerArousal = jsonutil.GetPathIntValue(settings_path, "iSLA_MinWhoreCustomerArousal", MainScript.iSLA_MinWhoreCustomerArousal)
+	MainScript.iSLA_MinDibelCustomerArousal = jsonutil.GetPathIntValue(settings_path, "iSLA_MinDibelCustomerArousal", MainScript.iSLA_MinDibelCustomerArousal)
 
+	MainScript.fCustomerApproachTimer = jsonutil.GetPathFloatValue(settings_path, "fCustomerApproachTimer", MainScript.fCustomerApproachTimer)
   MainScript.fWhoreOwnerShare = jsonutil.GetPathFloatValue(settings_path, "fWhoreOwnerShare", MainScript.fWhoreOwnerShare)
   MainScript.fBegPayMin = jsonutil.GetPathFloatValue(settings_path, "fBegPayMin", MainScript.fBegPayMin)
   MainScript.fBegPayMax = jsonutil.GetPathFloatValue(settings_path, "fBegPayMax", MainScript.fBegPayMax)
@@ -3221,7 +3242,7 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
 	MainScript.fSLSFR_MinBeggarSexOfferRequiredFame = jsonutil.GetPathFloatValue(settings_path, "fSLSFR_MinBeggarSexOfferRequiredFame", MainScript.fSLSFR_MinBeggarSexOfferRequiredFame)
 	MainScript.fSLSFR_MinGainFame = jsonutil.GetPathFloatValue(settings_path, "fSLSFR_MinGainFame", MainScript.fSLSFR_MinGainFame)
 	MainScript.fSLSFR_MaxGainFame = jsonutil.GetPathFloatValue(settings_path, "fSLSFR_MaxGainFame", MainScript.fSLSFR_MaxGainFame)
-	MainScript.fSLSFR_FameGainChance = jsonutil.GetPathFloatValue(settings_path, "fSLSFR_FameGainChance", MainScript.fSLSFR_FameGainChance)
+	MainScript.fSLSFR_FameGainChance = jsonutil.GetPathFloatValue(settings_path, "fSLSFR_FameGainChance", MainScript.fSLSFR_FameGainChance)	
 
   MainScript.sExtraTags_SL_Oral_MF = jsonutil.GetPathStringValue(settings_path, "sExtraTags_SL_Oral_MF", MainScript.sExtraTags_SL_Oral_MF)
   MainScript.sExtraTags_SL_Oral_FF = jsonutil.GetPathStringValue(settings_path, "sExtraTags_SL_Oral_FF", MainScript.sExtraTags_SL_Oral_FF)
@@ -3305,7 +3326,6 @@ Bool function saveUserSettingsPapyrus()
   jsonutil.SetPathIntValue(settings_path, "iWhoreSpeechDifficulty", iWhoreSpeechDifficulty)
   jsonutil.SetPathIntValue(settings_path, "iDibelSpeechDifficulty", iDibelSpeechDifficulty)
   jsonutil.SetPathIntValue(settings_path, "iAnimInterfaceMethod", iAnimInterfaceMethod)
-  jsonutil.SetPathIntValue(settings_path, "iCustomerApproachTimer", MainScript.iCustomerApproachTimer)
   jsonutil.SetPathIntValue(settings_path, "iCrimeBounty", MainScript.iCrimeBounty)
 
   jsonutil.SetPathIntValue(settings_path, "iDefaultRejectEntrapmentLevel", MainScript.iDefaultRejectEntrapmentLevel)
@@ -3316,7 +3336,13 @@ Bool function saveUserSettingsPapyrus()
   jsonutil.SetPathIntValue(settings_path, "iDibelEntrapmentLevel", MainScript.iDibelEntrapmentLevel)
   jsonutil.SetPathIntValue(settings_path, "iBeggarEntrapmentLevel", MainScript.iBeggarEntrapmentLevel)
 	Jsonutil.SetPathIntValue(settings_path, "iDeviousDeviceSet", MainScript.iDeviousDeviceSet)
+	Jsonutil.SetPathIntValue(settings_path, "iSLA_MinPCArousal", MainScript.iSLA_MinPCArousal)
+	Jsonutil.SetPathIntValue(settings_path, "iSLA_MinApproachArousal", MainScript.iSLA_MinApproachArousal)
+	Jsonutil.SetPathIntValue(settings_path, "iSLA_MinBeggarSexOfferArousal", MainScript.iSLA_MinBeggarSexOfferArousal)
+	Jsonutil.SetPathIntValue(settings_path, "iSLA_MinWhoreCustomerArousal", MainScript.iSLA_MinWhoreCustomerArousal)
+	Jsonutil.SetPathIntValue(settings_path, "iSLA_MinDibelCustomerArousal", MainScript.iSLA_MinDibelCustomerArousal)
 	
+	jsonutil.SetPathFloatValue(settings_path, "fCustomerApproachTimer", MainScript.fCustomerApproachTimer)
   jsonutil.SetPathFloatValue(settings_path, "fWhoreOwnerShare", MainScript.fWhoreOwnerShare)
   jsonutil.SetPathFloatValue(settings_path, "fBegPayMin", MainScript.fBegPayMin)
   jsonutil.SetPathFloatValue(settings_path, "fBegPayMax", MainScript.fBegPayMax)
@@ -4193,6 +4219,16 @@ event OnOptionHighlight(int option)
     SetInfoText("$MRT_SP_DESC_SLSFR_SLSFR_MAX_FAME_GAIN")
 	elseif option == OID_SLSFR_FAME_GAIN_CHANCE 
     SetInfoText("$MRT_SP_DESC_SLSFR_SLSFR_FAME_GAIN_CHANCE")
+	elseif option == OID_SLA_MIN_PC_AROUSAL 
+    SetInfoText("$MRT_SP_DESC_SLA_MIN_PC_AROUSAL")
+	elseif option == OID_SLA_MIN_APPROACH_AROUSAL 
+    SetInfoText("$MRT_SP_DESC_SLA_MIN_APPROACH_AROUSAL")
+	elseif option == OID_SLA_MIN_BEGGAR_SEX_OFFER_AROUSAL 
+    SetInfoText("$MRT_SP_DESC_SLA_MIN_BEGGAR_SEX_OFFER_AROUSAL")
+	elseif option == OID_SLA_MIN_WHORE_CUSTOMER_AROUSAL
+    SetInfoText("$MRT_SP_DESC_SLA_MIN_WHORE_CUSTOMER_AROUSAL")
+	elseif option == OID_SLA_MIN_DIBEL_CUSTOMER_AROUSAL
+    SetInfoText("$MRT_SP_DESC_SLA_MIN_DIBEL_CUSTOMER_AROUSAL")
 	endif
 endevent
 
@@ -4294,8 +4330,8 @@ event OnOptionSliderAccept(int option, float value)
     MainScript.fDibelRejectFemaleSlaveryChance = value
     SetSliderOptionValue(OID_DIBEL_REJ_FEMALE_SLAVERY, MainScript.fDibelRejectFemaleSlaveryChance, "$MRT_SP_DIBEL_REJ_FEMALE_SLAVERY_SLIDER2")
   elseif option == OID_CUSTOMER_APPROACH_INTERVAL
-    MainScript.iCustomerApproachTimer = value as Int
-    SetSliderOptionValue(OID_CUSTOMER_APPROACH_INTERVAL, MainScript.iCustomerApproachTimer, "$MRT_SP_CUSTOMER_APPROACH_INTERVAL_SLIDER2")
+    MainScript.fCustomerApproachTimer = value
+    SetSliderOptionValue(OID_CUSTOMER_APPROACH_INTERVAL, MainScript.fCustomerApproachTimer, "$MRT_SP_CUSTOMER_APPROACH_INTERVAL_SLIDER2")
     MainScript.ApproachMonitorScr.updateApproach(False)
   elseif option == OID_CUSTOMER_APPROACH_CHANCE 
     MainScript.fCustomerApproachChance = value
@@ -4485,7 +4521,22 @@ elseif option == OID_WHORE_DD_CHANCE
   SetSliderOptionValue(OID_WHORE_DD_CHANCE, MainScript.fWhoreDeviceChance, "$MRT_SP_WHORE_DD_CHANCE_SLIDER2")
 elseif option == OID_SLSFR_MIN_APPROACH_REQ_FAME
   MainScript.fSLSFR_MinApproachRequiredFame = value
-  SetSliderOptionValue(OID_SLSFR_MIN_APPROACH_REQ_FAME, MainScript.fSLSFR_MinApproachRequiredFame, "$MRT_SP_SLSFR_MIN_APPROACH_REQ_FAME_SLIDER2")
+  SetSliderOptionValue(OID_SLSFR_MIN_APPROACH_REQ_FAME, MainScript.fSLSFR_MinApproachRequiredFame, "$MRT_SP_SLSFR_MIN_APPROACH_REQ_FAME_SLIDER2")	
+elseif option == OID_SLA_MIN_PC_AROUSAL
+  MainScript.iSLA_MinPCArousal = value as Int
+  SetSliderOptionValue(OID_SLA_MIN_PC_AROUSAL, MainScript.iSLA_MinPCArousal, "$MRT_SP_SLA_MIN_PC_AROUSAL_SLIDER2")
+elseif option == OID_SLA_MIN_APPROACH_AROUSAL
+  MainScript.iSLA_MinApproachArousal = value as Int
+  SetSliderOptionValue(OID_SLA_MIN_APPROACH_AROUSAL, MainScript.iSLA_MinApproachArousal, "$MRT_SP_SLA_MIN_APPROACH_AROUSAL_SLIDER2")
+elseif option == OID_SLA_MIN_BEGGAR_SEX_OFFER_AROUSAL 
+  MainScript.iSLA_MinBeggarSexOfferArousal = value as Int
+  SetSliderOptionValue(OID_SLA_MIN_BEGGAR_SEX_OFFER_AROUSAL , MainScript.iSLA_MinBeggarSexOfferArousal, "$MRT_SP_SLA_MIN_BEGGAR_SEX_OFFER_AROUSAL_SLIDER2")
+elseif option == OID_SLA_MIN_WHORE_CUSTOMER_AROUSAL  
+  MainScript.iSLA_MinWhoreCustomerArousal = value as Int
+  SetSliderOptionValue(OID_SLA_MIN_WHORE_CUSTOMER_AROUSAL, MainScript.iSLA_MinWhoreCustomerArousal, "$MRT_SP_SLA_MIN_WHORE_CUSTOMER_AROUSAL_SLIDER2")
+elseif option == OID_SLA_MIN_DIBEL_CUSTOMER_AROUSAL  
+  MainScript.iSLA_MinDibelCustomerArousal = value as Int
+  SetSliderOptionValue(OID_SLA_MIN_DIBEL_CUSTOMER_AROUSAL, MainScript.iSLA_MinDibelCustomerArousal, "$MRT_SP_SLA_MIN_DIBEL_CUSTOMER_AROUSAL_SLIDER2")
 elseif option == OID_SLSFR_MIN_BEGGAR_SEX_OFFER_REQ_FAME
   MainScript.fSLSFR_MinBeggarSexOfferRequiredFame = value
   SetSliderOptionValue(OID_SLSFR_MIN_BEGGAR_SEX_OFFER_REQ_FAME, MainScript.fSLSFR_MinBeggarSexOfferRequiredFame, "$MRT_SP_SLSFR_MIN_BEGGAR_SEX_OFFER_REQ_Fame_SLIDER2")
@@ -4664,10 +4715,10 @@ event OnOptionSliderOpen(int option)
     SetSliderDialogRange(0, 100)
     SetSliderDialogInterval(0.1)
   elseif option == OID_CUSTOMER_APPROACH_INTERVAL
-    SetSliderDialogStartValue(MainScript.iCustomerApproachTimer)
+    SetSliderDialogStartValue(MainScript.fCustomerApproachTimer)
     SetSliderDialogDefaultValue(3.0)
     SetSliderDialogRange(0, 48)
-    SetSliderDialogInterval(1)
+    SetSliderDialogInterval(0.2)
   elseif option == OID_CUSTOMER_APPROACH_CHANCE 
     SetSliderDialogStartValue(MainScript.fCustomerApproachChance)
     SetSliderDialogDefaultValue(50.0)
@@ -4928,6 +4979,31 @@ event OnOptionSliderOpen(int option)
     SetSliderDialogDefaultValue(0.0)
     SetSliderDialogRange(0, 100)
     SetSliderDialogInterval(0.1)
+	elseif option == OID_SLA_MIN_PC_AROUSAL
+	  SetSliderDialogStartValue(MainScript.iSLA_MinPCArousal)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(1)
+	elseif option == OID_SLA_MIN_APPROACH_AROUSAL
+	  SetSliderDialogStartValue(MainScript.iSLA_MinApproachArousal)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(1)
+	elseif option == OID_SLA_MIN_BEGGAR_SEX_OFFER_AROUSAL
+	  SetSliderDialogStartValue(MainScript.iSLA_MinBeggarSexOfferArousal)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(1)
+	elseif option == OID_SLA_MIN_WHORE_CUSTOMER_AROUSAL 
+	  SetSliderDialogStartValue(MainScript.iSLA_MinWhoreCustomerArousal)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(1)
+	elseif option == OID_SLA_MIN_DIBEL_CUSTOMER_AROUSAL  
+	  SetSliderDialogStartValue(MainScript.iSLA_MinDibelCustomerArousal)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(1)
 	elseif option == OID_SLSFR_MIN_APPROACH_REQ_FAME
     SetSliderDialogStartValue(MainScript.fSLSFR_MinApproachRequiredFame)
     SetSliderDialogDefaultValue(50.0)
@@ -5169,7 +5245,7 @@ EndFunction
 
 Function approachOptions(Int iflag)
   int flg = iflag
-  OID_CUSTOMER_APPROACH_INTERVAL =  AddSliderOption("$MRT_SP_CUSTOMER_APPROACH_INTERVAL_SLIDER1", MainScript.iCustomerApproachTimer as Float, "$MRT_SP_CUSTOMER_APPROACH_INTERVAL_SLIDER2", flg)
+  OID_CUSTOMER_APPROACH_INTERVAL =  AddSliderOption("$MRT_SP_CUSTOMER_APPROACH_INTERVAL_SLIDER1", MainScript.fCustomerApproachTimer, "$MRT_SP_CUSTOMER_APPROACH_INTERVAL_SLIDER2", flg)
   AddEmptyOption()
   OID_CUSTOMER_APPROACH_CHANCE =  AddSliderOption("$MRT_SP_CUSTOMER_APPROACH_CHANCE_SLIDER1", MainScript.fCustomerApproachChance, "$MRT_SP_CUSTOMER_APPROACH_CHANCE_SLIDER2", flg)
   OID_MAX_DISTANCE_APPROACH = AddSliderOption("$MRT_SP_MAX_DISTANCE_APPROACH_SLIDER1", MainScript.fMaxApproachDistance, "$MRT_SP_MAX_DISTANCE_APPROACH_SLIDER2", flg)
@@ -5365,3 +5441,9 @@ Int OID_SLSFR_MIN_BEGGAR_SEX_OFFER_REQ_FAME
 Int OID_SLSFR_FAME_GAIN_CHANCE
 Int OID_SLSFR_MAX_FAME_GAIN
 Int OID_SLSFR_MIN_FAME_GAIN
+
+Int OID_SLA_MIN_PC_AROUSAL
+Int OID_SLA_MIN_APPROACH_AROUSAL
+Int OID_SLA_MIN_WHORE_CUSTOMER_AROUSAL
+Int OID_SLA_MIN_DIBEL_CUSTOMER_AROUSAL
+Int OID_SLA_MIN_BEGGAR_SEX_OFFER_AROUSAL
