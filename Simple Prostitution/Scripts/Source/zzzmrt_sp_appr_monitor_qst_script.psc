@@ -74,10 +74,10 @@ Function updateApproach(Bool bReset = False)
 		bCustomerCanApproach = false
 		ApproachQst.start()
 		if ApproachQst.IsRunning()
+			approachingActor = approachingRef.GetReference() as actor
+			approachingActorBase = approachingActor.GetLeveledActorBase()
 			if MainScript.bIs_SLA_Active && (MainScript.iSLA_MinApproachArousal > 0)
 				int i = 14
-				approachingActor = approachingRef.GetReference() as actor
-				approachingActorBase = approachingActor.GetLeveledActorBase()
 				iArousal = MainScript.SLA_Interface.GetActorArousal(approachingActor)
 				while i > 0 && ApproachQst.IsRunning() && approachingActor && (iArousal < MainScript.iSLA_MinApproachArousal)
 					i -= 1
