@@ -30,7 +30,12 @@ EndFunction
 
 
 Function stopApproach(Bool bConfirm = true)
+	bCustomerCanApproach = False
 	actor apprActor = approachingRef.GetActorRef()
+	if MainScript.bIsPapyrusUtilActive && apprActor && (apprActor.GetCurrentPackage() == MainScript.customerForceGreetPackage)
+		ActorUtil.RemovePackageOverride(apprActor, MainScript.customerForceGreetPackage)
+		;apprActor.EvaluatePackage()
+	endif
 	ApproachQst.stop()
 	if !bConfirm
 		return
@@ -38,10 +43,6 @@ Function stopApproach(Bool bConfirm = true)
 	While ApproachQst.IsRunning()
 		Utility.WaitMenuMode(0.1)
 	EndWhile
-	if MainScript.bIsPapyrusUtilActive && apprActor && (apprActor.GetCurrentPackage() == MainScript.customerForceGreetPackage)
-		ActorUtil.RemovePackageOverride(apprActor, MainScript.customerForceGreetPackage)
-		apprActor.EvaluatePackage()
-	endif
 EndFunction
 
 Function updateApproach(Bool bReset = False)
@@ -50,15 +51,13 @@ Function updateApproach(Bool bReset = False)
 	Form approachingActorBase
 	int iArousal = 0
 	if ApproachQst.IsRunning()
-		if approachingRef
-			approachingActor = approachingRef.GetReference() as actor
-			approachingActorBase = approachingActor.GetLeveledActorBase()
-			if approachingActor.GetDialogueTarget() == player
-				doReset = false
-			else
-				stopApproach(doReset)
-			endif
-		endIf
+		approachingActor = approachingRef.GetReference() as actor
+		approachingActorBase = approachingActor.GetLeveledActorBase()
+		if approachingActor.GetDialogueTarget() == player
+			doReset = false
+		else
+			stopApproach(doReset)
+		endif
 	endif
 	
 	if MainScript.fCustomerApproachTimer < 0.2
