@@ -13,6 +13,7 @@ zzzmrt_sp_ddi_interface property DDI_Interface auto
 zzzmrt_sp_ddx_interface property DDX_Interface auto
 zzzmrt_sp_slsfr_interface property SLSFR_Interface auto
 zzzmrt_sp_sla_interface property SLA_Interface auto
+zzzmrt_sp_dibellan_lust_qst_script property dibellan_lust_qst_script auto
 Quest Property SLA_Interface_Qst Auto
 Quest Property OStimInterfaceQst Auto
 Quest Property FlowerGirlsInterfaceQst Auto
@@ -69,6 +70,7 @@ Bool property bDibelAgent=True auto Hidden Conditional
 Bool property bDibelCrown=True auto Hidden Conditional
 Bool property bDibelEnabled=True auto Hidden Conditional
 Bool property bDibelNaked=True auto Hidden Conditional
+Bool property bDibelAmulet=False auto Hidden Conditional
 Bool property bDibelNeedLicense=False auto Hidden Conditional
 Bool property bIsFlowerGirlsActive=False auto Hidden Conditional
 Bool property bIsSexlabActive=False auto Hidden Conditional
@@ -318,6 +320,15 @@ Int property iSLA_MinDibelCustomerArousal = 0 Auto Hidden Conditional
 Int property iSLA_MinBeggarSexOfferArousal = 0 Auto Hidden Conditional
 Int property iSLA_MinPCArousal = 0 Auto Hidden Conditional
 
+Float property fTempleClientMinExtraPay = 100.0 Auto Hidden Conditional
+Float property fTempleClientMaxExtraPay = 200.0 Auto Hidden Conditional
+
+Bool Property bMaleTempleClient = true Auto Hidden Conditional
+Bool Property bFemaleTempleClient = true Auto Hidden Conditional
+
+Quest property TempleEscort_Qst Auto
+Quest property DibellanLust_Qst Auto
+
 Formlist Property raceList Auto
 Formlist Property vampireRacelist Auto
 FormList Property checkedItems Auto
@@ -478,6 +489,12 @@ function shutDown()
 	if pimpTracker.isRunning()
 		pimpTracker.setstage(10)
 	endif
+	if DibellanLust_Qst.isrunning()
+		DibellanLust_Qst.setstage(10)
+	endif
+	if TempleEscort_Qst.isrunning()
+		TempleEscort_Qst.setstage(10)
+	endif
 	currentAllowedLocations.Revert()
 	player.removeFromFaction(whoreFaction)
 	owner.clear()
@@ -635,7 +652,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-	return getBaseVersion() + 0.42
+	return getBaseVersion() + 0.43
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
@@ -966,11 +983,57 @@ Function setDibelCustomer(Actor akActor, bool bPay = true )
 			iDibelPosition = positionChooser(fDibelVagChance as Int, fDibelAnalChance as Int, fDibelOralChance as Int)
 		endif
 		if iDibelPosition > -1
-			iPayment = payDibel(player, iDibelPosition)
+			iPayment = payDibel(player, iDibelPosition, false)
 			(iPayment > 0) && debug.sendanimationevent(akActor, "IdleGive")
 			persuade(fDibelPersuasionXPMult)
 		endif
 	endIf
+	if iDibelPositions.length != 4
+		iDibelPositions = new int[4]
+		iDibelPositions[0] = -1
+		iDibelPositions[1] = -1
+		iDibelPositions[2] = -1
+		iDibelPositions[3] = -1
+	endif
+	if iDibelPosition > -1
+		if dibelCustomerList.GetSize() == 0
+			forceRefAndPackageTo(akActor, dibelCustomerAlias, FollowPackage)
+			iDibelPositions[0] = iDibelPosition
+			iPaidGoldDibelCustomer1 = iPayment
+		elseif dibelCustomerList.GetSize() == 1
+			forceRefAndPackageTo(akActor, dibelCustomerAlias2, FollowPackage)
+			iDibelPositions[1] = iDibelPosition
+			iPaidGoldDibelCustomer2 = iPayment
+		elseif dibelCustomerList.GetSize() == 2
+			forceRefAndPackageTo(akActor, dibelCustomerAlias3, FollowPackage)
+			iDibelPositions[2] = iDibelPosition
+			iPaidGoldDibelCustomer3 = iPayment
+		elseif dibelCustomerList.GetSize() == 3
+			forceRefAndPackageTo(akActor, dibelCustomerAlias4, FollowPackage)
+			iDibelPositions[3] = iDibelPosition
+			iPaidGoldDibelCustomer4 = iPayment
+		endif
+		akActor.EvaluatePackage()
+		dibelCustomerList.AddForm(akActor)
+		iTotalDibelCustomers = dibelCustomerList.GetSize()
+	endif
+	SLSFR_Interface.SLSFR_toggle_WhoreFlag(isPlayerDibeling() || isPlayerWhoring())
+EndFunction
+
+Function setTempleClient(Actor akActor)
+	if !akActor || isCustomer(akActor)
+		return
+	endif
+	int iPayment = 0
+	if !player.GetActorBase().GetSex() && !akActor.GetLeveledActorBase().GetSex()
+		iDibelPosition = positionChooser(0, fDibelAnalChance as Int, fDibelOralChance as Int)
+	else
+		iDibelPosition = positionChooser(fDibelVagChance as Int, fDibelAnalChance as Int, fDibelOralChance as Int)
+	endif
+	if iDibelPosition > -1
+		iPayment = payDibel(player, iDibelPosition, true)
+		(iPayment > 0) && debug.sendanimationevent(akActor, "IdleGive")
+	endif
 	if iDibelPositions.length != 4
 		iDibelPositions = new int[4]
 		iDibelPositions[0] = -1
@@ -1467,7 +1530,7 @@ Bool Function stealFromPlayer(Actor Thief)
 	endif
 	if iGoldToRemove > 0
 		player.removeItem(gold, iGoldToRemove, false, Thief)
-		Debug.trace("Simple Prostitution: " + Thief + " : " + Thief.GetLeveledActorBase().GetName() + " stole " + iGoldToRemove + " septim.")
+		Debug.trace("Simple Prostitution: " + Thief + " : " + Thief.GetDisplayName() + " stole " + iGoldToRemove + " septim.")
 		bRobbed = true
 	endif
 	Form[] QuestItemsArr
@@ -1475,7 +1538,7 @@ Bool Function stealFromPlayer(Actor Thief)
 		itemToRob = player.GetWornForm(Armor.GetMaskForSlot(32))
 		if itemToRob && !hasInvalidKeyword(itemToRob) && (itemToRob.GetGoldValue() > 0)
 			player.removeItem(itemToRob, 1, false, Thief)
-			Debug.trace("Simple Prostitution: " + Thief + " : " + Thief.GetLeveledActorBase().GetName() + " stole " + itemToRob)
+			Debug.trace("Simple Prostitution: " + Thief + " : " + Thief.GetDisplayName() + " stole " + itemToRob)
 			bRobbed = true
 		else
 			if bIsPapyrusUtilActive
@@ -1494,7 +1557,7 @@ Bool Function stealFromPlayer(Actor Thief)
 						else
 							if itemToRob.GetGoldValue() > 0
 								player.removeItem(itemToRob, 1, false, Thief)
-								Debug.trace("Simple Prostitution: " + Thief + " : " + Thief.GetLeveledActorBase().GetName() + " stole " + itemToRob)
+								Debug.trace("Simple Prostitution: " + Thief + " : " + Thief.GetDisplayName() + " stole " + itemToRob)
 								bRobbed = true
 							elseif !itemToRob.HasKeywordString("ostimnostrip") && !itemToRob.HasKeywordString("sexlabnostrip")
 								player.UnequipItemSlot(iIndex)
@@ -1563,7 +1626,7 @@ Bool Function stealFromPlayer(Actor Thief)
 				endwhile
 				if iVal > 0
 					player.removeItem(itemToRob, 1, false, thief)
-					Debug.trace("Simple Prostitution: " + Thief + " : " + Thief.GetLeveledActorBase().GetName() + " stole " + itemToRob)
+					Debug.trace("Simple Prostitution: " + Thief + " : " + Thief.GetDisplayName() + " stole " + itemToRob)
 					bRobbed = true
 				endif
 				checkedItems.revert()
@@ -1929,7 +1992,7 @@ Int function payBeggar(Actor beggar, Bool bBonus = True)
 	return totalPay
 endfunction
 
-Int function payDibel(Actor Dibel, int position)
+Int function payDibel(Actor Dibel, int position, bool bSentByTemple = false)
 	Int minBonus = maxInt(0, ((Dibel.getActorValue("Speechcraft") * fMinSpeechDibelBonusMult) As Int) + 1)
 	Int maxBonus = maxInt(0, ((Dibel.getActorValue("Speechcraft") * fMaxSpeechDibelBonusMult) As Int) + 1)
 	minBonus = minInt(minBonus,maxBonus)
@@ -1943,9 +2006,16 @@ Int function payDibel(Actor Dibel, int position)
 		positionReward = fDibelOralPay As Int
 	endif
 	Int totalPay = positionReward + randInt(minBonus, maxBonus)
+	if bSentByTemple
+		totalPay += randInt(fTempleClientMinExtraPay as Int, fTempleClientMaxExtraPay as Int)
+	endif
 	totalPay = maxInt(0, totalPay)
 	Dibel.Additem(gold, totalPay)
 	return totalPay
+endfunction
+
+Function giveTempleQuestReward()
+	Player.additem(gold, randint(fTempleClientMinExtraPay as Int, fTempleClientMaxExtraPay as Int))
 endfunction
 
 Int function payWhore(actor whore, int position)
@@ -1985,7 +2055,7 @@ Int function payWhore(actor whore, int position)
 		currentOwnerSeptimDisplay.SetValueInt(iCurrentOwnerSeptims)
 		UpdateCurrentInstanceGlobal(currentOwnerSeptimDisplay)
 		pimpTracker.UpdateCurrentInstanceGlobal(currentOwnerSeptimDisplay)
-		Debug.Notification(totalPay + " septim added to " + ownerActor.getLeveledActorBase().getName())
+		Debug.Notification(totalPay + " septim added to " + ownerActor.getDisplayName())
 	elseif isWhoringAlwaysAllowedInCurrentLocation || (ownerActor && (ownerActor.getParentCell() == whore.getParentCell()))
 		whore.Additem(gold, totalPay)
 	else
@@ -2171,7 +2241,7 @@ Bool Function checkSnitch(Actor npc, Bool bCompleteCheck = False, Bool bDibel = 
 				else
 					whoreSnitch = npc
 				endif
-				Debug.Trace("Simple Prostitution: " + npc.GetLeveledActorBase().GetName() + " (" + npc + ") wants to snitch on player.")
+				Debug.Trace("Simple Prostitution: " + npc.GetDisplayName() + " (" + npc + ") wants to snitch on player.")
 				Return True
 			endif
 		endif
@@ -2182,7 +2252,7 @@ Bool Function checkSnitch(Actor npc, Bool bCompleteCheck = False, Bool bDibel = 
 			else
 				whoreSnitch = npc
 			endif
-			Debug.Trace("Simple Prostitution: " + npc.GetLeveledActorBase().GetName() + " (" + npc + ") wants to snitch on player.")
+			Debug.Trace("Simple Prostitution: " + npc.GetDisplayName() + " (" + npc + ") wants to snitch on player.")
 			Return True
 		endif
 	endif
@@ -2306,6 +2376,8 @@ function snitch()
 			String msg
 			if (iTotalCrimes > 1) && ((snitch == angryDibelCustomer) || (snitch == angryWhoreCustomer))
 				msg = "Simple Prostitution: You have been reported to the guards."
+			elseif snitch.GetDisplayName()
+				msg = "Simple Prostitution: " + snitch.GetDisplayName() + " reported you."
 			elseif snitch.GetLeveledActorBase().GetName()
 				msg = "Simple Prostitution: " + snitch.GetLeveledActorBase().GetName() + " reported you."
 			else
@@ -2714,6 +2786,7 @@ State Dibeling
 	event on_spp_sexlab_Sex_End(int tid, bool HasPlayer)
 		if HasPlayer
 			addDibelMarkToPlayer(fDibelMarkChance, iDibelPartners)
+			dibellan_lust_qst_script.updateQuest(iDibelPartners)
 			startInfectingPlayer(GetState(), iDibelPartners)
 			bDibelAnimEnded = true
 			if dibelCustomerlist.GetSize() == 0
@@ -2732,6 +2805,7 @@ State Dibeling
 
 	Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, form sender)
 		addDibelMarkToPlayer(fDibelMarkChance, iDibelPartners)
+		dibellan_lust_qst_script.updateQuest(iDibelPartners)
 		startInfectingPlayer(GetState(), iDibelPartners)
 		bDibelAnimEnded = true
 		if dibelCustomerlist.GetSize() == 0
@@ -2749,6 +2823,7 @@ State Dibeling
 
 	event onUpdate()
 		addDibelMarkToPlayer(fDibelMarkChance, iDibelPartners)
+		dibellan_lust_qst_script.updateQuest(iDibelPartners)
 		startInfectingPlayer(GetState(), iDibelPartners)
 		bDibelAnimEnded = true
 		if dibelCustomerlist.GetSize() == 0
@@ -3330,18 +3405,22 @@ Function rapePlayer(Actor akAggressor)
 EndFunction
 
 Int function randInt(int iMin, int iMax)
+	int _min =minInt(iMin, iMax)
+	int _max =maxInt(iMin, iMax)
 	if bIsPO3ExtenderActive
-		return PO3_SKSEFunctions.GenerateRandomInt(iMin, iMax)
+		return PO3_SKSEFunctions.GenerateRandomInt(_min, _max)
 	else
-		return utility.randomInt(iMin, iMin)
+		return utility.randomInt(_min, _max)
 	endif
 endFunction
 
 Float function randFloat(float fMin, float fMax)
+	float _min = minFloat(fMin, fMax)
+	float _max = maxFloat(fMin, fMax)
 	if bIsPO3ExtenderActive
-		return PO3_SKSEFunctions.GenerateRandomFloat(fMin, fMax)
+		return PO3_SKSEFunctions.GenerateRandomFloat(_min, _max)
 	else
-		return utility.randomFloat(fMin, fMin)
+		return utility.randomFloat(_min, _max)
 	endif
 endFunction
 

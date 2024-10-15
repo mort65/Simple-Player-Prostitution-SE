@@ -104,7 +104,10 @@ Function updateApproach(Bool bReset = False)
 			endif
 			if bCustomerCanApproach
 				if approachingActor
-					String sName = approachingActorBase.GetName()
+					String sName = approachingActor.getDisplayName()
+					if sName == ""
+						sName = approachingActorBase.GetName()
+					endif
 					if sName == "" && MainScript.bIsPO3ExtenderActive
 						sName = PO3_SKSEFunctions.GetFormEditorID(approachingActor)
 					endif

@@ -135,7 +135,7 @@ event OnPageReset(String page)
       npc = Game.GetCurrentConsoleRef() As Actor
     endif
     if npc && (npc != MainScript.player)
-      _AddTextOptionST("WHORE_TAG_NPC_NAME_TXT", shortenString(npc.GetBaseObject().GetName(), 32), "", OPTION_FLAG_DISABLED) 
+      _AddTextOptionST("WHORE_TAG_NPC_NAME_TXT", shortenString(npc.GetDisplayName(), 32), "", OPTION_FLAG_DISABLED) 
       if Mainscript.bCanPimp(npc)
         if npc.HasKeyword(Mainscript.prostituteManager_KWD)
           _AddTextOptionST("WHORE_TAG_OWNER_TXT", "$MRT_SP_WHORE_TAG_OWNER_ON", "", flag) 
@@ -431,6 +431,7 @@ event OnPageReset(String page)
     _AddToggleOptionST("DIBEL_TOGGLE", "$MRT_SP_DIBEL_TOGGLE", MainScript.bDibelEnabled, flag)
     _AddToggleOptionST("DIBEL_AGENT_TOGGLE", "$MRT_SP_DIBEL_AGENT_TOGGLE", MainScript.bDibelAgent, flag)
     _AddToggleOptionST("DIBEL_CROWN_TOGGLE", "$MRT_SP_DIBEL_CROWN_TOGGLE", MainScript.bDibelCrown, flag)
+		OID_DIBEL_AMULET = AddToggleOption("$MRT_SP_DIBEL_AMULET_TOGGLE", MainScript.bDibelAmulet, flag)
     _AddToggleOptionST("DIBEL_ALLOW_AGGRESSIVE_TOGGLE", "$MRT_SP_DIBEL_ALLOW_AGGRESSIVE_TOGGLE", MainScript.bDIBELAllowAggressive, flag)
     _AddToggleOptionST("DIBEL_NAKED_TOGGLE", "$MRT_SP_DIBEL_NAKED_TOGGLE", MainScript.bDibelNaked, flag)
     AddSliderOptionST("DIBEL_ORAL_CHANCE_SLIDER", "$MRT_SP_DIBEL_ORAL_CHANCE_SLIDER1", MainScript.fDibelOralChance, "$MRT_SP_DIBEL_ORAL_CHANCE_SLIDER2", flag)
@@ -444,14 +445,21 @@ event OnPageReset(String page)
     AddMenuOptionST("DIBEL_ACCEPT_DIFFICULTY_MENU", "$MRT_SP_DIBEL_ACCEPT_DIFFICULTY_MENU", sGetSpeechDifficultyArr()[iDibelSpeechDifficulty], flag)
     AddSliderOptionST("SPEECH_DIBEL_XP_MULT_SLIDER", "$MRT_SP_SPEECH_DIBEL_XP_MULT_SLIDER1", MainScript.fDibelPersuasionXPMult, "$MRT_SP_SPEECH_DIBEL_XP_MULT_SLIDER2", flag)
     AddSliderOptionST("DIBEL_MARK_CHANCE_SLIDER", "$MRT_SP_DIBEL_MARK_CHANCE_SLIDER1", Mainscript.fDibelMarkChance, "$MRT_SP_DIBEL_MARK_CHANCE_SLIDER2", flag)
-    if MainScript.bModEnabled && (MainScript.bIsDDIntegrationActive && MainScript.bIsDDExpansionActive)
+		if MainScript.bModEnabled && (MainScript.bIsDDIntegrationActive && MainScript.bIsDDExpansionActive)
       flag = OPTION_FLAG_NONE
     else
       flag = OPTION_FLAG_DISABLED
     endIf  
     OID_DIBEL_DD_CHANCE = AddSliderOption("$MRT_SP_DIBEL_DD_CHANCE_SLIDER1", MainScript.fDibelDeviceChance, "$MRT_SP_DIBEL_DD_CHANCE_SLIDER2", flag)
     OID_DIBEL_ENTRAPMENT_LVL_M = AddMenuOption("$MRT_SP_DIBEL_ENTRAPMENT_LVL", sGetEntrapmentLevels()[MainScript.iDibelEntrapmentLevel], flag)
-    SetCursorPosition(1)
+    addEmptyOption()
+	  if (MainScript.bModEnabled)
+      flag = OPTION_FLAG_NONE
+    else
+      flag = OPTION_FLAG_DISABLED
+    endif
+		Dibel_Temple_Tasks(flag)
+		SetCursorPosition(1)
     if MainScript.bModEnabled
       flag = OPTION_FLAG_NONE
     else
@@ -3075,6 +3083,9 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
   MainScript.bBeggarGuardsSexOffer = jsonutil.GetPathIntValue(settings_path, "bBeggarGuardsSexOffer", MainScript.bBeggarGuardsSexOffer as Int)
   MainScript.bEldersMayApproach = jsonutil.GetPathIntValue(settings_path, "bEldersMayApproach", MainScript.bEldersMayApproach as int)
   MainScript.bBeggarElderSexOffer = jsonutil.GetPathIntValue(settings_path, "bBeggarElderSexOffer", MainScript.bBeggarElderSexOffer as int)
+	MainScript.bDibelAmulet = jsonutil.GetPathIntValue(settings_path, "bDibelAmulet", MainScript.bDibelAmulet as int)
+	MainScript.bMaleTempleClient = jsonutil.GetPathIntValue(settings_path, "bMaleTempleClient", MainScript.bMaleTempleClient as int)
+	MainScript.bFemaleTempleClient = jsonutil.GetPathIntValue(settings_path, "bFemaleTempleClient", MainScript.bFemaleTempleClient as int)
 
   iBeggarSpeechDifficulty = jsonutil.GetPathIntValue(settings_path, "iBeggarSpeechDifficulty", iBeggarSpeechDifficulty)
   iWhoreSpeechDifficulty = jsonutil.GetPathIntValue(settings_path, "iWhoreSpeechDifficulty", iWhoreSpeechDifficulty)
@@ -3242,7 +3253,10 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
 	MainScript.fSLSFR_MinBeggarSexOfferRequiredFame = jsonutil.GetPathFloatValue(settings_path, "fSLSFR_MinBeggarSexOfferRequiredFame", MainScript.fSLSFR_MinBeggarSexOfferRequiredFame)
 	MainScript.fSLSFR_MinGainFame = jsonutil.GetPathFloatValue(settings_path, "fSLSFR_MinGainFame", MainScript.fSLSFR_MinGainFame)
 	MainScript.fSLSFR_MaxGainFame = jsonutil.GetPathFloatValue(settings_path, "fSLSFR_MaxGainFame", MainScript.fSLSFR_MaxGainFame)
-	MainScript.fSLSFR_FameGainChance = jsonutil.GetPathFloatValue(settings_path, "fSLSFR_FameGainChance", MainScript.fSLSFR_FameGainChance)	
+	MainScript.fSLSFR_FameGainChance = jsonutil.GetPathFloatValue(settings_path, "fSLSFR_FameGainChance", MainScript.fSLSFR_FameGainChance)
+	
+	MainScript.fTempleClientMinExtraPay = jsonutil.GetPathFloatValue(settings_path, "fTempleClientMinExtraPay", MainScript.fTempleClientMinExtraPay)
+	MainScript.fTempleClientMaxExtraPay = jsonutil.GetPathFloatValue(settings_path, "fTempleClientMaxExtraPay", MainScript.fTempleClientMaxExtraPay)
 
   MainScript.sExtraTags_SL_Oral_MF = jsonutil.GetPathStringValue(settings_path, "sExtraTags_SL_Oral_MF", MainScript.sExtraTags_SL_Oral_MF)
   MainScript.sExtraTags_SL_Oral_FF = jsonutil.GetPathStringValue(settings_path, "sExtraTags_SL_Oral_FF", MainScript.sExtraTags_SL_Oral_FF)
@@ -3321,6 +3335,9 @@ Bool function saveUserSettingsPapyrus()
   jsonutil.SetPathIntValue(settings_path, "bBeggarGuardsSexOffer", MainScript.bBeggarGuardsSexOffer as Int)
   jsonutil.SetPathIntValue(settings_path, "bEldersMayApproach", MainScript.bEldersMayApproach as Int)
   jsonutil.SetPathIntValue(settings_path, "bBeggarElderSexOffer", MainScript.bBeggarElderSexOffer as Int)
+	jsonutil.SetPathIntValue(settings_path, "bDibelAmulet", MainScript.bDibelAmulet as Int)
+	jsonutil.SetPathIntValue(settings_path, "bMaleTempleClient", MainScript.bMaleTempleClient as Int)
+	jsonutil.SetPathIntValue(settings_path, "bFemaleTempleClient", MainScript.bFemaleTempleClient as Int)
 
   jsonutil.SetPathIntValue(settings_path, "iBeggarSpeechDifficulty", iBeggarSpeechDifficulty)
   jsonutil.SetPathIntValue(settings_path, "iWhoreSpeechDifficulty", iWhoreSpeechDifficulty)
@@ -3490,7 +3507,10 @@ Bool function saveUserSettingsPapyrus()
 	jsonutil.SetPathFloatValue(settings_path, "fSLSFR_MinGainFame", MainScript.fSLSFR_MinGainFame)
 	jsonutil.SetPathFloatValue(settings_path, "fSLSFR_MaxGainFame", MainScript.fSLSFR_MaxGainFame)
 	jsonutil.SetPathFloatValue(settings_path, "fSLSFR_FameGainChance", MainScript.fSLSFR_FameGainChance)
-
+	
+	jsonutil.SetPathFloatValue(settings_path, "fTempleClientMinExtraPay", MainScript.fTempleClientMinExtraPay)
+	jsonutil.SetPathFloatValue(settings_path, "fTempleClientMaxExtraPay", MainScript.fTempleClientMaxExtraPay)
+	
   jsonutil.SetPathStringValue(settings_path, "sExtraTags_SL_Oral_MF", MainScript.sExtraTags_SL_Oral_MF)
   jsonutil.SetPathStringValue(settings_path, "sExtraTags_SL_Oral_FF", MainScript.sExtraTags_SL_Oral_FF)
   jsonutil.SetPathStringValue(settings_path, "sExtraTags_SL_Oral_MM", MainScript.sExtraTags_SL_Oral_MM)
@@ -3927,6 +3947,15 @@ event OnOptionSelect(int option)
   elseif option == OID_ELDER_MAY_APPROACH
     MainScript.bEldersMayApproach = !MainScript.bEldersMayApproach
     SetToggleOptionValue(option, MainScript.bEldersMayApproach)
+	elseif option == OID_DIBEL_AMULET
+		MainScript.bDibelAmulet = !MainScript.bDibelAmulet
+		SetToggleOptionValue(option, MainScript.bDibelAmulet)
+	elseif option == OID_DIBEL_TEMPLE_TASK_MALE_CLIENT
+		MainScript.bMaleTempleClient = !MainScript.bMaleTempleClient
+		SetToggleOptionValue(option, MainScript.bMaleTempleClient)
+	elseif option == OID_DIBEL_TEMPLE_TASK_FEMALE_CLIENT
+		MainScript.bFemaleTempleClient = !MainScript.bFemaleTempleClient
+		SetToggleOptionValue(option, MainScript.bFemaleTempleClient)
   endif
   ForcePageReset()
 EndEvent
@@ -3981,6 +4010,15 @@ event OnOptionDefault(int option)
   elseif option == OID_ELDER_MAY_APPROACH
     MainScript.bEldersMayApproach = true
     SetToggleOptionValue(option, MainScript.bEldersMayApproach)
+	elseif option == OID_DIBEL_AMULET
+		MainScript.bDibelAmulet = False
+		SetToggleOptionValue(option, MainScript.bDibelAmulet)
+	elseif option == OID_DIBEL_TEMPLE_TASK_MALE_CLIENT
+		MainScript.bMaleTempleClient = True
+		SetToggleOptionValue(option, MainScript.bMaleTempleClient)
+	elseif option == OID_DIBEL_TEMPLE_TASK_FEMALE_CLIENT
+		MainScript.bFemaleTempleClient = True
+		SetToggleOptionValue(option, MainScript.bFemaleTempleClient)
   endif
   ForcePageReset()
 EndEvent
@@ -4126,7 +4164,16 @@ event OnOptionHighlight(int option)
     SetInfoText("$MRT_SP_DESC_CRUEL_GUARDS_APPROACH")
   elseif option == OID_GUARDS_MAY_APPROACH
     SetInfoText("$MRT_SP_DESC_GUARDS_MAY_APPROACH")
-  
+  elseif option == OID_DIBEL_AMULET
+		SetInfoText("$MRT_SP_DESC_DIBEL_AMULET_TOGGLE")
+	elseif option == OID_DIBEL_TEMPLE_TASK_MALE_CLIENT
+		SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_TASK_MALE_CLIENT")
+	elseif option == OID_DIBEL_TEMPLE_TASK_FEMALE_CLIENT
+		SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_TASK_FEMALE_CLIENT")
+	elseif option == OID_DIBEL_TEMPLE_TASK_MIN_PAY
+		SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_TASK_MIN_PAY")
+	elseif option == OID_DIBEL_TEMPLE_TASK_MAX_PAY
+		SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_TASK_MAX_PAY")
   elseif option == OID_DEVIOUS_VAG_PRC
     SetInfoText("$MRT_SP_DESC_DEVIOUS_VAG_PRC")
   elseif option == OID_DEVIOUS_NIP_PRC
@@ -4412,145 +4459,151 @@ event OnOptionSliderAccept(int option, float value)
     SetSliderOptionValue(OID_DEVIOUS_BRA, MainScript.fDeviousChastityBrasChance, "$MRT_SP_DEVIOUS_BRA_SLIDER2")
     setModVars = true
   elseif option == OID_DEVIOUS_HOOD
-   MainScript.fDeviousHoodChance = value
-   SetSliderOptionValue(OID_DEVIOUS_HOOD, MainScript.fDeviousHoodChance, "$MRT_SP_DEVIOUS_HOOD_SLIDER2") 
-   setModVars = true   
- elseif option == OID_DEVIOUS_SUIT
-   MainScript.fDeviousSuitsChance = value
-   SetSliderOptionValue(OID_DEVIOUS_SUIT, MainScript.fDeviousSuitsChance, "$MRT_SP_DEVIOUS_SUIT_SLIDER2")
-   setModVars = true
- elseif option == OID_DEVIOUS_BOOTS
-   MainScript.fDeviousBootsChance = value
-   SetSliderOptionValue(OID_DEVIOUS_BOOTS, MainScript.fDeviousBootsChance, "$MRT_SP_DEVIOUS_BOOTS_SLIDER2")
-   setModVars = true
- elseif option == OID_DEVIOUS_CORSET
-   MainScript.fDeviousCorsetChance = value
-   SetSliderOptionValue(OID_DEVIOUS_CORSET, MainScript.fDeviousCorsetChance, "$MRT_SP_DEVIOUS_CORSET_SLIDER2")
-   setModVars = true
- elseif option == OID_DEVIOUS_HARNESS
-   MainScript.fDeviousHarnessesChance = value
-   SetSliderOptionValue(OID_DEVIOUS_HARNESS, MainScript.fDeviousHarnessesChance, "$MRT_SP_DEVIOUS_HARNESS_SLIDER2")
-   setModVars = true
- elseif option == OID_DEVIOUS_VAG_PRC
-   MainScript.fDeviousVaginalPiercingChance = value
-   SetSliderOptionValue(OID_DEVIOUS_VAG_PRC, MainScript.fDeviousVaginalPiercingChance, "$MRT_SP_DEVIOUS_VAG_PRC_SLIDER2")
-   setModVars = true
- elseif option == OID_DEVIOUS_NIP_PRC
-   MainScript.fDeviousNipplePiercingChance = value
-   SetSliderOptionValue(OID_DEVIOUS_NIP_PRC, MainScript.fDeviousNipplePiercingChance, "$MRT_SP_DEVIOUS_NIP_PRC_SLIDER2")
-   setModVars = true
- elseif option == OID_DEVIOUS_ANL_PLUG
-   MainScript.fDeviousAnalPlugChance = value
-   SetSliderOptionValue(OID_DEVIOUS_ANL_PLUG, MainScript.fDeviousAnalPlugChance, "$MRT_SP_DEVIOUS_ANL_PLUG_SLIDER2")
-   setModVars = true
- elseif option == OID_DEVIOUS_VAG_PLUG
-   MainScript.fDeviousVaginalPlugChance = value
-   SetSliderOptionValue(OID_DEVIOUS_VAG_PLUG, MainScript.fDeviousVaginalPlugChance, "$MRT_SP_DEVIOUS_VAG_PLUG_SLIDER2")
-   setModVars = true
- elseif option == OID_DEVIOUS_ARM_CUF
-   MainScript.fDeviousArmCuffChance = value
-   SetSliderOptionValue(OID_DEVIOUS_ARM_CUF, MainScript.fDeviousArmCuffChance, "$MRT_SP_DEVIOUS_ARM_CUF_SLIDER2")
-   setModVars = true
- elseif option == OID_DEVIOUS_LEG_CUF
-   MainScript.fDeviousLegCuffChance = value
-   SetSliderOptionValue(OID_DEVIOUS_LEG_CUF, MainScript.fDeviousLegCuffChance, "$MRT_SP_DEVIOUS_LEG_CUF_SLIDER2")
-   setModVars = true
- elseif option == OID_DEVIOUS_GAG_RING
-   MainScript.fDeviousGagRingChance = value
-   SetSliderOptionValue(OID_DEVIOUS_GAG_RING, MainScript.fDeviousGagRingChance, "$MRT_SP_DEVIOUS_GAG_RING_SLIDER2")
-   setModVars = true
- elseif option == OID_DEVIOUS_GAG_ALL
-   MainScript.fDeviousGagAllChance = value
-   SetSliderOptionValue(OID_DEVIOUS_GAG_ALL, MainScript.fDeviousGagAllChance, "$MRT_SP_DEVIOUS_GAG_ALL_SLIDER2")
-   setModVars = true
- elseif option == OID_DEVIOUS_HEAVY_RESTRAINT
-  MainScript.fDeviousHeavyRestraintChance = value
-  SetSliderOptionValue(OID_DEVIOUS_HEAVY_RESTRAINT, MainScript.fDeviousHeavyRestraintChance, "$MRT_SP_DEVIOUS_HEAVY_RESTRAINT_SLIDER2")
-  setModVars = true
-elseif option == OID_DEVIOUS_BLINDFOLD
-  MainScript.fDeviousBlindfoldChance = value
-  SetSliderOptionValue(OID_DEVIOUS_BLINDFOLD, MainScript.fDeviousBlindfoldChance, "$MRT_SP_DEVIOUS_BLINDFOLD_SLIDER2")
-  setModVars = true
-elseif option == OID_DEVIOUS_GLOVES
-  MainScript.fDeviousGlovesChance = value
-  SetSliderOptionValue(OID_DEVIOUS_GLOVES, MainScript.fDeviousGlovesChance, "$MRT_SP_DEVIOUS_GLOVES_SLIDER2")
-  setModVars = true
-elseif option == OID_DEVIOUS_BELT_OPEN
-  MainScript.fDeviousChastityBeltOpenChance = value
-  SetSliderOptionValue(OID_DEVIOUS_BELT_OPEN, MainScript.fDeviousChastityBeltOpenChance, "$MRT_SP_DEVIOUS_BELT_OPEN_SLIDER2")
-  setModVars = true
-elseif option == OID_DEVIOUS_BELT_CLOSE
-  MainScript.fDeviousChastityBeltCloseChance = value
-  SetSliderOptionValue(OID_DEVIOUS_BELT_CLOSE, MainScript.fDeviousChastityBeltCloseChance, "$MRT_SP_DEVIOUS_BELT_CLOSE_SLIDER2")
-  setModVars = true
-elseif option == OID_DEFAULT_REJ_MALE_DD
-  MainScript.fDefaultRejectMaleDeviceChance = value
-  SetSliderOptionValue(OID_DEFAULT_REJ_MALE_DD, MainScript.fDefaultRejectMaleDeviceChance, "$MRT_SP_DEFAULT_REJ_MALE_DD_SLIDER2")
-elseif option == OID_DEFAULT_REJ_FEMALE_DD
-  MainScript.fDefaultRejectFemaleDeviceChance = value
-  SetSliderOptionValue(OID_DEFAULT_REJ_FEMALE_DD, MainScript.fDefaultRejectFemaleDeviceChance, "$MRT_SP_DEFAULT_REJ_FEMALE_DD_SLIDER2")
-elseif option == OID_BEG_REJ_FEMALE_DD
-  MainScript.fBeggarRejectFemaleDeviceChance = value
-  SetSliderOptionValue(OID_BEG_REJ_FEMALE_DD, MainScript.fBeggarRejectFemaleDeviceChance, "$MRT_SP_BEG_REJ_FEMALE_DD_SLIDER2")
-elseif option == OID_BEG_REJ_MALE_DD
-  MainScript.fBeggarRejectMaleDeviceChance = value
-  SetSliderOptionValue(OID_BEG_REJ_MALE_DD, MainScript.fBeggarRejectMaleDeviceChance, "$MRT_SP_BEG_REJ_MALE_DD_SLIDER2")
-elseif option == OID_WHORE_REJ_FEMALE_DD
-  MainScript.fWhoreRejectFemaleDeviceChance = value
-  SetSliderOptionValue(OID_WHORE_REJ_FEMALE_DD, MainScript.fWhoreRejectFemaleDeviceChance, "$MRT_SP_WHORE_REJ_FEMALE_DD_SLIDER2")
-elseif option == OID_WHORE_REJ_MALE_DD
-  MainScript.fWhoreRejectMaleDeviceChance = value
-  SetSliderOptionValue(OID_WHORE_REJ_MALE_DD, MainScript.fWhoreRejectMaleDeviceChance, "$MRT_SP_WHORE_REJ_MALE_DD_SLIDER2")
-elseif option == OID_DIBEL_REJ_FEMALE_DD
-  MainScript.fDibelRejectFemaleDeviceChance = value
-  SetSliderOptionValue(OID_DIBEL_REJ_FEMALE_DD, MainScript.fDibelRejectFemaleDeviceChance, "$MRT_SP_DIBEL_REJ_FEMALE_DD_SLIDER2")
-elseif option == OID_DIBEL_REJ_MALE_DD
-  MainScript.fDibelRejectMaleDeviceChance = value
-  SetSliderOptionValue(OID_DIBEL_REJ_MALE_DD, MainScript.fDibelRejectMaleDeviceChance, "$MRT_SP_DIBEL_REJ_MALE_DD_SLIDER2")
-elseif option == OID_DIBEL_DD_CHANCE
-  MainScript.fDibelDeviceChance = value
-  SetSliderOptionValue(OID_DIBEL_DD_CHANCE, MainScript.fDibelDeviceChance, "$MRT_SP_DIBEL_DD_CHANCE_SLIDER2")
-elseif option == OID_BEG_DD_CHANCE
-  MainScript.fBeggarDeviceChance = value
-  SetSliderOptionValue(OID_BEG_DD_CHANCE, MainScript.fBeggarDeviceChance, "$MRT_SP_BEG_DD_CHANCE_SLIDER2")
-elseif option == OID_DIBEL_DD_CHANCE
-  MainScript.fDibelDeviceChance = value
-  SetSliderOptionValue(OID_DIBEL_DD_CHANCE, MainScript.fDibelDeviceChance, "$MRT_SP_DIBEL_DD_CHANCE_SLIDER2")
-elseif option == OID_WHORE_DD_CHANCE
-  MainScript.fWhoreDeviceChance = value
-  SetSliderOptionValue(OID_WHORE_DD_CHANCE, MainScript.fWhoreDeviceChance, "$MRT_SP_WHORE_DD_CHANCE_SLIDER2")
-elseif option == OID_SLSFR_MIN_APPROACH_REQ_FAME
-  MainScript.fSLSFR_MinApproachRequiredFame = value
-  SetSliderOptionValue(OID_SLSFR_MIN_APPROACH_REQ_FAME, MainScript.fSLSFR_MinApproachRequiredFame, "$MRT_SP_SLSFR_MIN_APPROACH_REQ_FAME_SLIDER2")	
-elseif option == OID_SLA_MIN_PC_AROUSAL
-  MainScript.iSLA_MinPCArousal = value as Int
-  SetSliderOptionValue(OID_SLA_MIN_PC_AROUSAL, MainScript.iSLA_MinPCArousal, "$MRT_SP_SLA_MIN_PC_AROUSAL_SLIDER2")
-elseif option == OID_SLA_MIN_APPROACH_AROUSAL
-  MainScript.iSLA_MinApproachArousal = value as Int
-  SetSliderOptionValue(OID_SLA_MIN_APPROACH_AROUSAL, MainScript.iSLA_MinApproachArousal, "$MRT_SP_SLA_MIN_APPROACH_AROUSAL_SLIDER2")
-elseif option == OID_SLA_MIN_BEGGAR_SEX_OFFER_AROUSAL 
-  MainScript.iSLA_MinBeggarSexOfferArousal = value as Int
-  SetSliderOptionValue(OID_SLA_MIN_BEGGAR_SEX_OFFER_AROUSAL , MainScript.iSLA_MinBeggarSexOfferArousal, "$MRT_SP_SLA_MIN_BEGGAR_SEX_OFFER_AROUSAL_SLIDER2")
-elseif option == OID_SLA_MIN_WHORE_CUSTOMER_AROUSAL  
-  MainScript.iSLA_MinWhoreCustomerArousal = value as Int
-  SetSliderOptionValue(OID_SLA_MIN_WHORE_CUSTOMER_AROUSAL, MainScript.iSLA_MinWhoreCustomerArousal, "$MRT_SP_SLA_MIN_WHORE_CUSTOMER_AROUSAL_SLIDER2")
-elseif option == OID_SLA_MIN_DIBEL_CUSTOMER_AROUSAL  
-  MainScript.iSLA_MinDibelCustomerArousal = value as Int
-  SetSliderOptionValue(OID_SLA_MIN_DIBEL_CUSTOMER_AROUSAL, MainScript.iSLA_MinDibelCustomerArousal, "$MRT_SP_SLA_MIN_DIBEL_CUSTOMER_AROUSAL_SLIDER2")
-elseif option == OID_SLSFR_MIN_BEGGAR_SEX_OFFER_REQ_FAME
-  MainScript.fSLSFR_MinBeggarSexOfferRequiredFame = value
-  SetSliderOptionValue(OID_SLSFR_MIN_BEGGAR_SEX_OFFER_REQ_FAME, MainScript.fSLSFR_MinBeggarSexOfferRequiredFame, "$MRT_SP_SLSFR_MIN_BEGGAR_SEX_OFFER_REQ_Fame_SLIDER2")
-elseif option == OID_SLSFR_MIN_FAME_GAIN 
-  MainScript.fSLSFR_MinGainFame = value
-  SetSliderOptionValue(OID_SLSFR_MIN_FAME_GAIN , MainScript.fSLSFR_MinGainFame, "$MRT_SP_SLSFR_MIN_FAME_GAIN_SLIDER2")
-elseif option == OID_SLSFR_Max_FAME_GAIN 
-  MainScript.fSLSFR_MaxGainFame = value
-  SetSliderOptionValue(OID_SLSFR_Max_FAME_GAIN , MainScript.fSLSFR_MaxGainFame, "$MRT_SP_SLSFR_MAX_FAME_GAIN_SLIDER2")
-elseif option == OID_SLSFR_FAME_GAIN_CHANCE 
-  MainScript.fSLSFR_FameGainChance = value
-  SetSliderOptionValue(OID_SLSFR_FAME_GAIN_CHANCE , MainScript.fSLSFR_FameGainChance, "$MRT_SP_SLSFR_MAX_FAME_GAIN_CHANCE_SLIDER2")
-endif
-ForcePageReset()
+    MainScript.fDeviousHoodChance = value
+    SetSliderOptionValue(OID_DEVIOUS_HOOD, MainScript.fDeviousHoodChance, "$MRT_SP_DEVIOUS_HOOD_SLIDER2") 
+    setModVars = true   
+  elseif option == OID_DEVIOUS_SUIT
+    MainScript.fDeviousSuitsChance = value
+    SetSliderOptionValue(OID_DEVIOUS_SUIT, MainScript.fDeviousSuitsChance, "$MRT_SP_DEVIOUS_SUIT_SLIDER2")
+    setModVars = true
+  elseif option == OID_DEVIOUS_BOOTS
+    MainScript.fDeviousBootsChance = value
+    SetSliderOptionValue(OID_DEVIOUS_BOOTS, MainScript.fDeviousBootsChance, "$MRT_SP_DEVIOUS_BOOTS_SLIDER2")
+    setModVars = true
+  elseif option == OID_DEVIOUS_CORSET
+    MainScript.fDeviousCorsetChance = value
+    SetSliderOptionValue(OID_DEVIOUS_CORSET, MainScript.fDeviousCorsetChance, "$MRT_SP_DEVIOUS_CORSET_SLIDER2")
+    setModVars = true
+  elseif option == OID_DEVIOUS_HARNESS
+    MainScript.fDeviousHarnessesChance = value
+    SetSliderOptionValue(OID_DEVIOUS_HARNESS, MainScript.fDeviousHarnessesChance, "$MRT_SP_DEVIOUS_HARNESS_SLIDER2")
+    setModVars = true
+  elseif option == OID_DEVIOUS_VAG_PRC
+    MainScript.fDeviousVaginalPiercingChance = value
+    SetSliderOptionValue(OID_DEVIOUS_VAG_PRC, MainScript.fDeviousVaginalPiercingChance, "$MRT_SP_DEVIOUS_VAG_PRC_SLIDER2")
+    setModVars = true
+  elseif option == OID_DEVIOUS_NIP_PRC
+    MainScript.fDeviousNipplePiercingChance = value
+    SetSliderOptionValue(OID_DEVIOUS_NIP_PRC, MainScript.fDeviousNipplePiercingChance, "$MRT_SP_DEVIOUS_NIP_PRC_SLIDER2")
+    setModVars = true
+  elseif option == OID_DEVIOUS_ANL_PLUG
+    MainScript.fDeviousAnalPlugChance = value
+    SetSliderOptionValue(OID_DEVIOUS_ANL_PLUG, MainScript.fDeviousAnalPlugChance, "$MRT_SP_DEVIOUS_ANL_PLUG_SLIDER2")
+    setModVars = true
+  elseif option == OID_DEVIOUS_VAG_PLUG
+    MainScript.fDeviousVaginalPlugChance = value
+    SetSliderOptionValue(OID_DEVIOUS_VAG_PLUG, MainScript.fDeviousVaginalPlugChance, "$MRT_SP_DEVIOUS_VAG_PLUG_SLIDER2")
+    setModVars = true
+  elseif option == OID_DEVIOUS_ARM_CUF
+    MainScript.fDeviousArmCuffChance = value
+    SetSliderOptionValue(OID_DEVIOUS_ARM_CUF, MainScript.fDeviousArmCuffChance, "$MRT_SP_DEVIOUS_ARM_CUF_SLIDER2")
+    setModVars = true
+  elseif option == OID_DEVIOUS_LEG_CUF
+    MainScript.fDeviousLegCuffChance = value
+    SetSliderOptionValue(OID_DEVIOUS_LEG_CUF, MainScript.fDeviousLegCuffChance, "$MRT_SP_DEVIOUS_LEG_CUF_SLIDER2")
+    setModVars = true
+  elseif option == OID_DEVIOUS_GAG_RING
+    MainScript.fDeviousGagRingChance = value
+    SetSliderOptionValue(OID_DEVIOUS_GAG_RING, MainScript.fDeviousGagRingChance, "$MRT_SP_DEVIOUS_GAG_RING_SLIDER2")
+    setModVars = true
+  elseif option == OID_DEVIOUS_GAG_ALL
+    MainScript.fDeviousGagAllChance = value
+    SetSliderOptionValue(OID_DEVIOUS_GAG_ALL, MainScript.fDeviousGagAllChance, "$MRT_SP_DEVIOUS_GAG_ALL_SLIDER2")
+    setModVars = true
+  elseif option == OID_DEVIOUS_HEAVY_RESTRAINT
+    MainScript.fDeviousHeavyRestraintChance = value
+		SetSliderOptionValue(OID_DEVIOUS_HEAVY_RESTRAINT, MainScript.fDeviousHeavyRestraintChance, "$MRT_SP_DEVIOUS_HEAVY_RESTRAINT_SLIDER2")
+		setModVars = true
+  elseif option == OID_DEVIOUS_BLINDFOLD
+		MainScript.fDeviousBlindfoldChance = value
+		SetSliderOptionValue(OID_DEVIOUS_BLINDFOLD, MainScript.fDeviousBlindfoldChance, "$MRT_SP_DEVIOUS_BLINDFOLD_SLIDER2")
+		setModVars = true
+	elseif option == OID_DEVIOUS_GLOVES
+		MainScript.fDeviousGlovesChance = value
+		SetSliderOptionValue(OID_DEVIOUS_GLOVES, MainScript.fDeviousGlovesChance, "$MRT_SP_DEVIOUS_GLOVES_SLIDER2")
+		setModVars = true
+	elseif option == OID_DEVIOUS_BELT_OPEN
+		MainScript.fDeviousChastityBeltOpenChance = value
+		SetSliderOptionValue(OID_DEVIOUS_BELT_OPEN, MainScript.fDeviousChastityBeltOpenChance, "$MRT_SP_DEVIOUS_BELT_OPEN_SLIDER2")
+		setModVars = true
+	elseif option == OID_DEVIOUS_BELT_CLOSE
+		MainScript.fDeviousChastityBeltCloseChance = value
+		SetSliderOptionValue(OID_DEVIOUS_BELT_CLOSE, MainScript.fDeviousChastityBeltCloseChance, "$MRT_SP_DEVIOUS_BELT_CLOSE_SLIDER2")
+		setModVars = true
+	elseif option == OID_DEFAULT_REJ_MALE_DD
+		MainScript.fDefaultRejectMaleDeviceChance = value
+		SetSliderOptionValue(OID_DEFAULT_REJ_MALE_DD, MainScript.fDefaultRejectMaleDeviceChance, "$MRT_SP_DEFAULT_REJ_MALE_DD_SLIDER2")
+	elseif option == OID_DEFAULT_REJ_FEMALE_DD
+		MainScript.fDefaultRejectFemaleDeviceChance = value
+		SetSliderOptionValue(OID_DEFAULT_REJ_FEMALE_DD, MainScript.fDefaultRejectFemaleDeviceChance, "$MRT_SP_DEFAULT_REJ_FEMALE_DD_SLIDER2")
+	elseif option == OID_BEG_REJ_FEMALE_DD
+		MainScript.fBeggarRejectFemaleDeviceChance = value
+		SetSliderOptionValue(OID_BEG_REJ_FEMALE_DD, MainScript.fBeggarRejectFemaleDeviceChance, "$MRT_SP_BEG_REJ_FEMALE_DD_SLIDER2")
+	elseif option == OID_BEG_REJ_MALE_DD
+		MainScript.fBeggarRejectMaleDeviceChance = value
+		SetSliderOptionValue(OID_BEG_REJ_MALE_DD, MainScript.fBeggarRejectMaleDeviceChance, "$MRT_SP_BEG_REJ_MALE_DD_SLIDER2")
+	elseif option == OID_WHORE_REJ_FEMALE_DD
+		MainScript.fWhoreRejectFemaleDeviceChance = value
+		SetSliderOptionValue(OID_WHORE_REJ_FEMALE_DD, MainScript.fWhoreRejectFemaleDeviceChance, "$MRT_SP_WHORE_REJ_FEMALE_DD_SLIDER2")
+	elseif option == OID_WHORE_REJ_MALE_DD
+		MainScript.fWhoreRejectMaleDeviceChance = value
+		SetSliderOptionValue(OID_WHORE_REJ_MALE_DD, MainScript.fWhoreRejectMaleDeviceChance, "$MRT_SP_WHORE_REJ_MALE_DD_SLIDER2")
+	elseif option == OID_DIBEL_REJ_FEMALE_DD
+		MainScript.fDibelRejectFemaleDeviceChance = value
+		SetSliderOptionValue(OID_DIBEL_REJ_FEMALE_DD, MainScript.fDibelRejectFemaleDeviceChance, "$MRT_SP_DIBEL_REJ_FEMALE_DD_SLIDER2")
+	elseif option == OID_DIBEL_REJ_MALE_DD
+		MainScript.fDibelRejectMaleDeviceChance = value
+		SetSliderOptionValue(OID_DIBEL_REJ_MALE_DD, MainScript.fDibelRejectMaleDeviceChance, "$MRT_SP_DIBEL_REJ_MALE_DD_SLIDER2")
+	elseif option == OID_DIBEL_DD_CHANCE
+		MainScript.fDibelDeviceChance = value
+		SetSliderOptionValue(OID_DIBEL_DD_CHANCE, MainScript.fDibelDeviceChance, "$MRT_SP_DIBEL_DD_CHANCE_SLIDER2")
+	elseif option == OID_BEG_DD_CHANCE
+		MainScript.fBeggarDeviceChance = value
+		SetSliderOptionValue(OID_BEG_DD_CHANCE, MainScript.fBeggarDeviceChance, "$MRT_SP_BEG_DD_CHANCE_SLIDER2")
+	elseif option == OID_DIBEL_DD_CHANCE
+		MainScript.fDibelDeviceChance = value
+		SetSliderOptionValue(OID_DIBEL_DD_CHANCE, MainScript.fDibelDeviceChance, "$MRT_SP_DIBEL_DD_CHANCE_SLIDER2")
+	elseif option == OID_WHORE_DD_CHANCE
+		MainScript.fWhoreDeviceChance = value
+		SetSliderOptionValue(OID_WHORE_DD_CHANCE, MainScript.fWhoreDeviceChance, "$MRT_SP_WHORE_DD_CHANCE_SLIDER2")
+	elseif option == OID_SLSFR_MIN_APPROACH_REQ_FAME
+		MainScript.fSLSFR_MinApproachRequiredFame = value
+		SetSliderOptionValue(OID_SLSFR_MIN_APPROACH_REQ_FAME, MainScript.fSLSFR_MinApproachRequiredFame, "$MRT_SP_SLSFR_MIN_APPROACH_REQ_FAME_SLIDER2")	
+	elseif option == OID_SLA_MIN_PC_AROUSAL
+		MainScript.iSLA_MinPCArousal = value as Int
+		SetSliderOptionValue(OID_SLA_MIN_PC_AROUSAL, MainScript.iSLA_MinPCArousal, "$MRT_SP_SLA_MIN_PC_AROUSAL_SLIDER2")
+	elseif option == OID_SLA_MIN_APPROACH_AROUSAL
+		MainScript.iSLA_MinApproachArousal = value as Int
+		SetSliderOptionValue(OID_SLA_MIN_APPROACH_AROUSAL, MainScript.iSLA_MinApproachArousal, "$MRT_SP_SLA_MIN_APPROACH_AROUSAL_SLIDER2")
+	elseif option == OID_SLA_MIN_BEGGAR_SEX_OFFER_AROUSAL 
+		MainScript.iSLA_MinBeggarSexOfferArousal = value as Int
+		SetSliderOptionValue(OID_SLA_MIN_BEGGAR_SEX_OFFER_AROUSAL , MainScript.iSLA_MinBeggarSexOfferArousal, "$MRT_SP_SLA_MIN_BEGGAR_SEX_OFFER_AROUSAL_SLIDER2")
+	elseif option == OID_SLA_MIN_WHORE_CUSTOMER_AROUSAL  
+		MainScript.iSLA_MinWhoreCustomerArousal = value as Int
+		SetSliderOptionValue(OID_SLA_MIN_WHORE_CUSTOMER_AROUSAL, MainScript.iSLA_MinWhoreCustomerArousal, "$MRT_SP_SLA_MIN_WHORE_CUSTOMER_AROUSAL_SLIDER2")
+	elseif option == OID_SLA_MIN_DIBEL_CUSTOMER_AROUSAL  
+		MainScript.iSLA_MinDibelCustomerArousal = value as Int
+		SetSliderOptionValue(OID_SLA_MIN_DIBEL_CUSTOMER_AROUSAL, MainScript.iSLA_MinDibelCustomerArousal, "$MRT_SP_SLA_MIN_DIBEL_CUSTOMER_AROUSAL_SLIDER2")
+	elseif option == OID_SLSFR_MIN_BEGGAR_SEX_OFFER_REQ_FAME
+		MainScript.fSLSFR_MinBeggarSexOfferRequiredFame = value
+		SetSliderOptionValue(OID_SLSFR_MIN_BEGGAR_SEX_OFFER_REQ_FAME, MainScript.fSLSFR_MinBeggarSexOfferRequiredFame, "$MRT_SP_SLSFR_MIN_BEGGAR_SEX_OFFER_REQ_Fame_SLIDER2")
+	elseif option == OID_SLSFR_MIN_FAME_GAIN 
+		MainScript.fSLSFR_MinGainFame = value
+		SetSliderOptionValue(OID_SLSFR_MIN_FAME_GAIN , MainScript.fSLSFR_MinGainFame, "$MRT_SP_SLSFR_MIN_FAME_GAIN_SLIDER2")
+	elseif option == OID_SLSFR_Max_FAME_GAIN 
+		MainScript.fSLSFR_MaxGainFame = value
+		SetSliderOptionValue(OID_SLSFR_Max_FAME_GAIN , MainScript.fSLSFR_MaxGainFame, "$MRT_SP_SLSFR_MAX_FAME_GAIN_SLIDER2")
+	elseif option == OID_SLSFR_FAME_GAIN_CHANCE 
+		MainScript.fSLSFR_FameGainChance = value
+		SetSliderOptionValue(OID_SLSFR_FAME_GAIN_CHANCE , MainScript.fSLSFR_FameGainChance, "$MRT_SP_SLSFR_MAX_FAME_GAIN_CHANCE_SLIDER2")
+	elseif option == OID_DIBEL_TEMPLE_TASK_MIN_PAY
+		MainScript.fTempleClientMinExtraPay = value
+		SetSliderOptionValue(OID_DIBEL_TEMPLE_TASK_MIN_PAY , MainScript.fTempleClientMinExtraPay, "$MRT_SP_DIBEL_TEMPLE_TASK_MIN_PAY_SLIDER2")
+	elseif option == OID_DIBEL_TEMPLE_TASK_MAX_PAY
+		MainScript.fTempleClientMaxExtraPay = value
+		SetSliderOptionValue(OID_DIBEL_TEMPLE_TASK_MAX_PAY , MainScript.fTempleClientMaxExtraPay, "$MRT_SP_DIBEL_TEMPLE_TASK_MAX_PAY_SLIDER2")
+	endif
+	ForcePageReset()
 EndEvent
 
 event OnOptionSliderOpen(int option)
@@ -5029,6 +5082,16 @@ event OnOptionSliderOpen(int option)
 		SetSliderDialogDefaultValue(100.0)
 		SetSliderDialogRange(0, 100)
 		SetSliderDialogInterval(0.1)
+	elseif option == OID_DIBEL_TEMPLE_TASK_MIN_PAY
+		SetSliderDialogStartValue(MainScript.fTempleClientMinExtraPay)
+		SetSliderDialogDefaultValue(100.0)
+		SetSliderDialogRange(50, 1000)
+		SetSliderDialogInterval(50)
+	elseif option == OID_DIBEL_TEMPLE_TASK_MAX_PAY
+		SetSliderDialogStartValue(MainScript.fTempleClientMaxExtraPay)
+		SetSliderDialogDefaultValue(200.0)
+		SetSliderDialogRange(50, 1000)
+		SetSliderDialogInterval(50)
   endif
 EndEvent
 
@@ -5290,6 +5353,15 @@ Function DD_Options(Int iFlag)
   OID_DEVIOUS_SUIT = AddSliderOption("$MRT_SP_DEVIOUS_SUIT_SLIDER1", MainScript.fDeviousSuitsChance, "$MRT_SP_DEVIOUS_SUIT_SLIDER2", flg)
 EndFunction
 
+Function Dibel_Temple_Tasks(Int iflag)
+  int flg = iflag
+  _AddHeaderOption("$MRT_SP_HEAD_DIBEL_TEMPLE_TASKS")
+	OID_DIBEL_TEMPLE_TASK_MALE_CLIENT = AddToggleOption("$MRT_SP_DIBEL_TEMPLE_TASK_MALE_CLIENT", MainScript.bMaleTempleClient, flg)
+	OID_DIBEL_TEMPLE_TASK_FEMALE_CLIENT = AddToggleOption("$MRT_SP_DIBEL_TEMPLE_TASK_FEMALE_CLIENT", MainScript.bFemaleTempleClient, flg)
+	OID_DIBEL_TEMPLE_TASK_MIN_PAY = AddSliderOption("$MRT_SP_DIBEL_TEMPLE_TASK_MIN_PAY_SLIDER1", MainScript.fTempleClientMinExtraPay, "$MRT_SP_DIBEL_TEMPLE_TASK_MIN_PAY_SLIDER2", flg)
+	OID_DIBEL_TEMPLE_TASK_MAX_PAY = AddSliderOption("$MRT_SP_DIBEL_TEMPLE_TASK_MAX_PAY_SLIDER1", MainScript.fTempleClientMaxExtraPay, "$MRT_SP_DIBEL_TEMPLE_TASK_MAX_PAY_SLIDER2", flg)
+endfunction
+
 String[] function sGetEntrapmentLevels()
   String[] sEntrapmentLevels = new String[4]
   sEntrapmentLevels[0] = "$DD_ENTRAPMENT_LVL1"
@@ -5447,3 +5519,10 @@ Int OID_SLA_MIN_APPROACH_AROUSAL
 Int OID_SLA_MIN_WHORE_CUSTOMER_AROUSAL
 Int OID_SLA_MIN_DIBEL_CUSTOMER_AROUSAL
 Int OID_SLA_MIN_BEGGAR_SEX_OFFER_AROUSAL
+
+Int OID_DIBEL_AMULET
+
+Int OID_DIBEL_TEMPLE_TASK_MALE_CLIENT
+Int OID_DIBEL_TEMPLE_TASK_FEMALE_CLIENT
+Int OID_DIBEL_TEMPLE_TASK_MIN_PAY
+Int OID_DIBEL_TEMPLE_TASK_MAX_PAY
