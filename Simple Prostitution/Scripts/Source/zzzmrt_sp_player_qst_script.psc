@@ -5,7 +5,7 @@ zzzmrt_sp_main_qst_script property MainScript auto
 import zzzmrt_sp_utility
 
 Bool bCheckVars = False
-Bool Property bInit = False Auto Hidden
+Bool bInit = False
 
 event OnInit()
   ;Debug.trace("Simple Prostitution: OnInit() triggered for " + self)
