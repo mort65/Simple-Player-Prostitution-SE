@@ -21,6 +21,7 @@ Bool function GetIsInterfaceActive()
 endfunction
 
 function PlayerLoadsGame()
+	bChecked = False
   Debug.trace("Simple Prostitution: PlayerLoadsGame() triggered for " + self)
 
   ; Is the soft dependency installed and is our script in the right state? If not change state.

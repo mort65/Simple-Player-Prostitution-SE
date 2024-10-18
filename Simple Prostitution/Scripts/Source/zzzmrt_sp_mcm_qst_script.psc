@@ -432,6 +432,9 @@ event OnPageReset(String page)
     _AddToggleOptionST("DIBEL_AGENT_TOGGLE", "$MRT_SP_DIBEL_AGENT_TOGGLE", MainScript.bDibelAgent, flag)
     _AddToggleOptionST("DIBEL_CROWN_TOGGLE", "$MRT_SP_DIBEL_CROWN_TOGGLE", MainScript.bDibelCrown, flag)
 		OID_DIBEL_AMULET = AddToggleOption("$MRT_SP_DIBEL_AMULET_TOGGLE", MainScript.bDibelAmulet, flag)
+		OID_DIBEL_REQ_WHORE_ORAL_REWARD = AddToggleOption("$MRT_SP_DIBEL_REQ_WHORE_ORAL_REWARD_TOGGLE", MainScript.bDibelNeedWhoreOralReward, flag)
+		OID_DIBEL_REQ_WHORE_ANAL_REWARD = AddToggleOption("$MRT_SP_DIBEL_REQ_WHORE_ANAL_REWARD_TOGGLE", MainScript.bDibelNeedWhoreAnalReward, flag)
+		OID_DIBEL_REQ_WHORE_VAGINAL_REWARD = AddToggleOption("$MRT_SP_DIBEL_REQ_WHORE_VAGINAL_REWARD_TOGGLE", MainScript.bDibelNeedWhoreVaginalReward, flag)
     _AddToggleOptionST("DIBEL_ALLOW_AGGRESSIVE_TOGGLE", "$MRT_SP_DIBEL_ALLOW_AGGRESSIVE_TOGGLE", MainScript.bDIBELAllowAggressive, flag)
     _AddToggleOptionST("DIBEL_NAKED_TOGGLE", "$MRT_SP_DIBEL_NAKED_TOGGLE", MainScript.bDibelNaked, flag)
     AddSliderOptionST("DIBEL_ORAL_CHANCE_SLIDER", "$MRT_SP_DIBEL_ORAL_CHANCE_SLIDER1", MainScript.fDibelOralChance, "$MRT_SP_DIBEL_ORAL_CHANCE_SLIDER2", flag)
@@ -2749,6 +2752,7 @@ State STAT_WHORE_ORAL_PERK_REWARD_TXT
     if !bWhoreOralPerkRewardReceived && MainScript.bCanReceiveReward(2, False)
       Game.AddPerkPoints(1)
       bWhoreOralPerkRewardReceived = True
+			MainScript.bWhoreOralPerkRewardUnlocked = true
       ForcePageReset()
     endif 
   endFunction
@@ -2763,6 +2767,7 @@ State STAT_WHORE_ANAL_PERK_REWARD_TXT
     if !bWhoreAnalPerkRewardReceived && MainScript.bCanReceiveReward(1, False)
       Game.AddPerkPoints(1)
       bWhoreAnalPerkRewardReceived = True
+			MainScript.bWhoreAnalPerkRewardUnlocked = true
       ForcePageReset()
     endif 
   endFunction
@@ -2777,6 +2782,7 @@ State STAT_WHORE_VAGINAL_PERK_REWARD_TXT
     if !bWhoreVaginalPerkRewardReceived && MainScript.bCanReceiveReward(0, False)
       Game.AddPerkPoints(1)
       bWhoreVaginalPerkRewardReceived = True
+			MainScript.bWhoreVaginalPerkRewardUnlocked = true
       ForcePageReset()
     endif 
   endFunction
@@ -3086,6 +3092,9 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
 	MainScript.bDibelAmulet = jsonutil.GetPathIntValue(settings_path, "bDibelAmulet", MainScript.bDibelAmulet as int)
 	MainScript.bMaleTempleClient = jsonutil.GetPathIntValue(settings_path, "bMaleTempleClient", MainScript.bMaleTempleClient as int)
 	MainScript.bFemaleTempleClient = jsonutil.GetPathIntValue(settings_path, "bFemaleTempleClient", MainScript.bFemaleTempleClient as int)
+	MainScript.bDibelNeedWhoreOralReward = jsonutil.GetPathIntValue(settings_path, "bDibelNeedWhoreOralReward", MainScript.bDibelNeedWhoreOralReward as int)
+	MainScript.bDibelNeedWhoreAnalReward = jsonutil.GetPathIntValue(settings_path, "bDibelNeedWhoreAnalReward", MainScript.bDibelNeedWhoreAnalReward as int)
+	MainScript.bDibelNeedWhoreVaginalReward = jsonutil.GetPathIntValue(settings_path, "bDibelNeedWhoreVaginalReward", MainScript.bDibelNeedWhoreVaginalReward as int)
 
   iBeggarSpeechDifficulty = jsonutil.GetPathIntValue(settings_path, "iBeggarSpeechDifficulty", iBeggarSpeechDifficulty)
   iWhoreSpeechDifficulty = jsonutil.GetPathIntValue(settings_path, "iWhoreSpeechDifficulty", iWhoreSpeechDifficulty)
@@ -3338,6 +3347,9 @@ Bool function saveUserSettingsPapyrus()
 	jsonutil.SetPathIntValue(settings_path, "bDibelAmulet", MainScript.bDibelAmulet as Int)
 	jsonutil.SetPathIntValue(settings_path, "bMaleTempleClient", MainScript.bMaleTempleClient as Int)
 	jsonutil.SetPathIntValue(settings_path, "bFemaleTempleClient", MainScript.bFemaleTempleClient as Int)
+	jsonutil.SetPathIntValue(settings_path, "bDibelNeedWhoreOralReward", MainScript.bDibelNeedWhoreOralReward as Int)
+	jsonutil.SetPathIntValue(settings_path, "bDibelNeedWhoreAnalReward", MainScript.bDibelNeedWhoreAnalReward as Int)
+	jsonutil.SetPathIntValue(settings_path, "bDibelNeedWhoreVaginalReward", MainScript.bDibelNeedWhoreVaginalReward as Int)
 
   jsonutil.SetPathIntValue(settings_path, "iBeggarSpeechDifficulty", iBeggarSpeechDifficulty)
   jsonutil.SetPathIntValue(settings_path, "iWhoreSpeechDifficulty", iWhoreSpeechDifficulty)
@@ -3950,6 +3962,15 @@ event OnOptionSelect(int option)
 	elseif option == OID_DIBEL_AMULET
 		MainScript.bDibelAmulet = !MainScript.bDibelAmulet
 		SetToggleOptionValue(option, MainScript.bDibelAmulet)
+	elseif option == OID_DIBEL_REQ_WHORE_ORAL_REWARD
+		MainScript.bDibelNeedWhoreOralReward = !MainScript.bDibelNeedWhoreOralReward
+		SetToggleOptionValue(option, MainScript.bDibelNeedWhoreOralReward)
+	elseif option == OID_DIBEL_REQ_WHORE_ANAL_REWARD
+		MainScript.bDibelNeedWhoreAnalReward = !MainScript.bDibelNeedWhoreAnalReward
+		SetToggleOptionValue(option, MainScript.bDibelNeedWhoreAnalReward)
+	elseif option == OID_DIBEL_REQ_WHORE_VAGINAL_REWARD
+		MainScript.bDibelNeedWhoreVaginalReward = !MainScript.bDibelNeedWhoreVaginalReward
+		SetToggleOptionValue(option, MainScript.bDibelNeedWhoreVaginalReward)
 	elseif option == OID_DIBEL_TEMPLE_TASK_MALE_CLIENT
 		MainScript.bMaleTempleClient = !MainScript.bMaleTempleClient
 		SetToggleOptionValue(option, MainScript.bMaleTempleClient)
@@ -4013,6 +4034,15 @@ event OnOptionDefault(int option)
 	elseif option == OID_DIBEL_AMULET
 		MainScript.bDibelAmulet = False
 		SetToggleOptionValue(option, MainScript.bDibelAmulet)
+	elseif option == OID_DIBEL_REQ_WHORE_ORAL_REWARD
+		MainScript.bDibelNeedWhoreOralReward = False
+		SetToggleOptionValue(option, MainScript.bDibelNeedWhoreOralReward)
+	elseif option == OID_DIBEL_REQ_WHORE_ANAL_REWARD
+		MainScript.bDibelNeedWhoreAnalReward = False
+		SetToggleOptionValue(option, MainScript.bDibelNeedWhoreAnalReward)
+	elseif option == OID_DIBEL_REQ_WHORE_VAGINAL_REWARD
+		MainScript.bDibelNeedWhoreVaginalReward = False
+		SetToggleOptionValue(option, MainScript.bDibelNeedWhoreVaginalReward)
 	elseif option == OID_DIBEL_TEMPLE_TASK_MALE_CLIENT
 		MainScript.bMaleTempleClient = True
 		SetToggleOptionValue(option, MainScript.bMaleTempleClient)
@@ -4166,6 +4196,12 @@ event OnOptionHighlight(int option)
     SetInfoText("$MRT_SP_DESC_GUARDS_MAY_APPROACH")
   elseif option == OID_DIBEL_AMULET
 		SetInfoText("$MRT_SP_DESC_DIBEL_AMULET_TOGGLE")
+	elseif option == OID_DIBEL_REQ_WHORE_ORAL_REWARD
+		SetInfoText("$MRT_SP_DESC_DIBEL_REQ_WHORE_ORAL_REWARD_TOGGLE")
+	elseif option == OID_DIBEL_REQ_WHORE_ANAL_REWARD
+		SetInfoText("$MRT_SP_DESC_DIBEL_REQ_WHORE_ANAL_REWARD_TOGGLE")
+	elseif option == OID_DIBEL_REQ_WHORE_VAGINAL_REWARD
+		SetInfoText("$MRT_SP_DESC_DIBEL_REQ_WHORE_VAGINAL_REWARD_TOGGLE")
 	elseif option == OID_DIBEL_TEMPLE_TASK_MALE_CLIENT
 		SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_TASK_MALE_CLIENT")
 	elseif option == OID_DIBEL_TEMPLE_TASK_FEMALE_CLIENT
@@ -5521,6 +5557,9 @@ Int OID_SLA_MIN_DIBEL_CUSTOMER_AROUSAL
 Int OID_SLA_MIN_BEGGAR_SEX_OFFER_AROUSAL
 
 Int OID_DIBEL_AMULET
+Int OID_DIBEL_REQ_WHORE_ORAL_REWARD
+Int OID_DIBEL_REQ_WHORE_ANAL_REWARD
+Int OID_DIBEL_REQ_WHORE_VAGINAL_REWARD
 
 Int OID_DIBEL_TEMPLE_TASK_MALE_CLIENT
 Int OID_DIBEL_TEMPLE_TASK_FEMALE_CLIENT

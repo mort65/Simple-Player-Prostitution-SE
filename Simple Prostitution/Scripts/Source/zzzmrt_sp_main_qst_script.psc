@@ -14,6 +14,7 @@ zzzmrt_sp_ddx_interface property DDX_Interface auto
 zzzmrt_sp_slsfr_interface property SLSFR_Interface auto
 zzzmrt_sp_sla_interface property SLA_Interface auto
 zzzmrt_sp_dibellan_lust_qst_script property dibellan_lust_qst_script auto
+zzzmrt_sp_player_qst_script	Property playerScript Auto
 Quest Property SLA_Interface_Qst Auto
 Quest Property OStimInterfaceQst Auto
 Quest Property FlowerGirlsInterfaceQst Auto
@@ -90,6 +91,9 @@ Bool Property bIsDDIntegrationActive=False Auto Hidden Conditional
 Bool Property bIsDDExpansionActive=False Auto Hidden Conditional
 Bool Property bIs_SLSFR_Active=False Auto Hidden Conditional
 Bool Property bIs_SLA_Active=False Auto Hidden Conditional
+Bool Property bDibelNeedWhoreOralReward = False Auto Hidden Conditional
+Bool Property bDibelNeedWhoreAnalReward = False Auto Hidden Conditional
+Bool Property bDibelNeedWhoreVaginalReward = False Auto Hidden Conditional
 ImageSpaceModifier property blackScreen auto
 Formlist property currentAllowedLocations auto
 Formlist property alwaysAllowedLocations auto
@@ -207,6 +211,10 @@ Package Property entrapperPackage Auto
 Faction Property DibelCustomerFaction Auto
 Faction Property WhoreCustomerFaction Auto
 Bool property bRejecting = False Auto Hidden Conditional
+
+Bool Property bWhoreOralPerkRewardUnlocked = False Auto Hidden Conditional
+Bool Property bWhoreAnalPerkRewardUnlocked = False Auto Hidden Conditional
+Bool Property bWhoreVaginalPerkRewardUnlocked = False Auto Hidden Conditional
 
 
 Int Property iPaidGoldCustomer1 = 0 Auto Hidden Conditional
@@ -507,6 +515,14 @@ function shutDown()
 	isWhore = false
 	isWhore_g.SetValueInt(0)
 	isDibel_g.SetValueInt(0)
+	FlowerGirlsInterface.bChecked = False
+	SexLabInterface.bChecked = False 
+	OStimInterface.bChecked = False 
+	LicensesInterface.bChecked = False 
+	DDI_Interface.bChecked = False 
+	DDX_Interface.bChecked = False 
+	SLSFR_Interface.bChecked = False 
+	SLA_Interface.bChecked = False
 	GoToState("")
 EndFunction
 
@@ -546,16 +562,16 @@ Function setDeviceChanceArray()
 	if iDeviceChanceArr.Length != 20
 		iDeviceChanceArr = new Int[20]
 	endif
-	iDeviceChanceArr[0] = (fDeviousNipplePiercingChance * 10.0) as Int
-	iDeviceChanceArr[1] = (fDeviousVaginalPiercingChance * 10.0) as Int
-	iDeviceChanceArr[2] = (fDeviousAnalPlugChance * 10.0) as Int
-	iDeviceChanceArr[3] = (fDeviousVaginalPlugChance * 10.0) as Int
-	iDeviceChanceArr[4] = (fDeviousArmCuffChance * 10.0) as Int
-	iDeviceChanceArr[5] = (fDeviousLegCuffChance * 10.0) as Int
-	iDeviceChanceArr[6] = (fDeviousCollarChance * 10.0) as Int
-	iDeviceChanceArr[7] = (fDeviousGlovesChance * 10.0) as Int
-	iDeviceChanceArr[8] = (fDeviousBootsChance * 10.0) as Int
-	iDeviceChanceArr[9] = (fDeviousCorsetChance * 10.0) as Int
+	iDeviceChanceArr[0]  = (fDeviousNipplePiercingChance * 10.0) as Int
+	iDeviceChanceArr[1]  = (fDeviousVaginalPiercingChance * 10.0) as Int
+	iDeviceChanceArr[2]  = (fDeviousAnalPlugChance * 10.0) as Int
+	iDeviceChanceArr[3]  = (fDeviousVaginalPlugChance * 10.0) as Int
+	iDeviceChanceArr[4]  = (fDeviousArmCuffChance * 10.0) as Int
+	iDeviceChanceArr[5]  = (fDeviousLegCuffChance * 10.0) as Int
+	iDeviceChanceArr[6]  = (fDeviousCollarChance * 10.0) as Int
+	iDeviceChanceArr[7]  = (fDeviousGlovesChance * 10.0) as Int
+	iDeviceChanceArr[8]  = (fDeviousBootsChance * 10.0) as Int
+	iDeviceChanceArr[9]  = (fDeviousCorsetChance * 10.0) as Int
 	iDeviceChanceArr[10] = (fDeviousHarnessesChance * 10.0) as Int
 	iDeviceChanceArr[11] = (fDeviousGagRingChance * 10.0) as Int
 	iDeviceChanceArr[12] = (fDeviousChastityBeltOpenChance * 10.0) as Int
@@ -652,7 +668,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-	return getBaseVersion() + 0.43
+	return getBaseVersion() + 0.44
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
@@ -2614,6 +2630,33 @@ Bool Function bCanReceiveReward(Int iPos, Bool bDibel = False)
 	return False
 EndFunction
 
+Bool function bRewardUnlocked(Int iPos, Bool bDibel = False)
+	if bDibel
+		if iPos == 2
+			return (MCMScript.bDibelOralPerkRewardReceived || bCanReceiveReward(iPos, bDibel))
+		elseif iPos == 1
+			return (MCMScript.bDibelAnalPerkRewardReceived || bCanReceiveReward(iPos, bDibel))
+		elseif iPos == 0
+			return (MCMScript.bDibelVaginalPerkRewardReceived || bCanReceiveReward(iPos, bDibel))
+		endif
+	else
+		if iPos == 2
+			return (MCMScript.bWhoreOralPerkRewardReceived || bCanReceiveReward(iPos, bDibel))
+		elseif iPos == 1
+			return (MCMScript.bWhoreAnalPerkRewardReceived || bCanReceiveReward(iPos, bDibel))
+		elseif iPos == 0
+			return (MCMScript.bWhoreVaginalPerkRewardReceived || bCanReceiveReward(iPos, bDibel))
+		endif
+	endif
+	return False
+endfunction
+
+Function checkRewards()
+	bWhoreOralPerkRewardUnlocked = bRewardUnlocked(2, false)
+	bWhoreAnalPerkRewardUnlocked = bRewardUnlocked(1, false)
+	bWhoreVaginalPerkRewardUnlocked = bRewardUnlocked(0, false)
+endfunction
+
 Float Function iRewardProgress(Int iPos, Bool bDibel = False)
 	Int[] arr
 	if bDibel
@@ -2663,6 +2706,10 @@ endFunction
 
 Event OnInit()
 EndEvent
+
+Bool function isCheckingIntegrations()
+	return (!FlowerGirlsInterface.bChecked || !SexLabInterface.bChecked || !OStimInterface.bChecked || !LicensesInterface.bChecked || !DDI_Interface.bChecked || !DDX_Interface.bChecked || !SLSFR_Interface.bChecked || !SLA_Interface.bChecked)
+endfunction
 
 event onUpdate()
 EndEvent
@@ -3005,13 +3052,11 @@ Auto State Init
 	endEvent
 
 	event OnEndState()
-		While (!FlowerGirlsInterface.bChecked || !SexLabInterface.bChecked || !OStimInterface.bChecked || !LicensesInterface.bChecked || !DDI_Interface.bChecked || !DDX_Interface.bChecked || !SLSFR_Interface.bChecked || !SLA_Interface.bChecked)
+		While isCheckingIntegrations()
 			Utility.wait(0.5)
 		endWhile
 		MCMScript.loadSettingsAtStart()
 		SetVars()
-		;Debug.Trace("Simple Prostitution started.")
-		Debug.Notification("Simple Prostitution started.")
 		bIsBusy = False
 	endevent
 

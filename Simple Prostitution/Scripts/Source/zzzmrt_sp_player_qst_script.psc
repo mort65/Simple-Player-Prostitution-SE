@@ -5,7 +5,7 @@ zzzmrt_sp_main_qst_script property MainScript auto
 import zzzmrt_sp_utility
 
 Bool bCheckVars = False
-Bool bInit = False
+Bool Property bInit = False Auto Hidden
 
 event OnInit()
   ;Debug.trace("Simple Prostitution: OnInit() triggered for " + self)
@@ -31,7 +31,10 @@ event OnUpdate()
     bCheckVars = False
   endif
   MainScript.snitch()
-  bInit = False
+	if bInit
+		bInit = False
+		Debug.Notification("Simple Prostitution started.")
+	endif
 endevent
 
 Event OnCellLoad()
@@ -45,6 +48,7 @@ Event OnLocationChange(Location akOldLoc, Location akNewLoc)
   MainScript.stopApproach(true)
   MainScript.startCalcSTDCurePrice()
   MainScript.CheckAliases()
+	MainScript.checkRewards()
 	MainScript.SLSFR_Interface.SLSFR_toggle_WhoreFlag(MainScript.isPlayerDibeling() || MainScript.isPlayerWhoring())
   if (MainScript.whoreSnitch || MainScript.dibelSnitch || MainScript.angryDibelCustomer || MainScript.angryWhoreCustomer)
     RegisterForSingleUpdate(utility.randomFloat(10.0,30.0)) 
@@ -115,7 +119,16 @@ function setVars()
   MainScript.bIsPapyrusUtilActive = MainScript.bCheckPapyrusUtil()
   MainScript.bIsPO3ExtenderActive = MainScript.bCheckPO3Extender()
   MainScript.bIsPyramidUtilsOK = MainScript.bCheckPyramidUtils()
-  Utility.Wait(10.0)
+	if bInit
+		While MainScript.getState() == "Init"
+			Utility.wait(0.1)
+		endWhile
+	else
+		Utility.Wait(6.0)
+		While MainScript.isCheckingIntegrations()
+			Utility.wait(0.1)
+		endWhile
+	endif
   MainScript.bIsSexlabActive = MainScript.SexLabInterface.GetIsInterfaceActive()
   MainScript.bIsOStimActive = MainScript.OStimInterface.GetIsInterfaceActive()
   MainScript.bIsFlowerGirlsActive = MainScript.FlowerGirlsInterface.GetIsInterfaceActive()
@@ -124,6 +137,7 @@ function setVars()
   MainScript.bIsDDExpansionActive = MainScript.DDX_Interface.GetIsInterfaceActive()
 	MainScript.bIs_SLSFR_Active = MainScript.SLSFR_Interface.GetIsInterfaceActive()
 	MainScript.bIs_SLA_Active = MainScript.SLA_Interface.GetIsInterfaceActive()
+	MainScript.checkRewards()
   MainScript.ApproachMonitorScr.PlayerLoadsGame()
 endfunction
 
