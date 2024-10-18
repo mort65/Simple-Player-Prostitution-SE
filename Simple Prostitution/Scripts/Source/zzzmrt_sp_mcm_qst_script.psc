@@ -355,7 +355,8 @@ event OnPageReset(String page)
     AddSliderOptionST("BEG_PAY_MAX_SLIDER", "$MRT_SP_BEG_PAY_MAX_SLIDER1", MainScript.fBegPayMax, "$MRT_SP_BEG_PAY_MAX_SLIDER2", flag)
     AddSliderOptionST("SPEECH_BEG_BONUS_MIN_MULT_SLIDER", "$MRT_SP_SPEECH_BEG_BONUS_MIN_MULT_SLIDER1", MainScript.fMinSpeechBegBonusMult, "$MRT_SP_SPEECH_BEG_BONUS_MIN_MULT_SLIDER2", flag)
     AddSliderOptionST("SPEECH_BEG_BONUS_MAX_MULT_SLIDER", "$MRT_SP_SPEECH_BEG_BONUS_MAX_MULT_SLIDER1", MainScript.fMaxSpeechBegBonusMult, "$MRT_SP_SPEECH_BEG_BONUS_MAX_MULT_SLIDER2", flag)
-    AddMenuOptionST("BEG_ACCEPT_DIFFICULTY_MENU", "$MRT_SP_BEG_ACCEPT_DIFFICULTY_MENU", sGetSpeechDifficultyArr()[iBeggarSpeechDifficulty], flag)
+    OID_BEG_PAY_USE_BASE_SPEECH = AddToggleOption("$MRT_SP_BEG_PAY_USE_BASE_SPEECH_TOGGLE", MainScript.bBeggarPayUseBaseSpeech, flag)
+		AddMenuOptionST("BEG_ACCEPT_DIFFICULTY_MENU", "$MRT_SP_BEG_ACCEPT_DIFFICULTY_MENU", sGetSpeechDifficultyArr()[iBeggarSpeechDifficulty], flag)
     AddSliderOptionST("SPEECH_BEG_XP_MULT_SLIDER", "$MRT_SP_SPEECH_BEG_XP_MULT_SLIDER1", MainScript.fBeggarPersuasionXPMult, "$MRT_SP_SPEECH_BEG_XP_MULT_SLIDER2", flag)
     if MainScript.bModEnabled && (MainScript.bIsDDIntegrationActive && MainScript.bIsDDExpansionActive)
       flag = OPTION_FLAG_NONE
@@ -445,7 +446,8 @@ event OnPageReset(String page)
     AddSliderOptionST("DIBEL_VAG_PAY_SLIDER", "$MRT_SP_DIBEL_VAG_PAY_SLIDER1", MainScript.fDibelVagPay, "$MRT_SP_DIBEL_VAG_PAY_SLIDER2", flag)
     AddSliderOptionST("SPEECH_DIBEL_BONUS_MIN_MULT_SLIDER", "$MRT_SP_SPEECH_DIBEL_BONUS_MIN_MULT_SLIDER1", MainScript.fMinSpeechDibelBonusMult, "$MRT_SP_SPEECH_DIBEL_BONUS_MIN_MULT_SLIDER2", flag)
     AddSliderOptionST("SPEECH_DIBEL_BONUS_MAX_MULT_SLIDER", "$MRT_SP_SPEECH_DIBEL_BONUS_MAX_MULT_SLIDER1", MainScript.fMaxSpeechDibelBonusMult, "$MRT_SP_SPEECH_DIBEL_BONUS_MAX_MULT_SLIDER2", flag)
-    AddMenuOptionST("DIBEL_ACCEPT_DIFFICULTY_MENU", "$MRT_SP_DIBEL_ACCEPT_DIFFICULTY_MENU", sGetSpeechDifficultyArr()[iDibelSpeechDifficulty], flag)
+    OID_DIBEL_PAY_USE_BASE_SPEECH = AddToggleOption("$MRT_SP_DIBEL_PAY_USE_BASE_SPEECH_TOGGLE", MainScript.bDibelPayUseBaseSpeech, flag)
+		AddMenuOptionST("DIBEL_ACCEPT_DIFFICULTY_MENU", "$MRT_SP_DIBEL_ACCEPT_DIFFICULTY_MENU", sGetSpeechDifficultyArr()[iDibelSpeechDifficulty], flag)
     AddSliderOptionST("SPEECH_DIBEL_XP_MULT_SLIDER", "$MRT_SP_SPEECH_DIBEL_XP_MULT_SLIDER1", MainScript.fDibelPersuasionXPMult, "$MRT_SP_SPEECH_DIBEL_XP_MULT_SLIDER2", flag)
     AddSliderOptionST("DIBEL_MARK_CHANCE_SLIDER", "$MRT_SP_DIBEL_MARK_CHANCE_SLIDER1", Mainscript.fDibelMarkChance, "$MRT_SP_DIBEL_MARK_CHANCE_SLIDER2", flag)
 		if MainScript.bModEnabled && (MainScript.bIsDDIntegrationActive && MainScript.bIsDDExpansionActive)
@@ -514,7 +516,8 @@ event OnPageReset(String page)
     AddSliderOptionST("WHORE_VAG_PAY_SLIDER", "$MRT_SP_WHORE_VAG_PAY_SLIDER1", MainScript.fWhoreVagPay, "$MRT_SP_WHORE_VAG_PAY_SLIDER2", flag)
     AddSliderOptionST("SPEECH_WHORE_BONUS_MIN_MULT_SLIDER", "$MRT_SP_SPEECH_WHORE_BONUS_MIN_MULT_SLIDER1", MainScript.fMinSpeechWhoreBonusMult, "$MRT_SP_SPEECH_WHORE_BONUS_MIN_MULT_SLIDER2", flag)
     AddSliderOptionST("SPEECH_WHORE_BONUS_MAX_MULT_SLIDER", "$MRT_SP_SPEECH_WHORE_BONUS_MAX_MULT_SLIDER1", MainScript.fMaxSpeechWhoreBonusMult, "$MRT_SP_SPEECH_WHORE_BONUS_MAX_MULT_SLIDER2", flag)
-    AddMenuOptionST("WHORE_ACCEPT_DIFFICULTY_MENU", "$MRT_SP_WHORE_ACCEPT_DIFFICULTY_MENU", sGetSpeechDifficultyArr()[iWhoreSpeechDifficulty], flag)
+    OID_WHORE_PAY_USE_BASE_SPEECH = AddToggleOption("$MRT_SP_WHORE_PAY_USE_BASE_SPEECH_TOGGLE", MainScript.bWhorePayUseBaseSpeech, flag)
+		AddMenuOptionST("WHORE_ACCEPT_DIFFICULTY_MENU", "$MRT_SP_WHORE_ACCEPT_DIFFICULTY_MENU", sGetSpeechDifficultyArr()[iWhoreSpeechDifficulty], flag)
     AddSliderOptionST("SPEECH_WHORE_XP_MULT_SLIDER", "$MRT_SP_SPEECH_WHORE_XP_MULT_SLIDER1", MainScript.fWhorePersuasionXPMult, "$MRT_SP_SPEECH_WHORE_XP_MULT_SLIDER2", flag)
     AddSliderOptionST("WHORE_MARK_CHANCE_SLIDER", "$MRT_SP_WHORE_MARK_CHANCE_SLIDER1", Mainscript.fWhoreMarkChance, "$MRT_SP_WHORE_MARK_CHANCE_SLIDER2", flag)
     if MainScript.bModEnabled && (MainScript.bIsDDIntegrationActive && MainScript.bIsDDExpansionActive)
@@ -3095,6 +3098,9 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
 	MainScript.bDibelNeedWhoreOralReward = jsonutil.GetPathIntValue(settings_path, "bDibelNeedWhoreOralReward", MainScript.bDibelNeedWhoreOralReward as int)
 	MainScript.bDibelNeedWhoreAnalReward = jsonutil.GetPathIntValue(settings_path, "bDibelNeedWhoreAnalReward", MainScript.bDibelNeedWhoreAnalReward as int)
 	MainScript.bDibelNeedWhoreVaginalReward = jsonutil.GetPathIntValue(settings_path, "bDibelNeedWhoreVaginalReward", MainScript.bDibelNeedWhoreVaginalReward as int)
+	MainScript.bBeggarPayUseBaseSpeech = jsonutil.GetPathIntValue(settings_path, "bBeggarPayUseBaseSpeech", MainScript.bBeggarPayUseBaseSpeech as int)
+	MainScript.bWhorePayUseBaseSpeech = jsonutil.GetPathIntValue(settings_path, "bWhorePayUseBaseSpeech", MainScript.bWhorePayUseBaseSpeech as int)
+	MainScript.bDibelPayUseBaseSpeech = jsonutil.GetPathIntValue(settings_path, "bDibelPayUseBaseSpeech", MainScript.bDibelPayUseBaseSpeech as int)
 
   iBeggarSpeechDifficulty = jsonutil.GetPathIntValue(settings_path, "iBeggarSpeechDifficulty", iBeggarSpeechDifficulty)
   iWhoreSpeechDifficulty = jsonutil.GetPathIntValue(settings_path, "iWhoreSpeechDifficulty", iWhoreSpeechDifficulty)
@@ -3350,6 +3356,9 @@ Bool function saveUserSettingsPapyrus()
 	jsonutil.SetPathIntValue(settings_path, "bDibelNeedWhoreOralReward", MainScript.bDibelNeedWhoreOralReward as Int)
 	jsonutil.SetPathIntValue(settings_path, "bDibelNeedWhoreAnalReward", MainScript.bDibelNeedWhoreAnalReward as Int)
 	jsonutil.SetPathIntValue(settings_path, "bDibelNeedWhoreVaginalReward", MainScript.bDibelNeedWhoreVaginalReward as Int)
+	jsonutil.SetPathIntValue(settings_path, "bBeggarPayUseBaseSpeech", MainScript.bBeggarPayUseBaseSpeech as Int)
+	jsonutil.SetPathIntValue(settings_path, "bWhorePayUseBaseSpeech", MainScript.bWhorePayUseBaseSpeech as Int)
+	jsonutil.SetPathIntValue(settings_path, "bDibelPayUseBaseSpeech", MainScript.bDibelPayUseBaseSpeech as Int)
 
   jsonutil.SetPathIntValue(settings_path, "iBeggarSpeechDifficulty", iBeggarSpeechDifficulty)
   jsonutil.SetPathIntValue(settings_path, "iWhoreSpeechDifficulty", iWhoreSpeechDifficulty)
@@ -3977,6 +3986,15 @@ event OnOptionSelect(int option)
 	elseif option == OID_DIBEL_TEMPLE_TASK_FEMALE_CLIENT
 		MainScript.bFemaleTempleClient = !MainScript.bFemaleTempleClient
 		SetToggleOptionValue(option, MainScript.bFemaleTempleClient)
+	elseif option == OID_BEG_PAY_USE_BASE_SPEECH
+		MainScript.bBeggarPayUseBaseSpeech = !MainScript.bBeggarPayUseBaseSpeech
+		SetToggleOptionValue(option, MainScript.bBeggarPayUseBaseSpeech)
+	elseif option == OID_WHORE_PAY_USE_BASE_SPEECH
+		MainScript.bWhorePayUseBaseSpeech = !MainScript.bWhorePayUseBaseSpeech
+		SetToggleOptionValue(option, MainScript.bWhorePayUseBaseSpeech)
+	elseif option == OID_DIBEL_PAY_USE_BASE_SPEECH
+		MainScript.bDibelPayUseBaseSpeech = !MainScript.bDibelPayUseBaseSpeech
+		SetToggleOptionValue(option, MainScript.bDibelPayUseBaseSpeech)
   endif
   ForcePageReset()
 EndEvent
@@ -4049,6 +4067,15 @@ event OnOptionDefault(int option)
 	elseif option == OID_DIBEL_TEMPLE_TASK_FEMALE_CLIENT
 		MainScript.bFemaleTempleClient = True
 		SetToggleOptionValue(option, MainScript.bFemaleTempleClient)
+	elseif option == OID_BEG_PAY_USE_BASE_SPEECH
+		MainScript.bBeggarPayUseBaseSpeech = False
+		SetToggleOptionValue(option, MainScript.bBeggarPayUseBaseSpeech)
+	elseif option == OID_WHORE_PAY_USE_BASE_SPEECH
+		MainScript.bWhorePayUseBaseSpeech = False
+		SetToggleOptionValue(option, MainScript.bWhorePayUseBaseSpeech)
+	elseif option == OID_DIBEL_PAY_USE_BASE_SPEECH
+		MainScript.bDibelPayUseBaseSpeech = False
+		SetToggleOptionValue(option, MainScript.bDibelPayUseBaseSpeech)
   endif
   ForcePageReset()
 EndEvent
@@ -4206,6 +4233,12 @@ event OnOptionHighlight(int option)
 		SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_TASK_MALE_CLIENT")
 	elseif option == OID_DIBEL_TEMPLE_TASK_FEMALE_CLIENT
 		SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_TASK_FEMALE_CLIENT")
+	elseif option == OID_BEG_PAY_USE_BASE_SPEECH
+		SetInfoText("$MRT_SP_DESC_BEG_PAY_USE_BASE_SPEECH")
+	elseif option == OID_WHORE_PAY_USE_BASE_SPEECH
+	  SetInfoText("$MRT_SP_DESC_WHORE_PAY_USE_BASE_SPEECH")
+	elseif option == OID_DIBEL_PAY_USE_BASE_SPEECH
+	  SetInfoText("$MRT_SP_DESC_DIBEL_PAY_USE_BASE_SPEECH")
 	elseif option == OID_DIBEL_TEMPLE_TASK_MIN_PAY
 		SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_TASK_MIN_PAY")
 	elseif option == OID_DIBEL_TEMPLE_TASK_MAX_PAY
@@ -5565,3 +5598,7 @@ Int OID_DIBEL_TEMPLE_TASK_MALE_CLIENT
 Int OID_DIBEL_TEMPLE_TASK_FEMALE_CLIENT
 Int OID_DIBEL_TEMPLE_TASK_MIN_PAY
 Int OID_DIBEL_TEMPLE_TASK_MAX_PAY
+
+Int OID_DIBEL_PAY_USE_BASE_SPEECH
+Int OID_WHORE_PAY_USE_BASE_SPEECH
+Int OID_BEG_PAY_USE_BASE_SPEECH

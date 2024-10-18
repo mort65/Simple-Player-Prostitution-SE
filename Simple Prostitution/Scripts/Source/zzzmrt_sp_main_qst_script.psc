@@ -207,6 +207,10 @@ Float Property fCustomerApproachChance = 50.0 Auto Hidden Conditional
 Bool Property bBeggarPlayerIsKnownWhore = False Auto Hidden Conditional
 ReferenceAlias Property entrapperAlias Auto
 
+Bool property bBeggarPayUseBaseSpeech = False Auto Hidden Conditional
+Bool property bWhorePayUseBaseSpeech = False Auto Hidden Conditional
+Bool property bDibelPayUseBaseSpeech = False Auto Hidden Conditional
+
 Package Property entrapperPackage Auto
 Faction Property DibelCustomerFaction Auto
 Faction Property WhoreCustomerFaction Auto
@@ -1994,9 +1998,15 @@ endfunction
 Int function payBeggar(Actor beggar, Bool bBonus = True)
 	Int minBonus = 0
 	Int maxBonus = 0
+	Float fSpeech
+	if bBeggarPayUseBaseSpeech
+		fSpeech = beggar.GetBaseActorValue("Speechcraft")
+	else
+		fSpeech = beggar.getActorValue("Speechcraft")
+	endif
 	if bBonus
-		minBonus = maxInt(0, ((beggar.getActorValue("Speechcraft") * fMinSpeechBegBonusMult) As Int) + 1)
-		maxBonus = maxInt(0, ((beggar.getActorValue("Speechcraft") * fMaxSpeechBegBonusMult) As Int) + 1)
+		minBonus = maxInt(0, ((fSpeech * fMinSpeechBegBonusMult) As Int) + 1)
+		maxBonus = maxInt(0, ((fSpeech * fMaxSpeechBegBonusMult) As Int) + 1)
 		minBonus = minInt(minBonus,maxBonus)
 		maxBonus = maxInt(minBonus,maxBonus)
 	endif
@@ -2009,8 +2019,14 @@ Int function payBeggar(Actor beggar, Bool bBonus = True)
 endfunction
 
 Int function payDibel(Actor Dibel, int position, bool bSentByTemple = false)
-	Int minBonus = maxInt(0, ((Dibel.getActorValue("Speechcraft") * fMinSpeechDibelBonusMult) As Int) + 1)
-	Int maxBonus = maxInt(0, ((Dibel.getActorValue("Speechcraft") * fMaxSpeechDibelBonusMult) As Int) + 1)
+	Float fSpeech
+	if bDibelPayUseBaseSpeech
+		fSpeech = Dibel.GetBaseActorValue("Speechcraft")
+	else
+		fSpeech = Dibel.getActorValue("Speechcraft")
+	endif
+	Int minBonus = maxInt(0, ((fSpeech * fMinSpeechDibelBonusMult) As Int) + 1)
+	Int maxBonus = maxInt(0, ((fSpeech * fMaxSpeechDibelBonusMult) As Int) + 1)
 	minBonus = minInt(minBonus,maxBonus)
 	maxBonus = maxInt(minBonus,maxBonus)
 	int positionReward = 0
@@ -2039,8 +2055,14 @@ Int function payWhore(actor whore, int position)
 		return payBeggar(whore, True)
 	endif
 	int totalPay = 0
-	Int minBonus = maxInt(0, ((whore.getActorValue("Speechcraft") * fMinSpeechWhoreBonusMult) As Int) + 1)
-	Int maxBonus = maxInt(0, ((whore.getActorValue("Speechcraft") * fMaxSpeechWhoreBonusMult) As Int) + 1)
+	float fSpeech
+	if bWhorePayUseBaseSpeech
+		fSpeech = whore.GetBaseActorValue("Speechcraft")
+	else
+		fSpeech = whore.getActorValue("Speechcraft")
+	endif
+	Int minBonus = maxInt(0, ((fSpeech * fMinSpeechWhoreBonusMult) As Int) + 1)
+	Int maxBonus = maxInt(0, ((fSpeech * fMaxSpeechWhoreBonusMult) As Int) + 1)
 	minBonus = minInt(minBonus,maxBonus)
 	maxBonus = maxInt(minBonus,maxBonus)
 	int positionReward = 0
