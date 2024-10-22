@@ -41,6 +41,7 @@ ReferenceAlias property dibelCustomerAlias4 auto
 GlobalVariable property WhoreFailureChance auto
 ReferenceAlias property Assaulter auto
 Message property InterfaceMenu auto
+Message property PositionMenu auto
 Message Property DibelOfferMenu Auto
 Message Property DibelOfferMenu_InsufficientMark Auto
 Message Property DibelOfferMenu_Skills Auto
@@ -206,6 +207,11 @@ Bool Property bMaleCustomerApproach = True Auto Hidden Conditional
 Float Property fCustomerApproachChance = 50.0 Auto Hidden Conditional
 Bool Property bBeggarPlayerIsKnownWhore = False Auto Hidden Conditional
 ReferenceAlias Property entrapperAlias Auto
+
+Bool Property bDibelPositionMenu = False Auto Hidden Conditional
+Bool Property bWhorePositionMenu = False Auto Hidden Conditional
+
+Bool Property bShowVaginalInPositionMenu = True Auto Hidden Conditional
 
 Bool property bBeggarPayUseBaseSpeech = False Auto Hidden Conditional
 Bool property bWhorePayUseBaseSpeech = False Auto Hidden Conditional
@@ -489,6 +495,10 @@ GlobalVariable property isDibeling_g Auto
 GlobalVariable property isWhore_g Auto
 GlobalVariable property isDibel_g Auto
 
+Float property fWhorePersuadeChance = 50.0 Auto Hidden Conditional
+Float property fBeggarPersuadeChance = 30.0 Auto Hidden Conditional
+Float property fDibelPersuadeChance = 70.0 Auto Hidden Conditional
+
 Bool property isDibel = False Auto Hidden Conditional ;for starting customer approach and checking dibel license
 Bool property isWhore = False Auto Hidden Conditional ;for starting customer approach
 
@@ -672,7 +682,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-	return getBaseVersion() + 0.44
+	return getBaseVersion() + 0.45
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
@@ -940,9 +950,17 @@ Function setWhoreCustomer(Actor akActor, Bool bPay = False, Bool bPersuaded = Tr
 	endif
 	if bPay
 		if !player.GetActorBase().GetSex() && !akActor.GetLeveledActorBase().GetSex()
-			iWhorePosition = positionChooser(0, fWhoreAnalChance as Int, fWhoreOralChance as Int)
+			if bWhorePositionMenu && (whoreCustomerList.GetSize() == 0)
+				iWhorePosition = positionChooserByMenu(False)
+			else
+				iWhorePosition = positionChooser(0, fWhoreAnalChance as Int, fWhoreOralChance as Int)
+			endif
 		else
-			iWhorePosition = positionChooser(fWhoreVagChance as Int, fWhoreAnalChance as Int, fWhoreOralChance as Int)
+			if bWhorePositionMenu && (whoreCustomerList.GetSize() == 0)
+				iWhorePosition = positionChooserByMenu(True)
+			else
+				iWhorePosition = positionChooser(fWhoreVagChance as Int, fWhoreAnalChance as Int, fWhoreOralChance as Int)
+			endif
 		endif
 		if iWhorePosition > -1
 			iPayment = payWhore(player, iWhorePosition)
@@ -998,9 +1016,17 @@ Function setDibelCustomer(Actor akActor, bool bPay = true )
 	int iPayment = 0
 	if bPay
 		if !player.GetActorBase().GetSex() && !akActor.GetLeveledActorBase().GetSex()
-			iDibelPosition = positionChooser(0, fDibelAnalChance as Int, fDibelOralChance as Int)
+			if bDibelPositionMenu && (dibelCustomerList.GetSize() == 0)
+				iDibelPosition = positionChooserByMenu(False)
+			else
+				iDibelPosition = positionChooser(0, fDibelAnalChance as Int, fDibelOralChance as Int)
+			endif
 		else
-			iDibelPosition = positionChooser(fDibelVagChance as Int, fDibelAnalChance as Int, fDibelOralChance as Int)
+			if bDibelPositionMenu && (dibelCustomerList.GetSize() == 0)
+				iDibelPosition = positionChooserByMenu(True)
+			else
+				iDibelPosition = positionChooser(fDibelVagChance as Int, fDibelAnalChance as Int, fDibelOralChance as Int)
+			endif
 		endif
 		if iDibelPosition > -1
 			iPayment = payDibel(player, iDibelPosition, false)
@@ -1046,9 +1072,17 @@ Function setTempleClient(Actor akActor)
 	endif
 	int iPayment = 0
 	if !player.GetActorBase().GetSex() && !akActor.GetLeveledActorBase().GetSex()
-		iDibelPosition = positionChooser(0, fDibelAnalChance as Int, fDibelOralChance as Int)
+		if bDibelPositionMenu && (dibelCustomerList.GetSize() == 0)
+			iDibelPosition = positionChooserByMenu(False)
+		else
+			iDibelPosition = positionChooser(0, fDibelAnalChance as Int, fDibelOralChance as Int)
+		endif
 	else
-		iDibelPosition = positionChooser(fDibelVagChance as Int, fDibelAnalChance as Int, fDibelOralChance as Int)
+		if bDibelPositionMenu && (dibelCustomerList.GetSize() == 0)
+			iDibelPosition = positionChooserByMenu(True)
+		else
+			iDibelPosition = positionChooser(fDibelVagChance as Int, fDibelAnalChance as Int, fDibelOralChance as Int)
+		endif
 	endif
 	if iDibelPosition > -1
 		iPayment = payDibel(player, iDibelPosition, true)
@@ -2154,9 +2188,9 @@ Int function iGetCurTotalAnimInterfaces()
 endfunction
 
 function setGlobalVaues()
-	WhoreFailureChance.SetValueInt(maxInt(0, 16 * MCMScript.iWhoreSpeechDifficulty))
-	DibelFailureChance.SetValueInt(maxInt(0, 16 * MCMScript.iDibelSpeechDifficulty))
-	BeggarFailureChance.SetValueInt(maxInt(0, 16 * MCMScript.iBeggarSpeechDifficulty))
+	WhoreFailureChance.SetValueInt(maxInt(0, (100.0 - fWhorePersuadeChance) as Int))
+	DibelFailureChance.SetValueInt(maxInt(0, (100.0 - fDibelPersuadeChance) as Int))
+	BeggarFailureChance.SetValueInt(maxInt(0, (100.0 - fBeggarPersuadeChance) as Int))
 	BeggarNoSexOfferChance.SetValueInt(maxInt(0, (100.0 - fBeggarSexOfferChance) as Int))
 	maxApproachDistance.SetValueInt(fMaxApproachDistance as Int)
 endfunction
@@ -2178,6 +2212,15 @@ Int function positionChooser(int vaginalWeight = 50, int AnalWeight = 50, int or
 		i += 1
 	endWhile
 	return -1
+endfunction
+
+Int Function positionChooserByMenu(Bool bVaginalPosition = True)
+	Int iPos = -1
+	bShowVaginalInPositionMenu = bVaginalPosition
+	While iPos == -1
+		iPos = positionMenu.show()
+	endWhile
+	return iPos
 endfunction
 
 Bool Function bCheckPapyrusUtil()

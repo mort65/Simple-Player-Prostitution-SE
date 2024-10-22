@@ -5,9 +5,6 @@ import zzzmrt_sp_utility
 Quest property MainQuest auto
 zzzmrt_sp_main_qst_script property MainScript auto
 Int property iAnimInterface auto Hidden
-Int Property iWhoreSpeechDifficulty = 3 Auto Hidden
-Int Property iDibelSpeechDifficulty = 2 Auto Hidden
-Int Property iBeggarSpeechDifficulty = 4 Auto Hidden
 Int Property iAnimInterfaceMethod = 0 Auto Hidden
 Int Property iWhoreStatRace = 0 Auto Hidden
 Int Property iDibelStatRace = 0 Auto Hidden
@@ -356,7 +353,7 @@ event OnPageReset(String page)
     AddSliderOptionST("SPEECH_BEG_BONUS_MIN_MULT_SLIDER", "$MRT_SP_SPEECH_BEG_BONUS_MIN_MULT_SLIDER1", MainScript.fMinSpeechBegBonusMult, "$MRT_SP_SPEECH_BEG_BONUS_MIN_MULT_SLIDER2", flag)
     AddSliderOptionST("SPEECH_BEG_BONUS_MAX_MULT_SLIDER", "$MRT_SP_SPEECH_BEG_BONUS_MAX_MULT_SLIDER1", MainScript.fMaxSpeechBegBonusMult, "$MRT_SP_SPEECH_BEG_BONUS_MAX_MULT_SLIDER2", flag)
     OID_BEG_PAY_USE_BASE_SPEECH = AddToggleOption("$MRT_SP_BEG_PAY_USE_BASE_SPEECH_TOGGLE", MainScript.bBeggarPayUseBaseSpeech, flag)
-		AddMenuOptionST("BEG_ACCEPT_DIFFICULTY_MENU", "$MRT_SP_BEG_ACCEPT_DIFFICULTY_MENU", sGetSpeechDifficultyArr()[iBeggarSpeechDifficulty], flag)
+		OID_BEG_PERSUADE_CHANCE = AddSliderOption("$MRT_SP_BEG_PERSUADE_CHANCE_SLIDER1", MainScript.fBeggarPersuadeChance, "$MRT_SP_BEG_PERSUADE_CHANCE_SLIDER2", flag)
     AddSliderOptionST("SPEECH_BEG_XP_MULT_SLIDER", "$MRT_SP_SPEECH_BEG_XP_MULT_SLIDER1", MainScript.fBeggarPersuasionXPMult, "$MRT_SP_SPEECH_BEG_XP_MULT_SLIDER2", flag)
     if MainScript.bModEnabled && (MainScript.bIsDDIntegrationActive && MainScript.bIsDDExpansionActive)
       flag = OPTION_FLAG_NONE
@@ -438,7 +435,8 @@ event OnPageReset(String page)
 		OID_DIBEL_REQ_WHORE_VAGINAL_REWARD = AddToggleOption("$MRT_SP_DIBEL_REQ_WHORE_VAGINAL_REWARD_TOGGLE", MainScript.bDibelNeedWhoreVaginalReward, flag)
     _AddToggleOptionST("DIBEL_ALLOW_AGGRESSIVE_TOGGLE", "$MRT_SP_DIBEL_ALLOW_AGGRESSIVE_TOGGLE", MainScript.bDIBELAllowAggressive, flag)
     _AddToggleOptionST("DIBEL_NAKED_TOGGLE", "$MRT_SP_DIBEL_NAKED_TOGGLE", MainScript.bDibelNaked, flag)
-    AddSliderOptionST("DIBEL_ORAL_CHANCE_SLIDER", "$MRT_SP_DIBEL_ORAL_CHANCE_SLIDER1", MainScript.fDibelOralChance, "$MRT_SP_DIBEL_ORAL_CHANCE_SLIDER2", flag)
+    OID_DIBEL_POSITION_MENU = AddToggleOption("$MRT_SP_DIBEL_POSITION_MENU_TOGGLE", MainScript.bDibelPositionMenu, flag)
+		AddSliderOptionST("DIBEL_ORAL_CHANCE_SLIDER", "$MRT_SP_DIBEL_ORAL_CHANCE_SLIDER1", MainScript.fDibelOralChance, "$MRT_SP_DIBEL_ORAL_CHANCE_SLIDER2", flag)
     AddSliderOptionST("DIBEL_ANAL_CHANCE_SLIDER", "$MRT_SP_DIBEL_ANAL_CHANCE_SLIDER1", MainScript.fDibelAnalChance, "$MRT_SP_DIBEL_ANAL_CHANCE_SLIDER2", flag)
     AddSliderOptionST("DIBEL_VAG_CHANCE_SLIDER", "$MRT_SP_DIBEL_VAG_CHANCE_SLIDER1", MainScript.fDibelVagChance, "$MRT_SP_DIBEL_VAG_CHANCE_SLIDER2", flag)
     AddSliderOptionST("DIBEL_ORAL_PAY_SLIDER", "$MRT_SP_DIBEL_ORAL_PAY_SLIDER1", MainScript.fDibelOralPay, "$MRT_SP_DIBEL_ORAL_PAY_SLIDER2", flag)
@@ -447,7 +445,7 @@ event OnPageReset(String page)
     AddSliderOptionST("SPEECH_DIBEL_BONUS_MIN_MULT_SLIDER", "$MRT_SP_SPEECH_DIBEL_BONUS_MIN_MULT_SLIDER1", MainScript.fMinSpeechDibelBonusMult, "$MRT_SP_SPEECH_DIBEL_BONUS_MIN_MULT_SLIDER2", flag)
     AddSliderOptionST("SPEECH_DIBEL_BONUS_MAX_MULT_SLIDER", "$MRT_SP_SPEECH_DIBEL_BONUS_MAX_MULT_SLIDER1", MainScript.fMaxSpeechDibelBonusMult, "$MRT_SP_SPEECH_DIBEL_BONUS_MAX_MULT_SLIDER2", flag)
     OID_DIBEL_PAY_USE_BASE_SPEECH = AddToggleOption("$MRT_SP_DIBEL_PAY_USE_BASE_SPEECH_TOGGLE", MainScript.bDibelPayUseBaseSpeech, flag)
-		AddMenuOptionST("DIBEL_ACCEPT_DIFFICULTY_MENU", "$MRT_SP_DIBEL_ACCEPT_DIFFICULTY_MENU", sGetSpeechDifficultyArr()[iDibelSpeechDifficulty], flag)
+		OID_DIBEL_PERSUADE_CHANCE = AddSliderOption("$MRT_SP_DIBEL_PERSUADE_CHANCE_SLIDER1", MainScript.fDibelPersuadeChance, "$MRT_SP_DIBEL_PERSUADE_CHANCE_SLIDER2", flag)
     AddSliderOptionST("SPEECH_DIBEL_XP_MULT_SLIDER", "$MRT_SP_SPEECH_DIBEL_XP_MULT_SLIDER1", MainScript.fDibelPersuasionXPMult, "$MRT_SP_SPEECH_DIBEL_XP_MULT_SLIDER2", flag)
     AddSliderOptionST("DIBEL_MARK_CHANCE_SLIDER", "$MRT_SP_DIBEL_MARK_CHANCE_SLIDER1", Mainscript.fDibelMarkChance, "$MRT_SP_DIBEL_MARK_CHANCE_SLIDER2", flag)
 		if MainScript.bModEnabled && (MainScript.bIsDDIntegrationActive && MainScript.bIsDDExpansionActive)
@@ -508,7 +506,8 @@ event OnPageReset(String page)
     _AddToggleOptionST("WHORE_CLOTHING_TOGGLE", "$MRT_SP_WHORE_CLOTHING_TOGGLE", MainScript.bWhoreClothing, flag)
     _AddToggleOptionST("WHORE_ALLOW_AGGRESSIVE_TOGGLE", "$MRT_SP_WHORE_ALLOW_AGGRESSIVE_TOGGLE", MainScript.bWhoreAllowAggressive, flag)
     AddSliderOptionST("WHORE_OWNER_SHARE_SLIDER", "$MRT_SP_WHORE_OWNER_SHARE_SLIDER1", MainScript.fWhoreOwnerShare, "$MRT_SP_WHORE_OWNER_SHARE_SLIDER2", flag)
-    AddSliderOptionST("WHORE_ORAL_CHANCE_SLIDER", "$MRT_SP_WHORE_ORAL_CHANCE_SLIDER1", MainScript.fWhoreOralChance, "$MRT_SP_WHORE_ORAL_CHANCE_SLIDER2", flag)
+    OID_WHORE_POSITION_MENU = AddToggleOption("$MRT_SP_WHORE_POSITION_MENU_TOGGLE", MainScript.bWhorePositionMenu, flag)
+		AddSliderOptionST("WHORE_ORAL_CHANCE_SLIDER", "$MRT_SP_WHORE_ORAL_CHANCE_SLIDER1", MainScript.fWhoreOralChance, "$MRT_SP_WHORE_ORAL_CHANCE_SLIDER2", flag)
     AddSliderOptionST("WHORE_ANAL_CHANCE_SLIDER", "$MRT_SP_WHORE_ANAL_CHANCE_SLIDER1", MainScript.fWhoreAnalChance, "$MRT_SP_WHORE_ANAL_CHANCE_SLIDER2", flag)
     AddSliderOptionST("WHORE_VAG_CHANCE_SLIDER", "$MRT_SP_WHORE_VAG_CHANCE_SLIDER1", MainScript.fWhoreVagChance, "$MRT_SP_WHORE_VAG_CHANCE_SLIDER2", flag)
     AddSliderOptionST("WHORE_ORAL_PAY_SLIDER", "$MRT_SP_WHORE_ORAL_PAY_SLIDER1", MainScript.fWhoreOralPay, "$MRT_SP_WHORE_ORAL_PAY_SLIDER2", flag)
@@ -517,8 +516,8 @@ event OnPageReset(String page)
     AddSliderOptionST("SPEECH_WHORE_BONUS_MIN_MULT_SLIDER", "$MRT_SP_SPEECH_WHORE_BONUS_MIN_MULT_SLIDER1", MainScript.fMinSpeechWhoreBonusMult, "$MRT_SP_SPEECH_WHORE_BONUS_MIN_MULT_SLIDER2", flag)
     AddSliderOptionST("SPEECH_WHORE_BONUS_MAX_MULT_SLIDER", "$MRT_SP_SPEECH_WHORE_BONUS_MAX_MULT_SLIDER1", MainScript.fMaxSpeechWhoreBonusMult, "$MRT_SP_SPEECH_WHORE_BONUS_MAX_MULT_SLIDER2", flag)
     OID_WHORE_PAY_USE_BASE_SPEECH = AddToggleOption("$MRT_SP_WHORE_PAY_USE_BASE_SPEECH_TOGGLE", MainScript.bWhorePayUseBaseSpeech, flag)
-		AddMenuOptionST("WHORE_ACCEPT_DIFFICULTY_MENU", "$MRT_SP_WHORE_ACCEPT_DIFFICULTY_MENU", sGetSpeechDifficultyArr()[iWhoreSpeechDifficulty], flag)
-    AddSliderOptionST("SPEECH_WHORE_XP_MULT_SLIDER", "$MRT_SP_SPEECH_WHORE_XP_MULT_SLIDER1", MainScript.fWhorePersuasionXPMult, "$MRT_SP_SPEECH_WHORE_XP_MULT_SLIDER2", flag)
+    OID_WHORE_PERSUADE_CHANCE = AddSliderOption("$MRT_SP_WHORE_PERSUADE_CHANCE_SLIDER1", MainScript.fWhorePersuadeChance, "$MRT_SP_WHORE_PERSUADE_CHANCE_SLIDER2", flag)
+		AddSliderOptionST("SPEECH_WHORE_XP_MULT_SLIDER", "$MRT_SP_SPEECH_WHORE_XP_MULT_SLIDER1", MainScript.fWhorePersuasionXPMult, "$MRT_SP_SPEECH_WHORE_XP_MULT_SLIDER2", flag)
     AddSliderOptionST("WHORE_MARK_CHANCE_SLIDER", "$MRT_SP_WHORE_MARK_CHANCE_SLIDER1", Mainscript.fWhoreMarkChance, "$MRT_SP_WHORE_MARK_CHANCE_SLIDER2", flag)
     if MainScript.bModEnabled && (MainScript.bIsDDIntegrationActive && MainScript.bIsDDExpansionActive)
       flag = OPTION_FLAG_NONE
@@ -739,70 +738,6 @@ State STAT_DIBEL_RACE_MENU
     SetMenuDialogOptions(sGetRaceNameArr())
   endevent
 endState
-
-
-state WHORE_ACCEPT_DIFFICULTY_MENU
-  event OnDefaultST()
-  endevent
-
-  event OnHighlightST()
-    SetInfoText("$MRT_SP_DESC_WHORE_ACCEPT_DIFFICULTY_MENU")
-  endevent
-
-  event OnMenuAcceptST(int index)
-    iWhoreSpeechDifficulty = index
-    _SetMenuOptionValueST(sGetSpeechDifficultyArr()[iWhoreSpeechDifficulty], True)
-    MainScript.setGlobalVaues()
-  endevent
-
-  event OnMenuOpenST()
-    SetMenuDialogStartIndex(iWhoreSpeechDifficulty)
-    SetMenuDialogDefaultIndex(3)
-    SetMenuDialogOptions(sGetSpeechDifficultyArr())
-  endevent
-endstate
-
-state BEG_ACCEPT_DIFFICULTY_MENU
-  event OnDefaultST()
-  endevent
-
-  event OnHighlightST()
-    SetInfoText("$MRT_SP_DESC_BEG_ACCEPT_DIFFICULTY_MENU")
-  endevent
-
-  event OnMenuAcceptST(int index)
-    iBeggarSpeechDifficulty = index
-    _SetMenuOptionValueST(sGetSpeechDifficultyArr()[iBeggarSpeechDifficulty], True)
-    MainScript.setGlobalVaues()
-  endevent
-
-  event OnMenuOpenST()
-    SetMenuDialogStartIndex(iBeggarSpeechDifficulty)
-    SetMenuDialogDefaultIndex(4)
-    SetMenuDialogOptions(sGetSpeechDifficultyArr())
-  endevent
-endstate
-
-state DIBEL_ACCEPT_DIFFICULTY_MENU
-  event OnDefaultST()
-  endevent
-
-  event OnHighlightST()
-    SetInfoText("$MRT_SP_DESC_DIBEL_ACCEPT_DIFFICULTY_MENU")
-  endevent
-
-  event OnMenuAcceptST(int index)
-    iDibelSpeechDifficulty = index
-    _SetMenuOptionValueST(sGetSpeechDifficultyArr()[iDibelSpeechDifficulty], True)
-    MainScript.setGlobalVaues()
-  endevent
-
-  event OnMenuOpenST()
-    SetMenuDialogStartIndex(iDibelSpeechDifficulty)
-    SetMenuDialogDefaultIndex(2)
-    SetMenuDialogOptions(sGetSpeechDifficultyArr())
-  endevent
-endstate
 
 state BEGGING_CLOTHING_TOGGLE
   event OnDefaultST()
@@ -3101,10 +3036,9 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
 	MainScript.bBeggarPayUseBaseSpeech = jsonutil.GetPathIntValue(settings_path, "bBeggarPayUseBaseSpeech", MainScript.bBeggarPayUseBaseSpeech as int)
 	MainScript.bWhorePayUseBaseSpeech = jsonutil.GetPathIntValue(settings_path, "bWhorePayUseBaseSpeech", MainScript.bWhorePayUseBaseSpeech as int)
 	MainScript.bDibelPayUseBaseSpeech = jsonutil.GetPathIntValue(settings_path, "bDibelPayUseBaseSpeech", MainScript.bDibelPayUseBaseSpeech as int)
+	MainScript.bWhorePositionMenu = jsonutil.GetPathIntValue(settings_path, "bWhorePositionMenu", MainScript.bWhorePositionMenu as int)
+	MainScript.bDibelPositionMenu = jsonutil.GetPathIntValue(settings_path, "bDibelPositionMenu", MainScript.bDibelPositionMenu as int)
 
-  iBeggarSpeechDifficulty = jsonutil.GetPathIntValue(settings_path, "iBeggarSpeechDifficulty", iBeggarSpeechDifficulty)
-  iWhoreSpeechDifficulty = jsonutil.GetPathIntValue(settings_path, "iWhoreSpeechDifficulty", iWhoreSpeechDifficulty)
-  iDibelSpeechDifficulty = jsonutil.GetPathIntValue(settings_path, "iDibelSpeechDifficulty", iDibelSpeechDifficulty)
   iAnimInterfaceMethod = jsonutil.GetPathIntValue(settings_path, "iAnimInterfaceMethod", iAnimInterfaceMethod)
   
   MainScript.iCrimeBounty = jsonutil.GetPathIntValue(settings_path, "iCrimeBounty", MainScript.iCrimeBounty)
@@ -3272,7 +3206,11 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
 	
 	MainScript.fTempleClientMinExtraPay = jsonutil.GetPathFloatValue(settings_path, "fTempleClientMinExtraPay", MainScript.fTempleClientMinExtraPay)
 	MainScript.fTempleClientMaxExtraPay = jsonutil.GetPathFloatValue(settings_path, "fTempleClientMaxExtraPay", MainScript.fTempleClientMaxExtraPay)
-
+	
+	MainScript.fWhorePersuadeChance = jsonutil.GetPathFloatValue(settings_path, "fWhorePersuadeChance", MainScript.fWhorePersuadeChance)
+	MainScript.fBeggarPersuadeChance = jsonutil.GetPathFloatValue(settings_path, "fBeggarPersuadeChance", MainScript.fBeggarPersuadeChance)
+	MainScript.fDibelPersuadeChance = jsonutil.GetPathFloatValue(settings_path, "fDibelPersuadeChance", MainScript.fDibelPersuadeChance)
+	
   MainScript.sExtraTags_SL_Oral_MF = jsonutil.GetPathStringValue(settings_path, "sExtraTags_SL_Oral_MF", MainScript.sExtraTags_SL_Oral_MF)
   MainScript.sExtraTags_SL_Oral_FF = jsonutil.GetPathStringValue(settings_path, "sExtraTags_SL_Oral_FF", MainScript.sExtraTags_SL_Oral_FF)
   MainScript.sExtraTags_SL_Oral_MM = jsonutil.GetPathStringValue(settings_path, "sExtraTags_SL_Oral_MM", MainScript.sExtraTags_SL_Oral_MM)
@@ -3359,10 +3297,9 @@ Bool function saveUserSettingsPapyrus()
 	jsonutil.SetPathIntValue(settings_path, "bBeggarPayUseBaseSpeech", MainScript.bBeggarPayUseBaseSpeech as Int)
 	jsonutil.SetPathIntValue(settings_path, "bWhorePayUseBaseSpeech", MainScript.bWhorePayUseBaseSpeech as Int)
 	jsonutil.SetPathIntValue(settings_path, "bDibelPayUseBaseSpeech", MainScript.bDibelPayUseBaseSpeech as Int)
+	jsonutil.SetPathIntValue(settings_path, "bWhorePositionMenu", MainScript.bWhorePositionMenu as Int)
+	jsonutil.SetPathIntValue(settings_path, "bDibelPositionMenu", MainScript.bDibelPositionMenu as Int)
 
-  jsonutil.SetPathIntValue(settings_path, "iBeggarSpeechDifficulty", iBeggarSpeechDifficulty)
-  jsonutil.SetPathIntValue(settings_path, "iWhoreSpeechDifficulty", iWhoreSpeechDifficulty)
-  jsonutil.SetPathIntValue(settings_path, "iDibelSpeechDifficulty", iDibelSpeechDifficulty)
   jsonutil.SetPathIntValue(settings_path, "iAnimInterfaceMethod", iAnimInterfaceMethod)
   jsonutil.SetPathIntValue(settings_path, "iCrimeBounty", MainScript.iCrimeBounty)
 
@@ -3531,6 +3468,10 @@ Bool function saveUserSettingsPapyrus()
 	
 	jsonutil.SetPathFloatValue(settings_path, "fTempleClientMinExtraPay", MainScript.fTempleClientMinExtraPay)
 	jsonutil.SetPathFloatValue(settings_path, "fTempleClientMaxExtraPay", MainScript.fTempleClientMaxExtraPay)
+	
+	jsonutil.SetPathFloatValue(settings_path, "fWhorePersuadeChance", MainScript.fWhorePersuadeChance)
+	jsonutil.SetPathFloatValue(settings_path, "fDibelPersuadeChance", MainScript.fDibelPersuadeChance)
+	jsonutil.SetPathFloatValue(settings_path, "fBeggarPersuadeChance", MainScript.fBeggarPersuadeChance)
 	
   jsonutil.SetPathStringValue(settings_path, "sExtraTags_SL_Oral_MF", MainScript.sExtraTags_SL_Oral_MF)
   jsonutil.SetPathStringValue(settings_path, "sExtraTags_SL_Oral_FF", MainScript.sExtraTags_SL_Oral_FF)
@@ -3995,6 +3936,12 @@ event OnOptionSelect(int option)
 	elseif option == OID_DIBEL_PAY_USE_BASE_SPEECH
 		MainScript.bDibelPayUseBaseSpeech = !MainScript.bDibelPayUseBaseSpeech
 		SetToggleOptionValue(option, MainScript.bDibelPayUseBaseSpeech)
+	elseif option == OID_DIBEL_POSITION_MENU
+		MainScript.bDibelPositionMenu = !MainScript.bDibelPositionMenu
+		SetToggleOptionValue(option, MainScript.bDibelPositionMenu)
+	elseif option == OID_WHORE_POSITION_MENU
+		MainScript.bWhorePositionMenu = !MainScript.bWhorePositionMenu
+		SetToggleOptionValue(option, MainScript.bWhorePositionMenu)
   endif
   ForcePageReset()
 EndEvent
@@ -4076,6 +4023,12 @@ event OnOptionDefault(int option)
 	elseif option == OID_DIBEL_PAY_USE_BASE_SPEECH
 		MainScript.bDibelPayUseBaseSpeech = False
 		SetToggleOptionValue(option, MainScript.bDibelPayUseBaseSpeech)
+	elseif option == OID_WHORE_POSITION_MENU
+		MainScript.bWhorePositionMenu = False
+		SetToggleOptionValue(option, MainScript.bWhorePositionMenu)
+  elseif option == OID_DIBEL_POSITION_MENU
+		MainScript.bDibelPositionMenu = False
+		SetToggleOptionValue(option, MainScript.bDibelPositionMenu)
   endif
   ForcePageReset()
 EndEvent
@@ -4237,6 +4190,10 @@ event OnOptionHighlight(int option)
 		SetInfoText("$MRT_SP_DESC_BEG_PAY_USE_BASE_SPEECH")
 	elseif option == OID_WHORE_PAY_USE_BASE_SPEECH
 	  SetInfoText("$MRT_SP_DESC_WHORE_PAY_USE_BASE_SPEECH")
+	elseif option == OID_WHORE_POSITION_MENU
+		SetInfoText("$MRT_SP_DESC_WHORE_POSITION_MENU")
+	elseif option == OID_DIBEL_POSITION_MENU
+		SetInfoText("$MRT_SP_DESC_DIBEL_POSITION_MENU")
 	elseif option == OID_DIBEL_PAY_USE_BASE_SPEECH
 	  SetInfoText("$MRT_SP_DESC_DIBEL_PAY_USE_BASE_SPEECH")
 	elseif option == OID_DIBEL_TEMPLE_TASK_MIN_PAY
@@ -4345,6 +4302,12 @@ event OnOptionHighlight(int option)
     SetInfoText("$MRT_SP_DESC_SLA_MIN_WHORE_CUSTOMER_AROUSAL")
 	elseif option == OID_SLA_MIN_DIBEL_CUSTOMER_AROUSAL
     SetInfoText("$MRT_SP_DESC_SLA_MIN_DIBEL_CUSTOMER_AROUSAL")
+	elseif option == OID_DIBEL_PERSUADE_CHANCE
+		SetInfoText("$MRT_SP_DESC_DIBEL_PERSUADE_CHANCE")
+	elseif option == OID_WHORE_PERSUADE_CHANCE
+		SetInfoText("$MRT_SP_DESC_WHORE_PERSUADE_CHANCE")
+	elseif option == OID_BEG_PERSUADE_CHANCE
+		SetInfoText("$MRT_SP_DESC_BEG_PERSUADE_CHANCE")
 	endif
 endevent
 
@@ -4671,6 +4634,18 @@ event OnOptionSliderAccept(int option, float value)
 	elseif option == OID_DIBEL_TEMPLE_TASK_MAX_PAY
 		MainScript.fTempleClientMaxExtraPay = value
 		SetSliderOptionValue(OID_DIBEL_TEMPLE_TASK_MAX_PAY , MainScript.fTempleClientMaxExtraPay, "$MRT_SP_DIBEL_TEMPLE_TASK_MAX_PAY_SLIDER2")
+	elseif option == OID_WHORE_PERSUADE_CHANCE
+		MainScript.fWhorePersuadeChance = value
+		SetSliderOptionValue(OID_WHORE_PERSUADE_CHANCE , MainScript.fWhorePersuadeChance, "$MRT_SP_WHORE_PERSUADE_CHANCE_SLIDER2")
+		MainScript.setGlobalVaues()
+	elseif option == OID_DIBEL_PERSUADE_CHANCE
+		MainScript.fDibelPersuadeChance = value
+		SetSliderOptionValue(OID_DIBEL_PERSUADE_CHANCE , MainScript.fDibelPersuadeChance, "$MRT_SP_DIBEL_PERSUADE_CHANCE_SLIDER2")
+		MainScript.setGlobalVaues()
+	elseif option == OID_BEG_PERSUADE_CHANCE
+		MainScript.fBeggarPersuadeChance = value
+		SetSliderOptionValue(OID_BEG_PERSUADE_CHANCE , MainScript.fBeggarPersuadeChance, "$MRT_SP_BEG_PERSUADE_CHANCE_SLIDER2")
+		MainScript.setGlobalVaues()
 	endif
 	ForcePageReset()
 EndEvent
@@ -5161,6 +5136,21 @@ event OnOptionSliderOpen(int option)
 		SetSliderDialogDefaultValue(200.0)
 		SetSliderDialogRange(50, 1000)
 		SetSliderDialogInterval(50)
+	elseif option == OID_WHORE_PERSUADE_CHANCE
+	  SetSliderDialogStartValue(MainScript.fWhorePersuadeChance)
+    SetSliderDialogDefaultValue(50.0)
+    SetSliderDialogRange(1, 100)
+    SetSliderDialogInterval(1)
+	elseif option == OID_DIBEL_PERSUADE_CHANCE
+	  SetSliderDialogStartValue(MainScript.fDibelPersuadeChance)
+    SetSliderDialogDefaultValue(70.0)
+    SetSliderDialogRange(1, 100)
+    SetSliderDialogInterval(1)
+	elseif option == OID_BEG_PERSUADE_CHANCE
+	  SetSliderDialogStartValue(MainScript.fBeggarPersuadeChance)
+    SetSliderDialogDefaultValue(30.0)
+    SetSliderDialogRange(1, 100)
+    SetSliderDialogInterval(1)
   endif
 EndEvent
 
@@ -5602,3 +5592,10 @@ Int OID_DIBEL_TEMPLE_TASK_MAX_PAY
 Int OID_DIBEL_PAY_USE_BASE_SPEECH
 Int OID_WHORE_PAY_USE_BASE_SPEECH
 Int OID_BEG_PAY_USE_BASE_SPEECH
+
+Int OID_WHORE_POSITION_MENU
+Int OID_DIBEL_POSITION_MENU
+
+Int OID_WHORE_PERSUADE_CHANCE
+Int OID_DIBEL_PERSUADE_CHANCE
+Int OID_BEG_PERSUADE_CHANCE
