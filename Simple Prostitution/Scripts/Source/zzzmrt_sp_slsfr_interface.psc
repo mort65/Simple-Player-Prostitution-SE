@@ -30,6 +30,12 @@ function PlayerLoadsGame(Bool bForce = False)
 
   ; Is the soft dependency installed and is our script in the right state? If not change state.
   if isPluginFound("SLSF Reloaded.esp")
+		;Register SPP with SLSF Reloaded
+		Int handle = Modevent.Create("SLSF_Reloaded_RegisterMod")
+		If (handle)
+			ModEvent.PushString(handle, "mrt_SimpleProstitution.esp")
+			ModEvent.Send(handle)
+		EndIf
     if GetState() != "Installed"
       GoToState("Installed")
     elseif bForce || !bCheckVars()
@@ -69,7 +75,7 @@ state Installed
 	function SLSFR_toggle_WhoreFlag(Bool bFlag) ;for sexlab
 		int handle = ModEvent.Create("SLSF_Reloaded_SetWhoreEventFlag")
 		if (handle)
-				ModEvent.PushString(handle, "Simple Player Prostitution")
+				ModEvent.PushString(handle, "mrt_SimpleProstitution.esp")
 				ModEvent.PushBool(handle, bFlag)
 				ModEvent.Send(handle)
 		endIf

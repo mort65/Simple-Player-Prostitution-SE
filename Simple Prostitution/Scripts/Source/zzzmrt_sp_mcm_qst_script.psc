@@ -4015,13 +4015,13 @@ event OnOptionDefault(int option)
 		MainScript.bFemaleTempleClient = True
 		SetToggleOptionValue(option, MainScript.bFemaleTempleClient)
 	elseif option == OID_BEG_PAY_USE_BASE_SPEECH
-		MainScript.bBeggarPayUseBaseSpeech = False
+		MainScript.bBeggarPayUseBaseSpeech = True
 		SetToggleOptionValue(option, MainScript.bBeggarPayUseBaseSpeech)
 	elseif option == OID_WHORE_PAY_USE_BASE_SPEECH
-		MainScript.bWhorePayUseBaseSpeech = False
+		MainScript.bWhorePayUseBaseSpeech = True
 		SetToggleOptionValue(option, MainScript.bWhorePayUseBaseSpeech)
 	elseif option == OID_DIBEL_PAY_USE_BASE_SPEECH
-		MainScript.bDibelPayUseBaseSpeech = False
+		MainScript.bDibelPayUseBaseSpeech = True
 		SetToggleOptionValue(option, MainScript.bDibelPayUseBaseSpeech)
 	elseif option == OID_WHORE_POSITION_MENU
 		MainScript.bWhorePositionMenu = False
@@ -5129,12 +5129,12 @@ event OnOptionSliderOpen(int option)
 	elseif option == OID_DIBEL_TEMPLE_TASK_MIN_PAY
 		SetSliderDialogStartValue(MainScript.fTempleClientMinExtraPay)
 		SetSliderDialogDefaultValue(100.0)
-		SetSliderDialogRange(50, 1000)
+		SetSliderDialogRange(50, 5000)
 		SetSliderDialogInterval(50)
 	elseif option == OID_DIBEL_TEMPLE_TASK_MAX_PAY
 		SetSliderDialogStartValue(MainScript.fTempleClientMaxExtraPay)
 		SetSliderDialogDefaultValue(200.0)
-		SetSliderDialogRange(50, 1000)
+		SetSliderDialogRange(50, 5000)
 		SetSliderDialogInterval(50)
 	elseif option == OID_WHORE_PERSUADE_CHANCE
 	  SetSliderDialogStartValue(MainScript.fWhorePersuadeChance)

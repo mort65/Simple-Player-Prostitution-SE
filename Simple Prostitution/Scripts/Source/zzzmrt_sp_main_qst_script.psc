@@ -213,9 +213,9 @@ Bool Property bWhorePositionMenu = False Auto Hidden Conditional
 
 Bool Property bShowVaginalInPositionMenu = True Auto Hidden Conditional
 
-Bool property bBeggarPayUseBaseSpeech = False Auto Hidden Conditional
-Bool property bWhorePayUseBaseSpeech = False Auto Hidden Conditional
-Bool property bDibelPayUseBaseSpeech = False Auto Hidden Conditional
+Bool property bBeggarPayUseBaseSpeech = True Auto Hidden Conditional
+Bool property bWhorePayUseBaseSpeech = True Auto Hidden Conditional
+Bool property bDibelPayUseBaseSpeech = True Auto Hidden Conditional
 
 Package Property entrapperPackage Auto
 Faction Property DibelCustomerFaction Auto
@@ -682,7 +682,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-	return getBaseVersion() + 0.45
+	return getBaseVersion() + 0.46
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
