@@ -13,6 +13,7 @@ zzzmrt_sp_ddi_interface property DDI_Interface auto
 zzzmrt_sp_ddx_interface property DDX_Interface auto
 zzzmrt_sp_slsfr_interface property SLSFR_Interface auto
 zzzmrt_sp_sla_interface property SLA_Interface auto
+zzzmrt_sp_slhh_interface Property SLHH_Interface Auto
 zzzmrt_sp_dibellan_lust_qst_script property dibellan_lust_qst_script auto
 zzzmrt_sp_player_qst_script	Property playerScript Auto
 Quest Property SLA_Interface_Qst Auto
@@ -23,6 +24,7 @@ Quest Property LicensesInterfaceQst Auto
 Quest Property DDI_Interface_Qst Auto
 Quest Property DDX_Interface_Qst Auto
 Quest Property SLSFR_Interface_Qst Auto
+Quest Property SLHH_InterFace_Qst Auto
 zzzmrt_sp_mcm_qst_script property MCMScript auto
 zzzmrt_sp_appr_monitor_qst_script property ApproachMonitorScr Auto
 Bool Property bAssaulted = false Auto Hidden Conditional
@@ -92,6 +94,7 @@ Bool Property bIsDDIntegrationActive=False Auto Hidden Conditional
 Bool Property bIsDDExpansionActive=False Auto Hidden Conditional
 Bool Property bIs_SLSFR_Active=False Auto Hidden Conditional
 Bool Property bIs_SLA_Active=False Auto Hidden Conditional
+Bool Property bIs_SLHH_Active=False Auto Hidden Conditional
 Bool Property bDibelNeedWhoreOralReward = False Auto Hidden Conditional
 Bool Property bDibelNeedWhoreAnalReward = False Auto Hidden Conditional
 Bool Property bDibelNeedWhoreVaginalReward = False Auto Hidden Conditional
@@ -331,12 +334,16 @@ Bool Property bISWhoreCustomerAroused = False Auto hidden Conditional
 Bool Property bIsDibelCustomerAroused = False Auto hidden Conditional
 Bool Property bIsBeggarHelperArroused = False Auto hidden Conditional
 Bool Property bIsPCAroused = False Auto hidden Conditional
+Bool property bIsPlayerGettingHarassed = False Auto hidden Conditional
 
 Int property iSLA_MinApproachArousal = 0 Auto Hidden Conditional
 Int property iSLA_MinWhoreCustomerArousal = 0 Auto Hidden Conditional
 Int property iSLA_MinDibelCustomerArousal = 0 Auto Hidden Conditional
 Int property iSLA_MinBeggarSexOfferArousal = 0 Auto Hidden Conditional
 Int property iSLA_MinPCArousal = 0 Auto Hidden Conditional
+
+Bool Property bSLHH_MaleRapist = True Auto Hidden Conditional
+Bool Property bSLHH_FemaleRapist = False Auto Hidden Conditional
 
 Float property fTempleClientMinExtraPay = 100.0 Auto Hidden Conditional
 Float property fTempleClientMaxExtraPay = 200.0 Auto Hidden Conditional
@@ -537,6 +544,7 @@ function shutDown()
 	DDX_Interface.bChecked = False 
 	SLSFR_Interface.bChecked = False 
 	SLA_Interface.bChecked = False
+	SLHH_Interface.bChecked = False
 	GoToState("")
 EndFunction
 
@@ -682,7 +690,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-	return getBaseVersion() + 0.46
+	return getBaseVersion() + 0.47
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
@@ -2773,7 +2781,19 @@ Event OnInit()
 EndEvent
 
 Bool function isCheckingIntegrations()
-	return (!FlowerGirlsInterface.bChecked || !SexLabInterface.bChecked || !OStimInterface.bChecked || !LicensesInterface.bChecked || !DDI_Interface.bChecked || !DDX_Interface.bChecked || !SLSFR_Interface.bChecked || !SLA_Interface.bChecked)
+	if !FlowerGirlsInterface.bChecked
+	elseif !SexLabInterface.bChecked
+	elseif !OStimInterface.bChecked
+	elseif !LicensesInterface.bChecked
+	elseif !DDI_Interface.bChecked
+	elseif !DDX_Interface.bChecked
+	elseif !SLSFR_Interface.bChecked
+	elseif !SLA_Interface.bChecked
+	elseif !SLHH_Interface.bChecked
+	else
+		return False
+	endif
+	return True
 endfunction
 
 event onUpdate()
@@ -3506,6 +3526,32 @@ EndFunction
 
 
 Function rapePlayer(Actor akAggressor)
+	If !(akAggressor as actor)
+		return
+	endif
+	if akAggressor.IsOnMount()
+		akAggressor.Dismount()
+		Utility.wait(3.0)
+	endif
+	if bIs_SLHH_Active
+		if isPlayerGettingHarassed()
+			return
+		endif
+		if (akAggressor.GetSitState() == 0)
+			if akAggressor.GetLeveledActorBase().GetSex()
+				if bSLHH_FemaleRapist
+					SLHH_Interface.SLHHActivate(akAggressor)
+					return
+				endif
+			else
+				if bSLHH_MaleRapist
+					SLHH_Interface.SLHHActivate(akAggressor)
+					return
+				endif
+			endif
+		endif
+	endif
+	
 	bIsBusy = True
 	gotostate("raped")
 	if !bRandomSexWithPlayer(akAggressor, True)
@@ -3807,9 +3853,16 @@ function checkBeggarCustomer(Actor akCustomer)
 	ApproachMonitorScr.actorHavingSex = isActorHavingSex(akCustomer)
 	bIsBeggarHelperArroused = (!bIs_SLA_Active || ((iSLA_MinBeggarSexOfferArousal == 0) || (SLA_Interface.GetActorArousal(akCustomer) >= iSLA_MinBeggarSexOfferArousal)))
 	isPlayerAroused()
+	isPlayerGettingHarassed()
 endfunction
 
 Bool function isPlayerAroused()
 	bIsPCAroused = (!bIs_SLA_Active || ((iSLA_MinPCArousal == 0) || (SLA_Interface.GetActorArousal(player) >= iSLA_MinPCArousal)))
 	return bIsPCAroused
 endfunction
+
+Bool function isPlayerGettingHarassed()
+	bIsPlayerGettingHarassed = SLHH_Interface.isPlayerGettingHarassed()
+	return bIsPlayerGettingHarassed
+endfunction
+

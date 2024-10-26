@@ -104,6 +104,9 @@ function setVars()
   if !MainScript.SLSFR_Interface
     MainScript.SLSFR_Interface = MainScript.SLSFR_Interface_Qst as zzzmrt_sp_slsfr_interface
   endIf
+	if !MainScript.SLHH_Interface
+		MainScript.SLHH_Interface = MainScript.SLHH_InterFace_Qst as zzzmrt_sp_slhh_interface
+	endif
   if !MainScript.SLA_Interface
     MainScript.SLA_Interface = MainScript.SLA_Interface_Qst as zzzmrt_sp_sla_interface
   endIf
@@ -115,6 +118,7 @@ function setVars()
   MainScript.DDI_Interface.PlayerLoadsGame()
   MainScript.DDX_Interface.PlayerLoadsGame()
 	MainScript.SLSFR_Interface.PlayerLoadsGame()
+	MainScript.SLHH_Interface.PlayerLoadsGame()
 	MainScript.SLA_Interface.PlayerLoadsGame()
   MainScript.bIsPapyrusUtilActive = MainScript.bCheckPapyrusUtil()
   MainScript.bIsPO3ExtenderActive = MainScript.bCheckPO3Extender()
@@ -136,6 +140,7 @@ function setVars()
   MainScript.bIsDDIntegrationActive = MainScript.DDI_Interface.GetIsInterfaceActive()
   MainScript.bIsDDExpansionActive = MainScript.DDX_Interface.GetIsInterfaceActive()
 	MainScript.bIs_SLSFR_Active = MainScript.SLSFR_Interface.GetIsInterfaceActive()
+	MainScript.bIs_SLHH_Active = MainScript.SLHH_Interface.GetIsInterfaceActive()
 	MainScript.bIs_SLA_Active = MainScript.SLA_Interface.GetIsInterfaceActive()
 	MainScript.checkRewards()
   MainScript.ApproachMonitorScr.PlayerLoadsGame()

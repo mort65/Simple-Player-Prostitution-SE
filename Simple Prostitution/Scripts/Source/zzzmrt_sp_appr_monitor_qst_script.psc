@@ -160,6 +160,7 @@ Function checkPlayerStatus()
 	playerHasLicense()
 	playerHavingSex = MainScript.isActorHavingSex(player)
 	MainScript.isPlayerAroused()
+	MainScript.isPlayerGettingHarassed()
 	checkMOAStatus()
 EndFunction
 
@@ -192,6 +193,7 @@ Bool function canPunishPlayerForRejectingApproach(Actor akActor)
 	elseif player.IsBleedingOut()
 	elseif MainScript.isActorHavingSex(player)
 	elseif MainScript.isActorHavingSex(akActor)
+	elseif MainScript.isPlayerGettingHarassed()
 	elseif !Game.IsMovementControlsEnabled()
 	elseif !MainScript.bMaleCustomerApproach && !akActor.GetLeveledActorBase().GetSex()
 	elseif !MainScript.bFemaleCustomerApproach && akActor.GetLeveledActorBase().GetSex()
@@ -221,6 +223,7 @@ Bool Function canPunishPlayerForRejectingSexOffer(Actor akActor)
 	elseif !MainScript.bBeggarGuardsSexOffer && akActor.IsGuard()
 	elseif MainScript.isActorHavingSex(player)
 	elseif MainScript.isActorHavingSex(akActor)
+	elseif MainScript.isPlayerGettingHarassed()
 	elseif !Game.IsMovementControlsEnabled()
 	elseif player.GetCurrentScene() != None
 	elseif akActor.GetCurrentScene() != None

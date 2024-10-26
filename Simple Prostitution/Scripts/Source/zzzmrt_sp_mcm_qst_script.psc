@@ -171,6 +171,7 @@ event OnPageReset(String page)
     _AddTextOptionST("DEBUG_DDX_CHECK_TXT", "$DDExpansion", MainScript.bIsDDExpansionActive As String, flag)
 		_AddTextOptionST("DEBUG_SLSFR_CHECK_TXT", "$SLSF_RELOADED", MainScript.bIs_SLSFR_Active As String, flag)
 		AddTextOption("$SL_AROUSED", MainScript.bIs_SLA_Active As String, flag)
+		AddTextOption("$SLHH_EXPANSION", MainScript.bIs_SLHH_Active As String, flag)
   elseif (page == "$MRT_SP_PAGE_STATS")
     Mainscript.initStatArrs()
     if MainScript.bModEnabled
@@ -334,7 +335,15 @@ event OnPageReset(String page)
 		OID_SLSFR_MIN_FAME_GAIN = AddSliderOption("$MRT_SP_SLSFR_MIN_FAME_GAIN_SLIDER1", MainScript.fSLSFR_MinGainFame, "$MRT_SP_SLSFR_MIN_FAME_GAIN_SLIDER2", flag)
 		OID_SLSFR_MAX_FAME_GAIN = AddSliderOption("$MRT_SP_SLSFR_MAX_FAME_GAIN_SLIDER1", MainScript.fSLSFR_MaxGainFame, "$MRT_SP_SLSFR_MAX_FAME_GAIN_SLIDER2", flag)
 		OID_SLSFR_FAME_GAIN_CHANCE = AddSliderOption("$MRT_SP_SLSFR_FAME_GAIN_CHANCE_SLIDER1", MainScript.fSLSFR_FameGainChance, "$MRT_SP_SLSFR_FAME_GAIN_CHANCE_SLIDER2", flag)
-		
+		addEmptyOption()
+		_AddHeaderOption("$MRT_SP_HEAD_INTEGRATION_SLHH")
+		if MainScript.bModEnabled && MainScript.bIs_SLHH_Active
+      flag = OPTION_FLAG_NONE
+    else
+      flag = OPTION_FLAG_DISABLED
+    endif	
+		OID_SLHH_MALE_RAPIST = AddToggleOption("$MRT_SP_SLHH_MALE_RAPIST_TOGGLE", MainScript.bSLHH_MaleRapist, flag)
+		OID_SLHH_FEMALE_RAPIST = AddToggleOption("$MRT_SP_SLHH_FEMALE_RAPIST_TOGGLE", MainScript.bSLHH_FemaleRapist, flag)
 		
 	elseif (page == "$MRT_SP_PAGE_BEGGING")
     SetTitleText("$MRT_SP_PAGE_BEGGING")
@@ -3038,6 +3047,8 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
 	MainScript.bDibelPayUseBaseSpeech = jsonutil.GetPathIntValue(settings_path, "bDibelPayUseBaseSpeech", MainScript.bDibelPayUseBaseSpeech as int)
 	MainScript.bWhorePositionMenu = jsonutil.GetPathIntValue(settings_path, "bWhorePositionMenu", MainScript.bWhorePositionMenu as int)
 	MainScript.bDibelPositionMenu = jsonutil.GetPathIntValue(settings_path, "bDibelPositionMenu", MainScript.bDibelPositionMenu as int)
+	MainScript.bSLHH_MaleRapist = jsonutil.GetPathIntValue(settings_path, "bSLHH_MaleRapist", MainScript.bSLHH_MaleRapist as int)
+	MainScript.bSLHH_FemaleRapist = jsonutil.GetPathIntValue(settings_path, "bSLHH_FemaleRapist", MainScript.bSLHH_FemaleRapist as int)
 
   iAnimInterfaceMethod = jsonutil.GetPathIntValue(settings_path, "iAnimInterfaceMethod", iAnimInterfaceMethod)
   
@@ -3299,6 +3310,8 @@ Bool function saveUserSettingsPapyrus()
 	jsonutil.SetPathIntValue(settings_path, "bDibelPayUseBaseSpeech", MainScript.bDibelPayUseBaseSpeech as Int)
 	jsonutil.SetPathIntValue(settings_path, "bWhorePositionMenu", MainScript.bWhorePositionMenu as Int)
 	jsonutil.SetPathIntValue(settings_path, "bDibelPositionMenu", MainScript.bDibelPositionMenu as Int)
+	jsonutil.SetPathIntValue(settings_path, "bSLHH_MaleRapist", MainScript.bSLHH_MaleRapist as Int)
+	jsonutil.SetPathIntValue(settings_path, "bSLHH_FemaleRapist", MainScript.bSLHH_FemaleRapist as Int)
 
   jsonutil.SetPathIntValue(settings_path, "iAnimInterfaceMethod", iAnimInterfaceMethod)
   jsonutil.SetPathIntValue(settings_path, "iCrimeBounty", MainScript.iCrimeBounty)
@@ -3942,6 +3955,12 @@ event OnOptionSelect(int option)
 	elseif option == OID_WHORE_POSITION_MENU
 		MainScript.bWhorePositionMenu = !MainScript.bWhorePositionMenu
 		SetToggleOptionValue(option, MainScript.bWhorePositionMenu)
+	elseif option == OID_SLHH_MALE_RAPIST
+		MainScript.bSLHH_MaleRapist = !MainScript.bSLHH_MaleRapist
+		SetToggleOptionValue(option, MainScript.bSLHH_MaleRapist)
+	elseif option == OID_SLHH_FEMALE_RAPIST
+		MainScript.bSLHH_FemaleRapist = !MainScript.bSLHH_FemaleRapist
+		SetToggleOptionValue(option, MainScript.bSLHH_FemaleRapist)
   endif
   ForcePageReset()
 EndEvent
@@ -4029,6 +4048,12 @@ event OnOptionDefault(int option)
   elseif option == OID_DIBEL_POSITION_MENU
 		MainScript.bDibelPositionMenu = False
 		SetToggleOptionValue(option, MainScript.bDibelPositionMenu)
+	elseif option == OID_SLHH_MALE_RAPIST
+		MainScript.bSLHH_MaleRapist = True
+		SetToggleOptionValue(option, MainScript.bSLHH_MaleRapist)
+	elseif option == OID_SLHH_FEMALE_RAPIST
+		MainScript.bSLHH_FemaleRapist = False
+		SetToggleOptionValue(option, MainScript.bSLHH_FemaleRapist)
   endif
   ForcePageReset()
 EndEvent
@@ -4190,6 +4215,10 @@ event OnOptionHighlight(int option)
 		SetInfoText("$MRT_SP_DESC_BEG_PAY_USE_BASE_SPEECH")
 	elseif option == OID_WHORE_PAY_USE_BASE_SPEECH
 	  SetInfoText("$MRT_SP_DESC_WHORE_PAY_USE_BASE_SPEECH")
+	elseif option == OID_SLHH_MALE_RAPIST
+		SetInfoText("$MRT_SP_DESC_SLHH_MALE_RAPIST")
+	elseif option == OID_SLHH_FEMALE_RAPIST
+	  SetInfoText("$MRT_SP_DESC_SLHH_FEMALE_RAPIST")
 	elseif option == OID_WHORE_POSITION_MENU
 		SetInfoText("$MRT_SP_DESC_WHORE_POSITION_MENU")
 	elseif option == OID_DIBEL_POSITION_MENU
@@ -5599,3 +5628,6 @@ Int OID_DIBEL_POSITION_MENU
 Int OID_WHORE_PERSUADE_CHANCE
 Int OID_DIBEL_PERSUADE_CHANCE
 Int OID_BEG_PERSUADE_CHANCE
+
+Int OID_SLHH_MALE_RAPIST
+Int OID_SLHH_FEMALE_RAPIST
