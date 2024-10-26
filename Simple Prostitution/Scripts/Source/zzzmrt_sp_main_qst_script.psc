@@ -3537,17 +3537,11 @@ Function rapePlayer(Actor akAggressor)
 		if isPlayerGettingHarassed()
 			return
 		endif
-		if (akAggressor.GetSitState() == 0)
-			if akAggressor.GetLeveledActorBase().GetSex()
-				if bSLHH_FemaleRapist
-					SLHH_Interface.SLHHActivate(akAggressor)
-					return
-				endif
-			else
-				if bSLHH_MaleRapist
-					SLHH_Interface.SLHHActivate(akAggressor)
-					return
-				endif
+		if (!akAggressor.IsOnMount() && (akAggressor.GetSitState() == 0))
+			Bool isFemale = akAggressor.GetLeveledActorBase().GetSex()
+			if (isFemale && bSLHH_FemaleRapist) || (!isFemale && bSLHH_MaleRapist)
+				SLHH_Interface.SLHHActivate(akAggressor)
+				return
 			endif
 		endif
 	endif
