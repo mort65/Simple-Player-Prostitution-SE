@@ -14,7 +14,7 @@ endevent
 
 Function setVars()
   SLHH = Game.GetFormFromFile(0x0012c4, "SexLabHorribleHarassment.esp") as Quest
-	SLHHScriptEventKeyword = Game.GetFormFromFile(0x0000c510, "SexLabHorribleHarassment.esp") as Keyword
+	SLHHScriptEventKeyword = Game.GetFormFromFile(0x00c510, "SexLabHorribleHarassment.esp") as Keyword
   Debug.Notification("Simple Prostitution: Horrible Harassment Expansion detected.")
 endfunction
 
