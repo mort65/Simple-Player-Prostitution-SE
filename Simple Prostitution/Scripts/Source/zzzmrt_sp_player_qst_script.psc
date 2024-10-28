@@ -45,6 +45,7 @@ EndEvent
 Event OnLocationChange(Location akOldLoc, Location akNewLoc)
   MainScript.checkCurrentLocation()
   MainScript.GoToState("")
+	MainScript.bIsBusy = False
   MainScript.stopApproach(true)
   MainScript.startCalcSTDCurePrice()
   MainScript.CheckAliases()

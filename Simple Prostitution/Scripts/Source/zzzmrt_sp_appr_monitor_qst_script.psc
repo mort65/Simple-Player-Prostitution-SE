@@ -46,7 +46,7 @@ Function stopApproach(Bool bConfirm = true)
 EndFunction
 
 Function updateApproach(Bool bReset = False)
-	Bool doReset = (bReset && !MainScript.bRejecting)
+	Bool doReset = (bReset && (MainScript.GetState() != "rejecting"))
 	actor approachingActor
 	Form approachingActorBase
 	int iArousal = 0

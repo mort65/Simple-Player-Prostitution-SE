@@ -223,7 +223,6 @@ Bool property bDibelPayUseBaseSpeech = True Auto Hidden Conditional
 Package Property entrapperPackage Auto
 Faction Property DibelCustomerFaction Auto
 Faction Property WhoreCustomerFaction Auto
-Bool property bRejecting = False Auto Hidden Conditional
 
 Bool Property bWhoreOralPerkRewardUnlocked = False Auto Hidden Conditional
 Bool Property bWhoreAnalPerkRewardUnlocked = False Auto Hidden Conditional
@@ -1146,7 +1145,6 @@ EndFunction
 
 Function setRejectingCustomerResult(Actor akActor, Bool bWhore = False, Bool bDibel = False, Bool bBeggar = False, Bool bApproach = False)
 	bIsBusy = true
-	bRejecting = true
 	int iRand 
 	bRejectAssaultRape = False
 	bRejectAssaultTheft = False
@@ -1301,7 +1299,6 @@ endfunction
 Function rejectCusomer(Actor akCustomer)
 	gotostate("rejecting")
 	bIsBusy = true
-	bRejecting = true
 	int iWhatToDo
 	if bRejectDibel
 		if dibelCustomerAlias.getActorReference()
@@ -1398,7 +1395,6 @@ Function rejectCusomer(Actor akCustomer)
 	ApproachDelaySpell.cast(akCustomer)
 	iWhoringRejectResult = -1
 	bIsBusy = false
-	bRejecting = false
 	gotostate("")
 EndFunction
 
