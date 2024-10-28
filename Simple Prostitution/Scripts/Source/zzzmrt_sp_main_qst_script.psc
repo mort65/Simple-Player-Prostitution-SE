@@ -514,6 +514,8 @@ Bool property isWhore = False Auto Hidden Conditional ;for starting customer app
 
 function shutDown()
 	stopApproach(true)
+	SLSFR_Interface.SLSFR_toggle_WhoreFlag(False)
+	SLSFR_Interface.SLSFR_toggle_WhoreEventFlag(False)
 	snitchDetector.stop()
 	ApproachMonitorQst.stop()
 	STD_Script.cureActorSTDs(player, False)
