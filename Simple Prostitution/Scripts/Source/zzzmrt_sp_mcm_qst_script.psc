@@ -335,6 +335,9 @@ event OnPageReset(String page)
 		OID_SLSFR_MIN_FAME_GAIN = AddSliderOption("$MRT_SP_SLSFR_MIN_FAME_GAIN_SLIDER1", MainScript.fSLSFR_MinGainFame, "$MRT_SP_SLSFR_MIN_FAME_GAIN_SLIDER2", flag)
 		OID_SLSFR_MAX_FAME_GAIN = AddSliderOption("$MRT_SP_SLSFR_MAX_FAME_GAIN_SLIDER1", MainScript.fSLSFR_MaxGainFame, "$MRT_SP_SLSFR_MAX_FAME_GAIN_SLIDER2", flag)
 		OID_SLSFR_FAME_GAIN_CHANCE = AddSliderOption("$MRT_SP_SLSFR_FAME_GAIN_CHANCE_SLIDER1", MainScript.fSLSFR_FameGainChance, "$MRT_SP_SLSFR_FAME_GAIN_CHANCE_SLIDER2", flag)
+		OID_SLSFR_TALK_MIN_FAME_GAIN = AddSliderOption("$MRT_SP_SLSFR_MIN_TALK_FAME_GAIN_SLIDER1", MainScript.fSLSFR_Talk_MinGainFame, "$MRT_SP_SLSFR_MIN_TALK_FAME_GAIN_SLIDER2", flag)
+		OID_SLSFR_TALK_MAX_FAME_GAIN = AddSliderOption("$MRT_SP_SLSFR_MAX_TALK_FAME_GAIN_SLIDER1", MainScript.fSLSFR_Talk_MaxGainFame, "$MRT_SP_SLSFR_MAX_TALK_FAME_GAIN_SLIDER2", flag)
+		OID_SLSFR_TALK_FAME_GAIN_CHANCE = AddSliderOption("$MRT_SP_SLSFR_TALK_FAME_GAIN_CHANCE_SLIDER1", MainScript.fSLSFR_Talk_FameGainChance, "$MRT_SP_SLSFR_TALK_FAME_GAIN_CHANCE_SLIDER2", flag)
 		addEmptyOption()
 		_AddHeaderOption("$MRT_SP_HEAD_INTEGRATION_SLHH")
 		if MainScript.bModEnabled && MainScript.bIs_SLHH_Active
@@ -3214,6 +3217,9 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
 	MainScript.fSLSFR_MinGainFame = jsonutil.GetPathFloatValue(settings_path, "fSLSFR_MinGainFame", MainScript.fSLSFR_MinGainFame)
 	MainScript.fSLSFR_MaxGainFame = jsonutil.GetPathFloatValue(settings_path, "fSLSFR_MaxGainFame", MainScript.fSLSFR_MaxGainFame)
 	MainScript.fSLSFR_FameGainChance = jsonutil.GetPathFloatValue(settings_path, "fSLSFR_FameGainChance", MainScript.fSLSFR_FameGainChance)
+	MainScript.fSLSFR_Talk_MinGainFame = jsonutil.GetPathFloatValue(settings_path, "fSLSFR_Talk_MinGainFame", MainScript.fSLSFR_Talk_MinGainFame)
+	MainScript.fSLSFR_Talk_MaxGainFame = jsonutil.GetPathFloatValue(settings_path, "fSLSFR_Talk_MaxGainFame", MainScript.fSLSFR_Talk_MaxGainFame)
+	MainScript.fSLSFR_Talk_FameGainChance = jsonutil.GetPathFloatValue(settings_path, "fSLSFR_Talk_FameGainChance", MainScript.fSLSFR_Talk_FameGainChance)
 	
 	MainScript.fTempleClientMinExtraPay = jsonutil.GetPathFloatValue(settings_path, "fTempleClientMinExtraPay", MainScript.fTempleClientMinExtraPay)
 	MainScript.fTempleClientMaxExtraPay = jsonutil.GetPathFloatValue(settings_path, "fTempleClientMaxExtraPay", MainScript.fTempleClientMaxExtraPay)
@@ -3477,7 +3483,10 @@ Bool function saveUserSettingsPapyrus()
 	jsonutil.SetPathFloatValue(settings_path, "fSLSFR_MinBeggarSexOfferRequiredFame", MainScript.fSLSFR_MinBeggarSexOfferRequiredFame)
 	jsonutil.SetPathFloatValue(settings_path, "fSLSFR_MinGainFame", MainScript.fSLSFR_MinGainFame)
 	jsonutil.SetPathFloatValue(settings_path, "fSLSFR_MaxGainFame", MainScript.fSLSFR_MaxGainFame)
-	jsonutil.SetPathFloatValue(settings_path, "fSLSFR_FameGainChance", MainScript.fSLSFR_FameGainChance)
+	jsonutil.SetPathFloatValue(settings_path, "fSLSFR_FameGainChance", MainScript.fSLSFR_FameGainChance)	
+	jsonutil.SetPathFloatValue(settings_path, "fSLSFR_Talk_MinGainFame", MainScript.fSLSFR_Talk_MinGainFame)
+	jsonutil.SetPathFloatValue(settings_path, "fSLSFR_Talk_MaxGainFame", MainScript.fSLSFR_Talk_MaxGainFame)
+	jsonutil.SetPathFloatValue(settings_path, "fSLSFR_Talk_FameGainChance", MainScript.fSLSFR_Talk_FameGainChance)
 	
 	jsonutil.SetPathFloatValue(settings_path, "fTempleClientMinExtraPay", MainScript.fTempleClientMinExtraPay)
 	jsonutil.SetPathFloatValue(settings_path, "fTempleClientMaxExtraPay", MainScript.fTempleClientMaxExtraPay)
@@ -4316,11 +4325,17 @@ event OnOptionHighlight(int option)
 	 elseif option == OID_SLSFR_MIN_BEGGAR_SEX_OFFER_REQ_FAME
     SetInfoText("$MRT_SP_DESC_SLSFR_Min_Beggar_Sex_Offer_REQ_FAME")
   elseif option == OID_SLSFR_MIN_FAME_GAIN
-    SetInfoText("$MRT_SP_DESC_SLSFR_SLSFR_MIN_FAME_GAIN")
+    SetInfoText("$MRT_SP_DESC_SLSFR_MIN_FAME_GAIN")
 	elseif option == OID_SLSFR_MAX_FAME_GAIN
-    SetInfoText("$MRT_SP_DESC_SLSFR_SLSFR_MAX_FAME_GAIN")
+    SetInfoText("$MRT_SP_DESC_SLSFR_MAX_FAME_GAIN")
 	elseif option == OID_SLSFR_FAME_GAIN_CHANCE 
-    SetInfoText("$MRT_SP_DESC_SLSFR_SLSFR_FAME_GAIN_CHANCE")
+    SetInfoText("$MRT_SP_DESC_SLSFR_FAME_GAIN_CHANCE")
+	elseif option == OID_SLSFR_TALK_FAME_GAIN_CHANCE
+		SetInfoText("$MRT_SP_DESC_SLSFR_TALK_FAME_GAIN_CHANCE")
+	elseif option == OID_SLSFR_TALK_MIN_FAME_GAIN
+		SetInfoText("$MRT_SP_DESC_SLSFR_TALK_MIN_FAME_GAIN")
+	elseif option == OID_SLSFR_TALK_MAX_FAME_GAIN
+		SetInfoText("$MRT_SP_DESC_SLSFR_TALK_MAX_FAME_GAIN")
 	elseif option == OID_SLA_MIN_PC_AROUSAL 
     SetInfoText("$MRT_SP_DESC_SLA_MIN_PC_AROUSAL")
 	elseif option == OID_SLA_MIN_APPROACH_AROUSAL 
@@ -4651,12 +4666,21 @@ event OnOptionSliderAccept(int option, float value)
 	elseif option == OID_SLSFR_MIN_FAME_GAIN 
 		MainScript.fSLSFR_MinGainFame = value
 		SetSliderOptionValue(OID_SLSFR_MIN_FAME_GAIN , MainScript.fSLSFR_MinGainFame, "$MRT_SP_SLSFR_MIN_FAME_GAIN_SLIDER2")
+	elseif option == OID_SLSFR_TALK_MIN_FAME_GAIN 
+		MainScript.fSLSFR_Talk_MinGainFame = value
+		SetSliderOptionValue(OID_SLSFR_TALK_MIN_FAME_GAIN , MainScript.fSLSFR_Talk_MinGainFame, "$MRT_SP_SLSFR_MIN_TALK_FAME_GAIN_SLIDER2")
 	elseif option == OID_SLSFR_Max_FAME_GAIN 
 		MainScript.fSLSFR_MaxGainFame = value
 		SetSliderOptionValue(OID_SLSFR_Max_FAME_GAIN , MainScript.fSLSFR_MaxGainFame, "$MRT_SP_SLSFR_MAX_FAME_GAIN_SLIDER2")
+	elseif option == OID_SLSFR_TALK_MAX_FAME_GAIN 
+		MainScript.fSLSFR_Talk_MaxGainFame = value
+		SetSliderOptionValue(OID_SLSFR_TALK_MAX_FAME_GAIN , MainScript.fSLSFR_Talk_MaxGainFame, "$MRT_SP_SLSFR_MAX_TALK_FAME_GAIN_SLIDER2")
 	elseif option == OID_SLSFR_FAME_GAIN_CHANCE 
 		MainScript.fSLSFR_FameGainChance = value
-		SetSliderOptionValue(OID_SLSFR_FAME_GAIN_CHANCE , MainScript.fSLSFR_FameGainChance, "$MRT_SP_SLSFR_MAX_FAME_GAIN_CHANCE_SLIDER2")
+		SetSliderOptionValue(OID_SLSFR_FAME_GAIN_CHANCE , MainScript.fSLSFR_FameGainChance, "$MRT_SP_SLSFR_FAME_GAIN_CHANCE_SLIDER2")
+	elseif option == OID_SLSFR_TALK_FAME_GAIN_CHANCE 
+		MainScript.fSLSFR_Talk_FameGainChance = value
+		SetSliderOptionValue(OID_SLSFR_TALK_FAME_GAIN_CHANCE , MainScript.fSLSFR_Talk_FameGainChance, "$MRT_SP_SLSFR_TALK_FAME_GAIN_CHANCE_SLIDER2")
 	elseif option == OID_DIBEL_TEMPLE_TASK_MIN_PAY
 		MainScript.fTempleClientMinExtraPay = value
 		SetSliderOptionValue(OID_DIBEL_TEMPLE_TASK_MIN_PAY , MainScript.fTempleClientMinExtraPay, "$MRT_SP_DIBEL_TEMPLE_TASK_MIN_PAY_SLIDER2")
@@ -5143,15 +5167,30 @@ event OnOptionSliderOpen(int option)
 	elseif option == OID_SLSFR_MIN_FAME_GAIN
 		SetSliderDialogStartValue(MainScript.fSLSFR_MinGainFame)
 		SetSliderDialogDefaultValue(1.0)
-		SetSliderDialogRange(0, 20)
+		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(1)
+	elseif option == OID_SLSFR_TALK_MIN_FAME_GAIN
+		SetSliderDialogStartValue(MainScript.fSLSFR_Talk_MinGainFame)
+		SetSliderDialogDefaultValue(1.0)
+		SetSliderDialogRange(0, 100)
 		SetSliderDialogInterval(1)
 	elseif option == OID_SLSFR_MAX_FAME_GAIN
 		SetSliderDialogStartValue(MainScript.fSLSFR_MaxGainFame)
 		SetSliderDialogDefaultValue(10.0)
-		SetSliderDialogRange(0, 20)
+		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(1)
+	elseif option == OID_SLSFR_TALK_MAX_FAME_GAIN
+		SetSliderDialogStartValue(MainScript.fSLSFR_Talk_MaxGainFame)
+		SetSliderDialogDefaultValue(2.0)
+		SetSliderDialogRange(0, 100)
 		SetSliderDialogInterval(1)
 	elseif option == OID_SLSFR_FAME_GAIN_CHANCE
 		SetSliderDialogStartValue(MainScript.fSLSFR_FameGainChance)
+		SetSliderDialogDefaultValue(100.0)
+		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(0.1)
+	elseif option == OID_SLSFR_TALK_FAME_GAIN_CHANCE
+		SetSliderDialogStartValue(MainScript.fSLSFR_Talk_FameGainChance)
 		SetSliderDialogDefaultValue(100.0)
 		SetSliderDialogRange(0, 100)
 		SetSliderDialogInterval(0.1)
@@ -5601,6 +5640,10 @@ Int OID_SLSFR_MIN_BEGGAR_SEX_OFFER_REQ_FAME
 Int OID_SLSFR_FAME_GAIN_CHANCE
 Int OID_SLSFR_MAX_FAME_GAIN
 Int OID_SLSFR_MIN_FAME_GAIN
+
+Int OID_SLSFR_TALK_FAME_GAIN_CHANCE
+Int OID_SLSFR_TALK_MAX_FAME_GAIN
+Int OID_SLSFR_TALK_MIN_FAME_GAIN
 
 Int OID_SLA_MIN_PC_AROUSAL
 Int OID_SLA_MIN_APPROACH_AROUSAL

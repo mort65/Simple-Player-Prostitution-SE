@@ -60,6 +60,9 @@ endfunction
 function SLSFR_toggle_WhoreFlag(Bool bFlag)
 endfunction
 
+function SLSFR_toggle_WhoreEventFlag(Bool bFlag)
+endfunction
+
 function SLSFR_ManualWhoreFameGain(Int iMinFame, Int iMaxFame)
 endfunction
 
@@ -72,7 +75,16 @@ state Installed
 		return SLSFR_CurrentWhoreFame.GetValue() as Int
 	endfunction
 	
-	function SLSFR_toggle_WhoreFlag(Bool bFlag) ;for sexlab
+	function SLSFR_toggle_WhoreFlag(Bool bFlag)
+		int handle = ModEvent.Create("SLSF_Reloaded_SetWhoreFlag")
+		if (handle)
+				ModEvent.PushString(handle, "mrt_SimpleProstitution.esp")
+				ModEvent.PushBool(handle, bFlag)
+				ModEvent.Send(handle)
+		endIf
+	endfunction
+	
+	function SLSFR_toggle_WhoreEventFlag(Bool bFlag) ;for sexlab
 		int handle = ModEvent.Create("SLSF_Reloaded_SetWhoreEventFlag")
 		if (handle)
 				ModEvent.PushString(handle, "mrt_SimpleProstitution.esp")

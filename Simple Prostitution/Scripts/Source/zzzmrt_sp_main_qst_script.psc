@@ -328,6 +328,10 @@ Float property fSLSFR_MinGainFame = 1.0 Auto hidden Conditional
 Float property fSLSFR_MaxGainFame = 10.0 Auto hidden Conditional
 Float property fSLSFR_FameGainChance = 100.0 Auto hidden Conditional
 
+Float property fSLSFR_Talk_MinGainFame = 1.0 Auto hidden Conditional
+Float property fSLSFR_Talk_MaxGainFame = 2.0 Auto hidden Conditional
+Float property fSLSFR_Talk_FameGainChance = 100.0 Auto hidden Conditional
+
 FormList Property whoreClothingList Auto
 
 Bool Property bISWhoreCustomerAroused = False Auto hidden Conditional
@@ -647,6 +651,9 @@ function AllowProstitution(Actor akOwner)
 		if fWhoreOwnerShare > 0.0
 			pimpTracker.start()
 		endif
+		if randInt(0, 999) < (fSLSFR_Talk_FameGainChance * 10) as Int
+			SLSFR_Interface.SLSFR_ManualWhoreFameGain(fSLSFR_Talk_MinGainFame as Int, fSLSFR_Talk_MaxGainFame as Int)
+		endif
 		Debug.Trace("Simple Prostitution: Work allowed in " + currentAllowedLocations.GetAt(0) + " that's owned by " + akOwner)
 		Debug.Notification("Prostitution enabled for current location.")
 	endif
@@ -690,7 +697,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-	return getBaseVersion() + 0.47
+	return getBaseVersion() + 0.48
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
@@ -1012,6 +1019,9 @@ Function setWhoreCustomer(Actor akActor, Bool bPay = False, Bool bPersuaded = Tr
 		iTotalWhoreCustomers = whoreCustomerList.GetSize()
 	endif
 	SLSFR_Interface.SLSFR_toggle_WhoreFlag(isPlayerDibeling() || isPlayerWhoring())
+	if randInt(0, 999) < (fSLSFR_Talk_FameGainChance * 10) as Int
+		SLSFR_Interface.SLSFR_ManualWhoreFameGain(fSLSFR_Talk_MinGainFame as Int, fSLSFR_Talk_MaxGainFame as Int)
+	endif
 EndFunction
 
 Function setDibelCustomer(Actor akActor, bool bPay = true )
@@ -1072,6 +1082,9 @@ Function setDibelCustomer(Actor akActor, bool bPay = true )
 		iTotalDibelCustomers = dibelCustomerList.GetSize()
 	endif
 	SLSFR_Interface.SLSFR_toggle_WhoreFlag(isPlayerDibeling() || isPlayerWhoring())
+	if randInt(0, 999) < (fSLSFR_Talk_FameGainChance * 10) as Int
+		SLSFR_Interface.SLSFR_ManualWhoreFameGain(fSLSFR_Talk_MinGainFame as Int, fSLSFR_Talk_MaxGainFame as Int)
+	endif
 EndFunction
 
 Function setTempleClient(Actor akActor)
@@ -1126,6 +1139,9 @@ Function setTempleClient(Actor akActor)
 		iTotalDibelCustomers = dibelCustomerList.GetSize()
 	endif
 	SLSFR_Interface.SLSFR_toggle_WhoreFlag(isPlayerDibeling() || isPlayerWhoring())
+	if randInt(0, 999) < (fSLSFR_Talk_FameGainChance * 10) as Int
+		SLSFR_Interface.SLSFR_ManualWhoreFameGain(fSLSFR_Talk_MinGainFame as Int, fSLSFR_Talk_MaxGainFame as Int)
+	endif
 EndFunction
 
 Function setRejectingCustomerResult(Actor akActor, Bool bWhore = False, Bool bDibel = False, Bool bBeggar = False, Bool bApproach = False)
@@ -1801,6 +1817,9 @@ function ProstitutePlayerTo(Actor akCustomer, bool bAccept=true)
 			if !isSnitchOK(whoreSnitch) && !playerHasWhoreLicense()
 				checkSnitch(akCustomer, false, false)
 			endif
+			if randInt(0, 999) < (fSLSFR_Talk_FameGainChance * 10) as Int
+				SLSFR_Interface.SLSFR_ManualWhoreFameGain(fSLSFR_Talk_MinGainFame as Int, fSLSFR_Talk_MaxGainFame as Int)
+			endif
 			return
 		endif
 		endDialogueWithPlayer(akCustomer as ObjectReference)
@@ -1817,6 +1836,9 @@ function playerPracticeDibelArtWith(Actor akActor, bool bAccept=true)
 		if !bAccept
 			if !isSnitchOK(dibelSnitch) && !playerHasDibelLicence()
 				checkSnitch(akActor)
+			endif
+			if randInt(0, 999) < (fSLSFR_Talk_FameGainChance * 10) as Int
+				SLSFR_Interface.SLSFR_ManualWhoreFameGain(fSLSFR_Talk_MinGainFame as Int, fSLSFR_Talk_MaxGainFame as Int)
 			endif
 			return
 		endif
@@ -2857,6 +2879,7 @@ State Dibeling
 		bIsBusy = True
 		isDibel = true
 		isDibel_g.SetValueInt(1)
+		SLSFR_Interface.SLSFR_toggle_WhoreEventFlag(true)
 		if !isSnitchOK(dibelSnitch) && !playerHasDibelLicence()
 			startSnitchFinder(true)
 		endif
@@ -2909,6 +2932,7 @@ State Dibeling
 	EndEvent
 
 	Event OnEndState()
+		SLSFR_Interface.SLSFR_toggle_WhoreEventFlag(false)
 		bIsBusy = False
 	endEvent
 
@@ -2991,6 +3015,7 @@ State Whoring
 		bIsBusy = True
 		isWhore = True
 		isWhore_g.SetValueInt(1)
+		SLSFR_Interface.SLSFR_toggle_WhoreEventFlag(True)
 		if !isSnitchOK(whoreSnitch) && !playerHasWhoreLicense()
 			startSnitchFinder(false)
 		endif
@@ -3043,6 +3068,7 @@ State Whoring
 	EndEvent
 
 	Event OnEndState()
+		SLSFR_Interface.SLSFR_toggle_WhoreEventFlag(false)
 		bIsBusy = False
 	EndEvent
 
