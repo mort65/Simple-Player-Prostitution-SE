@@ -3922,13 +3922,21 @@ endfunction
 function checkWhoreCustomer(Actor akCustomer)
 	iSLA_CurrentCustomerArousal = SLA_Interface.GetActorArousal(akCustomer)
 	bISWhoreCustomerAroused = (!bIs_SLA_Active || ((iSLA_MinWhoreCustomerArousal == 0) || (iSLA_CurrentCustomerArousal >= iSLA_MinWhoreCustomerArousal)))
-	bIs_SLA_Active && Debug.trace("Simple Prostitution: " + akCustomer.getdisplayname() + " arousal level is " +  iSLA_CurrentCustomerArousal)
+	if bIs_SLA_Active
+		string actorName = akCustomer.getdisplayname()
+		Debug.trace("Simple Prostitution: " + actorName + " arousal level is " +  iSLA_CurrentCustomerArousal)
+		!bISWhoreCustomerAroused && Debug.notification("Simple Prostitution: " + actorName + " not aroused (" + iSLA_CurrentCustomerArousal + ")")
+	endif
 endfunction
 
 function checkDibelCustomer(Actor akCustomer)
 	iSLA_CurrentCustomerArousal = SLA_Interface.GetActorArousal(akCustomer)
 	bIsDibelCustomerAroused = (!bIs_SLA_Active || ((iSLA_MinDibelCustomerArousal == 0) || (iSLA_CurrentCustomerArousal >= iSLA_MinDibelCustomerArousal)))
-	bIs_SLA_Active && Debug.trace("Simple Prostitution: " + akCustomer.getdisplayname() + " arousal level is " +  iSLA_CurrentCustomerArousal)
+	if bIs_SLA_Active
+		string actorName = akCustomer.getdisplayname()
+		Debug.trace("Simple Prostitution: " + actorName + " arousal level is " +  iSLA_CurrentCustomerArousal)
+		!bIsDibelCustomerAroused && Debug.notification("Simple Prostitution: " + actorName + " not aroused (" + iSLA_CurrentCustomerArousal + ")")
+	endif
 endfunction
 
 function checkBeggarCustomer(Actor akCustomer)
