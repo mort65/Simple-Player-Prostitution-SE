@@ -104,6 +104,7 @@ Formlist property alwaysAllowedLocations auto
 Formlist property whoreCustomerList Auto
 Formlist property dibelCustomerList Auto
 Formlist Property currentCustomerList Auto
+FormList property extraHealers Auto
 Spell property customerBeggarSpell auto
 Spell property customerSpell auto
 Spell property StaggerSpell Auto
@@ -344,6 +345,7 @@ Int property iSLA_MinWhoreCustomerArousal = 0 Auto Hidden Conditional
 Int property iSLA_MinDibelCustomerArousal = 0 Auto Hidden Conditional
 Int property iSLA_MinBeggarSexOfferArousal = 0 Auto Hidden Conditional
 Int property iSLA_MinPCArousal = 0 Auto Hidden Conditional
+Int Property iSLA_CurrentCustomerArousal = 0 Auto Hidden Conditional
 
 Bool Property bSLHH_MaleRapist = True Auto Hidden Conditional
 Bool Property bSLHH_FemaleRapist = False Auto Hidden Conditional
@@ -393,6 +395,7 @@ Keyword Property stdHealer_KWD Auto
 Keyword Property BeggarClothing_kwd Auto
 Keyword Property ClothingBody_kwd Auto
 Keyword Property ArmorCuirass_kwd Auto
+Keyword Property NotCustomer_KWD Auto
 associationType Property spouse  Auto
 Quest Property pimpTracker Auto
 Float Property fWhoreMarkChance = 0.0 Auto Hidden Conditional
@@ -698,7 +701,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-	return getBaseVersion() + 0.48
+	return getBaseVersion() + 0.49
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
@@ -963,17 +966,29 @@ Function setWhoreCustomer(Actor akActor, Bool bPay = False, Bool bPersuaded = Tr
 	int iPayment = 0
 	if (bPay || (akActor.GetCurrentScene() == None))
 		customerSpell.Cast(akActor, akActor)
+	else
+		String msg = "Simple Prostitution: " + akActor.getDisplayName() + " is busy."
+		Debug.Notification(msg)
+		Scene curScene = akActor.GetCurrentScene()
+		Debug.Trace(msg + " | Scene: " + curScene + " | Quest: " + curScene.GetOwningQuest())
+		return
 	endif
 	if bPay
 		if !player.GetActorBase().GetSex() && !akActor.GetLeveledActorBase().GetSex()
 			if bWhorePositionMenu && (whoreCustomerList.GetSize() == 0)
 				iWhorePosition = positionChooserByMenu(False)
+				if (iWhorePosition < 1) || (iWhorePosition > 2)
+					iWhorePosition = positionChooser(0, fWhoreAnalChance as Int, fWhoreOralChance as Int)
+				endif
 			else
 				iWhorePosition = positionChooser(0, fWhoreAnalChance as Int, fWhoreOralChance as Int)
 			endif
 		else
 			if bWhorePositionMenu && (whoreCustomerList.GetSize() == 0)
 				iWhorePosition = positionChooserByMenu(True)
+				if (iWhorePosition < 0) || (iWhorePosition > 2)
+					iWhorePosition = positionChooser(fWhoreVagChance as Int, fWhoreAnalChance as Int, fWhoreOralChance as Int)
+				endif
 			else
 				iWhorePosition = positionChooser(fWhoreVagChance as Int, fWhoreAnalChance as Int, fWhoreOralChance as Int)
 			endif
@@ -1031,18 +1046,30 @@ Function setDibelCustomer(Actor akActor, bool bPay = true )
 	endif
 	if (bPay || (akActor.GetCurrentScene() == None))
 		customerSpell.Cast(akActor, akActor)
+	else
+		String msg = "Simple Prostitution: " + akActor.getDisplayName() + " is busy."
+		Debug.Notification(msg)
+		Scene curScene = akActor.GetCurrentScene()
+		Debug.Trace(msg + " | Scene: " + curScene + " | Quest: " + curScene.GetOwningQuest())
+		return
 	endif
 	int iPayment = 0
 	if bPay
 		if !player.GetActorBase().GetSex() && !akActor.GetLeveledActorBase().GetSex()
 			if bDibelPositionMenu && (dibelCustomerList.GetSize() == 0)
 				iDibelPosition = positionChooserByMenu(False)
+				if (iDibelPosition < 1) || (iDibelPosition > 2)
+					iDibelPosition = positionChooser(0, fDibelAnalChance as Int, fDibelOralChance as Int)
+				endif
 			else
 				iDibelPosition = positionChooser(0, fDibelAnalChance as Int, fDibelOralChance as Int)
 			endif
 		else
 			if bDibelPositionMenu && (dibelCustomerList.GetSize() == 0)
 				iDibelPosition = positionChooserByMenu(True)
+				if (iDibelPosition < 0) || (iDibelPosition > 2)
+					iDibelPosition = positionChooser(fDibelVagChance as Int, fDibelAnalChance as Int, fDibelOralChance as Int)
+				endif
 			else
 				iDibelPosition = positionChooser(fDibelVagChance as Int, fDibelAnalChance as Int, fDibelOralChance as Int)
 			endif
@@ -1096,12 +1123,18 @@ Function setTempleClient(Actor akActor)
 	if !player.GetActorBase().GetSex() && !akActor.GetLeveledActorBase().GetSex()
 		if bDibelPositionMenu && (dibelCustomerList.GetSize() == 0)
 			iDibelPosition = positionChooserByMenu(False)
+			if (iDibelPosition < 1) || (iDibelPosition > 2)
+				iDibelPosition = positionChooser(0, fDibelAnalChance as Int, fDibelOralChance as Int)
+			endif
 		else
 			iDibelPosition = positionChooser(0, fDibelAnalChance as Int, fDibelOralChance as Int)
 		endif
 	else
 		if bDibelPositionMenu && (dibelCustomerList.GetSize() == 0)
 			iDibelPosition = positionChooserByMenu(True)
+			if (iDibelPosition < 0) || (iDibelPosition > 2)
+				iDibelPosition = positionChooser(fDibelVagChance as Int, fDibelAnalChance as Int, fDibelOralChance as Int)
+			endif
 		else
 			iDibelPosition = positionChooser(fDibelVagChance as Int, fDibelAnalChance as Int, fDibelOralChance as Int)
 		endif
@@ -1810,7 +1843,15 @@ endfunction
 function ProstitutePlayerTo(Actor akCustomer, bool bAccept=true)
 	setGlobalVaues()
 	if akCustomer
-		customerSpell.Cast(akCustomer, akCustomer)
+		if (bAccept || (akCustomer.GetCurrentScene() == None))
+			customerSpell.Cast(akCustomer, akCustomer)
+		else
+			String msg = "Simple Prostitution: " + akCustomer.getDisplayName() + " is busy."
+			Debug.Notification(msg)
+			Scene curScene = akCustomer.GetCurrentScene()
+			Debug.Trace(msg + " | Scene: " + curScene + " | Quest: " + curScene.GetOwningQuest())
+			return
+		endif
 		if !bAccept
 			if !isSnitchOK(whoreSnitch) && !playerHasWhoreLicense()
 				checkSnitch(akCustomer, false, false)
@@ -1830,7 +1871,15 @@ endfunction
 function playerPracticeDibelArtWith(Actor akActor, bool bAccept=true)
 	setGlobalVaues()
 	if akActor
-		customerSpell.Cast(akActor, akActor)
+		if (bAccept || (akActor.GetCurrentScene() == None))
+			customerSpell.Cast(akActor, akActor)
+		else
+			String msg = "Simple Prostitution: " + akActor.getDisplayName() + " is busy."
+			Debug.Notification(msg)
+			Scene curScene = akActor.GetCurrentScene()
+			Debug.Trace(msg + " | Scene: " + curScene + " | Quest: " + curScene.GetOwningQuest())
+			return
+		endif
 		if !bAccept
 			if !isSnitchOK(dibelSnitch) && !playerHasDibelLicence()
 				checkSnitch(akActor)
@@ -2632,6 +2681,18 @@ Bool Function bCanHeal(Actor npc)
 	return true
 EndFunction
 
+Bool Function IsExcludable(Actor npc)
+	if !npc
+		return False
+	endif
+	if !npc.HasKeywordstring("actortypenpc")
+		return False
+	endif
+	if npc == player
+		return false
+	endif
+	return true
+EndFunction
 
 Function updateHistory(Actor partner, int iPos, Bool bDibel = False)
 	if !Partner || !Partner.getRace() || (iPos < 0) || (iPos > 2)
@@ -2829,7 +2890,7 @@ Event on_spp_sexlab_Sex_Ending(string eventName, string argString, float argNum,
 	actor[] actorList = SexLabInterface.HookActors(argString)
 	Bool hasplayer = SexLabInterface.HasPlayer(argString)
 	if hasplayer && actorList.Length > 1
-		if actorList.Length == 2 && player.hasAssociation(spouse)
+		if actorList.Length == 2
 			int i = 2
 			while i > 0
 				i -= 1
@@ -2858,13 +2919,13 @@ Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, for
 			if actorList[i]
 				if actorList[i] == player
 					hasPlayer = true
-				elseif player.HasAssociation(spouse, actorList[i])
-					hasSpouse = true
+				elseif (actorList.Length == 2) && player.HasAssociation(spouse, actorList[i])
+						hasSpouse = true
 				endif
 			endif
 		endWhile
 		if hasPlayer
-			if actorList.Length == 2 && hasSpouse
+			if hasSpouse
 				return
 			endif
 			StartInfectingplayer(getState(), actorList.Length - 1)
@@ -3807,7 +3868,7 @@ Bool Function isCustomer(Actor akActor)
 	elseif (whoreCustomerAlias2.getReference() As Actor) && (akActor == (whoreCustomerAlias2.getReference() As Actor))
 	elseif (whoreCustomerAlias3.getReference() As Actor) && (akActor == (whoreCustomerAlias3.getReference() As Actor))
 	elseif (whoreCustomerAlias4.getReference() As Actor) && (akActor == (whoreCustomerAlias4.getReference() As Actor))
-	elseif (dibelCustomerAlias.getReference() As Actor) && (akActor == (dibelCustomerAlias.getReference() As Actor))
+	elseif (dibelCustomerAlias.getReference()  As Actor) && (akActor == (dibelCustomerAlias.getReference()  As Actor))
 	elseif (dibelCustomerAlias2.getReference() As Actor) && (akActor == (dibelCustomerAlias2.getReference() As Actor))
 	elseif (dibelCustomerAlias3.getReference() As Actor) && (akActor == (dibelCustomerAlias3.getReference() As Actor))
 	elseif (dibelCustomerAlias4.getReference() As Actor) && (akActor == (dibelCustomerAlias4.getReference() As Actor))
@@ -3856,11 +3917,13 @@ endfunction
 
 
 function checkWhoreCustomer(Actor akCustomer)
-	bISWhoreCustomerAroused = (!bIs_SLA_Active || ((iSLA_MinWhoreCustomerArousal == 0) || (SLA_Interface.GetActorArousal(akCustomer) >= iSLA_MinWhoreCustomerArousal)))
+	iSLA_CurrentCustomerArousal = SLA_Interface.GetActorArousal(akCustomer)
+	bISWhoreCustomerAroused = (!bIs_SLA_Active || ((iSLA_MinWhoreCustomerArousal == 0) || (iSLA_CurrentCustomerArousal >= iSLA_MinWhoreCustomerArousal)))
 endfunction
 
 function checkDibelCustomer(Actor akCustomer)
-	bIsDibelCustomerAroused = (!bIs_SLA_Active || ((iSLA_MinDibelCustomerArousal == 0) || (SLA_Interface.GetActorArousal(akCustomer) >= iSLA_MinDibelCustomerArousal)))
+	iSLA_CurrentCustomerArousal = SLA_Interface.GetActorArousal(akCustomer)
+	bIsDibelCustomerAroused = (!bIs_SLA_Active || ((iSLA_MinDibelCustomerArousal == 0) || (iSLA_CurrentCustomerArousal >= iSLA_MinDibelCustomerArousal)))
 endfunction
 
 function checkBeggarCustomer(Actor akCustomer)

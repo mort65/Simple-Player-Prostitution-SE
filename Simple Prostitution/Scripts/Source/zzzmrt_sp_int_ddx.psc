@@ -104,13 +104,11 @@ Bool Function _LockRandomDeviceOnActor(Quest zdxQuest, Actor akActor, Int iLevel
 		endWhile
 	endif
 
-	int iResult
-
-	iResult = weightedRandInt(deviceChances)
-
+	int iResult = weightedRandInt(deviceChances)
 	if (iResult < 0) || iResult > (devs.Length - 1)
 		return False
 	endif
+
 	Armor dev
 	LeveledItem Dev_LVLI
 	if devs[iResult] as Armor
@@ -121,8 +119,8 @@ Bool Function _LockRandomDeviceOnActor(Quest zdxQuest, Actor akActor, Int iLevel
 	else
 		return False
 	endif
-	keyWord Dev_kw = DX.libs.GetDeviceKeyword(dev)
 	
+	keyWord Dev_kw = DX.libs.GetDeviceKeyword(dev)
 	if akActor.WornHasKeyword(DX.libs.zad_Lockable)
 		Armor rn_Dev = DX.libs.GetRenderedDevice(dev)
 		if _deviceHaveKeywordConflict(zdxQuest, akActor, rn_Dev)

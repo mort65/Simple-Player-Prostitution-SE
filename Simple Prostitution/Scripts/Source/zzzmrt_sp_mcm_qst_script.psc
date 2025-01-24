@@ -151,9 +151,19 @@ event OnPageReset(String page)
       else
         _AddTextOptionST("WHORE_TAG_HEALER_TXT", "$MRT_SP_WHORE_TAG_HEALER_ERR", "", OPTION_FLAG_DISABLED) 
       endif
+      if Mainscript.IsExcludable(npc)
+        if npc.HasKeyword(Mainscript.NotCustomer_KWD)
+          _AddTextOptionST("WHORE_TAG_NotCUSTOMER_TXT", "$MRT_SP_WHORE_TAG_NotCUSTOMER_ON", "", flag) 
+        else
+          _AddTextOptionST("WHORE_TAG_NotCUSTOMER_TXT", "$MRT_SP_WHORE_TAG_NotCUSTOMER_OFF", "", flag) 
+        endif
+      else
+        _AddTextOptionST("WHORE_TAG_NotCUSTOMER_TXT", "$MRT_SP_WHORE_TAG_NotCUSTOMER_ERR", "", OPTION_FLAG_DISABLED) 
+      endif
     else
       _AddTextOptionST("WHORE_TAG_OWNER_TXT", "$MRT_SP_WHORE_TAG_OWNER_OFF", "", OPTION_FLAG_DISABLED)
       _AddTextOptionST("WHORE_TAG_HEALER_TXT", "$MRT_SP_WHORE_TAG_HEALER_OFF", "", OPTION_FLAG_DISABLED) 
+			_AddTextOptionST("WHORE_TAG_NotCUSTOMER_TXT", "$MRT_SP_WHORE_TAG_NotCUSTOMER_OFF", "", OPTION_FLAG_DISABLED) 
     endif
 
     SetCursorPosition(1)
@@ -161,7 +171,7 @@ event OnPageReset(String page)
     _AddTextOptionST("DEBUG_MOD_VERSION_TXT", "Simple Prostitution v" + MainScript.getCurrentVersion(), "", flag)
     addEmptyOption()
     _AddTextOptionST("DEBUG_PAPYRUSUTIL_CHECK_TXT", "PapyrusUtil v3+", MainScript.bIsPapyrusUtilActive As String, flag)
-    _AddTextOptionST("DEBUG_PYRAMIDUTILS_CHECK_TXT", "Pyramid Utils v2.0.5+", MainScript.bIsPyramidUtilsOK As String, flag)
+    _AddTextOptionST("DEBUG_PYRAMIDUTILS_CHECK_TXT", "Scrab's Papyrus Extender 2.1.0+", MainScript.bIsPyramidUtilsOK As String, flag)
     _AddTextOptionST("DEBUG_PO3EXTENDER_CHECK_TXT", "PO3 Papyrus Extender v5+", MainScript.bIsPO3ExtenderActive As String, flag)
     _AddTextOptionST("DEBUG_SEXLAB_CHECK_TXT", "$sexlab", MainScript.bIsSexlabActive As String, flag)
     _AddTextOptionST("DEBUG_FLOWERGIRLS_CHECK_TXT", "$flowergirls", MainScript.bIsFlowerGirlsActive As String, flag)
@@ -2902,6 +2912,31 @@ State WHORE_TAG_HEALER_TXT
   endFunction
 EndState
 
+State WHORE_TAG_NotCUSTOMER_TXT
+  function OnSelectST()
+    if MainScript.bIsPO3ExtenderActive
+      Actor npc = Game.GetCurrentCrosshairRef() As Actor
+      if !npc
+        npc = Game.GetCurrentConsoleRef() As Actor
+      endif
+      if npc && Mainscript.IsExcludable(npc)
+        if npc.HasKeyword(Mainscript.NotCustomer_KWD)
+          PO3_SKSEFunctions.RemoveKeywordFromRef(npc, Mainscript.NotCustomer_KWD)
+          deleteData_NotCustomer_KWD(npc)
+        else
+          PO3_SKSEFunctions.AddKeywordToRef(npc, Mainscript.NotCustomer_KWD)
+          saveData_NotCustomer_KWD(npc)
+        endif
+        ForcePageReset()
+      endif
+    endif
+  endFunction
+
+  function OnHighlightST()
+    SetInfoText("$MRT_SP_DESC_WHORE_TAG_NotCUSTOMER_TXT")
+  endFunction
+endState
+
 State REWARDS_REMOVE_TXT
   function OnSelectST()
     ForceCloseMenu()
@@ -3638,6 +3673,13 @@ Function saveData_STDHealer_KWD(Actor akActor)
   endif
 EndFunction
 
+Function saveData_NotCustomer_KWD(Actor akActor)
+  if Mainscript.bIsPapyrusUtilActive
+    JsonUtil.FormListAdd(data_path, "NotCustomer_KWD", akActor, False)
+    JsonUtil.Save(data_path)
+  endif
+EndFunction
+
 Function deleteData_WhoreLocation_KWD(Location akLoc)
   if Mainscript.bIsPapyrusUtilActive
     JsonUtil.FormListRemove(data_path, "ProstituteLocation_KWD", akLoc, True)
@@ -3673,6 +3715,12 @@ Function deleteData_STDHealer_KWD(Actor akActor)
   endif
 EndFunction
 
+Function deleteData_NotCustomer_KWD(Actor akActor)
+  if Mainscript.bIsPapyrusUtilActive
+    JsonUtil.FormListRemove(data_path, "NotCustomer_KWD", akActor, True)
+    JsonUtil.Save(data_path)
+  endif
+EndFunction
 
 Bool Function loadUserDataPapyrus(Bool bSilence = False)
   if !Mainscript.bIsPapyrusUtilActive || !Mainscript.bIsPO3ExtenderActive
@@ -3725,6 +3773,14 @@ Bool Function loadUserDataPapyrus(Bool bSilence = False)
     iIndex -= 1
     if arr[iIndex] as Actor   
       PO3_SKSEFunctions.AddKeywordToRef(arr[iIndex] as Actor, MainScript.stdHealer_KWD)
+    endif
+  endWhile
+	arr = JsonUtil.FormListToArray(data_path, "NotCustomer_KWD")
+  iIndex = arr.Length
+  While iIndex > 0
+    iIndex -= 1
+    if arr[iIndex] as Actor   
+      PO3_SKSEFunctions.AddKeywordToRef(arr[iIndex] as Actor, MainScript.NotCustomer_KWD)
     endif
   endWhile
   return true

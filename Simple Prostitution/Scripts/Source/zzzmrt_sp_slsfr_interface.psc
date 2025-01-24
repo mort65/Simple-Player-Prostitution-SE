@@ -93,7 +93,7 @@ state Installed
 		endIf
 	endfunction
 
-	function SLSFR_ManualWhoreFameGain(Int iMinFame, Int iMaxFame) ;for ostim and flower girls
+	function SLSFR_ManualWhoreFameGain(Int iMinFame, Int iMaxFame)
 		int handle = ModEvent.Create("SLSF_Reloaded_SendManualFameGain")
 		if (handle)
 				ModEvent.PushString(handle, "Whore")
