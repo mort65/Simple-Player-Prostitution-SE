@@ -162,11 +162,25 @@ Function checkPlayerStatus()
 	MainScript.isPlayerAroused()
 	MainScript.isPlayerGettingHarassed()
 	checkMOAStatus()
+	
+	!playerWearingWhoreClothing && Debug.Notification("Simple Prostitution: Player is not wearing prostitute outfit.")
+	MainScript.bOnlyLicensedApproach && !hasLicense && Debug.Notification("Simple Prostitution: Player doesn't have license.")
+	if MainScript.bIs_SLA_Active
+		;Debug.trace("Simple Prostitution: Player arousal level is " +  MainScript.iSLA_PCArousal)
+		!MainScript.bIsPCAroused && Debug.Notification("Simple Prostitution: Player not aroused ("+ MainScript.iSLA_PCArousal + ")")
+	endif
 EndFunction
 
 Function checkActorStatus(Actor akActor)
 	actorHavingSex = MainScript.isActorHavingSex(akActor)
-	bIsActorAroused = (!MainScript.bIs_SLA_Active || ((MainScript.iSLA_MinApproachArousal == 0) || (MainScript.SLA_Interface.GetActorArousal(akActor) >= MainScript.iSLA_MinApproachArousal)))
+	Int iActorArousal = MainScript.SLA_Interface.GetActorArousal(akActor)
+	bIsActorAroused = (!MainScript.bIs_SLA_Active || ((MainScript.iSLA_MinApproachArousal == 0) || (iActorArousal >= MainScript.iSLA_MinApproachArousal)))
+	
+	if MainScript.bIs_SLA_Active
+		String actorname = akActor.getDisplayName()
+		Debug.trace("Simple Prostitution: " + actorName + " arousal level is " +  iActorArousal)
+		!bIsActorAroused && Debug.Notification("Simple Prostitution: " + actorName + " not aroused (" + iActorArousal + ")")
+	endif
 EndFunction
 
 Function checkStatus(Actor akActor)

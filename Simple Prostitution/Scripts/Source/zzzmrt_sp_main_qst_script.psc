@@ -327,6 +327,7 @@ Float property fSLSFR_MinBeggarSexOfferRequiredFame = 25.0 Auto hidden Condition
 Float property fSLSFR_MinGainFame = 1.0 Auto hidden Conditional
 Float property fSLSFR_MaxGainFame = 10.0 Auto hidden Conditional
 Float property fSLSFR_FameGainChance = 100.0 Auto hidden Conditional
+Int property iSLSFR_CurrentWhoreFame = 0 Auto hidden Conditional
 
 Float property fSLSFR_Talk_MinGainFame = 1.0 Auto hidden Conditional
 Float property fSLSFR_Talk_MaxGainFame = 2.0 Auto hidden Conditional
@@ -346,6 +347,7 @@ Int property iSLA_MinDibelCustomerArousal = 0 Auto Hidden Conditional
 Int property iSLA_MinBeggarSexOfferArousal = 0 Auto Hidden Conditional
 Int property iSLA_MinPCArousal = 0 Auto Hidden Conditional
 Int Property iSLA_CurrentCustomerArousal = 0 Auto Hidden Conditional
+Int Property iSLA_PCArousal = 0 Auto Hidden Conditional
 
 Bool Property bSLHH_MaleRapist = True Auto Hidden Conditional
 Bool Property bSLHH_FemaleRapist = False Auto Hidden Conditional
@@ -3906,11 +3908,12 @@ Bool function isPlayerDibeling()
 endfunction
 
 Bool Function isPlayerKnownWhore(Bool bBegging = False)
+	iSLSFR_CurrentWhoreFame = SLSFR_Interface.getWhoreFame()
 	if bBegging
-		bBeggarPlayerIsKnownWhore = (!bIs_SLSFR_Active || (SLSFR_Interface.getWhoreFame() >= fSLSFR_MinBeggarSexOfferRequiredFame))
+		bBeggarPlayerIsKnownWhore = (!bIs_SLSFR_Active || (iSLSFR_CurrentWhoreFame >= fSLSFR_MinBeggarSexOfferRequiredFame))
 		return bBeggarPlayerIsKnownWhore
 	elseif (isWhore || isDibel)
-		return (!bIs_SLSFR_Active || (SLSFR_Interface.getWhoreFame() >= fSLSFR_MinApproachRequiredFame))
+		return (!bIs_SLSFR_Active || (iSLSFR_CurrentWhoreFame >= fSLSFR_MinApproachRequiredFame))
 	endif
 	return False
 endfunction
@@ -3919,11 +3922,13 @@ endfunction
 function checkWhoreCustomer(Actor akCustomer)
 	iSLA_CurrentCustomerArousal = SLA_Interface.GetActorArousal(akCustomer)
 	bISWhoreCustomerAroused = (!bIs_SLA_Active || ((iSLA_MinWhoreCustomerArousal == 0) || (iSLA_CurrentCustomerArousal >= iSLA_MinWhoreCustomerArousal)))
+	bIs_SLA_Active && Debug.trace("Simple Prostitution: " + akCustomer.getdisplayname() + " arousal level is " +  iSLA_CurrentCustomerArousal)
 endfunction
 
 function checkDibelCustomer(Actor akCustomer)
 	iSLA_CurrentCustomerArousal = SLA_Interface.GetActorArousal(akCustomer)
 	bIsDibelCustomerAroused = (!bIs_SLA_Active || ((iSLA_MinDibelCustomerArousal == 0) || (iSLA_CurrentCustomerArousal >= iSLA_MinDibelCustomerArousal)))
+	bIs_SLA_Active && Debug.trace("Simple Prostitution: " + akCustomer.getdisplayname() + " arousal level is " +  iSLA_CurrentCustomerArousal)
 endfunction
 
 function checkBeggarCustomer(Actor akCustomer)
@@ -3932,13 +3937,29 @@ function checkBeggarCustomer(Actor akCustomer)
 	ApproachMonitorScr.checkMOAStatus()
 	ApproachMonitorScr.playerHavingSex = isActorHavingSex(player)
 	ApproachMonitorScr.actorHavingSex = isActorHavingSex(akCustomer)
-	bIsBeggarHelperArroused = (!bIs_SLA_Active || ((iSLA_MinBeggarSexOfferArousal == 0) || (SLA_Interface.GetActorArousal(akCustomer) >= iSLA_MinBeggarSexOfferArousal)))
+	iSLA_CurrentCustomerArousal = SLA_Interface.GetActorArousal(akCustomer)
+	bIsBeggarHelperArroused = (!bIs_SLA_Active || ((iSLA_MinBeggarSexOfferArousal == 0) || (iSLA_CurrentCustomerArousal >= iSLA_MinBeggarSexOfferArousal)))
+	bIs_SLA_Active && Debug.trace("Simple Prostitution: " + akCustomer.getDisplayName() + " arousal level is " +  iSLA_CurrentCustomerArousal)
 	isPlayerAroused()
 	isPlayerGettingHarassed()
+	
+	string actorName = akCustomer.getdisplayname()
+	if bIs_SLA_Active
+		!bIsBeggarHelperArroused && Debug.Notification("Simple Prostitution: " + actorName + " not aroused (" + iSLA_CurrentCustomerArousal + ")")
+		!bIsPCAroused && Debug.Notification("Simple Prostitution: Player not aroused ("+ iSLA_PCArousal + ")")
+	endif
+	!bBeggarPlayerIsKnownWhore && Debug.Notification("Simple Prostitution: Player fame not enough (" + iSLSFR_CurrentWhoreFame + ")")
+	bOnlyLicensedBeggarSexOffer && !ApproachMonitorScr.hasLicense && Debug.Notification("Simple Prostitution: Player doesn't have license.")
+	;ApproachMonitorScr.playerHavingSex && Debug.trace("Simple Prostitution: Player is having sex.")
+	;ApproachMonitorScr.actorHavingSex && Debug.trace("Simple Prostitution: " + actorName + " is having sex.")
+	;bIsPlayerGettingHarassed && Debug.trace("Simple Prostitution: Player is getting harassed.")
+	;ApproachMonitorScr.playerIsBusyInMOA && Debug.trace("Simple Prostitution: Mark of arkay is working on player.")
 endfunction
 
 Bool function isPlayerAroused()
-	bIsPCAroused = (!bIs_SLA_Active || ((iSLA_MinPCArousal == 0) || (SLA_Interface.GetActorArousal(player) >= iSLA_MinPCArousal)))
+	iSLA_PCArousal = SLA_Interface.GetActorArousal(player)
+	bIsPCAroused = (!bIs_SLA_Active || ((iSLA_MinPCArousal == 0) || (iSLA_PCArousal >= iSLA_MinPCArousal)))
+	Debug.trace("Simple Prostitution: Player arousal level is " + iSLA_PCArousal)
 	return bIsPCAroused
 endfunction
 
