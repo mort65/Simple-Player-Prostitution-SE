@@ -16,6 +16,7 @@ zzzmrt_sp_sla_interface property SLA_Interface auto
 zzzmrt_sp_slhh_interface Property SLHH_Interface Auto
 zzzmrt_sp_dibellan_lust_qst_script property dibellan_lust_qst_script auto
 zzzmrt_sp_player_qst_script	Property playerScript Auto
+zzzmrt_sp_reapproach_qst_script	Property ReApproachScript Auto
 Quest Property SLA_Interface_Qst Auto
 Quest Property OStimInterfaceQst Auto
 Quest Property FlowerGirlsInterfaceQst Auto
@@ -517,8 +518,26 @@ Float property fDibelPersuadeChance = 70.0 Auto Hidden Conditional
 Bool property isDibel = False Auto Hidden Conditional ;for starting customer approach and checking dibel license
 Bool property isWhore = False Auto Hidden Conditional ;for starting customer approach
 
+Bool property bDibelClientOrgasmed = False Auto hidden Conditional
+Bool property bWhoreClientOrgasmed = False Auto hidden Conditional
+Int property iWhoreClientsPayment = 0 Auto hidden Conditional
+Int property iDibelClientsPayment = 0 Auto hidden Conditional
+
+Bool property bDibelPayAfterSex = False Auto hidden Conditional
+Bool property bWhorePayAfterSex = False Auto hidden Conditional
+Bool property bWhoreOnlyPayIfClientOrgasmed = False Auto hidden Conditional
+Bool property bDibelOnlyPayIfClientOrgasmed = False Auto hidden Conditional
+Bool property bWhorePunishIfClientNotOrgasmed = False Auto hidden Conditional
+Bool property bDibelPunishIfClientNotOrgasmed = False Auto hidden Conditional
+
+Quest Property ReApproachQst Auto
+ReferenceAlias property ReApproachingAlias auto
+Package Property customerForceGreetAgainPackage Auto
+Bool Property bRejectOrgasm = False Auto Hidden Conditional 
+
 function shutDown()
 	stopApproach(true)
+	ReApproachScript.stopReapproach(True)
 	SLSFR_Interface.SLSFR_toggle_WhoreFlag(False)
 	SLSFR_Interface.SLSFR_toggle_WhoreEventFlag(False)
 	snitchDetector.stop()
@@ -588,6 +607,9 @@ Function RegisterForEvents()
 	RegisterForModEvent("AnimationEnding", "on_spp_sexlab_Sex_Ending")
 	RegisterForModEvent("HookAnimationEnd", "on_spp_sexlab_Sex_End")
 	RegisterForModEvent("ostim_end", "on_spp_ostim_Sex_End")
+	RegisterForModEvent("ostim_orgasm", "on_spp_ostim_Orgasm")
+	RegisterForModEvent("SexLabOrgasmSeparate", "on_spp_sexlab_OrgasmSeparate")
+	RegisterForModEvent("OrgasmStart", "on_spp_sexlab_Orgasm")
 EndFunction
 
 Function setDeviceChanceArray()
@@ -691,7 +713,7 @@ function playerBegTo(Actor akActor, Bool bPay=True)
 		customerBeggarSpell.Cast(akActor, akActor)
 	endif
 	if bPay
-		payBeggar(player)
+		payBeggar(player, False)
 		debug.sendanimationevent(akActor, "IdleGive")
 		persuade(fBeggarPersuasionXPMult)
 	endif
@@ -703,7 +725,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-	return getBaseVersion() + 0.49
+	return getBaseVersion() + 0.50
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
@@ -925,6 +947,7 @@ Bool Function playerGroupSexOS(Actor[] akActors, Bool bAllowAggressive= False)
 		return False
 	endif
 	if OStimInterface.bHaveGroupSexWithPlayer(akActors, bAllowAggressive)
+	  RegisterForModEvent("ostim_orgasm", "on_spp_ostim_Orgasm")
 		RegisterForModEvent("ostim_end", "on_spp_ostim_Sex_End")
 		return True
 	endif
@@ -947,6 +970,8 @@ Bool Function playerGroupSexSL(Actor[] akActors, Bool bAllowAggressive= False)
 		return False
 	endif
 	if SexLabInterface.bHaveGroupSexWithPlayer(akActors, bAllowAggressive)
+		RegisterForModEvent("SexLabOrgasmSeparate", "on_spp_sexlab_OrgasmSeparate")
+		RegisterForModEvent("OrgasmStart", "on_spp_sexlab_Orgasm")
 		RegisterForModEvent("AnimationEnding", "on_spp_sexlab_Sex_Ending")
 		RegisterForModEvent("HookAnimationEnd", "on_spp_sexlab_Sex_End")
 		return True
@@ -997,7 +1022,7 @@ Function setWhoreCustomer(Actor akActor, Bool bPay = False, Bool bPersuaded = Tr
 		endif
 		if iWhorePosition > -1
 			iPayment = payWhore(player, iWhorePosition)
-			(iPayment > 0) && debug.sendanimationevent(akActor, "IdleGive")
+			!bWhorePayAfterSex && (iPayment > 0) && debug.sendanimationevent(akActor, "IdleGive")
 			if bPersuaded
 				persuade(fWhorePersuasionXPMult)
 			endif
@@ -1078,7 +1103,7 @@ Function setDibelCustomer(Actor akActor, bool bPay = true )
 		endif
 		if iDibelPosition > -1
 			iPayment = payDibel(player, iDibelPosition, false)
-			(iPayment > 0) && debug.sendanimationevent(akActor, "IdleGive")
+			!bDibelPayAfterSex && (iPayment > 0) && debug.sendanimationevent(akActor, "IdleGive")
 			persuade(fDibelPersuasionXPMult)
 		endif
 	endIf
@@ -1143,7 +1168,7 @@ Function setTempleClient(Actor akActor)
 	endif
 	if iDibelPosition > -1
 		iPayment = payDibel(player, iDibelPosition, true)
-		(iPayment > 0) && debug.sendanimationevent(akActor, "IdleGive")
+		!bDibelPayAfterSex && (iPayment > 0) && debug.sendanimationevent(akActor, "IdleGive")
 	endif
 	if iDibelPositions.length != 4
 		iDibelPositions = new int[4]
@@ -1375,6 +1400,10 @@ Function rejectCusomer(Actor akCustomer)
 		clearWhoreCustomers() 
 		clearWhorePositions()
 	endif 
+	if akCustomer && bIsPapyrusUtilActive
+		ActorUtil.RemovePackageOverride(akCustomer, customerForceGreetAgainPackage)
+		ActorUtil.RemoveAllPackageOverride(customerForceGreetAgainPackage)
+	endif
 	if (iWhatToDo == 0)
 		if !bRejectBeggar && !bRejectApproach && (iTotalCustomerPaidGold > 0)
 			debug.sendanimationevent(player, "IdleGive")
@@ -1431,6 +1460,7 @@ Function rejectCusomer(Actor akCustomer)
 	endif
 	ApproachDelaySpell.cast(akCustomer)
 	iWhoringRejectResult = -1
+	bRejectOrgasm = False
 	bIsBusy = false
 	gotostate("")
 EndFunction
@@ -2059,6 +2089,8 @@ int Function playerSexSL(Actor akActor, Bool bAllowAggressive= False, Bool bAllo
 	endif
 	int result = SexLabInterface.haveSexWithPlayer(akActor, iPosition, sGetExtraTagsArr("sexlab"), bGetRegAllTagsArr("sexlab"), bAllowAggressive, bAllowAll)
 	if result > -1
+		RegisterForModEvent("SexLabOrgasmSeparate", "on_spp_sexlab_OrgasmSeparate")
+		RegisterForModEvent("OrgasmStart", "on_spp_sexlab_Orgasm")
 		RegisterForModEvent("AnimationEnding", "on_spp_sexlab_Sex_Ending")
 		RegisterForModEvent("HookAnimationEnd", "on_spp_sexlab_Sex_End")
 	endif
@@ -2071,6 +2103,7 @@ int Function playerSexOS(Actor akActor, Bool bAllowAggressive= False, Bool bAllo
 	endif
 	int result = OStimInterface.haveSexWithPlayer(akActor, iPosition, sGetExtraTagsArr("ostim"), bGetRegAllTagsArr("ostim"), bAllowAggressive, bAllowAll)
 	if result > -1
+	  RegisterForModEvent("ostim_orgasm", "on_spp_ostim_Orgasm")
 		RegisterForModEvent("ostim_end", "on_spp_ostim_Sex_End")
 	endif
 	return result
@@ -2108,7 +2141,7 @@ int function playerSexSFW(Actor akActor = None)
 	return iPosition
 endfunction
 
-Int function payBeggar(Actor beggar, Bool bBonus = True)
+Int function payBeggar(Actor beggar, Bool bBonus = True, Bool bOnlyCalc = False)
 	Int minBonus = 0
 	Int maxBonus = 0
 	Float fSpeech
@@ -2127,7 +2160,9 @@ Int function payBeggar(Actor beggar, Bool bBonus = True)
 	int begPayMax = maxInt(fBegPayMin As Int, fBegPayMax As Int)
 	Int totalPay = maxInt(0, randInt(begPayMin, BegPayMax) + randInt(minBonus, maxBonus))
 	totalPay = maxInt(0, totalPay)
-	beggar.Additem(gold, totalPay)
+	if !bOnlyCalc
+		beggar.Additem(gold, totalPay)
+	endif
 	return totalPay
 endfunction
 
@@ -2155,7 +2190,11 @@ Int function payDibel(Actor Dibel, int position, bool bSentByTemple = false)
 		totalPay += randInt(fTempleClientMinExtraPay as Int, fTempleClientMaxExtraPay as Int)
 	endif
 	totalPay = maxInt(0, totalPay)
-	Dibel.Additem(gold, totalPay)
+	if bDibelPayAfterSex
+		iDibelClientsPayment = iDibelClientsPayment + totalPay
+	else
+		Dibel.Additem(gold, totalPay)
+	endif
 	return totalPay
 endfunction
 
@@ -2164,11 +2203,15 @@ Function giveTempleQuestReward()
 endfunction
 
 Int function payWhore(actor whore, int position)
-	if !isWhoringAllowedInCurrentLocation
-		return payBeggar(whore, True)
-	endif
 	int totalPay = 0
 	float fSpeech
+	if !isWhoringAllowedInCurrentLocation
+		totalPay = payBeggar(whore, True, bWhorePayAfterSex)
+		if bWhorePayAfterSex
+			iWhoreClientsPayment = iWhoreClientsPayment + totalPay
+		endif
+		return totalPay
+	endif
 	if bWhorePayUseBaseSpeech
 		fSpeech = whore.GetBaseActorValue("Speechcraft")
 	else
@@ -2187,30 +2230,24 @@ Int function payWhore(actor whore, int position)
 		positionReward = fWhoreOralPay As Int
 	endif
 	totalPay = maxInt(0, positionReward + randInt(minBonus, maxBonus))
-	actor ownerActor
-	if Owner
-		ownerActor = Owner.getActorReference()
-		if !isFormValid(ownerActor) || ownerActor.isDead()
-			owner.clear()
-			if pimpTracker.isRunning()
-				pimpTracker.setstage(10)
-			endif
-		endif
-	else
-		if pimpTracker.isRunning()
-			pimpTracker.setstage(10)
-		endif
-	endif
-	if (fWhoreOwnerShare > 0.0) &&  ownerActor && (ownerActor.getParentCell() == whore.getParentCell())
+	Actor ownerActor = getOwner() As Actor
+	if !bWhorePayAfterSex && (fWhoreOwnerShare > 0.0) && ownerActor && (ownerActor != player) && (ownerActor.getParentCell() == whore.getParentCell())
 		iCurrentOwnerSeptims = iCurrentOwnerSeptims + totalPay
 		currentOwnerSeptimDisplay.SetValueInt(iCurrentOwnerSeptims)
 		UpdateCurrentInstanceGlobal(currentOwnerSeptimDisplay)
 		pimpTracker.UpdateCurrentInstanceGlobal(currentOwnerSeptimDisplay)
 		Debug.Notification(totalPay + " septim added to " + ownerActor.getDisplayName())
 	elseif isWhoringAlwaysAllowedInCurrentLocation || (ownerActor && (ownerActor.getParentCell() == whore.getParentCell()))
-		whore.Additem(gold, totalPay)
+		if bWhorePayAfterSex
+			iWhoreClientsPayment = iWhoreClientsPayment + totalPay
+		else
+			whore.Additem(gold, totalPay)
+		endif
 	else
-		totalPay = payBeggar(whore, True)
+		totalPay = payBeggar(whore, True, bWhorePayAfterSex)
+		if bWhorePayAfterSex
+			iWhoreClientsPayment = iWhoreClientsPayment + totalPay
+		endif
 	endif
 	return totalPay
 endfunction
@@ -2696,6 +2733,25 @@ Bool Function IsExcludable(Actor npc)
 	return true
 EndFunction
 
+Form Function getOwner()
+	Form ownerRef = player as Form
+	if Owner
+		ownerRef = Owner.getReference()
+		if !isFormValid(ownerRef) || (ownerRef as Actor).isDead()
+			owner.clear()
+			if pimpTracker.isRunning()
+				pimpTracker.setstage(10)
+			endif
+			ownerRef = player as Form
+		endif
+	else
+		if pimpTracker.isRunning()
+			pimpTracker.setstage(10)
+		endif
+	endif
+	return ownerRef
+endFunction
+
 Function updateHistory(Actor partner, int iPos, Bool bDibel = False)
 	if !Partner || !Partner.getRace() || (iPos < 0) || (iPos > 2)
 		return
@@ -2887,6 +2943,12 @@ Event OnUpdateGameTime()
 	snitch()
 endEvent
 
+Event on_spp_sexlab_Orgasm(string eventName, string argString, float argNum, form sender)
+endevent
+	
+Event on_spp_sexlab_OrgasmSeparate(Form ActorRef, Int Thread)
+endevent
+
 Event on_spp_sexlab_Sex_Ending(string eventName, string argString, float argNum, form sender)
 	;Debug.trace("Simple Prostitution: on_spp_sexlab_Sex_Ending triggered. state=" + getState())
 	actor[] actorList = SexLabInterface.HookActors(argString)
@@ -2908,6 +2970,9 @@ EndEvent
 event on_spp_sexlab_Sex_End(int tid, bool HasPlayer)
 	;Debug.trace("Simple Prostitution: on_spp_sexlab_Sex_End triggered. state=" + getState())
 EndEvent
+
+Event on_spp_ostim_Orgasm(String EventName, String sceneId, Float index, Form Sender)
+endevent
 
 Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, form sender)
 	;Debug.trace("Simple Prostitution: on_spp_ostim_Sex_End triggered. state=" + getState())
@@ -2939,6 +3004,7 @@ State Dibeling
 	Event OnBeginState()
 		bIsBusy = True
 		isDibel = true
+		bDibelClientOrgasmed = False
 		isDibel_g.SetValueInt(1)
 		SLSFR_Interface.SLSFR_toggle_WhoreEventFlag(true)
 		if !isSnitchOK(dibelSnitch) && !playerHasDibelLicence()
@@ -2988,6 +3054,24 @@ State Dibeling
 				endif
 			endif
 		endWhile
+		if iDibelClientsPayment > 0
+			if !bDibelOnlyPayIfClientOrgasmed || bDibelClientOrgasmed
+				player.Additem(gold, iDibelClientsPayment)
+			endif
+			iDibelClientsPayment = 0
+		endif
+		if !bDibelClientOrgasmed && bDibelPunishIfClientNotOrgasmed && (origCustomersArr.length > 0)
+			i = randint(0,origCustomersArr.length - 1)
+			if origCustomersArr[i] as Actor
+				Actor act = origCustomersArr[i] as Actor
+				if act && !ReApproachQst.isRunning() && ReApproachScript.canPunishPlayer(act)
+					ReApproachQst.start()
+					forceRefAndPackageTo(act, ReApproachingAlias, customerForceGreetAgainPackage)
+					ReApproachScript.bIsDibelCustomer = True
+				endif
+			endif
+		endif
+		bDibelClientOrgasmed = False
 		clearDibelCustomers()
 		clearDibelPositions()
 	EndEvent
@@ -2996,14 +3080,40 @@ State Dibeling
 		SLSFR_Interface.SLSFR_toggle_WhoreEventFlag(false)
 		bIsBusy = False
 	endEvent
+	
+	Event on_spp_sexlab_Orgasm(string eventName, string argString, float argNum, form sender)
+		if SexLabInterface.HasPlayer(argString)
+			actor[] actorList = SexLabInterface.HookActors(argString)
+			if actorList.length > 1
+				int i = actorList.length
+				while i > 0
+					i -= 1
+					if actorList[i] && isDibelCustomer(actorList[i])
+						bDibelClientOrgasmed = true
+						return
+					endif
+				endWhile
+			endif
+		endif
+	endevent
+	
+	Event on_spp_sexlab_OrgasmSeparate(Form ActorRef, Int Thread)
+		if player != (ActorRef as Actor)
+			if isDibelCustomer(ActorRef as Actor) && SexLabInterface.HasPlayer(Thread as String)
+				bDibelClientOrgasmed = true
+			endif
+		endif
+	endevent
 
 	Event on_spp_sexlab_Sex_Ending(string eventName, string argString, float argNum, form sender)
 	EndEvent
 
 	event on_spp_sexlab_Sex_End(int tid, bool HasPlayer)
 		if HasPlayer
-			addDibelMarkToPlayer(fDibelMarkChance, iDibelPartners)
-			dibellan_lust_qst_script.updateQuest(iDibelPartners)
+			if (!bDibelOnlyPayIfClientOrgasmed || bDibelClientOrgasmed)
+				addDibelMarkToPlayer(fDibelMarkChance, iDibelPartners)
+				dibellan_lust_qst_script.updateQuest(iDibelPartners)
+			endif
 			startInfectingPlayer(GetState(), iDibelPartners)
 			bDibelAnimEnded = true
 			if dibelCustomerlist.GetSize() == 0
@@ -3019,10 +3129,20 @@ State Dibeling
 			iDibelPartners = 0
 		endif
 	endEvent
+	
+	Event on_spp_ostim_Orgasm(String EventName, String sceneId, Float index, Form Sender)
+		if sender && (player != (sender as Actor))
+			if isDibelCustomer(sender as Actor)
+				bDibelClientOrgasmed = true
+			endif
+		endif
+	endevent
 
 	Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, form sender)
-		addDibelMarkToPlayer(fDibelMarkChance, iDibelPartners)
-		dibellan_lust_qst_script.updateQuest(iDibelPartners)
+		if (!bDibelOnlyPayIfClientOrgasmed || bDibelClientOrgasmed)
+			addDibelMarkToPlayer(fDibelMarkChance, iDibelPartners)
+			dibellan_lust_qst_script.updateQuest(iDibelPartners)
+		endif
 		startInfectingPlayer(GetState(), iDibelPartners)
 		bDibelAnimEnded = true
 		if dibelCustomerlist.GetSize() == 0
@@ -3039,8 +3159,10 @@ State Dibeling
 	EndEvent
 
 	event onUpdate()
-		addDibelMarkToPlayer(fDibelMarkChance, iDibelPartners)
-		dibellan_lust_qst_script.updateQuest(iDibelPartners)
+		if (!bDibelOnlyPayIfClientOrgasmed || bDibelClientOrgasmed)
+			addDibelMarkToPlayer(fDibelMarkChance, iDibelPartners)
+			dibellan_lust_qst_script.updateQuest(iDibelPartners)
+		endif
 		startInfectingPlayer(GetState(), iDibelPartners)
 		bDibelAnimEnded = true
 		if dibelCustomerlist.GetSize() == 0
@@ -3054,6 +3176,7 @@ State Dibeling
 			GoToState("")
 		endif
 		iDibelPartners = 0
+		bDibelClientOrgasmed = true
 	endEvent
 
 	event OnUpdateGameTime()
@@ -3075,6 +3198,7 @@ State Whoring
 	Event OnBeginState()
 		bIsBusy = True
 		isWhore = True
+		bWhoreClientOrgasmed = False
 		isWhore_g.SetValueInt(1)
 		SLSFR_Interface.SLSFR_toggle_WhoreEventFlag(True)
 		if !isSnitchOK(whoreSnitch) && !playerHasWhoreLicense()
@@ -3124,6 +3248,33 @@ State Whoring
 				endif
 			endif
 		endWhile
+		if iWhoreClientsPayment > 0
+			if !bWhoreOnlyPayIfClientOrgasmed || bWhoreClientOrgasmed
+				Actor ownerActor = getOwner() As Actor
+				if (fWhoreOwnerShare > 0.0) && ownerActor && (ownerActor != player) && (ownerActor.getParentCell() == player.getParentCell())
+					iCurrentOwnerSeptims = iCurrentOwnerSeptims + iWhoreClientsPayment
+					currentOwnerSeptimDisplay.SetValueInt(iCurrentOwnerSeptims)
+					UpdateCurrentInstanceGlobal(currentOwnerSeptimDisplay)
+					pimpTracker.UpdateCurrentInstanceGlobal(currentOwnerSeptimDisplay)
+					Debug.Notification(iWhoreClientsPayment + " septim added to " + ownerActor.getDisplayName())
+				else
+					player.Additem(gold, iWhoreClientsPayment)
+				endif
+			endif
+			iWhoreClientsPayment = 0
+		endif
+		if !bWhoreClientOrgasmed && bWhorePunishIfClientNotOrgasmed && (origCustomersArr.length > 0)
+			i = randint(0,origCustomersArr.length - 1)
+			if origCustomersArr[i] as Actor
+				Actor act = origCustomersArr[i] as Actor
+				if act && !act.isDead() && !act.isDisabled() && act.Is3DLoaded() && !ReApproachQst.isRunning()
+					ReApproachQst.start()
+					forceRefAndPackageTo(act, ReApproachingAlias, customerForceGreetAgainPackage)
+					ReApproachScript.bIsDibelCustomer = False
+				endif
+			endif
+		endif
+		bWhoreClientOrgasmed = False
 		clearWhoreCustomers()
 		clearWhorePositions()
 	EndEvent
@@ -3133,12 +3284,38 @@ State Whoring
 		bIsBusy = False
 	EndEvent
 
+	Event on_spp_sexlab_Orgasm(string eventName, string argString, float argNum, form sender)
+		if SexLabInterface.HasPlayer(argString)
+			actor[] actorList = SexLabInterface.HookActors(argString)
+			if actorList.length > 1
+				int i = actorList.length
+				while i > 0
+					i -= 1
+					if actorList[i] && isWhoreCustomer(actorList[i])
+						bWhoreClientOrgasmed = true
+						return
+					endif
+				endWhile
+			endif
+		endif
+	endevent
+	
+	Event on_spp_sexlab_OrgasmSeparate(Form ActorRef, Int Thread)
+		if player != (ActorRef as Actor)
+			if isWhoreCustomer(ActorRef as Actor) && SexLabInterface.HasPlayer(Thread as String)
+				bWhoreClientOrgasmed = true
+			endif
+		endif
+	endevent
+	
 	Event on_spp_sexlab_Sex_Ending(string eventName, string argString, float argNum, form sender)
 	EndEvent
 
 	event on_spp_sexlab_Sex_End(int tid, bool HasPlayer)
 		if HasPlayer
-			addDibelMarkToPlayer(fWhoreMarkChance, iWhorePartners)
+			if (!bWhoreOnlyPayIfClientOrgasmed || bWhoreClientOrgasmed)
+				addDibelMarkToPlayer(fWhoreMarkChance, iWhorePartners)
+			endif
 			startInfectingPlayer(GetState(), iWhorePartners)
 			bWhoreAnimEnded = true
 			if whoreCustomerlist.GetSize() == 0
@@ -3154,9 +3331,19 @@ State Whoring
 			iWhorePartners = 0
 		endif
 	endEvent
+	
+	Event on_spp_ostim_Orgasm(String EventName, String sceneId, Float index, Form Sender)
+		if sender && (player != (sender as Actor))
+			if isWhoreCustomer(sender as Actor)
+				bWhoreClientOrgasmed = true
+			endif
+		endif
+	endevent
 
 	Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, form sender)
-		addDibelMarkToPlayer(fWhoreMarkChance, iWhorePartners)
+		if (!bWhoreOnlyPayIfClientOrgasmed || bWhoreClientOrgasmed)
+			addDibelMarkToPlayer(fWhoreMarkChance, iWhorePartners)
+		endif
 		startInfectingPlayer(GetState(), iWhorePartners)
 		bWhoreAnimEnded = true
 		if whoreCustomerlist.GetSize() == 0
@@ -3173,7 +3360,9 @@ State Whoring
 	EndEvent
 
 	event onUpdate()
-		addDibelMarkToPlayer(fWhoreMarkChance, iWhorePartners)
+		if (!bWhoreOnlyPayIfClientOrgasmed || bWhoreClientOrgasmed)
+			addDibelMarkToPlayer(fWhoreMarkChance, iWhorePartners)
+		endif
 		startInfectingPlayer(GetState(), iWhorePartners)
 		bWhoreAnimEnded = true
 		if whoreCustomerlist.GetSize() == 0
@@ -3187,6 +3376,7 @@ State Whoring
 			GoToState("")
 		endif
 		iWhorePartners = 0
+		bWhoreClientOrgasmed = true
 	endEvent
 
 	event OnUpdateGameTime()
@@ -3205,11 +3395,21 @@ State Whoring
 EndState
 
 Auto State Init
+
+	Event on_spp_sexlab_Orgasm(string eventName, string argString, float argNum, form sender)
+	endevent
+	
+	Event on_spp_sexlab_OrgasmSeparate(Form ActorRef, Int Thread)
+	endevent
+	
 	Event on_spp_sexlab_Sex_Ending(string eventName, string argString, float argNum, form sender)
 	EndEvent
 
 	event on_spp_sexlab_Sex_End(int tid, bool HasPlayer)
 	endEvent
+	
+	Event on_spp_ostim_Orgasm(String EventName, String sceneId, Float index, Form Sender)
+	endevent
 
 	Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, form sender)
 	EndEvent
@@ -3243,7 +3443,13 @@ Auto State Init
 EndState
 
 State offeringToDibella
-
+	
+	Event on_spp_sexlab_Orgasm(string eventName, string argString, float argNum, form sender)
+	endevent
+	
+	Event on_spp_sexlab_OrgasmSeparate(Form ActorRef, Int Thread)
+	endevent
+	
 	Event on_spp_sexlab_Sex_Ending(string eventName, string argString, float argNum, form sender)
 	EndEvent
 
@@ -3253,6 +3459,9 @@ State offeringToDibella
 			GoToState("")
 		endif
 	endEvent
+	
+	Event on_spp_ostim_Orgasm(String EventName, String sceneId, Float index, Form Sender)
+	endevent
 
 	Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, form sender)
 		STD_Script.cureActorSTDs(player, False)
@@ -3279,7 +3488,13 @@ State offeringToDibella
 EndState
 
 State raped
-
+	
+	Event on_spp_sexlab_Orgasm(string eventName, string argString, float argNum, form sender)
+	endevent
+	
+	Event on_spp_sexlab_OrgasmSeparate(Form ActorRef, Int Thread)
+	endevent
+	
 	Event on_spp_sexlab_Sex_Ending(string eventName, string argString, float argNum, form sender)
 	EndEvent
 
@@ -3289,6 +3504,9 @@ State raped
 			GoToState("")
 		endif
 	endEvent
+
+  Event on_spp_ostim_Orgasm(String EventName, String sceneId, Float index, Form Sender)
+	endevent
 
 	Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, form sender)
 		startInfectingPlayer("", 1)
@@ -3859,6 +4077,10 @@ Function CheckAliases()
 			act.EvaluatePackage()
 		endif
 	endif
+	
+	If ReApproachQst.isrunning()
+		ReApproachScript.stopReapproach()
+	endif
 	Debug.trace("Simple Prostitution: Aliases were checked.")
 EndFunction
 
@@ -3879,6 +4101,34 @@ Bool Function isCustomer(Actor akActor)
 	endif
 	return true
 EndFunction
+
+Bool Function isWhoreCustomer(Actor akActor)
+	if !akActor
+		return False
+	endif
+	if (whoreCustomerAlias.getReference() As Actor) && (akActor == (whoreCustomerAlias.getReference() As Actor))
+	elseif (whoreCustomerAlias2.getReference() As Actor) && (akActor == (whoreCustomerAlias2.getReference() As Actor))
+	elseif (whoreCustomerAlias3.getReference() As Actor) && (akActor == (whoreCustomerAlias3.getReference() As Actor))
+	elseif (whoreCustomerAlias4.getReference() As Actor) && (akActor == (whoreCustomerAlias4.getReference() As Actor))
+	else
+		return False
+	endif
+	return true
+endFunction
+
+Bool Function isDibelCustomer(Actor akActor)
+	if !akActor
+		return False
+	endif
+	if (dibelCustomerAlias.getReference()  As Actor) && (akActor == (dibelCustomerAlias.getReference()  As Actor))
+	elseif (dibelCustomerAlias2.getReference() As Actor) && (akActor == (dibelCustomerAlias2.getReference() As Actor))
+	elseif (dibelCustomerAlias3.getReference() As Actor) && (akActor == (dibelCustomerAlias3.getReference() As Actor))
+	elseif (dibelCustomerAlias4.getReference() As Actor) && (akActor == (dibelCustomerAlias4.getReference() As Actor))
+	else
+		return False
+	endif
+	return true
+endFunction
 
 
 Bool function isPlayerWhoring()

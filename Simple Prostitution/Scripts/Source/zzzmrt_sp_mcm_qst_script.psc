@@ -357,7 +357,17 @@ event OnPageReset(String page)
     endif	
 		OID_SLHH_MALE_RAPIST = AddToggleOption("$MRT_SP_SLHH_MALE_RAPIST_TOGGLE", MainScript.bSLHH_MaleRapist, flag)
 		OID_SLHH_FEMALE_RAPIST = AddToggleOption("$MRT_SP_SLHH_FEMALE_RAPIST_TOGGLE", MainScript.bSLHH_FemaleRapist, flag)
-		
+		addEmptyOption()
+		_AddHeaderOption("$MRT_SP_HEAD_INTEGRATION_ORGASM")
+		if MainScript.bModEnabled
+      flag = OPTION_FLAG_NONE
+    else
+      flag = OPTION_FLAG_DISABLED
+    endif	
+		OID_WHORE_PAY_IF_ORGASMED = AddToggleOption("$MRT_SP_WHORE_PAY_IF_ORGASMED_TOGGLE", MainScript.bWhoreOnlyPayIfClientOrgasmed, flag)
+		OID_DIBEL_PAY_IF_ORGASMED = AddToggleOption("$MRT_SP_DIBEL_PAY_IF_ORGASMED_TOGGLE", MainScript.bDibelOnlyPayIfClientOrgasmed, flag)
+	  OID_WHORE_PUNISH_If_NOT_ORGASMED = AddToggleOption("$MRT_SP_WHORE_PUNISH_If_NOT_ORGASMED_TOGGLE", MainScript.bWhorePunishIfClientNotOrgasmed, flag)
+		OID_DIBEL_PUNISH_If_NOT_ORGASMED = AddToggleOption("$MRT_SP_DIBEL_PUNISH_If_NOT_ORGASMED_TOGGLE", MainScript.bDibelPunishIfClientNotOrgasmed, flag)
 	elseif (page == "$MRT_SP_PAGE_BEGGING")
     SetTitleText("$MRT_SP_PAGE_BEGGING")
     _AddHeaderOption("$MRT_SP_HEAD_BEG")
@@ -457,7 +467,8 @@ event OnPageReset(String page)
 		OID_DIBEL_REQ_WHORE_VAGINAL_REWARD = AddToggleOption("$MRT_SP_DIBEL_REQ_WHORE_VAGINAL_REWARD_TOGGLE", MainScript.bDibelNeedWhoreVaginalReward, flag)
     _AddToggleOptionST("DIBEL_ALLOW_AGGRESSIVE_TOGGLE", "$MRT_SP_DIBEL_ALLOW_AGGRESSIVE_TOGGLE", MainScript.bDIBELAllowAggressive, flag)
     _AddToggleOptionST("DIBEL_NAKED_TOGGLE", "$MRT_SP_DIBEL_NAKED_TOGGLE", MainScript.bDibelNaked, flag)
-    OID_DIBEL_POSITION_MENU = AddToggleOption("$MRT_SP_DIBEL_POSITION_MENU_TOGGLE", MainScript.bDibelPositionMenu, flag)
+    OID_DIBEL_PAY_AFTER_SEX = AddToggleOption("$MRT_SP_DIBEL_PAY_AFTER_SEX_TOGGLE", MainScript.bDibelPayAfterSex , flag)
+		OID_DIBEL_POSITION_MENU = AddToggleOption("$MRT_SP_DIBEL_POSITION_MENU_TOGGLE", MainScript.bDibelPositionMenu, flag)
 		AddSliderOptionST("DIBEL_ORAL_CHANCE_SLIDER", "$MRT_SP_DIBEL_ORAL_CHANCE_SLIDER1", MainScript.fDibelOralChance, "$MRT_SP_DIBEL_ORAL_CHANCE_SLIDER2", flag)
     AddSliderOptionST("DIBEL_ANAL_CHANCE_SLIDER", "$MRT_SP_DIBEL_ANAL_CHANCE_SLIDER1", MainScript.fDibelAnalChance, "$MRT_SP_DIBEL_ANAL_CHANCE_SLIDER2", flag)
     AddSliderOptionST("DIBEL_VAG_CHANCE_SLIDER", "$MRT_SP_DIBEL_VAG_CHANCE_SLIDER1", MainScript.fDibelVagChance, "$MRT_SP_DIBEL_VAG_CHANCE_SLIDER2", flag)
@@ -526,6 +537,7 @@ event OnPageReset(String page)
     endif
     _AddToggleOptionST("WHORE_TOGGLE", "$MRT_SP_WHORE_TOGGLE", MainScript.bWhoreEnabled, flag)
     _AddToggleOptionST("WHORE_CLOTHING_TOGGLE", "$MRT_SP_WHORE_CLOTHING_TOGGLE", MainScript.bWhoreClothing, flag)
+		OID_WHORE_PAY_AFTER_SEX = AddToggleOption("$MRT_SP_WHORE_PAY_AFTER_SEX_TOGGLE", MainScript.bWhorePayAfterSex , flag)
     _AddToggleOptionST("WHORE_ALLOW_AGGRESSIVE_TOGGLE", "$MRT_SP_WHORE_ALLOW_AGGRESSIVE_TOGGLE", MainScript.bWhoreAllowAggressive, flag)
     AddSliderOptionST("WHORE_OWNER_SHARE_SLIDER", "$MRT_SP_WHORE_OWNER_SHARE_SLIDER1", MainScript.fWhoreOwnerShare, "$MRT_SP_WHORE_OWNER_SHARE_SLIDER2", flag)
     OID_WHORE_POSITION_MENU = AddToggleOption("$MRT_SP_WHORE_POSITION_MENU_TOGGLE", MainScript.bWhorePositionMenu, flag)
@@ -3083,10 +3095,16 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
 	MainScript.bBeggarPayUseBaseSpeech = jsonutil.GetPathIntValue(settings_path, "bBeggarPayUseBaseSpeech", MainScript.bBeggarPayUseBaseSpeech as int)
 	MainScript.bWhorePayUseBaseSpeech = jsonutil.GetPathIntValue(settings_path, "bWhorePayUseBaseSpeech", MainScript.bWhorePayUseBaseSpeech as int)
 	MainScript.bDibelPayUseBaseSpeech = jsonutil.GetPathIntValue(settings_path, "bDibelPayUseBaseSpeech", MainScript.bDibelPayUseBaseSpeech as int)
+	MainScript.bWhorePayAfterSex = jsonutil.GetPathIntValue(settings_path, "bWhorePayAfterSex", MainScript.bWhorePayAfterSex as int)
+	MainScript.bDibelPayAfterSex = jsonutil.GetPathIntValue(settings_path, "bDibelPayAfterSex", MainScript.bDibelPayAfterSex as int)
 	MainScript.bWhorePositionMenu = jsonutil.GetPathIntValue(settings_path, "bWhorePositionMenu", MainScript.bWhorePositionMenu as int)
 	MainScript.bDibelPositionMenu = jsonutil.GetPathIntValue(settings_path, "bDibelPositionMenu", MainScript.bDibelPositionMenu as int)
 	MainScript.bSLHH_MaleRapist = jsonutil.GetPathIntValue(settings_path, "bSLHH_MaleRapist", MainScript.bSLHH_MaleRapist as int)
 	MainScript.bSLHH_FemaleRapist = jsonutil.GetPathIntValue(settings_path, "bSLHH_FemaleRapist", MainScript.bSLHH_FemaleRapist as int)
+	MainScript.bWhoreOnlyPayIfClientOrgasmed = jsonutil.GetPathIntValue(settings_path, "bWhoreOnlyPayIfClientOrgasmed", MainScript.bWhoreOnlyPayIfClientOrgasmed as int)
+	MainScript.bDibelOnlyPayIfClientOrgasmed = jsonutil.GetPathIntValue(settings_path, "bDibelOnlyPayIfClientOrgasmed", MainScript.bDibelOnlyPayIfClientOrgasmed as int)
+	MainScript.bWhorePunishIfClientNotOrgasmed = jsonutil.GetPathIntValue(settings_path, "bWhorePunishIfClientNotOrgasmed", MainScript.bWhorePunishIfClientNotOrgasmed as int)
+	MainScript.bDibelPunishIfClientNotOrgasmed = jsonutil.GetPathIntValue(settings_path, "bDibelPunishIfClientNotOrgasmed", MainScript.bDibelPunishIfClientNotOrgasmed as int)
 
   iAnimInterfaceMethod = jsonutil.GetPathIntValue(settings_path, "iAnimInterfaceMethod", iAnimInterfaceMethod)
   
@@ -3349,10 +3367,16 @@ Bool function saveUserSettingsPapyrus()
 	jsonutil.SetPathIntValue(settings_path, "bBeggarPayUseBaseSpeech", MainScript.bBeggarPayUseBaseSpeech as Int)
 	jsonutil.SetPathIntValue(settings_path, "bWhorePayUseBaseSpeech", MainScript.bWhorePayUseBaseSpeech as Int)
 	jsonutil.SetPathIntValue(settings_path, "bDibelPayUseBaseSpeech", MainScript.bDibelPayUseBaseSpeech as Int)
+	jsonutil.SetPathIntValue(settings_path, "bWhorePayAfterSex", MainScript.bWhorePayAfterSex as Int)
+	jsonutil.SetPathIntValue(settings_path, "bDibelPayAfterSex", MainScript.bDibelPayAfterSex as Int)
 	jsonutil.SetPathIntValue(settings_path, "bWhorePositionMenu", MainScript.bWhorePositionMenu as Int)
 	jsonutil.SetPathIntValue(settings_path, "bDibelPositionMenu", MainScript.bDibelPositionMenu as Int)
 	jsonutil.SetPathIntValue(settings_path, "bSLHH_MaleRapist", MainScript.bSLHH_MaleRapist as Int)
 	jsonutil.SetPathIntValue(settings_path, "bSLHH_FemaleRapist", MainScript.bSLHH_FemaleRapist as Int)
+	jsonutil.SetPathIntValue(settings_path, "bWhoreOnlyPayIfClientOrgasmed", MainScript.bWhoreOnlyPayIfClientOrgasmed as Int)
+	jsonutil.SetPathIntValue(settings_path, "bDibelOnlyPayIfClientOrgasmed", MainScript.bDibelOnlyPayIfClientOrgasmed as Int)
+	jsonutil.SetPathIntValue(settings_path, "bWhorePunishIfClientNotOrgasmed", MainScript.bWhorePunishIfClientNotOrgasmed as Int)
+	jsonutil.SetPathIntValue(settings_path, "bDibelPunishIfClientNotOrgasmed", MainScript.bDibelPunishIfClientNotOrgasmed as Int)
 
   jsonutil.SetPathIntValue(settings_path, "iAnimInterfaceMethod", iAnimInterfaceMethod)
   jsonutil.SetPathIntValue(settings_path, "iCrimeBounty", MainScript.iCrimeBounty)
@@ -4011,6 +4035,12 @@ event OnOptionSelect(int option)
 	elseif option == OID_WHORE_PAY_USE_BASE_SPEECH
 		MainScript.bWhorePayUseBaseSpeech = !MainScript.bWhorePayUseBaseSpeech
 		SetToggleOptionValue(option, MainScript.bWhorePayUseBaseSpeech)
+	elseif option == OID_WHORE_PAY_AFTER_SEX
+		MainScript.bWhorePayAfterSex = !MainScript.bWhorePayAfterSex
+		SetToggleOptionValue(option, MainScript.bWhorePayAfterSex)
+	elseif option == OID_DIBEL_PAY_AFTER_SEX
+		MainScript.bDibelPayAfterSex = !MainScript.bDibelPayAfterSex
+		SetToggleOptionValue(option, MainScript.bDibelPayAfterSex)	
 	elseif option == OID_DIBEL_PAY_USE_BASE_SPEECH
 		MainScript.bDibelPayUseBaseSpeech = !MainScript.bDibelPayUseBaseSpeech
 		SetToggleOptionValue(option, MainScript.bDibelPayUseBaseSpeech)
@@ -4026,6 +4056,18 @@ event OnOptionSelect(int option)
 	elseif option == OID_SLHH_FEMALE_RAPIST
 		MainScript.bSLHH_FemaleRapist = !MainScript.bSLHH_FemaleRapist
 		SetToggleOptionValue(option, MainScript.bSLHH_FemaleRapist)
+	elseif option == OID_WHORE_PAY_IF_ORGASMED
+		MainScript.bWhoreOnlyPayIfClientOrgasmed = !MainScript.bWhoreOnlyPayIfClientOrgasmed
+		SetToggleOptionValue(option, MainScript.bWhoreOnlyPayIfClientOrgasmed)
+	elseif option == OID_DIBEL_PAY_IF_ORGASMED
+		MainScript.bDibelOnlyPayIfClientOrgasmed = !MainScript.bDibelOnlyPayIfClientOrgasmed
+		SetToggleOptionValue(option, MainScript.bDibelOnlyPayIfClientOrgasmed)
+	elseif option == OID_WHORE_PUNISH_If_NOT_ORGASMED
+		MainScript.bWhorePunishIfClientNotOrgasmed = !MainScript.bWhorePunishIfClientNotOrgasmed
+		SetToggleOptionValue(option, MainScript.bWhorePunishIfClientNotOrgasmed)
+	elseif option == OID_DIBEL_PUNISH_If_NOT_ORGASMED
+		MainScript.bDibelPunishIfClientNotOrgasmed = !MainScript.bDibelPunishIfClientNotOrgasmed 
+		SetToggleOptionValue(option, MainScript.bDibelPunishIfClientNotOrgasmed)
   endif
   ForcePageReset()
 EndEvent
@@ -4103,7 +4145,13 @@ event OnOptionDefault(int option)
 		SetToggleOptionValue(option, MainScript.bBeggarPayUseBaseSpeech)
 	elseif option == OID_WHORE_PAY_USE_BASE_SPEECH
 		MainScript.bWhorePayUseBaseSpeech = True
-		SetToggleOptionValue(option, MainScript.bWhorePayUseBaseSpeech)
+		SetToggleOptionValue(option, MainScript.bWhorePayUseBaseSpeech)	
+	elseif option == OID_WHORE_PAY_AFTER_SEX
+		MainScript.bWhorePayAfterSex = False
+		SetToggleOptionValue(option, MainScript.bWhorePayAfterSex)
+	elseif option == OID_DIBEL_PAY_AFTER_SEX
+		MainScript.bDibelPayAfterSex = False
+		SetToggleOptionValue(option, MainScript.bDibelPayAfterSex)	
 	elseif option == OID_DIBEL_PAY_USE_BASE_SPEECH
 		MainScript.bDibelPayUseBaseSpeech = True
 		SetToggleOptionValue(option, MainScript.bDibelPayUseBaseSpeech)
@@ -4119,6 +4167,18 @@ event OnOptionDefault(int option)
 	elseif option == OID_SLHH_FEMALE_RAPIST
 		MainScript.bSLHH_FemaleRapist = False
 		SetToggleOptionValue(option, MainScript.bSLHH_FemaleRapist)
+	elseif option == OID_WHORE_PAY_IF_ORGASMED
+		MainScript.bWhoreOnlyPayIfClientOrgasmed = False
+		SetToggleOptionValue(option, MainScript.bWhoreOnlyPayIfClientOrgasmed)
+	elseif option == OID_DIBEL_PAY_IF_ORGASMED
+		MainScript.bDibelOnlyPayIfClientOrgasmed = False
+		SetToggleOptionValue(option, MainScript.bDibelOnlyPayIfClientOrgasmed)
+	elseif option == OID_WHORE_PUNISH_If_NOT_ORGASMED
+		MainScript.bWhorePunishIfClientNotOrgasmed  = False
+		SetToggleOptionValue(option, MainScript.bWhorePunishIfClientNotOrgasmed)
+	elseif option == OID_DIBEL_PUNISH_If_NOT_ORGASMED
+		MainScript.bDibelPunishIfClientNotOrgasmed  = False
+		SetToggleOptionValue(option, MainScript.bDibelPunishIfClientNotOrgasmed)
   endif
   ForcePageReset()
 EndEvent
@@ -4280,10 +4340,22 @@ event OnOptionHighlight(int option)
 		SetInfoText("$MRT_SP_DESC_BEG_PAY_USE_BASE_SPEECH")
 	elseif option == OID_WHORE_PAY_USE_BASE_SPEECH
 	  SetInfoText("$MRT_SP_DESC_WHORE_PAY_USE_BASE_SPEECH")
+	elseif option == OID_WHORE_PAY_AFTER_SEX
+	  SetInfoText("$MRT_SP_DESC_WHORE_PAY_AFTER_SEX")	
+	elseif option == OID_DIBEL_PAY_AFTER_SEX
+	  SetInfoText("$MRT_SP_DESC_DIBEL_PAY_AFTER_SEX")	
 	elseif option == OID_SLHH_MALE_RAPIST
 		SetInfoText("$MRT_SP_DESC_SLHH_MALE_RAPIST")
 	elseif option == OID_SLHH_FEMALE_RAPIST
-	  SetInfoText("$MRT_SP_DESC_SLHH_FEMALE_RAPIST")
+	  SetInfoText("$MRT_SP_DESC_SLHH_FEMALE_RAPIST")	
+	elseif option == OID_WHORE_PAY_IF_ORGASMED
+	  SetInfoText("$MRT_SP_DESC_WHORE_PAY_IF_ORGASMED")
+	elseif option == OID_DIBEL_PAY_IF_ORGASMED
+	  SetInfoText("$MRT_SP_DESC_DIBEL_PAY_IF_ORGASMED")
+	elseif option == OID_WHORE_PUNISH_If_NOT_ORGASMED
+	  SetInfoText("$MRT_SP_DESC_WHORE_PUNISH_If_NOT_ORGASMED")
+	elseif option == OID_DIBEL_PUNISH_If_NOT_ORGASMED
+	  SetInfoText("$MRT_SP_DESC_DIBEL_PUNISH_If_NOT_ORGASMED")	
 	elseif option == OID_WHORE_POSITION_MENU
 		SetInfoText("$MRT_SP_DESC_WHORE_POSITION_MENU")
 	elseif option == OID_DIBEL_POSITION_MENU
@@ -5730,3 +5802,10 @@ Int OID_BEG_PERSUADE_CHANCE
 
 Int OID_SLHH_MALE_RAPIST
 Int OID_SLHH_FEMALE_RAPIST
+
+Int OID_WHORE_PAY_AFTER_SEX
+Int OID_DIBEL_PAY_AFTER_SEX
+Int OID_WHORE_PAY_IF_ORGASMED
+Int OID_DIBEL_PAY_IF_ORGASMED
+Int OID_WHORE_PUNISH_If_NOT_ORGASMED
+Int OID_DIBEL_PUNISH_If_NOT_ORGASMED
