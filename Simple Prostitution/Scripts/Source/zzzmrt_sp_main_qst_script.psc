@@ -355,7 +355,15 @@ Bool Property bSLHH_FemaleRapist = False Auto Hidden Conditional
 
 Float property fTempleClientMinExtraPay = 100.0 Auto Hidden Conditional
 Float property fTempleClientMaxExtraPay = 200.0 Auto Hidden Conditional
-
+;;;;
+;Float Property fTempleTaskCost = 0.0 Auto Hidden Conditional
+;GlobalVariable Property templeTaskCost_g Auto Conditional
+;Float Property fTempleMinMarkReward = 1.0 Auto Hidden Conditional
+;Float Property fTempleMaxMarkReward = 1.0 Auto Hidden Conditional
+Float Property fDibelTempleMarkChance = 0.0 Auto Hidden Conditional
+Form Property currentEscortClient Auto Hidden Conditional
+Bool property bIsTempleClient = False Auto Hidden Conditional
+;;;;
 Bool Property bMaleTempleClient = true Auto Hidden Conditional
 Bool Property bFemaleTempleClient = true Auto Hidden Conditional
 
@@ -725,7 +733,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-	return getBaseVersion() + 0.50
+	return getBaseVersion() + 0.51
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
@@ -1198,6 +1206,7 @@ Function setTempleClient(Actor akActor)
 		akActor.EvaluatePackage()
 		dibelCustomerList.AddForm(akActor)
 		iTotalDibelCustomers = dibelCustomerList.GetSize()
+		currentEscortClient = akActor as Form
 	endif
 	SLSFR_Interface.SLSFR_toggle_WhoreFlag(isPlayerDibeling() || isPlayerWhoring())
 	if randInt(0, 999) < (fSLSFR_Talk_FameGainChance * 10) as Int
@@ -2200,6 +2209,7 @@ endfunction
 
 Function giveTempleQuestReward()
 	Player.additem(gold, randint(fTempleClientMinExtraPay as Int, fTempleClientMaxExtraPay as Int))
+	addDibelMarkToPlayer(fDibelTempleMarkChance, 1)
 endfunction
 
 Int function payWhore(actor whore, int position)
@@ -3026,6 +3036,10 @@ State Dibeling
 			endWhile
 			if dibelCustomerlist.GetSize() > 0
 				iPositions = iDibelPositions
+				if currentEscortClient && dibelCustomerList.hasform(currentEscortClient)
+					bIsTempleClient = true ;to add dibel mark using temple chance
+					currentEscortClient = None
+				endif
 				bResult = bHaveGroupSex(sGetCurAnimInteface(), bDibelAllowAggressive, bAllPosAllowed(fDibelVagChance,fDibelAnalChance,fDibelOralChance))
 				if bResult
 					i = 0
@@ -3111,7 +3125,15 @@ State Dibeling
 	event on_spp_sexlab_Sex_End(int tid, bool HasPlayer)
 		if HasPlayer
 			if (!bDibelOnlyPayIfClientOrgasmed || bDibelClientOrgasmed)
-				addDibelMarkToPlayer(fDibelMarkChance, iDibelPartners)
+				if bIsTempleClient
+					addDibelMarkToPlayer(fDibelTempleMarkChance, 1)
+					if iDibelPartners > 1
+						addDibelMarkToPlayer(fDibelMarkChance, iDibelPartners - 1)
+					endif
+					bIsTempleClient = False
+				else
+					addDibelMarkToPlayer(fDibelMarkChance, iDibelPartners)
+				endif
 				dibellan_lust_qst_script.updateQuest(iDibelPartners)
 			endif
 			startInfectingPlayer(GetState(), iDibelPartners)
@@ -3140,7 +3162,15 @@ State Dibeling
 
 	Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, form sender)
 		if (!bDibelOnlyPayIfClientOrgasmed || bDibelClientOrgasmed)
-			addDibelMarkToPlayer(fDibelMarkChance, iDibelPartners)
+			if bIsTempleClient
+				addDibelMarkToPlayer(fDibelTempleMarkChance, 1)
+				if iDibelPartners > 1
+					addDibelMarkToPlayer(fDibelMarkChance, iDibelPartners - 1)
+				endif
+				bIsTempleClient = False
+			else
+				addDibelMarkToPlayer(fDibelMarkChance, iDibelPartners)
+			endif
 			dibellan_lust_qst_script.updateQuest(iDibelPartners)
 		endif
 		startInfectingPlayer(GetState(), iDibelPartners)
@@ -3160,7 +3190,15 @@ State Dibeling
 
 	event onUpdate()
 		if (!bDibelOnlyPayIfClientOrgasmed || bDibelClientOrgasmed)
-			addDibelMarkToPlayer(fDibelMarkChance, iDibelPartners)
+			if bIsTempleClient
+				addDibelMarkToPlayer(fDibelTempleMarkChance, 1)
+				if iDibelPartners > 1
+					addDibelMarkToPlayer(fDibelMarkChance, iDibelPartners - 1)
+				endif
+				bIsTempleClient = False
+			else
+				addDibelMarkToPlayer(fDibelMarkChance, iDibelPartners)
+			endif
 			dibellan_lust_qst_script.updateQuest(iDibelPartners)
 		endif
 		startInfectingPlayer(GetState(), iDibelPartners)

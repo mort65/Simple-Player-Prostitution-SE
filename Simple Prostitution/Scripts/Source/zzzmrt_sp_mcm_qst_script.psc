@@ -3276,6 +3276,7 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
 	
 	MainScript.fTempleClientMinExtraPay = jsonutil.GetPathFloatValue(settings_path, "fTempleClientMinExtraPay", MainScript.fTempleClientMinExtraPay)
 	MainScript.fTempleClientMaxExtraPay = jsonutil.GetPathFloatValue(settings_path, "fTempleClientMaxExtraPay", MainScript.fTempleClientMaxExtraPay)
+	MainScript.fDibelTempleMarkChance = jsonutil.GetPathFloatValue(settings_path, "fDibelTempleMarkChance", MainScript.fDibelTempleMarkChance)
 	
 	MainScript.fWhorePersuadeChance = jsonutil.GetPathFloatValue(settings_path, "fWhorePersuadeChance", MainScript.fWhorePersuadeChance)
 	MainScript.fBeggarPersuadeChance = jsonutil.GetPathFloatValue(settings_path, "fBeggarPersuadeChance", MainScript.fBeggarPersuadeChance)
@@ -3549,6 +3550,7 @@ Bool function saveUserSettingsPapyrus()
 	
 	jsonutil.SetPathFloatValue(settings_path, "fTempleClientMinExtraPay", MainScript.fTempleClientMinExtraPay)
 	jsonutil.SetPathFloatValue(settings_path, "fTempleClientMaxExtraPay", MainScript.fTempleClientMaxExtraPay)
+	jsonutil.SetPathFloatValue(settings_path, "fDibelTempleMarkChance", MainScript.fDibelTempleMarkChance)
 	
 	jsonutil.SetPathFloatValue(settings_path, "fWhorePersuadeChance", MainScript.fWhorePersuadeChance)
 	jsonutil.SetPathFloatValue(settings_path, "fDibelPersuadeChance", MainScript.fDibelPersuadeChance)
@@ -4366,6 +4368,8 @@ event OnOptionHighlight(int option)
 		SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_TASK_MIN_PAY")
 	elseif option == OID_DIBEL_TEMPLE_TASK_MAX_PAY
 		SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_TASK_MAX_PAY")
+	elseif option == OID_DIBEL_TEMPLE_TASK_Mark_CHANCE
+		SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_TASK_Mark_CHANCE")
   elseif option == OID_DEVIOUS_VAG_PRC
     SetInfoText("$MRT_SP_DESC_DEVIOUS_VAG_PRC")
   elseif option == OID_DEVIOUS_NIP_PRC
@@ -4815,6 +4819,9 @@ event OnOptionSliderAccept(int option, float value)
 	elseif option == OID_DIBEL_TEMPLE_TASK_MAX_PAY
 		MainScript.fTempleClientMaxExtraPay = value
 		SetSliderOptionValue(OID_DIBEL_TEMPLE_TASK_MAX_PAY , MainScript.fTempleClientMaxExtraPay, "$MRT_SP_DIBEL_TEMPLE_TASK_MAX_PAY_SLIDER2")
+	elseif option == OID_DIBEL_TEMPLE_TASK_Mark_CHANCE
+		MainScript.fDibelTempleMarkChance = value
+		SetSliderOptionValue(OID_DIBEL_TEMPLE_TASK_Mark_CHANCE , MainScript.fDibelTempleMarkChance, "$MRT_SP_DIBEL_TEMPLE_TASK_Mark_CHANCE_SLIDER2")
 	elseif option == OID_WHORE_PERSUADE_CHANCE
 		MainScript.fWhorePersuadeChance = value
 		SetSliderOptionValue(OID_WHORE_PERSUADE_CHANCE , MainScript.fWhorePersuadeChance, "$MRT_SP_WHORE_PERSUADE_CHANCE_SLIDER2")
@@ -5332,6 +5339,11 @@ event OnOptionSliderOpen(int option)
 		SetSliderDialogDefaultValue(200.0)
 		SetSliderDialogRange(50, 5000)
 		SetSliderDialogInterval(50)
+	elseif option == OID_DIBEL_TEMPLE_TASK_Mark_CHANCE
+		SetSliderDialogStartValue(MainScript.fDibelTempleMarkChance)
+		SetSliderDialogDefaultValue(0.0)
+		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(0.1)
 	elseif option == OID_WHORE_PERSUADE_CHANCE
 	  SetSliderDialogStartValue(MainScript.fWhorePersuadeChance)
     SetSliderDialogDefaultValue(50.0)
@@ -5615,6 +5627,7 @@ Function Dibel_Temple_Tasks(Int iflag)
 	OID_DIBEL_TEMPLE_TASK_FEMALE_CLIENT = AddToggleOption("$MRT_SP_DIBEL_TEMPLE_TASK_FEMALE_CLIENT", MainScript.bFemaleTempleClient, flg)
 	OID_DIBEL_TEMPLE_TASK_MIN_PAY = AddSliderOption("$MRT_SP_DIBEL_TEMPLE_TASK_MIN_PAY_SLIDER1", MainScript.fTempleClientMinExtraPay, "$MRT_SP_DIBEL_TEMPLE_TASK_MIN_PAY_SLIDER2", flg)
 	OID_DIBEL_TEMPLE_TASK_MAX_PAY = AddSliderOption("$MRT_SP_DIBEL_TEMPLE_TASK_MAX_PAY_SLIDER1", MainScript.fTempleClientMaxExtraPay, "$MRT_SP_DIBEL_TEMPLE_TASK_MAX_PAY_SLIDER2", flg)
+	OID_DIBEL_TEMPLE_TASK_Mark_CHANCE = AddSliderOption("$MRT_SP_DIBEL_TEMPLE_TASK_Mark_CHANCE_SLIDER1", MainScript.fDibelTempleMarkChance, "$MRT_SP_DIBEL_TEMPLE_TASK_Mark_CHANCE_SLIDER2", flg)
 endfunction
 
 String[] function sGetEntrapmentLevels()
@@ -5788,6 +5801,7 @@ Int OID_DIBEL_TEMPLE_TASK_MALE_CLIENT
 Int OID_DIBEL_TEMPLE_TASK_FEMALE_CLIENT
 Int OID_DIBEL_TEMPLE_TASK_MIN_PAY
 Int OID_DIBEL_TEMPLE_TASK_MAX_PAY
+Int OID_DIBEL_TEMPLE_TASK_Mark_CHANCE
 
 Int OID_DIBEL_PAY_USE_BASE_SPEECH
 Int OID_WHORE_PAY_USE_BASE_SPEECH
