@@ -355,15 +355,13 @@ Bool Property bSLHH_FemaleRapist = False Auto Hidden Conditional
 
 Float property fTempleClientMinExtraPay = 100.0 Auto Hidden Conditional
 Float property fTempleClientMaxExtraPay = 200.0 Auto Hidden Conditional
-;;;;
-;Float Property fTempleTaskCost = 0.0 Auto Hidden Conditional
-;GlobalVariable Property templeTaskCost_g Auto Conditional
-;Float Property fTempleMinMarkReward = 1.0 Auto Hidden Conditional
-;Float Property fTempleMaxMarkReward = 1.0 Auto Hidden Conditional
+Float Property fTempleMinMarkReward = 1.0 Auto Hidden Conditional
+Float Property fTempleMaxMarkReward = 1.0 Auto Hidden Conditional
 Float Property fDibelTempleMarkChance = 0.0 Auto Hidden Conditional
+Float Property fTempleTaskSeptimCost = 0.0 Auto Hidden Conditional
+GlobalVariable property templeTaskSeptimCostDisplay auto Conditional
 Form Property currentEscortClient Auto Hidden Conditional
 Bool property bIsTempleClient = False Auto Hidden Conditional
-;;;;
 Bool Property bMaleTempleClient = true Auto Hidden Conditional
 Bool Property bFemaleTempleClient = true Auto Hidden Conditional
 
@@ -2209,7 +2207,7 @@ endfunction
 
 Function giveTempleQuestReward()
 	Player.additem(gold, randint(fTempleClientMinExtraPay as Int, fTempleClientMaxExtraPay as Int))
-	addDibelMarkToPlayer(fDibelTempleMarkChance, 1)
+	addDibelMarkToPlayer(fDibelTempleMarkChance, 1, minFloat(fTempleMinMarkReward, fTempleMaxMarkReward) as Int, maxFloat(fTempleMinMarkReward, fTempleMaxMarkReward) as Int)
 endfunction
 
 Int function payWhore(actor whore, int position)
@@ -2912,13 +2910,13 @@ Float Function iRewardProgress(Int iPos, Bool bDibel = False)
 	return 0.0
 EndFunction
 
-function addDibelMarkToPlayer(float fChance, int iNumPartners = 1)
+function addDibelMarkToPlayer(float fChance, int iNumPartners = 1, int iMinAmount = 1, int iMaxAmount = 1)
 	Int iAmount = 0
 	int iIndex = iNumPartners
 	while iIndex > 0
 		iIndex -= 1
 		if (randInt(0,999) / 10.0) < fChance as Int
-			iAmount += 1 
+			iAmount = iAmount + randInt(iMinAmount, iMaxAmount)
 		endif
 	endWhile
 	if iAmount > 0
@@ -3126,7 +3124,7 @@ State Dibeling
 		if HasPlayer
 			if (!bDibelOnlyPayIfClientOrgasmed || bDibelClientOrgasmed)
 				if bIsTempleClient
-					addDibelMarkToPlayer(fDibelTempleMarkChance, 1)
+					addDibelMarkToPlayer(fDibelTempleMarkChance, 1, minFloat(fTempleMinMarkReward, fTempleMaxMarkReward) as Int, maxFloat(fTempleMinMarkReward, fTempleMaxMarkReward) as Int)
 					if iDibelPartners > 1
 						addDibelMarkToPlayer(fDibelMarkChance, iDibelPartners - 1)
 					endif
@@ -3163,7 +3161,7 @@ State Dibeling
 	Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, form sender)
 		if (!bDibelOnlyPayIfClientOrgasmed || bDibelClientOrgasmed)
 			if bIsTempleClient
-				addDibelMarkToPlayer(fDibelTempleMarkChance, 1)
+				addDibelMarkToPlayer(fDibelTempleMarkChance, 1, minFloat(fTempleMinMarkReward, fTempleMaxMarkReward) as Int, maxFloat(fTempleMinMarkReward, fTempleMaxMarkReward) as Int)
 				if iDibelPartners > 1
 					addDibelMarkToPlayer(fDibelMarkChance, iDibelPartners - 1)
 				endif
@@ -3191,7 +3189,7 @@ State Dibeling
 	event onUpdate()
 		if (!bDibelOnlyPayIfClientOrgasmed || bDibelClientOrgasmed)
 			if bIsTempleClient
-				addDibelMarkToPlayer(fDibelTempleMarkChance, 1)
+				addDibelMarkToPlayer(fDibelTempleMarkChance, 1, minFloat(fTempleMinMarkReward, fTempleMaxMarkReward) as Int, maxFloat(fTempleMinMarkReward, fTempleMaxMarkReward) as Int)
 				if iDibelPartners > 1
 					addDibelMarkToPlayer(fDibelMarkChance, iDibelPartners - 1)
 				endif

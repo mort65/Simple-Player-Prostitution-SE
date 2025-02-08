@@ -13,7 +13,10 @@ if MainScript.TempleEscort_Qst.isRunning()
 		utility.wait(0.1)
 	endWhile
 endif
-MainScript.TempleEscort_Qst.start()
+if MainScript.player.getItemCount(MainScript.Gold) >= MainScript.fTempleTaskSeptimCost
+	MainScript.player.removeItem(MainScript.gold, MainScript.fTempleTaskSeptimCost as Int, false, akSpeaker)
+	MainScript.TempleEscort_Qst.start()
+endif
 ;END CODE
 EndFunction
 ;END FRAGMENT

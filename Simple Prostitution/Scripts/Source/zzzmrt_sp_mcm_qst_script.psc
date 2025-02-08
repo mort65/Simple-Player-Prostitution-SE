@@ -4,6 +4,7 @@ import zzzmrt_sp_utility
 
 Quest property MainQuest auto
 zzzmrt_sp_main_qst_script property MainScript auto
+Actor property Player Auto
 Int property iAnimInterface auto Hidden
 Int Property iAnimInterfaceMethod = 0 Auto Hidden
 Int Property iWhoreStatRace = 0 Auto Hidden
@@ -83,14 +84,31 @@ event OnPageReset(String page)
       flag = OPTION_FLAG_DISABLED
     endIf
     _AddTextOptionST("LOAD_USER_DATA_TXT", "$MRT_SP_LOAD_DATA", "$go", flag)
+		addEmptyOption()
+		_AddHeaderOption("$MRT_SP_HEAD_DEBUG_PC")
+    if MainScript.bModEnabled
+      flag = OPTION_FLAG_NONE
+    else
+      flag = OPTION_FLAG_DISABLED
+    endif
+		if !MainScript.isWhore || !MainScript.isWhore_g.GetValue() || !player.isinFaction(MainScript.WhoreFaction)
+			OID_DEBUG_PC_WHORE_TAG = AddTextOption("$MRT_SP_DEBUG_PC_WHORE_TAG_OFF", "", flag)
+		else
+			OID_DEBUG_PC_WHORE_TAG = AddTextOption("$MRT_SP_DEBUG_PC_WHORE_TAG_ON", "", flag)
+		endif
+		if !MainScript.isDibel || !MainScript.isDibel_g.GetValue()
+			OID_DEBUG_PC_DIBEL_TAG = AddTextOption("$MRT_SP_DEBUG_PC_DIBEL_TAG_OFF", "", flag)
+		else
+			OID_DEBUG_PC_DIBEL_TAG = AddTextOption("$MRT_SP_DEBUG_PC_DIBEL_TAG_ON", "", flag)
+		endif
+    addEmptyOption()
+    _AddHeaderOption("$MRT_SP_HEAD_DEBUG_CLOTHING")
     if MainScript.bIsPO3ExtenderActive
       flag = OPTION_FLAG_NONE
     else
       flag = OPTION_FLAG_DISABLED
     endIf
-    addEmptyOption()
-    _AddHeaderOption("$MRT_SP_HEAD_DEBUG_CLOTHING")
-    Armor chestArmor = (MainScript.Player.GetWornForm(0x00000004) As Armor)
+    Armor chestArmor = (player.GetWornForm(0x00000004) As Armor)
     if chestArmor
       _AddTextOptionST("WHORE_TAG_CLOTH_NAME_TXT", shortenString(chestArmor.GetName(), 32), "", OPTION_FLAG_DISABLED) 
       If chestArmor.HasKeyword(MainScript.ProstituteClothing_kwd)
@@ -109,8 +127,8 @@ event OnPageReset(String page)
     endif
     addEmptyOption()
     _AddHeaderOption("$MRT_SP_HEAD_DEBUG_LOCATION")
-    Cell cel = MainScript.Player.GetParentCell()
-    Location loc = MainScript.Player.GetCurrentLocation()
+    Cell cel = player.GetParentCell()
+    Location loc = player.GetCurrentLocation()
     if loc && cel
       _AddTextOptionST("WHORE_TAG_LOC_NAME_TXT", shortenString(loc.GetName(), 32), "", OPTION_FLAG_DISABLED) 
       if cel.IsInterior()
@@ -131,7 +149,7 @@ event OnPageReset(String page)
     if !npc
       npc = Game.GetCurrentConsoleRef() As Actor
     endif
-    if npc && (npc != MainScript.player)
+    if npc && (npc != player)
       _AddTextOptionST("WHORE_TAG_NPC_NAME_TXT", shortenString(npc.GetDisplayName(), 32), "", OPTION_FLAG_DISABLED) 
       if Mainscript.bCanPimp(npc)
         if npc.HasKeyword(Mainscript.prostituteManager_KWD)
@@ -2171,7 +2189,7 @@ endState
 state WHORE_TOGGLE
   event OnDefaultST()
     MainScript.bWhoreEnabled = True
-    Mainscript.player.AddToFaction(Mainscript.whoreFaction)
+    player.AddToFaction(Mainscript.whoreFaction)
     ForcePageReset()
   endevent
 
@@ -2182,9 +2200,9 @@ state WHORE_TOGGLE
   event OnSelectST()
     MainScript.bWhoreEnabled = !MainScript.bWhoreEnabled
     if MainScript.bWhoreEnabled
-      Mainscript.player.AddToFaction(Mainscript.whoreFaction)
+      player.AddToFaction(Mainscript.whoreFaction)
     else
-      Mainscript.player.RemoveFromFaction(Mainscript.whoreFaction)
+      player.RemoveFromFaction(Mainscript.whoreFaction)
     endif
     ForcePageReset()
   endevent
@@ -2809,7 +2827,7 @@ EndState
 State WHORE_TAG_CHEST_CLOTH_TXT
   function OnSelectST()
     if MainScript.bIsPO3ExtenderActive
-      Armor chestArmor = (MainScript.Player.GetWornForm(0x00000004) As Armor)
+      Armor chestArmor = (player.GetWornForm(0x00000004) As Armor)
       if chestArmor 
         if chestArmor.HasKeyword(MainScript.ProstituteClothing_kwd)
           PO3_SKSEFunctions.RemoveKeywordOnForm(chestArmor, MainScript.ProstituteClothing_kwd)
@@ -2831,7 +2849,7 @@ EndState
 State BEG_TAG_CHEST_CLOTH_TXT
   function OnSelectST()
     if MainScript.bIsPO3ExtenderActive
-      Armor chestArmor = (MainScript.Player.GetWornForm(0x00000004) As Armor)
+      Armor chestArmor = (player.GetWornForm(0x00000004) As Armor)
       if chestArmor 
         if chestArmor.HasKeyword(MainScript.BeggarClothing_kwd)
           PO3_SKSEFunctions.RemoveKeywordOnForm(chestArmor, MainScript.BeggarClothing_kwd)
@@ -2853,8 +2871,8 @@ EndState
 State WHORE_TAG_LOC_TXT
   function OnSelectST()
     if MainScript.bIsPO3ExtenderActive
-      Cell cel = MainScript.Player.GetParentCell()
-      Location loc = MainScript.Player.GetCurrentLocation()
+      Cell cel = player.GetParentCell()
+      Location loc = player.GetCurrentLocation()
       if loc && cel && cel.IsInterior()
         if loc.HasKeyword(Mainscript.prostituteLocation_KWD)
           PO3_SKSEFunctions.RemoveKeywordOnForm(loc, Mainscript.prostituteLocation_KWD)
@@ -3277,6 +3295,11 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
 	MainScript.fTempleClientMinExtraPay = jsonutil.GetPathFloatValue(settings_path, "fTempleClientMinExtraPay", MainScript.fTempleClientMinExtraPay)
 	MainScript.fTempleClientMaxExtraPay = jsonutil.GetPathFloatValue(settings_path, "fTempleClientMaxExtraPay", MainScript.fTempleClientMaxExtraPay)
 	MainScript.fDibelTempleMarkChance = jsonutil.GetPathFloatValue(settings_path, "fDibelTempleMarkChance", MainScript.fDibelTempleMarkChance)
+	MainScript.fTempleMinMarkReward = jsonutil.GetPathFloatValue(settings_path, "fTempleMinMarkReward", MainScript.fTempleMinMarkReward)
+	MainScript.fTempleMaxMarkReward = jsonutil.GetPathFloatValue(settings_path, "fTempleMaxMarkReward", MainScript.fTempleMaxMarkReward)
+	MainScript.fTempleTaskSeptimCost = jsonutil.GetPathFloatValue(settings_path, "fTempleTaskSeptimCost", MainScript.fTempleTaskSeptimCost)
+	MainScript.templeTaskSeptimCostDisplay.SetValueInt(MainScript.fTempleTaskSeptimCost as Int)
+	MainQuest.UpdateCurrentInstanceGlobal(MainScript.templeTaskSeptimCostDisplay)
 	
 	MainScript.fWhorePersuadeChance = jsonutil.GetPathFloatValue(settings_path, "fWhorePersuadeChance", MainScript.fWhorePersuadeChance)
 	MainScript.fBeggarPersuadeChance = jsonutil.GetPathFloatValue(settings_path, "fBeggarPersuadeChance", MainScript.fBeggarPersuadeChance)
@@ -3551,6 +3574,9 @@ Bool function saveUserSettingsPapyrus()
 	jsonutil.SetPathFloatValue(settings_path, "fTempleClientMinExtraPay", MainScript.fTempleClientMinExtraPay)
 	jsonutil.SetPathFloatValue(settings_path, "fTempleClientMaxExtraPay", MainScript.fTempleClientMaxExtraPay)
 	jsonutil.SetPathFloatValue(settings_path, "fDibelTempleMarkChance", MainScript.fDibelTempleMarkChance)
+	jsonutil.SetPathFloatValue(settings_path, "fTempleTaskSeptimCost", MainScript.fTempleTaskSeptimCost)
+	jsonutil.SetPathFloatValue(settings_path, "fTempleMinMarkReward", MainScript.fTempleMinMarkReward)
+	jsonutil.SetPathFloatValue(settings_path, "fTempleMaxMarkReward", MainScript.fTempleMaxMarkReward)
 	
 	jsonutil.SetPathFloatValue(settings_path, "fWhorePersuadeChance", MainScript.fWhorePersuadeChance)
 	jsonutil.SetPathFloatValue(settings_path, "fDibelPersuadeChance", MainScript.fDibelPersuadeChance)
@@ -3925,7 +3951,6 @@ Function removeDibelRewards()
   if iTotalRefundableOfferedMarks < 1
    return
  endif
- actor player = MainScript.player
  if iTotalHealthRecieved > 0
   Player.RestoreActorValue("Health", iTotalHealthRecieved)
   Player.SetActorValue("Health", maxFloat(1.0, Player.GetBaseActorValue("Health") - iTotalHealthRecieved))
@@ -4070,6 +4095,28 @@ event OnOptionSelect(int option)
 	elseif option == OID_DIBEL_PUNISH_If_NOT_ORGASMED
 		MainScript.bDibelPunishIfClientNotOrgasmed = !MainScript.bDibelPunishIfClientNotOrgasmed 
 		SetToggleOptionValue(option, MainScript.bDibelPunishIfClientNotOrgasmed)
+	elseif option == OID_DEBUG_PC_WHORE_TAG
+		if !MainScript.isWhore || !MainScript.isWhore_g.GetValue() || !player.isinFaction(MainScript.WhoreFaction) 
+			MainScript.isWhore = true
+			MainScript.isWhore_g.SetValueInt(1)
+			if !player.IsInFaction(MainScript.whoreFaction)
+				player.AddToFaction(MainScript.whoreFaction)
+			endif
+		else
+			MainScript.isWhore = false
+			MainScript.isWhore_g.SetValueInt(0)
+			if player.IsInFaction(MainScript.whoreFaction)
+				player.RemoveFromFaction(MainScript.whoreFaction)
+			endif
+		endif
+	elseif option == OID_DEBUG_PC_DIBEL_TAG
+		if !MainScript.isDibel || !MainScript.isDibel_g.GetValue()
+			MainScript.isDibel = true
+			MainScript.isDibel_g.SetValueInt(1)
+		else
+			MainScript.isDibel = false
+			MainScript.isDibel_g.SetValueInt(0)
+		endif
   endif
   ForcePageReset()
 EndEvent
@@ -4368,6 +4415,12 @@ event OnOptionHighlight(int option)
 		SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_TASK_MIN_PAY")
 	elseif option == OID_DIBEL_TEMPLE_TASK_MAX_PAY
 		SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_TASK_MAX_PAY")
+	elseif option == OID_DIBEL_TEMPLE_TASK_SEPTIM_COST
+		SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_TASK_SEPTIM_COST")
+	elseif option == OID_DIBEL_TEMPLE_TASK_MIN_MARK_REWARD
+		SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_TASK_MIN_MARK_REWARD")
+	elseif option == OID_DIBEL_TEMPLE_TASK_MAX_MARK_REWARD
+		SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_TASK_MAX_MARK_REWARD")
 	elseif option == OID_DIBEL_TEMPLE_TASK_Mark_CHANCE
 		SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_TASK_Mark_CHANCE")
   elseif option == OID_DEVIOUS_VAG_PRC
@@ -4484,6 +4537,10 @@ event OnOptionHighlight(int option)
 		SetInfoText("$MRT_SP_DESC_WHORE_PERSUADE_CHANCE")
 	elseif option == OID_BEG_PERSUADE_CHANCE
 		SetInfoText("$MRT_SP_DESC_BEG_PERSUADE_CHANCE")
+	elseif option == OID_DEBUG_PC_WHORE_TAG
+		SetInfoText("$MRT_SP_DESC_DEBUG_PC_WHORE_TAG")
+	elseif option == OID_DEBUG_PC_DIBEL_TAG
+		SetInfoText("$MRT_SP_DESC_DEBUG_PC_DIBEL_TAG")
 	endif
 endevent
 
@@ -4819,6 +4876,17 @@ event OnOptionSliderAccept(int option, float value)
 	elseif option == OID_DIBEL_TEMPLE_TASK_MAX_PAY
 		MainScript.fTempleClientMaxExtraPay = value
 		SetSliderOptionValue(OID_DIBEL_TEMPLE_TASK_MAX_PAY , MainScript.fTempleClientMaxExtraPay, "$MRT_SP_DIBEL_TEMPLE_TASK_MAX_PAY_SLIDER2")
+	elseif option == OID_DIBEL_TEMPLE_TASK_SEPTIM_COST
+		MainScript.fTempleTaskSeptimCost = value
+		SetSliderOptionValue(OID_DIBEL_TEMPLE_TASK_SEPTIM_COST , MainScript.fTempleTaskSeptimCost, "$MRT_SP_DIBEL_TEMPLE_TASK_SEPTIM_COST_SLIDER2")
+		MainScript.templeTaskSeptimCostDisplay.SetValueInt(MainScript.fTempleTaskSeptimCost as Int)
+		MainQuest.UpdateCurrentInstanceGlobal(MainScript.templeTaskSeptimCostDisplay)
+	elseif option == OID_DIBEL_TEMPLE_TASK_MIN_MARK_REWARD
+		MainScript.fTempleMinMarkReward = value
+		SetSliderOptionValue(OID_DIBEL_TEMPLE_TASK_MIN_MARK_REWARD , MainScript.fTempleMinMarkReward, "$MRT_SP_DIBEL_TEMPLE_TASK_MIN_MARK_REWARD_SLIDER2")		
+	elseif option == OID_DIBEL_TEMPLE_TASK_MAX_MARK_REWARD
+		MainScript.fTempleMaxMarkReward = value
+		SetSliderOptionValue(OID_DIBEL_TEMPLE_TASK_MAX_MARK_REWARD , MainScript.fTempleMaxMarkReward, "$MRT_SP_DIBEL_TEMPLE_TASK_MAX_MARK_REWARD_SLIDER2")		
 	elseif option == OID_DIBEL_TEMPLE_TASK_Mark_CHANCE
 		MainScript.fDibelTempleMarkChance = value
 		SetSliderOptionValue(OID_DIBEL_TEMPLE_TASK_Mark_CHANCE , MainScript.fDibelTempleMarkChance, "$MRT_SP_DIBEL_TEMPLE_TASK_Mark_CHANCE_SLIDER2")
@@ -5339,6 +5407,21 @@ event OnOptionSliderOpen(int option)
 		SetSliderDialogDefaultValue(200.0)
 		SetSliderDialogRange(50, 5000)
 		SetSliderDialogInterval(50)
+	elseif option == OID_DIBEL_TEMPLE_TASK_SEPTIM_COST
+		SetSliderDialogStartValue(MainScript.fTempleTaskSeptimCost)
+		SetSliderDialogDefaultValue(200.0)
+		SetSliderDialogRange(50, 5000)
+		SetSliderDialogInterval(50)
+	elseif option == OID_DIBEL_TEMPLE_TASK_MIN_MARK_REWARD
+		SetSliderDialogStartValue(MainScript.fTempleMinMarkReward)
+		SetSliderDialogDefaultValue(1.0)
+		SetSliderDialogRange(1, 100)
+		SetSliderDialogInterval(1)
+	elseif option == OID_DIBEL_TEMPLE_TASK_MAx_MARK_REWARD
+		SetSliderDialogStartValue(MainScript.fTempleMaxMarkReward)
+		SetSliderDialogDefaultValue(1.0)
+		SetSliderDialogRange(1, 100)
+		SetSliderDialogInterval(1)
 	elseif option == OID_DIBEL_TEMPLE_TASK_Mark_CHANCE
 		SetSliderDialogStartValue(MainScript.fDibelTempleMarkChance)
 		SetSliderDialogDefaultValue(0.0)
@@ -5625,9 +5708,12 @@ Function Dibel_Temple_Tasks(Int iflag)
   _AddHeaderOption("$MRT_SP_HEAD_DIBEL_TEMPLE_TASKS")
 	OID_DIBEL_TEMPLE_TASK_MALE_CLIENT = AddToggleOption("$MRT_SP_DIBEL_TEMPLE_TASK_MALE_CLIENT", MainScript.bMaleTempleClient, flg)
 	OID_DIBEL_TEMPLE_TASK_FEMALE_CLIENT = AddToggleOption("$MRT_SP_DIBEL_TEMPLE_TASK_FEMALE_CLIENT", MainScript.bFemaleTempleClient, flg)
+	OID_DIBEL_TEMPLE_TASK_SEPTIM_COST = AddSliderOption("$MRT_SP_DIBEL_TEMPLE_TASK_SEPTIM_COST_SLIDER1", MainScript.fTempleTaskSeptimCost, "$MRT_SP_DIBEL_TEMPLE_TASK_SEPTIM_COST_SLIDER2", flg)
 	OID_DIBEL_TEMPLE_TASK_MIN_PAY = AddSliderOption("$MRT_SP_DIBEL_TEMPLE_TASK_MIN_PAY_SLIDER1", MainScript.fTempleClientMinExtraPay, "$MRT_SP_DIBEL_TEMPLE_TASK_MIN_PAY_SLIDER2", flg)
 	OID_DIBEL_TEMPLE_TASK_MAX_PAY = AddSliderOption("$MRT_SP_DIBEL_TEMPLE_TASK_MAX_PAY_SLIDER1", MainScript.fTempleClientMaxExtraPay, "$MRT_SP_DIBEL_TEMPLE_TASK_MAX_PAY_SLIDER2", flg)
 	OID_DIBEL_TEMPLE_TASK_Mark_CHANCE = AddSliderOption("$MRT_SP_DIBEL_TEMPLE_TASK_Mark_CHANCE_SLIDER1", MainScript.fDibelTempleMarkChance, "$MRT_SP_DIBEL_TEMPLE_TASK_Mark_CHANCE_SLIDER2", flg)
+	OID_DIBEL_TEMPLE_TASK_MIN_MARK_REWARD = AddSliderOption("$MRT_SP_DIBEL_TEMPLE_TASK_MIN_MARK_REWARD_SLIDER1", MainScript.fTempleMinMarkReward, "$MRT_SP_DIBEL_TEMPLE_TASK_MIN_MARK_REWARD_SLIDER2", flg)
+	OID_DIBEL_TEMPLE_TASK_MAX_MARK_REWARD = AddSliderOption("$MRT_SP_DIBEL_TEMPLE_TASK_MAX_MARK_REWARD_SLIDER1", MainScript.fTempleMaxMarkReward, "$MRT_SP_DIBEL_TEMPLE_TASK_MAX_MARK_REWARD_SLIDER2", flg)
 endfunction
 
 String[] function sGetEntrapmentLevels()
@@ -5823,3 +5909,10 @@ Int OID_WHORE_PAY_IF_ORGASMED
 Int OID_DIBEL_PAY_IF_ORGASMED
 Int OID_WHORE_PUNISH_If_NOT_ORGASMED
 Int OID_DIBEL_PUNISH_If_NOT_ORGASMED
+
+Int OID_DIBEL_TEMPLE_TASK_SEPTIM_COST
+Int OID_DIBEL_TEMPLE_TASK_MIN_MARK_REWARD
+Int OID_DIBEL_TEMPLE_TASK_MAX_MARK_REWARD
+
+Int OID_DEBUG_PC_WHORE_TAG
+Int OID_DEBUG_PC_DIBEL_TAG

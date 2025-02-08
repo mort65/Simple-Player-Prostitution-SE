@@ -7,7 +7,10 @@ Function Fragment_0(ObjectReference akSpeakerRef)
 Actor akSpeaker = akSpeakerRef as Actor
 ;BEGIN CODE
 zzzmrt_sp_main_qst_script MainScript = GetOwningQuest() As zzzmrt_sp_main_qst_script
-MainScript.DibellanLust_Qst.start()
+if MainScript.player.getItemCount(MainScript.Gold) >= MainScript.fTempleTaskSeptimCost
+	MainScript.player.removeItem(MainScript.gold, MainScript.fTempleTaskSeptimCost as Int, false, akSpeaker)
+	MainScript.DibellanLust_Qst.start()
+endif
 ;END CODE
 EndFunction
 ;END FRAGMENT

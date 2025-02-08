@@ -23,12 +23,6 @@ Event OnUpdateGameTime()
 	updateApproach(true)
 EndEvent
 
-Function PlayerLoadsGame()
-	debug.trace("Simple Prostitution: PlayerLoadsGame() triggered for "+ self)
-	updateApproach(False)
-EndFunction
-
-
 Function stopApproach(Bool bConfirm = true)
 	bCustomerCanApproach = False
 	actor apprActor = approachingRef.GetActorRef()
