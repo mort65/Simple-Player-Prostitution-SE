@@ -359,7 +359,9 @@ Float Property fTempleMinMarkReward = 1.0 Auto Hidden Conditional
 Float Property fTempleMaxMarkReward = 1.0 Auto Hidden Conditional
 Float Property fDibelTempleMarkChance = 0.0 Auto Hidden Conditional
 Float Property fTempleTaskSeptimCost = 0.0 Auto Hidden Conditional
+Float Property fTempleTaskMarkCost = 0.0 Auto Hidden Conditional
 GlobalVariable property templeTaskSeptimCostDisplay auto Conditional
+GlobalVariable property templeTaskMarkCostDisplay auto Conditional
 Form Property currentEscortClient Auto Hidden Conditional
 Bool property bIsTempleClient = False Auto Hidden Conditional
 Bool Property bMaleTempleClient = true Auto Hidden Conditional
@@ -539,7 +541,16 @@ Bool property bDibelPunishIfClientNotOrgasmed = False Auto hidden Conditional
 Quest Property ReApproachQst Auto
 ReferenceAlias property ReApproachingAlias auto
 Package Property customerForceGreetAgainPackage Auto
-Bool Property bRejectOrgasm = False Auto Hidden Conditional 
+Bool Property bRejectOrgasm = False Auto Hidden Conditional
+
+FormList Property Ench_Armor_Lists Auto
+FormList Property Ench_Clothing_Lists Auto
+FormList Property Ench_Weapon_Lists Auto
+LeveledItem Property LItemTempleReward Auto
+
+Float Property fDibelTempleExtraRewardChance = 0.0 Auto Hidden Conditional
+Float Property fDibelTempleExtraRewardEnchantedChance = 0.0 Auto Hidden Conditional
+Bool Property bTeamMatesMayApproach = False Auto Hidden Conditional
 
 function shutDown()
 	stopApproach(true)
@@ -731,7 +742,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-	return getBaseVersion() + 0.51
+	return getBaseVersion() + 0.52
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
@@ -2208,6 +2219,7 @@ endfunction
 Function giveTempleQuestReward()
 	Player.additem(gold, randint(fTempleClientMinExtraPay as Int, fTempleClientMaxExtraPay as Int))
 	addDibelMarkToPlayer(fDibelTempleMarkChance, 1, minFloat(fTempleMinMarkReward, fTempleMaxMarkReward) as Int, maxFloat(fTempleMinMarkReward, fTempleMaxMarkReward) as Int)
+	addEnchantedRewardToPlayer()
 endfunction
 
 Int function payWhore(actor whore, int position)
@@ -3128,6 +3140,7 @@ State Dibeling
 					if iDibelPartners > 1
 						addDibelMarkToPlayer(fDibelMarkChance, iDibelPartners - 1)
 					endif
+					addEnchantedRewardToPlayer()
 					bIsTempleClient = False
 				else
 					addDibelMarkToPlayer(fDibelMarkChance, iDibelPartners)
@@ -3165,6 +3178,7 @@ State Dibeling
 				if iDibelPartners > 1
 					addDibelMarkToPlayer(fDibelMarkChance, iDibelPartners - 1)
 				endif
+				addEnchantedRewardToPlayer()
 				bIsTempleClient = False
 			else
 				addDibelMarkToPlayer(fDibelMarkChance, iDibelPartners)
@@ -3193,6 +3207,7 @@ State Dibeling
 				if iDibelPartners > 1
 					addDibelMarkToPlayer(fDibelMarkChance, iDibelPartners - 1)
 				endif
+				addEnchantedRewardToPlayer()
 				bIsTempleClient = False
 			else
 				addDibelMarkToPlayer(fDibelMarkChance, iDibelPartners)
@@ -4261,4 +4276,84 @@ Bool function isPlayerGettingHarassed()
 	bIsPlayerGettingHarassed = SLHH_Interface.isPlayerGettingHarassed()
 	return bIsPlayerGettingHarassed
 endfunction
+
+
+Function addEnchantedRewardToPlayer()
+	if randInt(0, 999) >= (fDibelTempleExtraRewardChance * 10) as Int
+		return
+	endif
+	Form Item = GetRandomItemFromLeveledItem(LItemTempleReward)
+	if !isFormValid(Item)
+		Debug.trace("Simple Prostitution: No valid temple reward found.")
+		return
+	endif
+	Debug.trace("Simple Prostitution: Temple reward is " + Item)
+	if (randInt(0, 999) >= (fDibelTempleExtraRewardEnchantedChance * 10) as Int) || (!(Item As Armor) && !(Item As Weapon)) || ((Item As Armor) && (Item As Armor).GetEnchantment()) || ((Item As Weapon) && (Item As Weapon).GetEnchantment())
+		Debug.trace("Simple Prostitution: Temple reward won't be enchanted.")
+		player.additem(item, 1)
+		return
+	endif
+	Formlist enchList
+	if Item As Armor
+		if (Item.HasKeywordstring("ArmorClothing") || Item.HasKeywordstring("ArmorJewelry"))
+			enchList = Ench_Clothing_Lists
+		else
+			enchList = Ench_Armor_Lists
+		endif
+	elseif Item as Weapon
+		enchList = Ench_Weapon_Lists
+	endif
+	if !enchList
+		Debug.trace("Simple Prostitution: No valid enchantment found for the temple reward.")
+		player.additem(item, 1)
+		return
+	endif
+	int iTotal = 0
+	int iIndex = 0
+	int iSize = enchList.getSize()
+	While iIndex < iSize
+		if enchList.getAt(iIndex) As FormList
+			iTotal = iTotal + (enchList.getAt(iIndex) As FormList).GetSize()
+		else
+			iTotal += 1
+		endif
+		iIndex += 1
+	endWhile
+	if iTotal < 1
+		Debug.trace("Simple Prostitution: No valid enchantment found for the temple reward.")
+		player.additem(item, 1)
+		return
+	endif
+	Int enchIndex = randInt(0, iTotal)
+	iIndex = 0
+	Int iSubListSize = 0
+	Enchantment ench
+	While !ench && (iIndex < iSize) && (enchIndex > -1)
+		if enchList.getAt(iIndex) As FormList
+			iSubListSize = (enchList.getAt(iIndex) As FormList).GetSize()
+			if iSubListSize < 1
+			elseif (enchIndex - iSubListSize) > -1
+				enchIndex = enchIndex - iSubListSize
+			else
+				ench = (enchList.getAt(iIndex) As FormList).getAt(enchIndex) as Enchantment
+			endif
+		else
+			if (enchIndex == 0)
+				ench =  enchList.getAt(iIndex) As Enchantment
+			else
+				enchIndex -= 1
+			endif
+		endif
+		iIndex += 1
+	endWhile
+	if isFormValid(ench) && (ench.GetFormID() <= 4278190080) ;An enchantment with a formID greater than 0xFF000000 will cause the game to crash according to https://ck.uesp.net/wiki/GetEnchantment_-_Armor
+		Debug.trace("Simple Prostitution: Temple reward's enchantment is " + ench)
+		ObjectReference itemRef = player.placeAtMe(Item, 1)
+		itemRef.SetEnchantment(ench, 100.0)
+		player.additem(itemRef, 1)
+	else
+		Debug.trace("Simple Prostitution: No valid enchantment found for the temple reward.")
+		player.additem(item, 1)
+	endif
+EndFunction
 

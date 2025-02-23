@@ -140,13 +140,16 @@ function setVars()
   MainScript.bIsLicensesActive = MainScript.LicensesInterface.GetIsInterfaceActive()
   MainScript.bIsDDIntegrationActive = MainScript.DDI_Interface.GetIsInterfaceActive()
   MainScript.bIsDDExpansionActive = MainScript.DDX_Interface.GetIsInterfaceActive()
-	MainScript.bIs_SLSFR_Active = MainScript.SLSFR_Interface.GetIsInterfaceActive()
-	MainScript.bIs_SLHH_Active = MainScript.SLHH_Interface.GetIsInterfaceActive()
-	MainScript.bIs_SLA_Active = MainScript.SLA_Interface.GetIsInterfaceActive()
-	MainScript.checkRewards()
+  MainScript.bIs_SLSFR_Active = MainScript.SLSFR_Interface.GetIsInterfaceActive()
+  MainScript.bIs_SLHH_Active = MainScript.SLHH_Interface.GetIsInterfaceActive()
+  MainScript.bIs_SLA_Active = MainScript.SLA_Interface.GetIsInterfaceActive()
+  MainScript.checkRewards()
   bInit && MainScript.ApproachMonitorScr.updateApproach(False)
-	MainScript.templeTaskSeptimCostDisplay.SetValueInt(MainScript.fTempleTaskSeptimCost as Int)
-	MainScript.MCMScript.MainQuest.UpdateCurrentInstanceGlobal(MainScript.templeTaskSeptimCostDisplay) ;putting this in mainscript causes this error when compiling the script:  attempting to add temporary variable to free list multiple times...
+  MainScript.templeTaskSeptimCostDisplay.SetValueInt(MainScript.fTempleTaskSeptimCost as Int)
+  MainScript.MCMScript.MainQuest.UpdateCurrentInstanceGlobal(MainScript.templeTaskSeptimCostDisplay) ;putting this in mainscript causes this error when compiling the script:  attempting to add temporary variable to free list multiple times...
+  MainScript.templeTaskMarkCostDisplay.SetValueInt(MainScript.fTempleTaskMarkCost as Int)
+  MainScript.MCMScript.MainQuest.UpdateCurrentInstanceGlobal(MainScript.templeTaskMarkCostDisplay)
+
 endfunction
 
 

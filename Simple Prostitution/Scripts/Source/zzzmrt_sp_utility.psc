@@ -254,3 +254,37 @@ Actor Function getPlayerDialogueTarget(Bool bPyramidUtil = False) Global
   EndWhile
   Return None
 EndFunction
+
+Form Function GetRandomItemFromLeveledItem(LeveledItem akItemList, Int iMaxStepBacksLeveledItem = 10) Global
+	{Retrieves a random form from a given leveledlist.}
+    Form loc_form = none
+    Form loc_startLeveledList = akItemList
+    Int loc_size = akItemList.GetNumForms() - 1
+    If loc_size < 0
+        return none
+    EndIf
+    Form loc_prevForm = akItemList
+    loc_form = akItemList.GetNthForm(RandomInt(0, loc_size))
+    LeveledItem loc_nestedLL = loc_form As LeveledItem
+    Int loc_stepsBacks = iMaxStepBacksLeveledItem
+    While (loc_nestedLL) ;check if form is LL, otherwise do nothing
+        ;it's a nested LeveledItem list
+        loc_size = loc_nestedLL.GetNumForms() - 1
+        if loc_size > 0
+            loc_prevForm = loc_form
+            loc_form = loc_nestedLL.GetNthForm(RandomInt(0, loc_size))
+            waitMenuMode(0.01) ;little wait time in case of error
+        else
+            ;empty LeveledList entered, do step back
+            if loc_stepsBacks
+                loc_stepsBacks -= 1
+                loc_form = loc_prevForm
+            else
+                ;no more chances, return none
+                return none
+            endif
+        endif
+        loc_nestedLL = loc_form As LeveledItem
+    EndWhile
+    Return loc_form
+EndFunction

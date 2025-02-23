@@ -3101,28 +3101,29 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
   MainScript.bGuardsAreCruel = jsonutil.GetPathIntValue(settings_path, "bGuardsAreCruel", MainScript.bGuardsAreCruel as Int)
   MainScript.bBeggarRejectWalkAwayCheck = jsonutil.GetPathIntValue(settings_path, "bBeggarRejectWalkAwayCheck", MainScript.bBeggarRejectWalkAwayCheck as Int)
   MainScript.bGuardsMayApproach = jsonutil.GetPathIntValue(settings_path, "bGuardsMayApproach", MainScript.bGuardsMayApproach as Int)
+  MainScript.bTeamMatesMayApproach = jsonutil.GetPathIntValue(settings_path, "bTeamMatesMayApproach", MainScript.bTeamMatesMayApproach as Int)
   MainScript.bBeggarGuardsSexOffer = jsonutil.GetPathIntValue(settings_path, "bBeggarGuardsSexOffer", MainScript.bBeggarGuardsSexOffer as Int)
   MainScript.bEldersMayApproach = jsonutil.GetPathIntValue(settings_path, "bEldersMayApproach", MainScript.bEldersMayApproach as int)
   MainScript.bBeggarElderSexOffer = jsonutil.GetPathIntValue(settings_path, "bBeggarElderSexOffer", MainScript.bBeggarElderSexOffer as int)
-	MainScript.bDibelAmulet = jsonutil.GetPathIntValue(settings_path, "bDibelAmulet", MainScript.bDibelAmulet as int)
-	MainScript.bMaleTempleClient = jsonutil.GetPathIntValue(settings_path, "bMaleTempleClient", MainScript.bMaleTempleClient as int)
-	MainScript.bFemaleTempleClient = jsonutil.GetPathIntValue(settings_path, "bFemaleTempleClient", MainScript.bFemaleTempleClient as int)
-	MainScript.bDibelNeedWhoreOralReward = jsonutil.GetPathIntValue(settings_path, "bDibelNeedWhoreOralReward", MainScript.bDibelNeedWhoreOralReward as int)
-	MainScript.bDibelNeedWhoreAnalReward = jsonutil.GetPathIntValue(settings_path, "bDibelNeedWhoreAnalReward", MainScript.bDibelNeedWhoreAnalReward as int)
-	MainScript.bDibelNeedWhoreVaginalReward = jsonutil.GetPathIntValue(settings_path, "bDibelNeedWhoreVaginalReward", MainScript.bDibelNeedWhoreVaginalReward as int)
-	MainScript.bBeggarPayUseBaseSpeech = jsonutil.GetPathIntValue(settings_path, "bBeggarPayUseBaseSpeech", MainScript.bBeggarPayUseBaseSpeech as int)
-	MainScript.bWhorePayUseBaseSpeech = jsonutil.GetPathIntValue(settings_path, "bWhorePayUseBaseSpeech", MainScript.bWhorePayUseBaseSpeech as int)
-	MainScript.bDibelPayUseBaseSpeech = jsonutil.GetPathIntValue(settings_path, "bDibelPayUseBaseSpeech", MainScript.bDibelPayUseBaseSpeech as int)
-	MainScript.bWhorePayAfterSex = jsonutil.GetPathIntValue(settings_path, "bWhorePayAfterSex", MainScript.bWhorePayAfterSex as int)
-	MainScript.bDibelPayAfterSex = jsonutil.GetPathIntValue(settings_path, "bDibelPayAfterSex", MainScript.bDibelPayAfterSex as int)
-	MainScript.bWhorePositionMenu = jsonutil.GetPathIntValue(settings_path, "bWhorePositionMenu", MainScript.bWhorePositionMenu as int)
-	MainScript.bDibelPositionMenu = jsonutil.GetPathIntValue(settings_path, "bDibelPositionMenu", MainScript.bDibelPositionMenu as int)
-	MainScript.bSLHH_MaleRapist = jsonutil.GetPathIntValue(settings_path, "bSLHH_MaleRapist", MainScript.bSLHH_MaleRapist as int)
-	MainScript.bSLHH_FemaleRapist = jsonutil.GetPathIntValue(settings_path, "bSLHH_FemaleRapist", MainScript.bSLHH_FemaleRapist as int)
-	MainScript.bWhoreOnlyPayIfClientOrgasmed = jsonutil.GetPathIntValue(settings_path, "bWhoreOnlyPayIfClientOrgasmed", MainScript.bWhoreOnlyPayIfClientOrgasmed as int)
-	MainScript.bDibelOnlyPayIfClientOrgasmed = jsonutil.GetPathIntValue(settings_path, "bDibelOnlyPayIfClientOrgasmed", MainScript.bDibelOnlyPayIfClientOrgasmed as int)
-	MainScript.bWhorePunishIfClientNotOrgasmed = jsonutil.GetPathIntValue(settings_path, "bWhorePunishIfClientNotOrgasmed", MainScript.bWhorePunishIfClientNotOrgasmed as int)
-	MainScript.bDibelPunishIfClientNotOrgasmed = jsonutil.GetPathIntValue(settings_path, "bDibelPunishIfClientNotOrgasmed", MainScript.bDibelPunishIfClientNotOrgasmed as int)
+  MainScript.bDibelAmulet = jsonutil.GetPathIntValue(settings_path, "bDibelAmulet", MainScript.bDibelAmulet as int)
+  MainScript.bMaleTempleClient = jsonutil.GetPathIntValue(settings_path, "bMaleTempleClient", MainScript.bMaleTempleClient as int)
+  MainScript.bFemaleTempleClient = jsonutil.GetPathIntValue(settings_path, "bFemaleTempleClient", MainScript.bFemaleTempleClient as int)
+  MainScript.bDibelNeedWhoreOralReward = jsonutil.GetPathIntValue(settings_path, "bDibelNeedWhoreOralReward", MainScript.bDibelNeedWhoreOralReward as int)
+  MainScript.bDibelNeedWhoreAnalReward = jsonutil.GetPathIntValue(settings_path, "bDibelNeedWhoreAnalReward", MainScript.bDibelNeedWhoreAnalReward as int)
+  MainScript.bDibelNeedWhoreVaginalReward = jsonutil.GetPathIntValue(settings_path, "bDibelNeedWhoreVaginalReward", MainScript.bDibelNeedWhoreVaginalReward as int)
+  MainScript.bBeggarPayUseBaseSpeech = jsonutil.GetPathIntValue(settings_path, "bBeggarPayUseBaseSpeech", MainScript.bBeggarPayUseBaseSpeech as int)
+  MainScript.bWhorePayUseBaseSpeech = jsonutil.GetPathIntValue(settings_path, "bWhorePayUseBaseSpeech", MainScript.bWhorePayUseBaseSpeech as int)
+  MainScript.bDibelPayUseBaseSpeech = jsonutil.GetPathIntValue(settings_path, "bDibelPayUseBaseSpeech", MainScript.bDibelPayUseBaseSpeech as int)
+  MainScript.bWhorePayAfterSex = jsonutil.GetPathIntValue(settings_path, "bWhorePayAfterSex", MainScript.bWhorePayAfterSex as int)
+  MainScript.bDibelPayAfterSex = jsonutil.GetPathIntValue(settings_path, "bDibelPayAfterSex", MainScript.bDibelPayAfterSex as int)
+  MainScript.bWhorePositionMenu = jsonutil.GetPathIntValue(settings_path, "bWhorePositionMenu", MainScript.bWhorePositionMenu as int)
+  MainScript.bDibelPositionMenu = jsonutil.GetPathIntValue(settings_path, "bDibelPositionMenu", MainScript.bDibelPositionMenu as int)
+  MainScript.bSLHH_MaleRapist = jsonutil.GetPathIntValue(settings_path, "bSLHH_MaleRapist", MainScript.bSLHH_MaleRapist as int)
+  MainScript.bSLHH_FemaleRapist = jsonutil.GetPathIntValue(settings_path, "bSLHH_FemaleRapist", MainScript.bSLHH_FemaleRapist as int)
+  MainScript.bWhoreOnlyPayIfClientOrgasmed = jsonutil.GetPathIntValue(settings_path, "bWhoreOnlyPayIfClientOrgasmed", MainScript.bWhoreOnlyPayIfClientOrgasmed as int)
+  MainScript.bDibelOnlyPayIfClientOrgasmed = jsonutil.GetPathIntValue(settings_path, "bDibelOnlyPayIfClientOrgasmed", MainScript.bDibelOnlyPayIfClientOrgasmed as int)
+  MainScript.bWhorePunishIfClientNotOrgasmed = jsonutil.GetPathIntValue(settings_path, "bWhorePunishIfClientNotOrgasmed", MainScript.bWhorePunishIfClientNotOrgasmed as int)
+  MainScript.bDibelPunishIfClientNotOrgasmed = jsonutil.GetPathIntValue(settings_path, "bDibelPunishIfClientNotOrgasmed", MainScript.bDibelPunishIfClientNotOrgasmed as int)
 
   iAnimInterfaceMethod = jsonutil.GetPathIntValue(settings_path, "iAnimInterfaceMethod", iAnimInterfaceMethod)
   
@@ -3297,7 +3298,12 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
 	MainScript.fDibelTempleMarkChance = jsonutil.GetPathFloatValue(settings_path, "fDibelTempleMarkChance", MainScript.fDibelTempleMarkChance)
 	MainScript.fTempleMinMarkReward = jsonutil.GetPathFloatValue(settings_path, "fTempleMinMarkReward", MainScript.fTempleMinMarkReward)
 	MainScript.fTempleMaxMarkReward = jsonutil.GetPathFloatValue(settings_path, "fTempleMaxMarkReward", MainScript.fTempleMaxMarkReward)
+	MainScript.fDibelTempleExtraRewardChance = jsonutil.GetPathFloatValue(settings_path, "fDibelTempleExtraRewardChance", MainScript.fDibelTempleExtraRewardChance)
+	MainScript.fDibelTempleExtraRewardEnchantedChance = jsonutil.GetPathFloatValue(settings_path, "fDibelTempleExtraRewardEnchantedChance", MainScript.fDibelTempleExtraRewardEnchantedChance)
 	MainScript.fTempleTaskSeptimCost = jsonutil.GetPathFloatValue(settings_path, "fTempleTaskSeptimCost", MainScript.fTempleTaskSeptimCost)
+	MainScript.fTempleTaskMarkCost = jsonutil.GetPathFloatValue(settings_path, "fTempleTaskMarkCost", MainScript.fTempleTaskMarkCost)
+	MainScript.templeTaskMarkCostDisplay.SetValueInt(MainScript.fTempleTaskMarkCost as Int)
+	MainQuest.UpdateCurrentInstanceGlobal(MainScript.templeTaskMarkCostDisplay)
 	MainScript.templeTaskSeptimCostDisplay.SetValueInt(MainScript.fTempleTaskSeptimCost as Int)
 	MainQuest.UpdateCurrentInstanceGlobal(MainScript.templeTaskSeptimCostDisplay)
 	
@@ -3379,6 +3385,7 @@ Bool function saveUserSettingsPapyrus()
   jsonutil.SetPathIntValue(settings_path, "bGuardsAreCruel", MainScript.bGuardsAreCruel as Int)
   jsonutil.SetPathIntValue(settings_path, "bBeggarRejectWalkAwayCheck", MainScript.bBeggarRejectWalkAwayCheck as Int)
   jsonutil.SetPathIntValue(settings_path, "bGuardsMayApproach", MainScript.bGuardsMayApproach as Int)
+  jsonutil.SetPathIntValue(settings_path, "bTeamMatesMayApproach", MainScript.bTeamMatesMayApproach as Int)
   jsonutil.SetPathIntValue(settings_path, "bBeggarGuardsSexOffer", MainScript.bBeggarGuardsSexOffer as Int)
   jsonutil.SetPathIntValue(settings_path, "bEldersMayApproach", MainScript.bEldersMayApproach as Int)
   jsonutil.SetPathIntValue(settings_path, "bBeggarElderSexOffer", MainScript.bBeggarElderSexOffer as Int)
@@ -3577,10 +3584,12 @@ Bool function saveUserSettingsPapyrus()
 	jsonutil.SetPathFloatValue(settings_path, "fTempleTaskSeptimCost", MainScript.fTempleTaskSeptimCost)
 	jsonutil.SetPathFloatValue(settings_path, "fTempleMinMarkReward", MainScript.fTempleMinMarkReward)
 	jsonutil.SetPathFloatValue(settings_path, "fTempleMaxMarkReward", MainScript.fTempleMaxMarkReward)
-	
+	jsonutil.SetPathFloatValue(settings_path, "fDibelTempleExtraRewardChance", MainScript.fDibelTempleExtraRewardChance)
+	jsonutil.SetPathFloatValue(settings_path, "fDibelTempleExtraRewardEnchantedChance", MainScript.fDibelTempleExtraRewardEnchantedChance)
 	jsonutil.SetPathFloatValue(settings_path, "fWhorePersuadeChance", MainScript.fWhorePersuadeChance)
 	jsonutil.SetPathFloatValue(settings_path, "fDibelPersuadeChance", MainScript.fDibelPersuadeChance)
 	jsonutil.SetPathFloatValue(settings_path, "fBeggarPersuadeChance", MainScript.fBeggarPersuadeChance)
+	jsonutil.SetPathFloatValue(settings_path, "fTempleTaskMarkCost", MainScript.fTempleTaskMarkCost)
 	
   jsonutil.SetPathStringValue(settings_path, "sExtraTags_SL_Oral_MF", MainScript.sExtraTags_SL_Oral_MF)
   jsonutil.SetPathStringValue(settings_path, "sExtraTags_SL_Oral_FF", MainScript.sExtraTags_SL_Oral_FF)
@@ -4035,6 +4044,9 @@ event OnOptionSelect(int option)
   elseif option == OID_GUARDS_MAY_APPROACH
     MainScript.bGuardsMayApproach = !MainScript.bGuardsMayApproach
     SetToggleOptionValue(option, MainScript.bGuardsMayApproach)
+  elseif option == OID_TEAMMATE_MAY_APPROACH
+    MainScript.bTeamMatesMayApproach = !MainScript.bTeamMatesMayApproach
+    SetToggleOptionValue(option, MainScript.bTeamMatesMayApproach)
   elseif option == OID_ELDER_MAY_APPROACH
     MainScript.bEldersMayApproach = !MainScript.bEldersMayApproach
     SetToggleOptionValue(option, MainScript.bEldersMayApproach)
@@ -4168,6 +4180,9 @@ event OnOptionDefault(int option)
   elseif option == OID_GUARDS_MAY_APPROACH
     MainScript.bGuardsMayApproach = true
     SetToggleOptionValue(option, MainScript.bGuardsMayApproach)
+  elseif option == OID_TEAMMATE_MAY_APPROACH
+    MainScript.bTeamMatesMayApproach = False
+    SetToggleOptionValue(option, MainScript.bTeamMatesMayApproach)
   elseif option == OID_ELDER_MAY_APPROACH
     MainScript.bEldersMayApproach = true
     SetToggleOptionValue(option, MainScript.bEldersMayApproach)
@@ -4373,56 +4388,64 @@ event OnOptionHighlight(int option)
     SetInfoText("$MRT_SP_DESC_CRUEL_GUARDS_APPROACH")
   elseif option == OID_GUARDS_MAY_APPROACH
     SetInfoText("$MRT_SP_DESC_GUARDS_MAY_APPROACH")
+  elseif option == OID_TEAMMATE_MAY_APPROACH
+    SetInfoText("$MRT_SP_DESC_TEAMMATE_MAY_APPROACH")
   elseif option == OID_DIBEL_AMULET
-		SetInfoText("$MRT_SP_DESC_DIBEL_AMULET_TOGGLE")
-	elseif option == OID_DIBEL_REQ_WHORE_ORAL_REWARD
-		SetInfoText("$MRT_SP_DESC_DIBEL_REQ_WHORE_ORAL_REWARD_TOGGLE")
-	elseif option == OID_DIBEL_REQ_WHORE_ANAL_REWARD
-		SetInfoText("$MRT_SP_DESC_DIBEL_REQ_WHORE_ANAL_REWARD_TOGGLE")
-	elseif option == OID_DIBEL_REQ_WHORE_VAGINAL_REWARD
-		SetInfoText("$MRT_SP_DESC_DIBEL_REQ_WHORE_VAGINAL_REWARD_TOGGLE")
-	elseif option == OID_DIBEL_TEMPLE_TASK_MALE_CLIENT
-		SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_TASK_MALE_CLIENT")
-	elseif option == OID_DIBEL_TEMPLE_TASK_FEMALE_CLIENT
-		SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_TASK_FEMALE_CLIENT")
-	elseif option == OID_BEG_PAY_USE_BASE_SPEECH
-		SetInfoText("$MRT_SP_DESC_BEG_PAY_USE_BASE_SPEECH")
-	elseif option == OID_WHORE_PAY_USE_BASE_SPEECH
-	  SetInfoText("$MRT_SP_DESC_WHORE_PAY_USE_BASE_SPEECH")
-	elseif option == OID_WHORE_PAY_AFTER_SEX
-	  SetInfoText("$MRT_SP_DESC_WHORE_PAY_AFTER_SEX")	
-	elseif option == OID_DIBEL_PAY_AFTER_SEX
-	  SetInfoText("$MRT_SP_DESC_DIBEL_PAY_AFTER_SEX")	
-	elseif option == OID_SLHH_MALE_RAPIST
-		SetInfoText("$MRT_SP_DESC_SLHH_MALE_RAPIST")
-	elseif option == OID_SLHH_FEMALE_RAPIST
-	  SetInfoText("$MRT_SP_DESC_SLHH_FEMALE_RAPIST")	
-	elseif option == OID_WHORE_PAY_IF_ORGASMED
-	  SetInfoText("$MRT_SP_DESC_WHORE_PAY_IF_ORGASMED")
-	elseif option == OID_DIBEL_PAY_IF_ORGASMED
-	  SetInfoText("$MRT_SP_DESC_DIBEL_PAY_IF_ORGASMED")
-	elseif option == OID_WHORE_PUNISH_If_NOT_ORGASMED
-	  SetInfoText("$MRT_SP_DESC_WHORE_PUNISH_If_NOT_ORGASMED")
-	elseif option == OID_DIBEL_PUNISH_If_NOT_ORGASMED
-	  SetInfoText("$MRT_SP_DESC_DIBEL_PUNISH_If_NOT_ORGASMED")	
-	elseif option == OID_WHORE_POSITION_MENU
-		SetInfoText("$MRT_SP_DESC_WHORE_POSITION_MENU")
-	elseif option == OID_DIBEL_POSITION_MENU
-		SetInfoText("$MRT_SP_DESC_DIBEL_POSITION_MENU")
-	elseif option == OID_DIBEL_PAY_USE_BASE_SPEECH
-	  SetInfoText("$MRT_SP_DESC_DIBEL_PAY_USE_BASE_SPEECH")
-	elseif option == OID_DIBEL_TEMPLE_TASK_MIN_PAY
-		SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_TASK_MIN_PAY")
-	elseif option == OID_DIBEL_TEMPLE_TASK_MAX_PAY
-		SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_TASK_MAX_PAY")
-	elseif option == OID_DIBEL_TEMPLE_TASK_SEPTIM_COST
-		SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_TASK_SEPTIM_COST")
-	elseif option == OID_DIBEL_TEMPLE_TASK_MIN_MARK_REWARD
-		SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_TASK_MIN_MARK_REWARD")
-	elseif option == OID_DIBEL_TEMPLE_TASK_MAX_MARK_REWARD
-		SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_TASK_MAX_MARK_REWARD")
-	elseif option == OID_DIBEL_TEMPLE_TASK_Mark_CHANCE
-		SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_TASK_Mark_CHANCE")
+	SetInfoText("$MRT_SP_DESC_DIBEL_AMULET_TOGGLE")
+  elseif option == OID_DIBEL_REQ_WHORE_ORAL_REWARD
+	SetInfoText("$MRT_SP_DESC_DIBEL_REQ_WHORE_ORAL_REWARD_TOGGLE")
+  elseif option == OID_DIBEL_REQ_WHORE_ANAL_REWARD
+	SetInfoText("$MRT_SP_DESC_DIBEL_REQ_WHORE_ANAL_REWARD_TOGGLE")
+  elseif option == OID_DIBEL_REQ_WHORE_VAGINAL_REWARD
+	SetInfoText("$MRT_SP_DESC_DIBEL_REQ_WHORE_VAGINAL_REWARD_TOGGLE")
+  elseif option == OID_DIBEL_TEMPLE_TASK_MALE_CLIENT
+	SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_TASK_MALE_CLIENT")
+  elseif option == OID_DIBEL_TEMPLE_TASK_FEMALE_CLIENT
+	SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_TASK_FEMALE_CLIENT")
+  elseif option == OID_BEG_PAY_USE_BASE_SPEECH
+	SetInfoText("$MRT_SP_DESC_BEG_PAY_USE_BASE_SPEECH")
+  elseif option == OID_WHORE_PAY_USE_BASE_SPEECH
+	SetInfoText("$MRT_SP_DESC_WHORE_PAY_USE_BASE_SPEECH")
+  elseif option == OID_WHORE_PAY_AFTER_SEX
+	SetInfoText("$MRT_SP_DESC_WHORE_PAY_AFTER_SEX")	
+  elseif option == OID_DIBEL_PAY_AFTER_SEX
+	SetInfoText("$MRT_SP_DESC_DIBEL_PAY_AFTER_SEX")	
+  elseif option == OID_SLHH_MALE_RAPIST
+    SetInfoText("$MRT_SP_DESC_SLHH_MALE_RAPIST")
+  elseif option == OID_SLHH_FEMALE_RAPIST
+    SetInfoText("$MRT_SP_DESC_SLHH_FEMALE_RAPIST")	
+  elseif option == OID_WHORE_PAY_IF_ORGASMED
+    SetInfoText("$MRT_SP_DESC_WHORE_PAY_IF_ORGASMED")
+  elseif option == OID_DIBEL_PAY_IF_ORGASMED
+    SetInfoText("$MRT_SP_DESC_DIBEL_PAY_IF_ORGASMED")
+  elseif option == OID_WHORE_PUNISH_If_NOT_ORGASMED
+    SetInfoText("$MRT_SP_DESC_WHORE_PUNISH_If_NOT_ORGASMED")
+  elseif option == OID_DIBEL_PUNISH_If_NOT_ORGASMED
+    SetInfoText("$MRT_SP_DESC_DIBEL_PUNISH_If_NOT_ORGASMED")	
+  elseif option == OID_WHORE_POSITION_MENU
+    SetInfoText("$MRT_SP_DESC_WHORE_POSITION_MENU")
+  elseif option == OID_DIBEL_POSITION_MENU
+    SetInfoText("$MRT_SP_DESC_DIBEL_POSITION_MENU")
+  elseif option == OID_DIBEL_PAY_USE_BASE_SPEECH
+    SetInfoText("$MRT_SP_DESC_DIBEL_PAY_USE_BASE_SPEECH")
+  elseif option == OID_DIBEL_TEMPLE_TASK_MIN_PAY
+    SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_TASK_MIN_PAY")
+  elseif option == OID_DIBEL_TEMPLE_TASK_MAX_PAY
+    SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_TASK_MAX_PAY")
+  elseif option == OID_DIBEL_TEMPLE_TASK_SEPTIM_COST
+    SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_TASK_SEPTIM_COST")
+  elseif option == OID_DIBEL_TEMPLE_TASK_MARK_COST
+    SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_TASK_Mark_COST")
+  elseif option == OID_DIBEL_TEMPLE_TASK_MIN_MARK_REWARD
+    SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_TASK_MIN_MARK_REWARD")
+  elseif option == OID_DIBEL_TEMPLE_TASK_MAX_MARK_REWARD
+    SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_TASK_MAX_MARK_REWARD")
+  elseif option == OID_DIBEL_TEMPLE_TASK_EXTRA_REWARD_CHANCE
+    SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_EXTRA_REWARD_CHANCE")
+  elseif option == OID_DIBEL_TEMPLE_TASK_EXTRA_REWARD_ENCHANTED_CHANCE
+    SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_EXTRA_REWARD_ENCHANTED_CHANCE")
+  elseif option == OID_DIBEL_TEMPLE_TASK_Mark_CHANCE
+	SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_TASK_Mark_CHANCE")
   elseif option == OID_DEVIOUS_VAG_PRC
     SetInfoText("$MRT_SP_DESC_DEVIOUS_VAG_PRC")
   elseif option == OID_DEVIOUS_NIP_PRC
@@ -4881,6 +4904,11 @@ event OnOptionSliderAccept(int option, float value)
 		SetSliderOptionValue(OID_DIBEL_TEMPLE_TASK_SEPTIM_COST , MainScript.fTempleTaskSeptimCost, "$MRT_SP_DIBEL_TEMPLE_TASK_SEPTIM_COST_SLIDER2")
 		MainScript.templeTaskSeptimCostDisplay.SetValueInt(MainScript.fTempleTaskSeptimCost as Int)
 		MainQuest.UpdateCurrentInstanceGlobal(MainScript.templeTaskSeptimCostDisplay)
+	elseif option == OID_DIBEL_TEMPLE_TASK_MARK_COST
+		MainScript.fTempleTaskMarkCost = value
+		SetSliderOptionValue(OID_DIBEL_TEMPLE_TASK_MARK_COST , MainScript.fTempleTaskMarkCost, "$MRT_SP_DIBEL_TEMPLE_TASK_MARK_COST_SLIDER2")
+		MainScript.templeTaskMarkCostDisplay.SetValueInt(MainScript.fTempleTaskMarkCost as Int)
+		MainQuest.UpdateCurrentInstanceGlobal(MainScript.templeTaskMarkCostDisplay)
 	elseif option == OID_DIBEL_TEMPLE_TASK_MIN_MARK_REWARD
 		MainScript.fTempleMinMarkReward = value
 		SetSliderOptionValue(OID_DIBEL_TEMPLE_TASK_MIN_MARK_REWARD , MainScript.fTempleMinMarkReward, "$MRT_SP_DIBEL_TEMPLE_TASK_MIN_MARK_REWARD_SLIDER2")		
@@ -4890,6 +4918,12 @@ event OnOptionSliderAccept(int option, float value)
 	elseif option == OID_DIBEL_TEMPLE_TASK_Mark_CHANCE
 		MainScript.fDibelTempleMarkChance = value
 		SetSliderOptionValue(OID_DIBEL_TEMPLE_TASK_Mark_CHANCE , MainScript.fDibelTempleMarkChance, "$MRT_SP_DIBEL_TEMPLE_TASK_Mark_CHANCE_SLIDER2")
+	elseif option == OID_DIBEL_TEMPLE_TASK_EXTRA_REWARD_CHANCE
+		MainScript.fDibelTempleExtraRewardChance = value
+		SetSliderOptionValue(OID_DIBEL_TEMPLE_TASK_EXTRA_REWARD_CHANCE , MainScript.fDibelTempleExtraRewardChance, "$MRT_SP_DIBEL_TEMPLE_TASK_EXTRA_REWARD_CHANCE_SLIDER2")
+	elseif option == OID_DIBEL_TEMPLE_TASK_EXTRA_REWARD_ENCHANTED_CHANCE
+		MainScript.fDibelTempleExtraRewardEnchantedChance = value
+		SetSliderOptionValue(OID_DIBEL_TEMPLE_TASK_EXTRA_REWARD_ENCHANTED_CHANCE , MainScript.fDibelTempleExtraRewardEnchantedChance, "$MRT_SP_DIBEL_TEMPLE_TASK_EXTRA_REWARD_ENCHANTED_CHANCE_SLIDER2")	
 	elseif option == OID_WHORE_PERSUADE_CHANCE
 		MainScript.fWhorePersuadeChance = value
 		SetSliderOptionValue(OID_WHORE_PERSUADE_CHANCE , MainScript.fWhorePersuadeChance, "$MRT_SP_WHORE_PERSUADE_CHANCE_SLIDER2")
@@ -5412,6 +5446,11 @@ event OnOptionSliderOpen(int option)
 		SetSliderDialogDefaultValue(200.0)
 		SetSliderDialogRange(50, 5000)
 		SetSliderDialogInterval(50)
+	elseif option == OID_DIBEL_TEMPLE_TASK_MARK_COST
+		SetSliderDialogStartValue(MainScript.fTempleTaskMarkCost)
+		SetSliderDialogDefaultValue(0.0)
+		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(1)
 	elseif option == OID_DIBEL_TEMPLE_TASK_MIN_MARK_REWARD
 		SetSliderDialogStartValue(MainScript.fTempleMinMarkReward)
 		SetSliderDialogDefaultValue(1.0)
@@ -5422,6 +5461,16 @@ event OnOptionSliderOpen(int option)
 		SetSliderDialogDefaultValue(1.0)
 		SetSliderDialogRange(1, 100)
 		SetSliderDialogInterval(1)
+	elseif option == OID_DIBEL_TEMPLE_TASK_EXTRA_REWARD_CHANCE
+		SetSliderDialogStartValue(MainScript.fDibelTempleExtraRewardChance)
+		SetSliderDialogDefaultValue(0.0)
+		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(0.1)
+	elseif option == OID_DIBEL_TEMPLE_TASK_EXTRA_REWARD_ENCHANTED_CHANCE
+		SetSliderDialogStartValue(MainScript.fDibelTempleExtraRewardEnchantedChance)
+		SetSliderDialogDefaultValue(0.0)
+		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(0.1)
 	elseif option == OID_DIBEL_TEMPLE_TASK_Mark_CHANCE
 		SetSliderDialogStartValue(MainScript.fDibelTempleMarkChance)
 		SetSliderDialogDefaultValue(0.0)
@@ -5668,6 +5717,7 @@ Function approachOptions(Int iflag)
   OID_ONLY_INTERIOR_APPROACH = AddToggleOption("$MRT_SP_ONLY_INTERIOR_APPROACH_TOGGLE", MainScript.bOnlyInteriorApproach, flg)
   OID_ONLY_LICENSED_APPROACH = AddToggleOption("$MRT_SP_ONLY_LICENSED_APPROACH_TOGGLE", MainScript.bOnlyLicensedApproach, flg)
   OID_ONLY_WHORE_CLOTHING_APPROACH = AddToggleOption("$MRT_SP_ONLY_WHORE_CLOTHING_APPROACH_TOGGLE", MainScript.bOnlyWhoreClothingApproach, flg)
+  OID_TEAMMATE_MAY_APPROACH = AddToggleOption("$MRT_SP_TEAMMATE_MAY_APPROACH_TOGGLE", MainScript.bTeamMatesMayApproach, flg)
   OID_GUARDS_MAY_APPROACH = AddToggleOption("$MRT_SP_GUARDS_MAY_APPROACH_TOGGLE", MainScript.bGuardsMayApproach, flg)
   if  (iflag == OPTION_FLAG_NONE) && MainScript.bGuardsMayApproach
     flg = OPTION_FLAG_NONE
@@ -5709,11 +5759,14 @@ Function Dibel_Temple_Tasks(Int iflag)
 	OID_DIBEL_TEMPLE_TASK_MALE_CLIENT = AddToggleOption("$MRT_SP_DIBEL_TEMPLE_TASK_MALE_CLIENT", MainScript.bMaleTempleClient, flg)
 	OID_DIBEL_TEMPLE_TASK_FEMALE_CLIENT = AddToggleOption("$MRT_SP_DIBEL_TEMPLE_TASK_FEMALE_CLIENT", MainScript.bFemaleTempleClient, flg)
 	OID_DIBEL_TEMPLE_TASK_SEPTIM_COST = AddSliderOption("$MRT_SP_DIBEL_TEMPLE_TASK_SEPTIM_COST_SLIDER1", MainScript.fTempleTaskSeptimCost, "$MRT_SP_DIBEL_TEMPLE_TASK_SEPTIM_COST_SLIDER2", flg)
+	OID_DIBEL_TEMPLE_TASK_MARK_COST = AddSliderOption("$MRT_SP_DIBEL_TEMPLE_TASK_Mark_COST_SLIDER1", MainScript.fTempleTaskMarkCost, "$MRT_SP_DIBEL_TEMPLE_TASK_MARK_COST_SLIDER2", flg)
 	OID_DIBEL_TEMPLE_TASK_MIN_PAY = AddSliderOption("$MRT_SP_DIBEL_TEMPLE_TASK_MIN_PAY_SLIDER1", MainScript.fTempleClientMinExtraPay, "$MRT_SP_DIBEL_TEMPLE_TASK_MIN_PAY_SLIDER2", flg)
 	OID_DIBEL_TEMPLE_TASK_MAX_PAY = AddSliderOption("$MRT_SP_DIBEL_TEMPLE_TASK_MAX_PAY_SLIDER1", MainScript.fTempleClientMaxExtraPay, "$MRT_SP_DIBEL_TEMPLE_TASK_MAX_PAY_SLIDER2", flg)
 	OID_DIBEL_TEMPLE_TASK_Mark_CHANCE = AddSliderOption("$MRT_SP_DIBEL_TEMPLE_TASK_Mark_CHANCE_SLIDER1", MainScript.fDibelTempleMarkChance, "$MRT_SP_DIBEL_TEMPLE_TASK_Mark_CHANCE_SLIDER2", flg)
 	OID_DIBEL_TEMPLE_TASK_MIN_MARK_REWARD = AddSliderOption("$MRT_SP_DIBEL_TEMPLE_TASK_MIN_MARK_REWARD_SLIDER1", MainScript.fTempleMinMarkReward, "$MRT_SP_DIBEL_TEMPLE_TASK_MIN_MARK_REWARD_SLIDER2", flg)
 	OID_DIBEL_TEMPLE_TASK_MAX_MARK_REWARD = AddSliderOption("$MRT_SP_DIBEL_TEMPLE_TASK_MAX_MARK_REWARD_SLIDER1", MainScript.fTempleMaxMarkReward, "$MRT_SP_DIBEL_TEMPLE_TASK_MAX_MARK_REWARD_SLIDER2", flg)
+	OID_DIBEL_TEMPLE_TASK_EXTRA_REWARD_CHANCE = AddSliderOption("$MRT_SP_DIBEL_TEMPLE_TASK_EXTRA_REWARD_CHANCE_SLIDER1", MainScript.fDibelTempleExtraRewardChance, "$MRT_SP_DIBEL_TEMPLE_TASK_EXTRA_REWARD_CHANCE_SLIDER2", flg)
+	OID_DIBEL_TEMPLE_TASK_EXTRA_REWARD_ENCHANTED_CHANCE = AddSliderOption("$MRT_SP_DIBEL_TEMPLE_TASK_EXTRA_REWARD_ENCHANTED_CHANCE_SLIDER1", MainScript.fDibelTempleExtraRewardEnchantedChance, "$MRT_SP_DIBEL_TEMPLE_TASK_EXTRA_REWARD_ENCHANTED_CHANCE_SLIDER2", flg) 
 endfunction
 
 String[] function sGetEntrapmentLevels()
@@ -5913,6 +5966,11 @@ Int OID_DIBEL_PUNISH_If_NOT_ORGASMED
 Int OID_DIBEL_TEMPLE_TASK_SEPTIM_COST
 Int OID_DIBEL_TEMPLE_TASK_MIN_MARK_REWARD
 Int OID_DIBEL_TEMPLE_TASK_MAX_MARK_REWARD
+Int OID_DIBEL_TEMPLE_TASK_MARK_COST
 
 Int OID_DEBUG_PC_WHORE_TAG
 Int OID_DEBUG_PC_DIBEL_TAG
+
+Int OID_DIBEL_TEMPLE_TASK_EXTRA_REWARD_CHANCE
+Int OID_DIBEL_TEMPLE_TASK_EXTRA_REWARD_ENCHANTED_CHANCE
+Int OID_TEAMMATE_MAY_APPROACH
