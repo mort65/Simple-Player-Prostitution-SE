@@ -5,7 +5,7 @@ or everywhere as a dibellan or a beggar. The payment that you could receive incr
  You could contract STDs while working, which are like Vanilla diseases, but only healers (Alchemy shop owners and some other NPCs) could cure them.
 In the first stage of STDs, they could be cured by using potions for minor STDs. You can receive perk points from the MCM menu for achievements.
 Based on the settings, NPCs may give you Dibellan marks that could be offered in the temple of Dibella to get rewards. (Attributes, Skill levels, Perk points, Carry weight).
-NPCs may approach PC at selected intervals on the MCM or while begging, asking for service. Rejecting them based on MCM setting may lead to consequences.
+NPCs may approach PC at selected intervals on the MCM or while begging, asking for service. Rejecting them based on MCM setting may lead to consequences.After meeting the requirements for becoming a Dibel, you can ask two Dibella priestesses to help the temple with repeatable tasks and receive customizable rewards.
 
 
 **Requirements:**      
