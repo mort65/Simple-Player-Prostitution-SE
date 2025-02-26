@@ -1,13 +1,18 @@
 Scriptname zzzmrt_sp_int_ostim Hidden
 
 Actor[] function getActorsOS(Quest OSexIntegrationMainQuest) Global
-	OSexIntegrationMain ostim = OSexIntegrationMainQuest as OSexIntegrationMain
-	return ostim.getActors()
+	;OSexIntegrationMain ostim = OSexIntegrationMainQuest as OSexIntegrationMain
+	return OThread.GetActors(0)
 EndFunction
 
 Bool function isActorActiveOS(Quest OSexIntegrationMainQuest, Actor act) Global
   OSexIntegrationMain OSexMainQuest = OSexIntegrationMainQuest as OSexIntegrationMain
   return OSexMainQuest.IsActorActive(act)
+EndFunction
+
+Bool function isActorVictimOS(Quest OSexIntegrationMainQuest, Actor act) Global
+  OSexIntegrationMain OSexMainQuest = OSexIntegrationMainQuest as OSexIntegrationMain
+  return OSexMainQuest.IsVictim(act)
 EndFunction
 
 int function haveSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor partner, Int Position, String[] sExtraTags, Bool[] bRequireAllTags, Bool bAllowAggressive = False, Bool bAllowAll =False) Global

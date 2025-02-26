@@ -552,6 +552,22 @@ Float Property fDibelTempleExtraRewardChance = 0.0 Auto Hidden Conditional
 Float Property fDibelTempleExtraRewardEnchantedChance = 0.0 Auto Hidden Conditional
 Bool Property bTeamMatesMayApproach = False Auto Hidden Conditional
 
+Float Property fDibelExtraRewardChance = 0.0 Auto Hidden Conditional
+Float Property fDibelExtraRewardEnchantedChance = 0.0 Auto Hidden Conditional
+Float Property fWhoreExtraRewardChance = 0.0 Auto Hidden Conditional
+Float Property fWhoreExtraRewardEnchantedChance = 0.0 Auto Hidden Conditional
+Float Property fBeggarExtraRewardChance = 0.0 Auto Hidden Conditional
+Float Property fBeggarExtraRewardEnchantedChance = 0.0 Auto Hidden Conditional
+
+Float Property fDibelTempleMinExtraReward = 1.0 Auto Hidden Conditional
+Float Property fDibelTempleMaxExtraReward = 1.0 Auto Hidden Conditional
+
+Float Property fNormalMarkChance = 0.0 Auto Hidden Conditional
+Bool property bNormalNoRewardWhenVictim = True Auto Hidden Conditional
+Bool Property bNormalOnlyRewardIfPartnerOrgasmed = False Auto Hidden Conditional
+
+Bool Property bNormalPCPartnerOrgasmed = False Auto Hidden Conditional
+
 function shutDown()
 	stopApproach(true)
 	ReApproachScript.stopReapproach(True)
@@ -621,8 +637,10 @@ Function SetVars()
 EndFunction
 
 Function RegisterForEvents()
+	RegisterForModEvent("AnimationStart", "on_spp_sexlab_Sex_Start")
 	RegisterForModEvent("AnimationEnding", "on_spp_sexlab_Sex_Ending")
 	RegisterForModEvent("HookAnimationEnd", "on_spp_sexlab_Sex_End")
+	RegisterForModEvent("ostim_start", "on_spp_ostim_Sex_Start")
 	RegisterForModEvent("ostim_end", "on_spp_ostim_Sex_End")
 	RegisterForModEvent("ostim_orgasm", "on_spp_ostim_Orgasm")
 	RegisterForModEvent("SexLabOrgasmSeparate", "on_spp_sexlab_OrgasmSeparate")
@@ -731,6 +749,7 @@ function playerBegTo(Actor akActor, Bool bPay=True)
 	endif
 	if bPay
 		payBeggar(player, False)
+		addExtraRewardsToPlayer(fBeggarExtraRewardChance, fBeggarExtraRewardEnchantedChance, 1)
 		debug.sendanimationevent(akActor, "IdleGive")
 		persuade(fBeggarPersuasionXPMult)
 	endif
@@ -742,7 +761,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-	return getBaseVersion() + 0.52
+	return getBaseVersion() + 0.53
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
@@ -964,9 +983,10 @@ Bool Function playerGroupSexOS(Actor[] akActors, Bool bAllowAggressive= False)
 		return False
 	endif
 	if OStimInterface.bHaveGroupSexWithPlayer(akActors, bAllowAggressive)
+	  RegisterForModEvent("ostim_start", "on_spp_ostim_Sex_Start")
 	  RegisterForModEvent("ostim_orgasm", "on_spp_ostim_Orgasm")
-		RegisterForModEvent("ostim_end", "on_spp_ostim_Sex_End")
-		return True
+	  RegisterForModEvent("ostim_end", "on_spp_ostim_Sex_End")
+	  return True
 	endif
 	return False
 EndFunction
@@ -987,6 +1007,7 @@ Bool Function playerGroupSexSL(Actor[] akActors, Bool bAllowAggressive= False)
 		return False
 	endif
 	if SexLabInterface.bHaveGroupSexWithPlayer(akActors, bAllowAggressive)
+		RegisterForModEvent("AnimationStart", "on_spp_sexlab_Sex_Start")
 		RegisterForModEvent("SexLabOrgasmSeparate", "on_spp_sexlab_OrgasmSeparate")
 		RegisterForModEvent("OrgasmStart", "on_spp_sexlab_Orgasm")
 		RegisterForModEvent("AnimationEnding", "on_spp_sexlab_Sex_Ending")
@@ -2108,6 +2129,7 @@ int Function playerSexSL(Actor akActor, Bool bAllowAggressive= False, Bool bAllo
 	int result = SexLabInterface.haveSexWithPlayer(akActor, iPosition, sGetExtraTagsArr("sexlab"), bGetRegAllTagsArr("sexlab"), bAllowAggressive, bAllowAll)
 	if result > -1
 		RegisterForModEvent("SexLabOrgasmSeparate", "on_spp_sexlab_OrgasmSeparate")
+		RegisterForModEvent("AnimationStart", "on_spp_sexlab_Sex_Start")
 		RegisterForModEvent("OrgasmStart", "on_spp_sexlab_Orgasm")
 		RegisterForModEvent("AnimationEnding", "on_spp_sexlab_Sex_Ending")
 		RegisterForModEvent("HookAnimationEnd", "on_spp_sexlab_Sex_End")
@@ -2121,8 +2143,9 @@ int Function playerSexOS(Actor akActor, Bool bAllowAggressive= False, Bool bAllo
 	endif
 	int result = OStimInterface.haveSexWithPlayer(akActor, iPosition, sGetExtraTagsArr("ostim"), bGetRegAllTagsArr("ostim"), bAllowAggressive, bAllowAll)
 	if result > -1
+	  RegisterForModEvent("ostim_start", "on_spp_ostim_Sex_Start")
 	  RegisterForModEvent("ostim_orgasm", "on_spp_ostim_Orgasm")
-		RegisterForModEvent("ostim_end", "on_spp_ostim_Sex_End")
+	  RegisterForModEvent("ostim_end", "on_spp_ostim_Sex_End")
 	endif
 	return result
 EndFunction
@@ -2218,8 +2241,8 @@ endfunction
 
 Function giveTempleQuestReward()
 	Player.additem(gold, randint(fTempleClientMinExtraPay as Int, fTempleClientMaxExtraPay as Int))
-	addDibelMarkToPlayer(fDibelTempleMarkChance, 1, minFloat(fTempleMinMarkReward, fTempleMaxMarkReward) as Int, maxFloat(fTempleMinMarkReward, fTempleMaxMarkReward) as Int)
-	addEnchantedRewardToPlayer()
+	addDibelMarkToPlayer(fDibelTempleMarkChance, 1, fTempleMinMarkReward as Int, fTempleMaxMarkReward as Int)
+	addExtraRewardsToPlayer(fDibelTempleExtraRewardChance, fDibelTempleExtraRewardEnchantedChance, randInt(fDibelTempleMinExtraReward as Int, fDibelTempleMaxExtraReward as Int))
 endfunction
 
 Int function payWhore(actor whore, int position)
@@ -2963,27 +2986,50 @@ Event OnUpdateGameTime()
 	snitch()
 endEvent
 
+Event on_spp_sexlab_Sex_Start(string eventName, string argString, float argNum, form sender)
+	if SexLabInterface.HasPlayer(argString)
+		bNormalPCPartnerOrgasmed = False
+	endif
+endEvent
+
 Event on_spp_sexlab_Orgasm(string eventName, string argString, float argNum, form sender)
+	if SexLabInterface.HasPlayer(argString)
+		bNormalPCPartnerOrgasmed = True
+	endif
 endevent
 	
 Event on_spp_sexlab_OrgasmSeparate(Form ActorRef, Int Thread)
+	if player != (ActorRef as Actor)
+		if SexLabInterface.HasPlayer(Thread as String)
+			bNormalPCPartnerOrgasmed = true
+		endif
+	endif
 endevent
 
 Event on_spp_sexlab_Sex_Ending(string eventName, string argString, float argNum, form sender)
 	;Debug.trace("Simple Prostitution: on_spp_sexlab_Sex_Ending triggered. state=" + getState())
 	actor[] actorList = SexLabInterface.HookActors(argString)
 	Bool hasplayer = SexLabInterface.HasPlayer(argString)
+	Bool hasSpouse = False
 	if hasplayer && actorList.Length > 1
 		if actorList.Length == 2
 			int i = 2
 			while i > 0
 				i -= 1
 				if actorList[i] && (actorList[i] != player) && player.HasAssociation(spouse, actorList[i])
-					return
+					hasSpouse = true
 				endif
 			endWhile
 		endif
-		startInfectingPlayer(getState(), actorList.Length - 1)
+		if !hasSpouse
+			startInfectingPlayer(getState(), actorList.Length - 1)
+		endif
+		if (!bNormalOnlyRewardIfPartnerOrgasmed || bNormalPCPartnerOrgasmed)
+			if (!bNormalNoRewardWhenVictim || !SexLabInterface.isActorVictim(argString as Int, player))
+				addDibelMarkToPlayer(fNormalMarkChance, actorList.Length - 1)
+			endif
+		endif
+		bNormalPCPartnerOrgasmed = False
 	endif
 EndEvent
 
@@ -2991,14 +3037,22 @@ event on_spp_sexlab_Sex_End(int tid, bool HasPlayer)
 	;Debug.trace("Simple Prostitution: on_spp_sexlab_Sex_End triggered. state=" + getState())
 EndEvent
 
+Event on_spp_ostim_Sex_Start(string eventName, string strArg, float numArg, Form sender)
+	 ;No need to check for NPC scenes because NPC scenes aren't on main thread of OStim standalone.
+	 bNormalPCPartnerOrgasmed = False
+endEvent
+
 Event on_spp_ostim_Orgasm(String EventName, String sceneId, Float index, Form Sender)
+	if sender && (player != (sender as Actor))
+		bNormalPCPartnerOrgasmed = True
+	endif
 endevent
 
 Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, form sender)
 	;Debug.trace("Simple Prostitution: on_spp_ostim_Sex_End triggered. state=" + getState())
 	actor[] actorList = OStimInterface.getActors()
 	if actorList.Length > 1
-		Bool hasPlayer = False
+		Bool hasPlayer = False ;useless check
 		Bool hasSpouse = False
 		int i = actorList.Length
 		while i > 0
@@ -3007,15 +3061,20 @@ Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, for
 				if actorList[i] == player
 					hasPlayer = true
 				elseif (actorList.Length == 2) && player.HasAssociation(spouse, actorList[i])
-						hasSpouse = true
+					hasSpouse = true
 				endif
 			endif
 		endWhile
 		if hasPlayer
-			if hasSpouse
-				return
+			if !hasSpouse
+				StartInfectingplayer(getState(), actorList.Length - 1)
 			endif
-			StartInfectingplayer(getState(), actorList.Length - 1)
+			if (!bNormalOnlyRewardIfPartnerOrgasmed || bNormalPCPartnerOrgasmed)
+				if (!bNormalNoRewardWhenVictim || !OStimInterface.isActorVictim(player))
+					addDibelMarkToPlayer(fNormalMarkChance, actorList.Length - 1)
+				endif
+			endif
+			bNormalPCPartnerOrgasmed = False
 		endif
 	endif
 endEvent
@@ -3105,6 +3164,9 @@ State Dibeling
 		bIsBusy = False
 	endEvent
 	
+	Event on_spp_sexlab_Sex_Start(string eventName, string argString, float argNum, form sender)
+	endEvent
+	
 	Event on_spp_sexlab_Orgasm(string eventName, string argString, float argNum, form sender)
 		if SexLabInterface.HasPlayer(argString)
 			actor[] actorList = SexLabInterface.HookActors(argString)
@@ -3136,14 +3198,16 @@ State Dibeling
 		if HasPlayer
 			if (!bDibelOnlyPayIfClientOrgasmed || bDibelClientOrgasmed)
 				if bIsTempleClient
-					addDibelMarkToPlayer(fDibelTempleMarkChance, 1, minFloat(fTempleMinMarkReward, fTempleMaxMarkReward) as Int, maxFloat(fTempleMinMarkReward, fTempleMaxMarkReward) as Int)
+					addDibelMarkToPlayer(fDibelTempleMarkChance, 1, fTempleMinMarkReward as Int, fTempleMaxMarkReward as Int)
+					addExtraRewardsToPlayer(fDibelTempleExtraRewardChance, fDibelTempleExtraRewardEnchantedChance, randInt(fDibelTempleMinExtraReward as Int, fDibelTempleMaxExtraReward as Int))
 					if iDibelPartners > 1
 						addDibelMarkToPlayer(fDibelMarkChance, iDibelPartners - 1)
+						addExtraRewardsToPlayer(fDibelExtraRewardChance, fDibelExtraRewardEnchantedChance, iDibelPartners - 1)
 					endif
-					addEnchantedRewardToPlayer()
 					bIsTempleClient = False
 				else
 					addDibelMarkToPlayer(fDibelMarkChance, iDibelPartners)
+					addExtraRewardsToPlayer(fDibelExtraRewardChance, fDibelExtraRewardEnchantedChance, iDibelPartners)
 				endif
 				dibellan_lust_qst_script.updateQuest(iDibelPartners)
 			endif
@@ -3163,6 +3227,9 @@ State Dibeling
 		endif
 	endEvent
 	
+	Event on_spp_ostim_Sex_Start(string eventName, string strArg, float numArg, Form sender)
+	endEvent
+	
 	Event on_spp_ostim_Orgasm(String EventName, String sceneId, Float index, Form Sender)
 		if sender && (player != (sender as Actor))
 			if isDibelCustomer(sender as Actor)
@@ -3174,14 +3241,16 @@ State Dibeling
 	Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, form sender)
 		if (!bDibelOnlyPayIfClientOrgasmed || bDibelClientOrgasmed)
 			if bIsTempleClient
-				addDibelMarkToPlayer(fDibelTempleMarkChance, 1, minFloat(fTempleMinMarkReward, fTempleMaxMarkReward) as Int, maxFloat(fTempleMinMarkReward, fTempleMaxMarkReward) as Int)
+				addDibelMarkToPlayer(fDibelTempleMarkChance, 1, fTempleMinMarkReward as Int, fTempleMaxMarkReward as Int)
+				addExtraRewardsToPlayer(fDibelTempleExtraRewardChance, fDibelTempleExtraRewardEnchantedChance, randInt(fDibelTempleMinExtraReward as Int, fDibelTempleMaxExtraReward as Int))
 				if iDibelPartners > 1
 					addDibelMarkToPlayer(fDibelMarkChance, iDibelPartners - 1)
+					addExtraRewardsToPlayer(fDibelExtraRewardChance, fDibelExtraRewardEnchantedChance, iDibelPartners - 1)
 				endif
-				addEnchantedRewardToPlayer()
 				bIsTempleClient = False
 			else
 				addDibelMarkToPlayer(fDibelMarkChance, iDibelPartners)
+				addExtraRewardsToPlayer(fDibelExtraRewardChance, fDibelExtraRewardEnchantedChance, iDibelPartners)
 			endif
 			dibellan_lust_qst_script.updateQuest(iDibelPartners)
 		endif
@@ -3203,14 +3272,16 @@ State Dibeling
 	event onUpdate()
 		if (!bDibelOnlyPayIfClientOrgasmed || bDibelClientOrgasmed)
 			if bIsTempleClient
-				addDibelMarkToPlayer(fDibelTempleMarkChance, 1, minFloat(fTempleMinMarkReward, fTempleMaxMarkReward) as Int, maxFloat(fTempleMinMarkReward, fTempleMaxMarkReward) as Int)
+				addDibelMarkToPlayer(fDibelTempleMarkChance, 1, fTempleMinMarkReward as Int, fTempleMaxMarkReward as Int)
+				addExtraRewardsToPlayer(fDibelTempleExtraRewardChance, fDibelTempleExtraRewardEnchantedChance, randInt(fDibelTempleMinExtraReward as Int, fDibelTempleMaxExtraReward as Int))
 				if iDibelPartners > 1
 					addDibelMarkToPlayer(fDibelMarkChance, iDibelPartners - 1)
+					addExtraRewardsToPlayer(fDibelExtraRewardChance, fDibelExtraRewardEnchantedChance, iDibelPartners - 1)
 				endif
-				addEnchantedRewardToPlayer()
 				bIsTempleClient = False
 			else
 				addDibelMarkToPlayer(fDibelMarkChance, iDibelPartners)
+				addExtraRewardsToPlayer(fDibelExtraRewardChance, fDibelExtraRewardEnchantedChance, iDibelPartners)
 			endif
 			dibellan_lust_qst_script.updateQuest(iDibelPartners)
 		endif
@@ -3334,6 +3405,9 @@ State Whoring
 		SLSFR_Interface.SLSFR_toggle_WhoreEventFlag(false)
 		bIsBusy = False
 	EndEvent
+	
+	Event on_spp_sexlab_Sex_Start(string eventName, string argString, float argNum, form sender)
+	endEvent
 
 	Event on_spp_sexlab_Orgasm(string eventName, string argString, float argNum, form sender)
 		if SexLabInterface.HasPlayer(argString)
@@ -3366,6 +3440,7 @@ State Whoring
 		if HasPlayer
 			if (!bWhoreOnlyPayIfClientOrgasmed || bWhoreClientOrgasmed)
 				addDibelMarkToPlayer(fWhoreMarkChance, iWhorePartners)
+				addExtraRewardsToPlayer(fWhoreExtraRewardChance, fWhoreExtraRewardEnchantedChance, iWhorePartners)
 			endif
 			startInfectingPlayer(GetState(), iWhorePartners)
 			bWhoreAnimEnded = true
@@ -3383,6 +3458,9 @@ State Whoring
 		endif
 	endEvent
 	
+	Event on_spp_ostim_Sex_Start(string eventName, string strArg, float numArg, Form sender)
+	EndEvent
+	
 	Event on_spp_ostim_Orgasm(String EventName, String sceneId, Float index, Form Sender)
 		if sender && (player != (sender as Actor))
 			if isWhoreCustomer(sender as Actor)
@@ -3394,6 +3472,7 @@ State Whoring
 	Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, form sender)
 		if (!bWhoreOnlyPayIfClientOrgasmed || bWhoreClientOrgasmed)
 			addDibelMarkToPlayer(fWhoreMarkChance, iWhorePartners)
+			addExtraRewardsToPlayer(fWhoreExtraRewardChance, fWhoreExtraRewardEnchantedChance, iWhorePartners)
 		endif
 		startInfectingPlayer(GetState(), iWhorePartners)
 		bWhoreAnimEnded = true
@@ -3413,6 +3492,7 @@ State Whoring
 	event onUpdate()
 		if (!bWhoreOnlyPayIfClientOrgasmed || bWhoreClientOrgasmed)
 			addDibelMarkToPlayer(fWhoreMarkChance, iWhorePartners)
+			addExtraRewardsToPlayer(fWhoreExtraRewardChance, fWhoreExtraRewardEnchantedChance, iWhorePartners)
 		endif
 		startInfectingPlayer(GetState(), iWhorePartners)
 		bWhoreAnimEnded = true
@@ -3447,6 +3527,9 @@ EndState
 
 Auto State Init
 
+	Event on_spp_sexlab_Sex_Start(string eventName, string argString, float argNum, form sender)
+	endEvent
+
 	Event on_spp_sexlab_Orgasm(string eventName, string argString, float argNum, form sender)
 	endevent
 	
@@ -3457,6 +3540,9 @@ Auto State Init
 	EndEvent
 
 	event on_spp_sexlab_Sex_End(int tid, bool HasPlayer)
+	endEvent
+	
+	Event on_spp_ostim_Sex_Start(string eventName, string strArg, float numArg, Form sender)
 	endEvent
 	
 	Event on_spp_ostim_Orgasm(String EventName, String sceneId, Float index, Form Sender)
@@ -3494,6 +3580,9 @@ Auto State Init
 EndState
 
 State offeringToDibella
+
+	Event on_spp_sexlab_Sex_Start(string eventName, string argString, float argNum, form sender)
+	endEvent
 	
 	Event on_spp_sexlab_Orgasm(string eventName, string argString, float argNum, form sender)
 	endevent
@@ -3509,6 +3598,9 @@ State offeringToDibella
 			STD_Script.cureActorSTDs(player, False)
 			GoToState("")
 		endif
+	endEvent
+	
+	Event on_spp_ostim_Sex_Start(string eventName, string strArg, float numArg, Form sender)
 	endEvent
 	
 	Event on_spp_ostim_Orgasm(String EventName, String sceneId, Float index, Form Sender)
@@ -3539,6 +3631,9 @@ State offeringToDibella
 EndState
 
 State raped
+
+	Event on_spp_sexlab_Sex_Start(string eventName, string argString, float argNum, form sender)
+	endEvent
 	
 	Event on_spp_sexlab_Orgasm(string eventName, string argString, float argNum, form sender)
 	endevent
@@ -3555,8 +3650,11 @@ State raped
 			GoToState("")
 		endif
 	endEvent
+	
+	Event on_spp_ostim_Sex_Start(string eventName, string strArg, float numArg, Form sender)
+	endEvent
 
-  Event on_spp_ostim_Orgasm(String EventName, String sceneId, Float index, Form Sender)
+	Event on_spp_ostim_Orgasm(String EventName, String sceneId, Float index, Form Sender)
 	endevent
 
 	Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, form sender)
@@ -4278,18 +4376,26 @@ Bool function isPlayerGettingHarassed()
 endfunction
 
 
-Function addEnchantedRewardToPlayer()
-	if randInt(0, 999) >= (fDibelTempleExtraRewardChance * 10) as Int
+Function addExtraRewardsToPlayer(Float fRewardChance = 100.0, Float fRewardEnchantedChance = 100.0, int iCount = 1)
+	int iIndex = 0
+	While iIndex < iCount
+		addEnchantedRewardToPlayer(fRewardChance, fRewardEnchantedChance)
+		iIndex += 1
+	endWhile
+EndFunction
+
+Function addEnchantedRewardToPlayer(Float fRewardChance = 100.0, Float fRewardEnchantedChance = 100.0)
+	if randInt(0, 999) >= (fRewardChance * 10) as Int
 		return
 	endif
 	Form Item = GetRandomItemFromLeveledItem(LItemTempleReward)
 	if !isFormValid(Item)
-		Debug.trace("Simple Prostitution: No valid temple reward found.")
+		Debug.trace("Simple Prostitution: No valid reward found.")
 		return
 	endif
-	Debug.trace("Simple Prostitution: Temple reward is " + Item)
-	if (randInt(0, 999) >= (fDibelTempleExtraRewardEnchantedChance * 10) as Int) || (!(Item As Armor) && !(Item As Weapon)) || ((Item As Armor) && (Item As Armor).GetEnchantment()) || ((Item As Weapon) && (Item As Weapon).GetEnchantment())
-		Debug.trace("Simple Prostitution: Temple reward won't be enchanted.")
+	Debug.trace("Simple Prostitution: reward is " + Item)
+	if (randInt(0, 999) >= (fRewardEnchantedChance * 10) as Int) || (!(Item As Armor) && !(Item As Weapon)) || ((Item As Armor) && (Item As Armor).GetEnchantment()) || ((Item As Weapon) && (Item As Weapon).GetEnchantment())
+		Debug.trace("Simple Prostitution: reward won't be enchanted.")
 		player.additem(item, 1)
 		return
 	endif
@@ -4304,7 +4410,7 @@ Function addEnchantedRewardToPlayer()
 		enchList = Ench_Weapon_Lists
 	endif
 	if !enchList
-		Debug.trace("Simple Prostitution: No valid enchantment found for the temple reward.")
+		Debug.trace("Simple Prostitution: No valid enchantment found for the reward.")
 		player.additem(item, 1)
 		return
 	endif
@@ -4320,7 +4426,7 @@ Function addEnchantedRewardToPlayer()
 		iIndex += 1
 	endWhile
 	if iTotal < 1
-		Debug.trace("Simple Prostitution: No valid enchantment found for the temple reward.")
+		Debug.trace("Simple Prostitution: No valid enchantment found for the reward.")
 		player.additem(item, 1)
 		return
 	endif
@@ -4347,12 +4453,12 @@ Function addEnchantedRewardToPlayer()
 		iIndex += 1
 	endWhile
 	if isFormValid(ench) && (ench.GetFormID() <= 4278190080) ;An enchantment with a formID greater than 0xFF000000 will cause the game to crash according to https://ck.uesp.net/wiki/GetEnchantment_-_Armor
-		Debug.trace("Simple Prostitution: Temple reward's enchantment is " + ench)
+		Debug.trace("Simple Prostitution: reward's enchantment is " + ench)
 		ObjectReference itemRef = player.placeAtMe(Item, 1)
 		itemRef.SetEnchantment(ench, 100.0)
 		player.additem(itemRef, 1)
 	else
-		Debug.trace("Simple Prostitution: No valid enchantment found for the temple reward.")
+		Debug.trace("Simple Prostitution: No valid enchantment found for the reward.")
 		player.additem(item, 1)
 	endif
 EndFunction

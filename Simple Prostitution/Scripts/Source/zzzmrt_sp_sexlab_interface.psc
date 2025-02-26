@@ -67,6 +67,10 @@ Bool function IsActorActive(Actor ActorRef)
   return False
 endfunction
 
+Bool function IsActorVictim(Int tid, Actor ActorRef)
+	return False
+endfunction
+
 state Installed
   function checkVars()
     if !isFormValid(SexLabQuestFramework)
@@ -76,6 +80,10 @@ state Installed
 
   Bool function IsActorActive(Actor ActorRef)
     return zzzmrt_sp_int_sexlab.IsActorActiveSL(SexLabQuestFramework, ActorRef)
+  endfunction
+  
+  Bool function IsActorVictim(Int tid, Actor ActorRef)
+	return zzzmrt_sp_int_sexlab.IsActorVictimSL(SexLabQuestFramework, tid, ActorRef)
   endfunction
 
   int function haveSexWithPlayer(Actor Partner, Int Position, String[] sExtraTags, Bool[] bRequireAllTags, Bool bAllowAggressive = False, Bool bAllowAll = False)

@@ -360,33 +360,34 @@ event OnPageReset(String page)
     else
       flag = OPTION_FLAG_DISABLED
     endif	
-		OID_SLSFR_MIN_FAME_GAIN = AddSliderOption("$MRT_SP_SLSFR_MIN_FAME_GAIN_SLIDER1", MainScript.fSLSFR_MinGainFame, "$MRT_SP_SLSFR_MIN_FAME_GAIN_SLIDER2", flag)
-		OID_SLSFR_MAX_FAME_GAIN = AddSliderOption("$MRT_SP_SLSFR_MAX_FAME_GAIN_SLIDER1", MainScript.fSLSFR_MaxGainFame, "$MRT_SP_SLSFR_MAX_FAME_GAIN_SLIDER2", flag)
-		OID_SLSFR_FAME_GAIN_CHANCE = AddSliderOption("$MRT_SP_SLSFR_FAME_GAIN_CHANCE_SLIDER1", MainScript.fSLSFR_FameGainChance, "$MRT_SP_SLSFR_FAME_GAIN_CHANCE_SLIDER2", flag)
-		OID_SLSFR_TALK_MIN_FAME_GAIN = AddSliderOption("$MRT_SP_SLSFR_MIN_TALK_FAME_GAIN_SLIDER1", MainScript.fSLSFR_Talk_MinGainFame, "$MRT_SP_SLSFR_MIN_TALK_FAME_GAIN_SLIDER2", flag)
-		OID_SLSFR_TALK_MAX_FAME_GAIN = AddSliderOption("$MRT_SP_SLSFR_MAX_TALK_FAME_GAIN_SLIDER1", MainScript.fSLSFR_Talk_MaxGainFame, "$MRT_SP_SLSFR_MAX_TALK_FAME_GAIN_SLIDER2", flag)
-		OID_SLSFR_TALK_FAME_GAIN_CHANCE = AddSliderOption("$MRT_SP_SLSFR_TALK_FAME_GAIN_CHANCE_SLIDER1", MainScript.fSLSFR_Talk_FameGainChance, "$MRT_SP_SLSFR_TALK_FAME_GAIN_CHANCE_SLIDER2", flag)
-		addEmptyOption()
-		_AddHeaderOption("$MRT_SP_HEAD_INTEGRATION_SLHH")
-		if MainScript.bModEnabled && MainScript.bIs_SLHH_Active
+	OID_SLSFR_MIN_FAME_GAIN = AddSliderOption("$MRT_SP_SLSFR_MIN_FAME_GAIN_SLIDER1", MainScript.fSLSFR_MinGainFame, "$MRT_SP_SLSFR_MIN_FAME_GAIN_SLIDER2", flag)
+	OID_SLSFR_MAX_FAME_GAIN = AddSliderOption("$MRT_SP_SLSFR_MAX_FAME_GAIN_SLIDER1", MainScript.fSLSFR_MaxGainFame, "$MRT_SP_SLSFR_MAX_FAME_GAIN_SLIDER2", flag)
+	OID_SLSFR_FAME_GAIN_CHANCE = AddSliderOption("$MRT_SP_SLSFR_FAME_GAIN_CHANCE_SLIDER1", MainScript.fSLSFR_FameGainChance, "$MRT_SP_SLSFR_FAME_GAIN_CHANCE_SLIDER2", flag)
+	OID_SLSFR_TALK_MIN_FAME_GAIN = AddSliderOption("$MRT_SP_SLSFR_MIN_TALK_FAME_GAIN_SLIDER1", MainScript.fSLSFR_Talk_MinGainFame, "$MRT_SP_SLSFR_MIN_TALK_FAME_GAIN_SLIDER2", flag)
+	OID_SLSFR_TALK_MAX_FAME_GAIN = AddSliderOption("$MRT_SP_SLSFR_MAX_TALK_FAME_GAIN_SLIDER1", MainScript.fSLSFR_Talk_MaxGainFame, "$MRT_SP_SLSFR_MAX_TALK_FAME_GAIN_SLIDER2", flag)
+	OID_SLSFR_TALK_FAME_GAIN_CHANCE = AddSliderOption("$MRT_SP_SLSFR_TALK_FAME_GAIN_CHANCE_SLIDER1", MainScript.fSLSFR_Talk_FameGainChance, "$MRT_SP_SLSFR_TALK_FAME_GAIN_CHANCE_SLIDER2", flag)
+	addEmptyOption()
+	_AddHeaderOption("$MRT_SP_HEAD_INTEGRATION_SLHH")
+	if MainScript.bModEnabled && MainScript.bIs_SLHH_Active
       flag = OPTION_FLAG_NONE
     else
       flag = OPTION_FLAG_DISABLED
     endif	
-		OID_SLHH_MALE_RAPIST = AddToggleOption("$MRT_SP_SLHH_MALE_RAPIST_TOGGLE", MainScript.bSLHH_MaleRapist, flag)
-		OID_SLHH_FEMALE_RAPIST = AddToggleOption("$MRT_SP_SLHH_FEMALE_RAPIST_TOGGLE", MainScript.bSLHH_FemaleRapist, flag)
-		addEmptyOption()
-		_AddHeaderOption("$MRT_SP_HEAD_INTEGRATION_ORGASM")
-		if MainScript.bModEnabled
-      flag = OPTION_FLAG_NONE
-    else
-      flag = OPTION_FLAG_DISABLED
-    endif	
-		OID_WHORE_PAY_IF_ORGASMED = AddToggleOption("$MRT_SP_WHORE_PAY_IF_ORGASMED_TOGGLE", MainScript.bWhoreOnlyPayIfClientOrgasmed, flag)
-		OID_DIBEL_PAY_IF_ORGASMED = AddToggleOption("$MRT_SP_DIBEL_PAY_IF_ORGASMED_TOGGLE", MainScript.bDibelOnlyPayIfClientOrgasmed, flag)
-	  OID_WHORE_PUNISH_If_NOT_ORGASMED = AddToggleOption("$MRT_SP_WHORE_PUNISH_If_NOT_ORGASMED_TOGGLE", MainScript.bWhorePunishIfClientNotOrgasmed, flag)
-		OID_DIBEL_PUNISH_If_NOT_ORGASMED = AddToggleOption("$MRT_SP_DIBEL_PUNISH_If_NOT_ORGASMED_TOGGLE", MainScript.bDibelPunishIfClientNotOrgasmed, flag)
-	elseif (page == "$MRT_SP_PAGE_BEGGING")
+	OID_SLHH_MALE_RAPIST = AddToggleOption("$MRT_SP_SLHH_MALE_RAPIST_TOGGLE", MainScript.bSLHH_MaleRapist, flag)
+	OID_SLHH_FEMALE_RAPIST = AddToggleOption("$MRT_SP_SLHH_FEMALE_RAPIST_TOGGLE", MainScript.bSLHH_FemaleRapist, flag)
+	addEmptyOption()
+	_AddHeaderOption("$MRT_SP_HEAD_INTEGRATION_ORGASM")
+	if MainScript.bModEnabled
+		flag = OPTION_FLAG_NONE
+	else
+		flag = OPTION_FLAG_DISABLED
+	endif	
+	OID_WHORE_PAY_IF_ORGASMED = AddToggleOption("$MRT_SP_WHORE_PAY_IF_ORGASMED_TOGGLE", MainScript.bWhoreOnlyPayIfClientOrgasmed, flag)
+	OID_DIBEL_PAY_IF_ORGASMED = AddToggleOption("$MRT_SP_DIBEL_PAY_IF_ORGASMED_TOGGLE", MainScript.bDibelOnlyPayIfClientOrgasmed, flag)
+	OID_NORMAL_REWARD_IF_ORGASMED = AddToggleOption("$MRT_SP_NORMAL_REWARD_IF_ORGASMED_TOGGLE", MainScript.bNormalOnlyRewardIfPartnerOrgasmed, flag)
+	OID_WHORE_PUNISH_If_NOT_ORGASMED = AddToggleOption("$MRT_SP_WHORE_PUNISH_If_NOT_ORGASMED_TOGGLE", MainScript.bWhorePunishIfClientNotOrgasmed, flag)
+	OID_DIBEL_PUNISH_If_NOT_ORGASMED = AddToggleOption("$MRT_SP_DIBEL_PUNISH_If_NOT_ORGASMED_TOGGLE", MainScript.bDibelPunishIfClientNotOrgasmed, flag)
+elseif (page == "$MRT_SP_PAGE_BEGGING")
     SetTitleText("$MRT_SP_PAGE_BEGGING")
     _AddHeaderOption("$MRT_SP_HEAD_BEG")
     if (MainScript.bModEnabled)
@@ -403,9 +404,11 @@ event OnPageReset(String page)
     AddSliderOptionST("SPEECH_BEG_BONUS_MIN_MULT_SLIDER", "$MRT_SP_SPEECH_BEG_BONUS_MIN_MULT_SLIDER1", MainScript.fMinSpeechBegBonusMult, "$MRT_SP_SPEECH_BEG_BONUS_MIN_MULT_SLIDER2", flag)
     AddSliderOptionST("SPEECH_BEG_BONUS_MAX_MULT_SLIDER", "$MRT_SP_SPEECH_BEG_BONUS_MAX_MULT_SLIDER1", MainScript.fMaxSpeechBegBonusMult, "$MRT_SP_SPEECH_BEG_BONUS_MAX_MULT_SLIDER2", flag)
     OID_BEG_PAY_USE_BASE_SPEECH = AddToggleOption("$MRT_SP_BEG_PAY_USE_BASE_SPEECH_TOGGLE", MainScript.bBeggarPayUseBaseSpeech, flag)
-		OID_BEG_PERSUADE_CHANCE = AddSliderOption("$MRT_SP_BEG_PERSUADE_CHANCE_SLIDER1", MainScript.fBeggarPersuadeChance, "$MRT_SP_BEG_PERSUADE_CHANCE_SLIDER2", flag)
+	OID_BEG_PERSUADE_CHANCE = AddSliderOption("$MRT_SP_BEG_PERSUADE_CHANCE_SLIDER1", MainScript.fBeggarPersuadeChance, "$MRT_SP_BEG_PERSUADE_CHANCE_SLIDER2", flag)
     AddSliderOptionST("SPEECH_BEG_XP_MULT_SLIDER", "$MRT_SP_SPEECH_BEG_XP_MULT_SLIDER1", MainScript.fBeggarPersuasionXPMult, "$MRT_SP_SPEECH_BEG_XP_MULT_SLIDER2", flag)
-    if MainScript.bModEnabled && (MainScript.bIsDDIntegrationActive && MainScript.bIsDDExpansionActive)
+	OID_BEG_EXTRA_REWARD_CHANCE = AddSliderOption("$MRT_SP_BEG_EXTRA_REWARD_CHANCE_SLIDER1", MainScript.fBeggarExtraRewardChance, "$MRT_SP_BEG_EXTRA_REWARD_CHANCE_SLIDER2", flag)
+	OID_BEG_EXTRA_REWARD_ENCHANTED_CHANCE = AddSliderOption("$MRT_SP_BEG_EXTRA_REWARD_ENCHANTED_CHANCE_SLIDER1", MainScript.fBeggarExtraRewardEnchantedChance, "$MRT_SP_BEG_EXTRA_REWARD_ENCHANTED_CHANCE_SLIDER2", flag)    
+	if MainScript.bModEnabled && (MainScript.bIsDDIntegrationActive && MainScript.bIsDDExpansionActive)
       flag = OPTION_FLAG_NONE
     else
       flag = OPTION_FLAG_DISABLED
@@ -479,15 +482,15 @@ event OnPageReset(String page)
     _AddToggleOptionST("DIBEL_TOGGLE", "$MRT_SP_DIBEL_TOGGLE", MainScript.bDibelEnabled, flag)
     _AddToggleOptionST("DIBEL_AGENT_TOGGLE", "$MRT_SP_DIBEL_AGENT_TOGGLE", MainScript.bDibelAgent, flag)
     _AddToggleOptionST("DIBEL_CROWN_TOGGLE", "$MRT_SP_DIBEL_CROWN_TOGGLE", MainScript.bDibelCrown, flag)
-		OID_DIBEL_AMULET = AddToggleOption("$MRT_SP_DIBEL_AMULET_TOGGLE", MainScript.bDibelAmulet, flag)
-		OID_DIBEL_REQ_WHORE_ORAL_REWARD = AddToggleOption("$MRT_SP_DIBEL_REQ_WHORE_ORAL_REWARD_TOGGLE", MainScript.bDibelNeedWhoreOralReward, flag)
-		OID_DIBEL_REQ_WHORE_ANAL_REWARD = AddToggleOption("$MRT_SP_DIBEL_REQ_WHORE_ANAL_REWARD_TOGGLE", MainScript.bDibelNeedWhoreAnalReward, flag)
-		OID_DIBEL_REQ_WHORE_VAGINAL_REWARD = AddToggleOption("$MRT_SP_DIBEL_REQ_WHORE_VAGINAL_REWARD_TOGGLE", MainScript.bDibelNeedWhoreVaginalReward, flag)
+	OID_DIBEL_AMULET = AddToggleOption("$MRT_SP_DIBEL_AMULET_TOGGLE", MainScript.bDibelAmulet, flag)
+	OID_DIBEL_REQ_WHORE_ORAL_REWARD = AddToggleOption("$MRT_SP_DIBEL_REQ_WHORE_ORAL_REWARD_TOGGLE", MainScript.bDibelNeedWhoreOralReward, flag)
+	OID_DIBEL_REQ_WHORE_ANAL_REWARD = AddToggleOption("$MRT_SP_DIBEL_REQ_WHORE_ANAL_REWARD_TOGGLE", MainScript.bDibelNeedWhoreAnalReward, flag)
+	OID_DIBEL_REQ_WHORE_VAGINAL_REWARD = AddToggleOption("$MRT_SP_DIBEL_REQ_WHORE_VAGINAL_REWARD_TOGGLE", MainScript.bDibelNeedWhoreVaginalReward, flag)
     _AddToggleOptionST("DIBEL_ALLOW_AGGRESSIVE_TOGGLE", "$MRT_SP_DIBEL_ALLOW_AGGRESSIVE_TOGGLE", MainScript.bDIBELAllowAggressive, flag)
     _AddToggleOptionST("DIBEL_NAKED_TOGGLE", "$MRT_SP_DIBEL_NAKED_TOGGLE", MainScript.bDibelNaked, flag)
     OID_DIBEL_PAY_AFTER_SEX = AddToggleOption("$MRT_SP_DIBEL_PAY_AFTER_SEX_TOGGLE", MainScript.bDibelPayAfterSex , flag)
-		OID_DIBEL_POSITION_MENU = AddToggleOption("$MRT_SP_DIBEL_POSITION_MENU_TOGGLE", MainScript.bDibelPositionMenu, flag)
-		AddSliderOptionST("DIBEL_ORAL_CHANCE_SLIDER", "$MRT_SP_DIBEL_ORAL_CHANCE_SLIDER1", MainScript.fDibelOralChance, "$MRT_SP_DIBEL_ORAL_CHANCE_SLIDER2", flag)
+	OID_DIBEL_POSITION_MENU = AddToggleOption("$MRT_SP_DIBEL_POSITION_MENU_TOGGLE", MainScript.bDibelPositionMenu, flag)
+	AddSliderOptionST("DIBEL_ORAL_CHANCE_SLIDER", "$MRT_SP_DIBEL_ORAL_CHANCE_SLIDER1", MainScript.fDibelOralChance, "$MRT_SP_DIBEL_ORAL_CHANCE_SLIDER2", flag)
     AddSliderOptionST("DIBEL_ANAL_CHANCE_SLIDER", "$MRT_SP_DIBEL_ANAL_CHANCE_SLIDER1", MainScript.fDibelAnalChance, "$MRT_SP_DIBEL_ANAL_CHANCE_SLIDER2", flag)
     AddSliderOptionST("DIBEL_VAG_CHANCE_SLIDER", "$MRT_SP_DIBEL_VAG_CHANCE_SLIDER1", MainScript.fDibelVagChance, "$MRT_SP_DIBEL_VAG_CHANCE_SLIDER2", flag)
     AddSliderOptionST("DIBEL_ORAL_PAY_SLIDER", "$MRT_SP_DIBEL_ORAL_PAY_SLIDER1", MainScript.fDibelOralPay, "$MRT_SP_DIBEL_ORAL_PAY_SLIDER2", flag)
@@ -496,10 +499,12 @@ event OnPageReset(String page)
     AddSliderOptionST("SPEECH_DIBEL_BONUS_MIN_MULT_SLIDER", "$MRT_SP_SPEECH_DIBEL_BONUS_MIN_MULT_SLIDER1", MainScript.fMinSpeechDibelBonusMult, "$MRT_SP_SPEECH_DIBEL_BONUS_MIN_MULT_SLIDER2", flag)
     AddSliderOptionST("SPEECH_DIBEL_BONUS_MAX_MULT_SLIDER", "$MRT_SP_SPEECH_DIBEL_BONUS_MAX_MULT_SLIDER1", MainScript.fMaxSpeechDibelBonusMult, "$MRT_SP_SPEECH_DIBEL_BONUS_MAX_MULT_SLIDER2", flag)
     OID_DIBEL_PAY_USE_BASE_SPEECH = AddToggleOption("$MRT_SP_DIBEL_PAY_USE_BASE_SPEECH_TOGGLE", MainScript.bDibelPayUseBaseSpeech, flag)
-		OID_DIBEL_PERSUADE_CHANCE = AddSliderOption("$MRT_SP_DIBEL_PERSUADE_CHANCE_SLIDER1", MainScript.fDibelPersuadeChance, "$MRT_SP_DIBEL_PERSUADE_CHANCE_SLIDER2", flag)
+	OID_DIBEL_PERSUADE_CHANCE = AddSliderOption("$MRT_SP_DIBEL_PERSUADE_CHANCE_SLIDER1", MainScript.fDibelPersuadeChance, "$MRT_SP_DIBEL_PERSUADE_CHANCE_SLIDER2", flag)
     AddSliderOptionST("SPEECH_DIBEL_XP_MULT_SLIDER", "$MRT_SP_SPEECH_DIBEL_XP_MULT_SLIDER1", MainScript.fDibelPersuasionXPMult, "$MRT_SP_SPEECH_DIBEL_XP_MULT_SLIDER2", flag)
     AddSliderOptionST("DIBEL_MARK_CHANCE_SLIDER", "$MRT_SP_DIBEL_MARK_CHANCE_SLIDER1", Mainscript.fDibelMarkChance, "$MRT_SP_DIBEL_MARK_CHANCE_SLIDER2", flag)
-		if MainScript.bModEnabled && (MainScript.bIsDDIntegrationActive && MainScript.bIsDDExpansionActive)
+	OID_DIBEL_EXTRA_REWARD_CHANCE = AddSliderOption("$MRT_SP_DIBEL_EXTRA_REWARD_CHANCE_SLIDER1", MainScript.fDibelExtraRewardChance, "$MRT_SP_DIBEL_EXTRA_REWARD_CHANCE_SLIDER2", flag)
+	OID_DIBEL_EXTRA_REWARD_ENCHANTED_CHANCE = AddSliderOption("$MRT_SP_DIBEL_EXTRA_REWARD_ENCHANTED_CHANCE_SLIDER1", MainScript.fDibelExtraRewardEnchantedChance, "$MRT_SP_DIBEL_EXTRA_REWARD_ENCHANTED_CHANCE_SLIDER2", flag)
+	if MainScript.bModEnabled && (MainScript.bIsDDIntegrationActive && MainScript.bIsDDExpansionActive)
       flag = OPTION_FLAG_NONE
     else
       flag = OPTION_FLAG_DISABLED
@@ -507,13 +512,13 @@ event OnPageReset(String page)
     OID_DIBEL_DD_CHANCE = AddSliderOption("$MRT_SP_DIBEL_DD_CHANCE_SLIDER1", MainScript.fDibelDeviceChance, "$MRT_SP_DIBEL_DD_CHANCE_SLIDER2", flag)
     OID_DIBEL_ENTRAPMENT_LVL_M = AddMenuOption("$MRT_SP_DIBEL_ENTRAPMENT_LVL", sGetEntrapmentLevels()[MainScript.iDibelEntrapmentLevel], flag)
     addEmptyOption()
-	  if (MainScript.bModEnabled)
+	if (MainScript.bModEnabled)
       flag = OPTION_FLAG_NONE
     else
       flag = OPTION_FLAG_DISABLED
     endif
-		Dibel_Temple_Tasks(flag)
-		SetCursorPosition(1)
+	Dibel_Temple_Tasks(flag)
+	SetCursorPosition(1)
     if MainScript.bModEnabled
       flag = OPTION_FLAG_NONE
     else
@@ -569,8 +574,10 @@ event OnPageReset(String page)
     AddSliderOptionST("SPEECH_WHORE_BONUS_MAX_MULT_SLIDER", "$MRT_SP_SPEECH_WHORE_BONUS_MAX_MULT_SLIDER1", MainScript.fMaxSpeechWhoreBonusMult, "$MRT_SP_SPEECH_WHORE_BONUS_MAX_MULT_SLIDER2", flag)
     OID_WHORE_PAY_USE_BASE_SPEECH = AddToggleOption("$MRT_SP_WHORE_PAY_USE_BASE_SPEECH_TOGGLE", MainScript.bWhorePayUseBaseSpeech, flag)
     OID_WHORE_PERSUADE_CHANCE = AddSliderOption("$MRT_SP_WHORE_PERSUADE_CHANCE_SLIDER1", MainScript.fWhorePersuadeChance, "$MRT_SP_WHORE_PERSUADE_CHANCE_SLIDER2", flag)
-		AddSliderOptionST("SPEECH_WHORE_XP_MULT_SLIDER", "$MRT_SP_SPEECH_WHORE_XP_MULT_SLIDER1", MainScript.fWhorePersuasionXPMult, "$MRT_SP_SPEECH_WHORE_XP_MULT_SLIDER2", flag)
+	AddSliderOptionST("SPEECH_WHORE_XP_MULT_SLIDER", "$MRT_SP_SPEECH_WHORE_XP_MULT_SLIDER1", MainScript.fWhorePersuasionXPMult, "$MRT_SP_SPEECH_WHORE_XP_MULT_SLIDER2", flag)
     AddSliderOptionST("WHORE_MARK_CHANCE_SLIDER", "$MRT_SP_WHORE_MARK_CHANCE_SLIDER1", Mainscript.fWhoreMarkChance, "$MRT_SP_WHORE_MARK_CHANCE_SLIDER2", flag)
+	OID_WHORE_EXTRA_REWARD_CHANCE = AddSliderOption("$MRT_SP_WHORE_EXTRA_REWARD_CHANCE_SLIDER1", MainScript.fWhoreExtraRewardChance, "$MRT_SP_WHORE_EXTRA_REWARD_CHANCE_SLIDER2", flag)
+	OID_WHORE_EXTRA_REWARD_ENCHANTED_CHANCE = AddSliderOption("$MRT_SP_WHORE_EXTRA_REWARD_ENCHANTED_CHANCE_SLIDER1", MainScript.fWhoreExtraRewardEnchantedChance, "$MRT_SP_WHORE_EXTRA_REWARD_ENCHANTED_CHANCE_SLIDER2", flag)	
     if MainScript.bModEnabled && (MainScript.bIsDDIntegrationActive && MainScript.bIsDDExpansionActive)
       flag = OPTION_FLAG_NONE
     else
@@ -593,9 +600,11 @@ event OnPageReset(String page)
     else
       flag = OPTION_FLAG_DISABLED
     endif
+	OID_CRIME_BOUNTY = AddSliderOption("$MRT_SP_CRIME_BOUNTY_SLIDER1", MainScript.iCrimeBounty, "$MRT_SP_CRIME_BOUNTY_SLIDER2", flag)
+	OID_NORMAL_MARK_CHANCE = AddSliderOption("$MRT_SP_NORMAL_MARK_CHANCE_SLIDER1", MainScript.fNormalMarkChance, "$MRT_SP_NORMAL_MARK_CHANCE_SLIDER2", flag)
+	OID_NORMAL_NO_REWARD_WHEN_VICTIM = AddToggleOption("$MRT_SP_OID_NORMAL_NO_REWARD_WHEN_VICTIM_TOGGLE", MainScript.bNormalNoRewardWhenVictim, flag)
+	AddEmptyOption()
     approachOptions(flag)
-    AddEmptyOption()
-    OID_CRIME_BOUNTY = AddSliderOption("$MRT_SP_CRIME_BOUNTY_SLIDER1", MainScript.iCrimeBounty, "$MRT_SP_CRIME_BOUNTY_SLIDER2", flag)
     SetCursorPosition(1)
     if MainScript.bModEnabled
       flag = OPTION_FLAG_NONE
@@ -3124,6 +3133,8 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
   MainScript.bDibelOnlyPayIfClientOrgasmed = jsonutil.GetPathIntValue(settings_path, "bDibelOnlyPayIfClientOrgasmed", MainScript.bDibelOnlyPayIfClientOrgasmed as int)
   MainScript.bWhorePunishIfClientNotOrgasmed = jsonutil.GetPathIntValue(settings_path, "bWhorePunishIfClientNotOrgasmed", MainScript.bWhorePunishIfClientNotOrgasmed as int)
   MainScript.bDibelPunishIfClientNotOrgasmed = jsonutil.GetPathIntValue(settings_path, "bDibelPunishIfClientNotOrgasmed", MainScript.bDibelPunishIfClientNotOrgasmed as int)
+  MainScript.bNormalOnlyRewardIfPartnerOrgasmed = jsonutil.GetPathIntValue(settings_path, "bNormalOnlyRewardIfPartnerOrgasmed", MainScript.bNormalOnlyRewardIfPartnerOrgasmed as int)
+  MainScript.bNormalNoRewardWhenVictim = jsonutil.GetPathIntValue(settings_path, "bNormalNoRewardWhenVictim", MainScript.bNormalNoRewardWhenVictim as int)
 
   iAnimInterfaceMethod = jsonutil.GetPathIntValue(settings_path, "iAnimInterfaceMethod", iAnimInterfaceMethod)
   
@@ -3292,14 +3303,24 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
 	MainScript.fSLSFR_Talk_MinGainFame = jsonutil.GetPathFloatValue(settings_path, "fSLSFR_Talk_MinGainFame", MainScript.fSLSFR_Talk_MinGainFame)
 	MainScript.fSLSFR_Talk_MaxGainFame = jsonutil.GetPathFloatValue(settings_path, "fSLSFR_Talk_MaxGainFame", MainScript.fSLSFR_Talk_MaxGainFame)
 	MainScript.fSLSFR_Talk_FameGainChance = jsonutil.GetPathFloatValue(settings_path, "fSLSFR_Talk_FameGainChance", MainScript.fSLSFR_Talk_FameGainChance)
-	
 	MainScript.fTempleClientMinExtraPay = jsonutil.GetPathFloatValue(settings_path, "fTempleClientMinExtraPay", MainScript.fTempleClientMinExtraPay)
 	MainScript.fTempleClientMaxExtraPay = jsonutil.GetPathFloatValue(settings_path, "fTempleClientMaxExtraPay", MainScript.fTempleClientMaxExtraPay)
 	MainScript.fDibelTempleMarkChance = jsonutil.GetPathFloatValue(settings_path, "fDibelTempleMarkChance", MainScript.fDibelTempleMarkChance)
+	MainScript.fNormalMarkChance = jsonutil.GetPathFloatValue(settings_path, "fNormalMarkChance", MainScript.fNormalMarkChance)
 	MainScript.fTempleMinMarkReward = jsonutil.GetPathFloatValue(settings_path, "fTempleMinMarkReward", MainScript.fTempleMinMarkReward)
 	MainScript.fTempleMaxMarkReward = jsonutil.GetPathFloatValue(settings_path, "fTempleMaxMarkReward", MainScript.fTempleMaxMarkReward)
 	MainScript.fDibelTempleExtraRewardChance = jsonutil.GetPathFloatValue(settings_path, "fDibelTempleExtraRewardChance", MainScript.fDibelTempleExtraRewardChance)
 	MainScript.fDibelTempleExtraRewardEnchantedChance = jsonutil.GetPathFloatValue(settings_path, "fDibelTempleExtraRewardEnchantedChance", MainScript.fDibelTempleExtraRewardEnchantedChance)
+	MainScript.fDibelExtraRewardChance = jsonutil.GetPathFloatValue(settings_path, "fDibelExtraRewardChance", MainScript.fDibelExtraRewardChance)
+	MainScript.fDibelExtraRewardEnchantedChance = jsonutil.GetPathFloatValue(settings_path, "fDibelExtraRewardEnchantedChance", MainScript.fDibelExtraRewardEnchantedChance)
+	MainScript.fDibelTempleMinExtraReward = jsonutil.GetPathFloatValue(settings_path, "fDibelTempleMinExtraReward", MainScript.fDibelTempleMinExtraReward)
+	MainScript.fDibelTempleMaxExtraReward = jsonutil.GetPathFloatValue(settings_path, "fDibelTempleMaxExtraReward", MainScript.fDibelTempleMaxExtraReward)
+	
+	MainScript.fWhoreExtraRewardChance = jsonutil.GetPathFloatValue(settings_path, "fWhoreExtraRewardChance", MainScript.fWhoreExtraRewardChance)
+	MainScript.fWhoreExtraRewardEnchantedChance = jsonutil.GetPathFloatValue(settings_path, "fWhoreExtraRewardEnchantedChance", MainScript.fWhoreExtraRewardEnchantedChance)
+	MainScript.fBeggarExtraRewardChance = jsonutil.GetPathFloatValue(settings_path, "fBeggarExtraRewardChance", MainScript.fBeggarExtraRewardChance)
+	MainScript.fBeggarExtraRewardEnchantedChance = jsonutil.GetPathFloatValue(settings_path, "fBeggarExtraRewardEnchantedChance", MainScript.fBeggarExtraRewardEnchantedChance)
+	
 	MainScript.fTempleTaskSeptimCost = jsonutil.GetPathFloatValue(settings_path, "fTempleTaskSeptimCost", MainScript.fTempleTaskSeptimCost)
 	MainScript.fTempleTaskMarkCost = jsonutil.GetPathFloatValue(settings_path, "fTempleTaskMarkCost", MainScript.fTempleTaskMarkCost)
 	MainScript.templeTaskMarkCostDisplay.SetValueInt(MainScript.fTempleTaskMarkCost as Int)
@@ -3408,6 +3429,8 @@ Bool function saveUserSettingsPapyrus()
 	jsonutil.SetPathIntValue(settings_path, "bDibelOnlyPayIfClientOrgasmed", MainScript.bDibelOnlyPayIfClientOrgasmed as Int)
 	jsonutil.SetPathIntValue(settings_path, "bWhorePunishIfClientNotOrgasmed", MainScript.bWhorePunishIfClientNotOrgasmed as Int)
 	jsonutil.SetPathIntValue(settings_path, "bDibelPunishIfClientNotOrgasmed", MainScript.bDibelPunishIfClientNotOrgasmed as Int)
+	jsonutil.SetPathIntValue(settings_path, "bNormalOnlyRewardIfPartnerOrgasmed", MainScript.bNormalOnlyRewardIfPartnerOrgasmed as Int)
+	jsonutil.SetPathIntValue(settings_path, "bNormalNoRewardWhenVictim", MainScript.bNormalNoRewardWhenVictim as Int)
 
   jsonutil.SetPathIntValue(settings_path, "iAnimInterfaceMethod", iAnimInterfaceMethod)
   jsonutil.SetPathIntValue(settings_path, "iCrimeBounty", MainScript.iCrimeBounty)
@@ -3576,16 +3599,24 @@ Bool function saveUserSettingsPapyrus()
 	jsonutil.SetPathFloatValue(settings_path, "fSLSFR_FameGainChance", MainScript.fSLSFR_FameGainChance)	
 	jsonutil.SetPathFloatValue(settings_path, "fSLSFR_Talk_MinGainFame", MainScript.fSLSFR_Talk_MinGainFame)
 	jsonutil.SetPathFloatValue(settings_path, "fSLSFR_Talk_MaxGainFame", MainScript.fSLSFR_Talk_MaxGainFame)
-	jsonutil.SetPathFloatValue(settings_path, "fSLSFR_Talk_FameGainChance", MainScript.fSLSFR_Talk_FameGainChance)
-	
+	jsonutil.SetPathFloatValue(settings_path, "fSLSFR_Talk_FameGainChance", MainScript.fSLSFR_Talk_FameGainChance)	
 	jsonutil.SetPathFloatValue(settings_path, "fTempleClientMinExtraPay", MainScript.fTempleClientMinExtraPay)
 	jsonutil.SetPathFloatValue(settings_path, "fTempleClientMaxExtraPay", MainScript.fTempleClientMaxExtraPay)
 	jsonutil.SetPathFloatValue(settings_path, "fDibelTempleMarkChance", MainScript.fDibelTempleMarkChance)
+	jsonutil.SetPathFloatValue(settings_path, "fNormalMarkChance", MainScript.fNormalMarkChance)	
 	jsonutil.SetPathFloatValue(settings_path, "fTempleTaskSeptimCost", MainScript.fTempleTaskSeptimCost)
 	jsonutil.SetPathFloatValue(settings_path, "fTempleMinMarkReward", MainScript.fTempleMinMarkReward)
 	jsonutil.SetPathFloatValue(settings_path, "fTempleMaxMarkReward", MainScript.fTempleMaxMarkReward)
 	jsonutil.SetPathFloatValue(settings_path, "fDibelTempleExtraRewardChance", MainScript.fDibelTempleExtraRewardChance)
-	jsonutil.SetPathFloatValue(settings_path, "fDibelTempleExtraRewardEnchantedChance", MainScript.fDibelTempleExtraRewardEnchantedChance)
+	jsonutil.SetPathFloatValue(settings_path, "fDibelTempleExtraRewardEnchantedChance", MainScript.fDibelTempleExtraRewardEnchantedChance)	
+	jsonutil.SetPathFloatValue(settings_path, "fDibelExtraRewardChance", MainScript.fDibelExtraRewardChance)
+	jsonutil.SetPathFloatValue(settings_path, "fDibelExtraRewardEnchantedChance", MainScript.fDibelExtraRewardEnchantedChance)	
+	jsonutil.SetPathFloatValue(settings_path, "fWhoreExtraRewardChance", MainScript.fWhoreExtraRewardChance)
+	jsonutil.SetPathFloatValue(settings_path, "fWhoreExtraRewardEnchantedChance", MainScript.fWhoreExtraRewardEnchantedChance)	
+	jsonutil.SetPathFloatValue(settings_path, "fBeggarExtraRewardChance", MainScript.fBeggarExtraRewardChance)
+	jsonutil.SetPathFloatValue(settings_path, "fBeggarExtraRewardEnchantedChance", MainScript.fBeggarExtraRewardEnchantedChance)	
+	jsonutil.SetPathFloatValue(settings_path, "fDibelTempleMinExtraReward", MainScript.fDibelTempleMinExtraReward)
+	jsonutil.SetPathFloatValue(settings_path, "fDibelTempleMaxExtraReward", MainScript.fDibelTempleMaxExtraReward)
 	jsonutil.SetPathFloatValue(settings_path, "fWhorePersuadeChance", MainScript.fWhorePersuadeChance)
 	jsonutil.SetPathFloatValue(settings_path, "fDibelPersuadeChance", MainScript.fDibelPersuadeChance)
 	jsonutil.SetPathFloatValue(settings_path, "fBeggarPersuadeChance", MainScript.fBeggarPersuadeChance)
@@ -4101,6 +4132,12 @@ event OnOptionSelect(int option)
 	elseif option == OID_DIBEL_PAY_IF_ORGASMED
 		MainScript.bDibelOnlyPayIfClientOrgasmed = !MainScript.bDibelOnlyPayIfClientOrgasmed
 		SetToggleOptionValue(option, MainScript.bDibelOnlyPayIfClientOrgasmed)
+	elseif option == OID_NORMAL_REWARD_IF_ORGASMED
+		MainScript.bNormalOnlyRewardIfPartnerOrgasmed = !MainScript.bNormalOnlyRewardIfPartnerOrgasmed
+		SetToggleOptionValue(option, MainScript.bNormalOnlyRewardIfPartnerOrgasmed)
+	elseif option == OID_NORMAL_NO_REWARD_WHEN_VICTIM
+		MainScript.bNormalNoRewardWhenVictim = !MainScript.bNormalNoRewardWhenVictim
+		SetToggleOptionValue(option, MainScript.bNormalNoRewardWhenVictim)
 	elseif option == OID_WHORE_PUNISH_If_NOT_ORGASMED
 		MainScript.bWhorePunishIfClientNotOrgasmed = !MainScript.bWhorePunishIfClientNotOrgasmed
 		SetToggleOptionValue(option, MainScript.bWhorePunishIfClientNotOrgasmed)
@@ -4237,6 +4274,12 @@ event OnOptionDefault(int option)
 	elseif option == OID_DIBEL_PAY_IF_ORGASMED
 		MainScript.bDibelOnlyPayIfClientOrgasmed = False
 		SetToggleOptionValue(option, MainScript.bDibelOnlyPayIfClientOrgasmed)
+	elseif option == OID_NORMAL_REWARD_IF_ORGASMED
+		MainScript.bNormalOnlyRewardIfPartnerOrgasmed = False
+		SetToggleOptionValue(option, MainScript.bNormalOnlyRewardIfPartnerOrgasmed)
+	elseif option == OID_NORMAL_NO_REWARD_WHEN_VICTIM
+		MainScript.bNormalNoRewardWhenVictim = True
+		SetToggleOptionValue(option, MainScript.bNormalNoRewardWhenVictim)
 	elseif option == OID_WHORE_PUNISH_If_NOT_ORGASMED
 		MainScript.bWhorePunishIfClientNotOrgasmed  = False
 		SetToggleOptionValue(option, MainScript.bWhorePunishIfClientNotOrgasmed)
@@ -4418,6 +4461,12 @@ event OnOptionHighlight(int option)
     SetInfoText("$MRT_SP_DESC_WHORE_PAY_IF_ORGASMED")
   elseif option == OID_DIBEL_PAY_IF_ORGASMED
     SetInfoText("$MRT_SP_DESC_DIBEL_PAY_IF_ORGASMED")
+  elseif option == OID_NORMAL_REWARD_IF_ORGASMED
+    SetInfoText("$MRT_SP_DESC_NORMAL_REWARD_IF_ORGASMED")
+  elseif option == OID_NORMAL_NO_REWARD_WHEN_VICTIM
+    SetInfoText("$MRT_SP_DESC_NORMAL_NO_REWARD_WHEN_VICTIM")
+  elseif option == OID_NORMAL_MARK_CHANCE
+    SetInfoText("$MRT_SP_DESC_NORMAL_MARK_CHANCE")
   elseif option == OID_WHORE_PUNISH_If_NOT_ORGASMED
     SetInfoText("$MRT_SP_DESC_WHORE_PUNISH_If_NOT_ORGASMED")
   elseif option == OID_DIBEL_PUNISH_If_NOT_ORGASMED
@@ -4444,6 +4493,22 @@ event OnOptionHighlight(int option)
     SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_EXTRA_REWARD_CHANCE")
   elseif option == OID_DIBEL_TEMPLE_TASK_EXTRA_REWARD_ENCHANTED_CHANCE
     SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_EXTRA_REWARD_ENCHANTED_CHANCE")
+  elseif option == OID_DIBEL_TEMPLE_TASK_EXTRA_REWARD_MIN
+    SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_EXTRA_REWARD_MIN")
+  elseif option == OID_DIBEL_TEMPLE_TASK_EXTRA_REWARD_MAX
+    SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_EXTRA_REWARD_MAX")	
+  elseif option == OID_DIBEL_EXTRA_REWARD_CHANCE
+    SetInfoText("$MRT_SP_DESC_DIBEL_EXTRA_REWARD_CHANCE")
+  elseif option == OID_DIBEL_EXTRA_REWARD_ENCHANTED_CHANCE
+    SetInfoText("$MRT_SP_DESC_DIBEL_EXTRA_REWARD_ENCHANTED_CHANCE")	
+  elseif option == OID_WHORE_EXTRA_REWARD_CHANCE
+    SetInfoText("$MRT_SP_DESC_WHORE_EXTRA_REWARD_CHANCE")
+  elseif option == OID_WHORE_EXTRA_REWARD_ENCHANTED_CHANCE
+    SetInfoText("$MRT_SP_DESC_WHORE_EXTRA_REWARD_ENCHANTED_CHANCE")		
+  elseif option == OID_BEG_EXTRA_REWARD_CHANCE
+    SetInfoText("$MRT_SP_DESC_BEG_EXTRA_REWARD_CHANCE")
+  elseif option == OID_BEG_EXTRA_REWARD_ENCHANTED_CHANCE
+    SetInfoText("$MRT_SP_DESC_BEG_EXTRA_REWARD_ENCHANTED_CHANCE")		
   elseif option == OID_DIBEL_TEMPLE_TASK_Mark_CHANCE
 	SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_TASK_Mark_CHANCE")
   elseif option == OID_DEVIOUS_VAG_PRC
@@ -4917,13 +4982,40 @@ event OnOptionSliderAccept(int option, float value)
 		SetSliderOptionValue(OID_DIBEL_TEMPLE_TASK_MAX_MARK_REWARD , MainScript.fTempleMaxMarkReward, "$MRT_SP_DIBEL_TEMPLE_TASK_MAX_MARK_REWARD_SLIDER2")		
 	elseif option == OID_DIBEL_TEMPLE_TASK_Mark_CHANCE
 		MainScript.fDibelTempleMarkChance = value
-		SetSliderOptionValue(OID_DIBEL_TEMPLE_TASK_Mark_CHANCE , MainScript.fDibelTempleMarkChance, "$MRT_SP_DIBEL_TEMPLE_TASK_Mark_CHANCE_SLIDER2")
+		SetSliderOptionValue(OID_DIBEL_TEMPLE_TASK_Mark_CHANCE , MainScript.fDibelTempleMarkChance, "$MRT_SP_DIBEL_TEMPLE_TASK_Mark_CHANCE_SLIDER2")	
+	elseif option == OID_NORMAL_MARK_CHANCE
+		MainScript.fNormalMarkChance = value
+		SetSliderOptionValue(OID_NORMAL_MARK_CHANCE , MainScript.fNormalMarkChance, "$MRT_SP_NORMAL_MARK_CHANCE_SLIDER2")	
 	elseif option == OID_DIBEL_TEMPLE_TASK_EXTRA_REWARD_CHANCE
 		MainScript.fDibelTempleExtraRewardChance = value
 		SetSliderOptionValue(OID_DIBEL_TEMPLE_TASK_EXTRA_REWARD_CHANCE , MainScript.fDibelTempleExtraRewardChance, "$MRT_SP_DIBEL_TEMPLE_TASK_EXTRA_REWARD_CHANCE_SLIDER2")
+	elseif option == OID_DIBEL_EXTRA_REWARD_CHANCE
+		MainScript.fDibelExtraRewardChance= value
+		SetSliderOptionValue(OID_DIBEL_EXTRA_REWARD_CHANCE , MainScript.fDibelExtraRewardChance, "$MRT_SP_DIBEL_EXTRA_REWARD_CHANCE_SLIDER2")
+	elseif option == OID_DIBEL_EXTRA_REWARD_ENCHANTED_CHANCE
+		MainScript.fDibelExtraRewardEnchantedChance= value
+		SetSliderOptionValue(OID_DIBEL_EXTRA_REWARD_ENCHANTED_CHANCE , MainScript.fDibelExtraRewardEnchantedChance, "$MRT_SP_DIBEL_EXTRA_REWARD_ENCHANTED_CHANCE_SLIDER2")
+	elseif option == OID_BEG_EXTRA_REWARD_CHANCE
+		MainScript.fBeggarExtraRewardChance= value
+		SetSliderOptionValue(OID_BEG_EXTRA_REWARD_CHANCE , MainScript.fBeggarExtraRewardChance, "$MRT_SP_BEG_EXTRA_REWARD_CHANCE_SLIDER2")
+	elseif option == OID_BEG_EXTRA_REWARD_ENCHANTED_CHANCE
+		MainScript.fBeggarExtraRewardEnchantedChance= value
+		SetSliderOptionValue(OID_BEG_EXTRA_REWARD_ENCHANTED_CHANCE , MainScript.fBeggarExtraRewardEnchantedChance, "$MRT_SP_BEG_EXTRA_REWARD_ENCHANTED_CHANCE_SLIDER2")
+	elseif option == OID_WHORE_EXTRA_REWARD_CHANCE
+		MainScript.fWhoreExtraRewardChance= value
+		SetSliderOptionValue(OID_WHORE_EXTRA_REWARD_CHANCE , MainScript.fWhoreExtraRewardChance, "$MRT_SP_WHORE_EXTRA_REWARD_CHANCE_SLIDER2")
+	elseif option == OID_WHORE_EXTRA_REWARD_ENCHANTED_CHANCE
+		MainScript.fWhoreExtraRewardEnchantedChance= value
+		SetSliderOptionValue(OID_WHORE_EXTRA_REWARD_ENCHANTED_CHANCE , MainScript.fWhoreExtraRewardEnchantedChance, "$MRT_SP_WHORE_EXTRA_REWARD_ENCHANTED_CHANCE_SLIDER2")
 	elseif option == OID_DIBEL_TEMPLE_TASK_EXTRA_REWARD_ENCHANTED_CHANCE
 		MainScript.fDibelTempleExtraRewardEnchantedChance = value
 		SetSliderOptionValue(OID_DIBEL_TEMPLE_TASK_EXTRA_REWARD_ENCHANTED_CHANCE , MainScript.fDibelTempleExtraRewardEnchantedChance, "$MRT_SP_DIBEL_TEMPLE_TASK_EXTRA_REWARD_ENCHANTED_CHANCE_SLIDER2")	
+	elseif option == OID_DIBEL_TEMPLE_TASK_EXTRA_REWARD_MIN
+		MainScript.fDibelTempleMinExtraReward = value
+		SetSliderOptionValue(OID_DIBEL_TEMPLE_TASK_EXTRA_REWARD_MIN , MainScript.fDibelTempleMinExtraReward, "$MRT_SP_DIBEL_TEMPLE_TASK_EXTRA_REWARD_MIN_SLIDER2")	
+	elseif option == OID_DIBEL_TEMPLE_TASK_EXTRA_REWARD_MAX
+		MainScript.fDibelTempleMaxExtraReward = value
+		SetSliderOptionValue(OID_DIBEL_TEMPLE_TASK_EXTRA_REWARD_MAX , MainScript.fDibelTempleMaxExtraReward, "$MRT_SP_DIBEL_TEMPLE_TASK_EXTRA_REWARD_MAX_SLIDER2")	
 	elseif option == OID_WHORE_PERSUADE_CHANCE
 		MainScript.fWhorePersuadeChance = value
 		SetSliderOptionValue(OID_WHORE_PERSUADE_CHANCE , MainScript.fWhorePersuadeChance, "$MRT_SP_WHORE_PERSUADE_CHANCE_SLIDER2")
@@ -5470,27 +5562,72 @@ event OnOptionSliderOpen(int option)
 		SetSliderDialogStartValue(MainScript.fDibelTempleExtraRewardEnchantedChance)
 		SetSliderDialogDefaultValue(0.0)
 		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(0.1)	
+	elseif option == OID_DIBEL_TEMPLE_TASK_EXTRA_REWARD_MIN
+		SetSliderDialogStartValue(MainScript.fDibelTempleMinExtraReward)
+		SetSliderDialogDefaultValue(1.0)
+		SetSliderDialogRange(1, 10)
+		SetSliderDialogInterval(1)
+	elseif option == OID_DIBEL_TEMPLE_TASK_EXTRA_REWARD_MAX
+		SetSliderDialogStartValue(MainScript.fDibelTempleMaxExtraReward)
+		SetSliderDialogDefaultValue(1.0)
+		SetSliderDialogRange(1, 10)
+		SetSliderDialogInterval(1)	
+	elseif option == OID_DIBEL_EXTRA_REWARD_CHANCE
+		SetSliderDialogStartValue(MainScript.fDibelExtraRewardChance)
+		SetSliderDialogDefaultValue(0.0)
+		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(0.1)
+	elseif option == OID_DIBEL_EXTRA_REWARD_ENCHANTED_CHANCE
+		SetSliderDialogStartValue(MainScript.fDibelExtraRewardEnchantedChance)
+		SetSliderDialogDefaultValue(0.0)
+		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(0.1)
+	elseif option == OID_WHORE_EXTRA_REWARD_CHANCE
+		SetSliderDialogStartValue(MainScript.fWhoreExtraRewardChance)
+		SetSliderDialogDefaultValue(0.0)
+		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(0.1)
+	elseif option == OID_WHORE_EXTRA_REWARD_ENCHANTED_CHANCE
+		SetSliderDialogStartValue(MainScript.fWhoreExtraRewardEnchantedChance)
+		SetSliderDialogDefaultValue(0.0)
+		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(0.1)
+	elseif option == OID_BEG_EXTRA_REWARD_CHANCE
+		SetSliderDialogStartValue(MainScript.fBeggarExtraRewardChance)
+		SetSliderDialogDefaultValue(0.0)
+		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(0.1)
+	elseif option == OID_BEG_EXTRA_REWARD_ENCHANTED_CHANCE
+		SetSliderDialogStartValue(MainScript.fBeggarExtraRewardEnchantedChance)
+		SetSliderDialogDefaultValue(0.0)
+		SetSliderDialogRange(0, 100)
 		SetSliderDialogInterval(0.1)
 	elseif option == OID_DIBEL_TEMPLE_TASK_Mark_CHANCE
 		SetSliderDialogStartValue(MainScript.fDibelTempleMarkChance)
 		SetSliderDialogDefaultValue(0.0)
 		SetSliderDialogRange(0, 100)
 		SetSliderDialogInterval(0.1)
+	elseif option == OID_NORMAL_MARK_CHANCE
+		SetSliderDialogStartValue(MainScript.fNormalMarkChance)
+		SetSliderDialogDefaultValue(0.0)
+		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(0.1)
 	elseif option == OID_WHORE_PERSUADE_CHANCE
-	  SetSliderDialogStartValue(MainScript.fWhorePersuadeChance)
-    SetSliderDialogDefaultValue(50.0)
-    SetSliderDialogRange(1, 100)
-    SetSliderDialogInterval(1)
+		SetSliderDialogStartValue(MainScript.fWhorePersuadeChance)
+		SetSliderDialogDefaultValue(50.0)
+		SetSliderDialogRange(1, 100)
+		SetSliderDialogInterval(1)
 	elseif option == OID_DIBEL_PERSUADE_CHANCE
-	  SetSliderDialogStartValue(MainScript.fDibelPersuadeChance)
-    SetSliderDialogDefaultValue(70.0)
-    SetSliderDialogRange(1, 100)
-    SetSliderDialogInterval(1)
+	    SetSliderDialogStartValue(MainScript.fDibelPersuadeChance)
+        SetSliderDialogDefaultValue(70.0)
+        SetSliderDialogRange(1, 100)
+        SetSliderDialogInterval(1)
 	elseif option == OID_BEG_PERSUADE_CHANCE
-	  SetSliderDialogStartValue(MainScript.fBeggarPersuadeChance)
-    SetSliderDialogDefaultValue(30.0)
-    SetSliderDialogRange(1, 100)
-    SetSliderDialogInterval(1)
+	    SetSliderDialogStartValue(MainScript.fBeggarPersuadeChance)
+        SetSliderDialogDefaultValue(30.0)
+        SetSliderDialogRange(1, 100)
+        SetSliderDialogInterval(1)
   endif
 EndEvent
 
@@ -5706,9 +5843,9 @@ function defaultRejectOptions(Int iflag)
 EndFunction
 
 Function approachOptions(Int iflag)
+  AddHeaderOption("$MRT_SP_HEAD_APPROACH")
   int flg = iflag
   OID_CUSTOMER_APPROACH_INTERVAL =  AddSliderOption("$MRT_SP_CUSTOMER_APPROACH_INTERVAL_SLIDER1", MainScript.fCustomerApproachTimer, "$MRT_SP_CUSTOMER_APPROACH_INTERVAL_SLIDER2", flg)
-  AddEmptyOption()
   OID_CUSTOMER_APPROACH_CHANCE =  AddSliderOption("$MRT_SP_CUSTOMER_APPROACH_CHANCE_SLIDER1", MainScript.fCustomerApproachChance, "$MRT_SP_CUSTOMER_APPROACH_CHANCE_SLIDER2", flg)
   OID_MAX_DISTANCE_APPROACH = AddSliderOption("$MRT_SP_MAX_DISTANCE_APPROACH_SLIDER1", MainScript.fMaxApproachDistance, "$MRT_SP_MAX_DISTANCE_APPROACH_SLIDER2", flg)
   OID_MALE_CUSTOMER_APPROACH = AddToggleOption("$MRT_SP_MALE_CUSTOMER_APPROACH_TOGGLE", MainScript.bMaleCustomerApproach, flg)
@@ -5766,7 +5903,9 @@ Function Dibel_Temple_Tasks(Int iflag)
 	OID_DIBEL_TEMPLE_TASK_MIN_MARK_REWARD = AddSliderOption("$MRT_SP_DIBEL_TEMPLE_TASK_MIN_MARK_REWARD_SLIDER1", MainScript.fTempleMinMarkReward, "$MRT_SP_DIBEL_TEMPLE_TASK_MIN_MARK_REWARD_SLIDER2", flg)
 	OID_DIBEL_TEMPLE_TASK_MAX_MARK_REWARD = AddSliderOption("$MRT_SP_DIBEL_TEMPLE_TASK_MAX_MARK_REWARD_SLIDER1", MainScript.fTempleMaxMarkReward, "$MRT_SP_DIBEL_TEMPLE_TASK_MAX_MARK_REWARD_SLIDER2", flg)
 	OID_DIBEL_TEMPLE_TASK_EXTRA_REWARD_CHANCE = AddSliderOption("$MRT_SP_DIBEL_TEMPLE_TASK_EXTRA_REWARD_CHANCE_SLIDER1", MainScript.fDibelTempleExtraRewardChance, "$MRT_SP_DIBEL_TEMPLE_TASK_EXTRA_REWARD_CHANCE_SLIDER2", flg)
-	OID_DIBEL_TEMPLE_TASK_EXTRA_REWARD_ENCHANTED_CHANCE = AddSliderOption("$MRT_SP_DIBEL_TEMPLE_TASK_EXTRA_REWARD_ENCHANTED_CHANCE_SLIDER1", MainScript.fDibelTempleExtraRewardEnchantedChance, "$MRT_SP_DIBEL_TEMPLE_TASK_EXTRA_REWARD_ENCHANTED_CHANCE_SLIDER2", flg) 
+	OID_DIBEL_TEMPLE_TASK_EXTRA_REWARD_ENCHANTED_CHANCE = AddSliderOption("$MRT_SP_DIBEL_TEMPLE_TASK_EXTRA_REWARD_ENCHANTED_CHANCE_SLIDER1", MainScript.fDibelTempleExtraRewardEnchantedChance, "$MRT_SP_DIBEL_TEMPLE_TASK_EXTRA_REWARD_ENCHANTED_CHANCE_SLIDER2", flg)
+    OID_DIBEL_TEMPLE_TASK_EXTRA_REWARD_MIN = AddSliderOption("$MRT_SP_DIBEL_TEMPLE_TASK_EXTRA_REWARD_MIN_SLIDER1", MainScript.fDibelTempleMinExtraReward, "$MRT_SP_DIBEL_TEMPLE_TASK_EXTRA_REWARD_MIN_SLIDER2", flg)
+    OID_DIBEL_TEMPLE_TASK_EXTRA_REWARD_MAX = AddSliderOption("$MRT_SP_DIBEL_TEMPLE_TASK_EXTRA_REWARD_MAX_SLIDER1", MainScript.fDibelTempleMaxExtraReward, "$MRT_SP_DIBEL_TEMPLE_TASK_EXTRA_REWARD_MAX_SLIDER2", flg)
 endfunction
 
 String[] function sGetEntrapmentLevels()
@@ -5974,3 +6113,16 @@ Int OID_DEBUG_PC_DIBEL_TAG
 Int OID_DIBEL_TEMPLE_TASK_EXTRA_REWARD_CHANCE
 Int OID_DIBEL_TEMPLE_TASK_EXTRA_REWARD_ENCHANTED_CHANCE
 Int OID_TEAMMATE_MAY_APPROACH
+
+Int OID_DIBEL_EXTRA_REWARD_CHANCE
+Int OID_DIBEL_EXTRA_REWARD_ENCHANTED_CHANCE
+Int OID_WHORE_EXTRA_REWARD_CHANCE
+Int OID_WHORE_EXTRA_REWARD_ENCHANTED_CHANCE
+Int OID_BEG_EXTRA_REWARD_CHANCE
+Int OID_BEG_EXTRA_REWARD_ENCHANTED_CHANCE
+Int OID_DIBEL_TEMPLE_TASK_EXTRA_REWARD_MIN
+Int OID_DIBEL_TEMPLE_TASK_EXTRA_REWARD_MAX
+
+Int OID_NORMAL_MARK_CHANCE
+Int OID_NORMAL_REWARD_IF_ORGASMED
+Int OID_NORMAL_NO_REWARD_WHEN_VICTIM

@@ -63,6 +63,10 @@ Bool Function isActorActive(Actor act)
   return False
 endfunction
 
+Bool Function isActorVictim(Actor act)
+  return False
+endfunction
+
 state Installed
 
   function checkVars()
@@ -89,5 +93,9 @@ state Installed
 
   Bool Function isActorActive(Actor act)
     return zzzmrt_sp_int_ostim.isActorActiveOS(OSexIntegrationMainQuest, act)
+  endfunction
+  
+  Bool Function isActorVictim(Actor act)
+	return zzzmrt_sp_int_ostim.isActorVictimOS(OSexIntegrationMainQuest, act)
   endfunction
 endstate

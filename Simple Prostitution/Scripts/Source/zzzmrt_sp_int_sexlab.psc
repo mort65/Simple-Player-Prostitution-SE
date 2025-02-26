@@ -15,6 +15,11 @@ Bool function IsActorActiveSL(Quest SexLabQuestFramework, Actor ActorRef) Global
   return SexLab.IsActorActive(ActorRef)
 endfunction
 
+Bool function IsActorVictimSL(Quest SexLabQuestFramework, Int tid, Actor ActorRef) Global
+	SexLabFramework SexLab = SexLabQuestFramework as SexLabFramework
+	return SexLab.IsVictim(tid, ActorRef)
+endfunction
+
 int function haveSexWithPlayerSL(Quest SexLabQuestFramework, Actor Partner, Int Position, String[] sExtraTags, Bool[] bRequireAllTags, Bool bAllowAggressive = False, Bool bAllowAll = False) Global
   if position < 0
 	  return -1
