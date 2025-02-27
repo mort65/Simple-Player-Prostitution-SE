@@ -17,21 +17,21 @@ Function setVars()
     iIndex += 1
   else
     restraintsKey = None
-    Debug.Trace("Simple Prostitution: [DD] Restraint key not found.")
+	logText("[DD] Restraint key not found.", true, true, 2)
   endif
   form chastityKey = Game.GetFormFromFile(0x008a4f, "Devious Devices - Integration.esm")
   if isFormValid(chastityKey) && chastityKey.getType() == 45
     iIndex += 1
   else
     chastityKey = None
-    Debug.Trace("Simple Prostitution: [DD] Chastity key not found.")
+	logText("[DD] Chastity key not found.", true, true, 2)
   endif
   form piercingKey = Game.GetFormFromFile(0x0409a4, "Devious Devices - Integration.esm")
   if isFormValid(piercingKey) && piercingKey.getType() == 45
     iIndex += 1
   else
     piercingKey = None
-    Debug.Trace("Simple Prostitution: [DD] Piercing key not found.")
+	logText("[DD] Piercing key not found.", true, true, 2)
   endif
   if iIndex > 0
     ddkeys = utility.createFormArray(iIndex)
@@ -45,7 +45,7 @@ Function setVars()
         ddkeys[iIndex] = restraintsKey
       endif
     endWhile
-    Debug.Notification("Simple Prostitution: Devious Devices Integration detected.")
+	logText("Devious Devices Integration detected.", true, true, 1)
   endif
 endfunction
 
@@ -61,8 +61,8 @@ Bool function GetIsInterfaceActive()
 endfunction
 
 function PlayerLoadsGame(Bool bForce = False)
-	bChecked = False
-  Debug.trace("Simple Prostitution: PlayerLoadsGame() triggered for " + self)
+  bChecked = False
+  logText("PlayerLoadsGame() triggered for " + self)
 
   ; Is the soft dependency installed and is our script in the right state? If not change state.
   if isPluginFound("Devious Devices - Integration.esm")

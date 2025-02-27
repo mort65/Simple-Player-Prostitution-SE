@@ -19,7 +19,7 @@ Bool property playerWearingWhoreClothing = false Auto Hidden Conditional
 Bool property playerIsBusyInMOA = false Auto Hidden Conditional
 
 Event OnUpdateGameTime()
-	debug.trace("Simple Prostitution: OnUpdateGameTime() triggered for "+ self)
+    logText("OnUpdateGameTime() triggered for "+ self)
 	updateApproach(true)
 EndEvent
 
@@ -106,11 +106,11 @@ Function updateApproach(Bool bReset = False)
 					if sName == "" && MainScript.bIsPO3ExtenderActive
 						sName = PO3_SKSEFunctions.GetFormEditorID(approachingActor)
 					endif
-					string msg = "Simple Prostitution: " + approachingActor + " | " + approachingActorBase  +  " : " + sName + " approaching player from : " + approachingActor.GetDistance(MainScript.player)
+					string msg = approachingActor + " | " + approachingActorBase  +  " : " + sName + " approaching player from : " + approachingActor.GetDistance(MainScript.player)
 					if (MainScript.bIs_SLA_Active && MainScript.iSLA_MinApproachArousal > 0)
 						msg = msg + " with this arousal: " +  iArousal
 					endif
-					Debug.trace(msg)
+					logText(msg)
 				endif
 			endif
 		endif
@@ -158,11 +158,10 @@ Function checkPlayerStatus()
 	MainScript.isPlayerGettingHarassed()
 	checkMOAStatus()
 	
-	!playerWearingWhoreClothing && Debug.Notification("Simple Prostitution: Player is not wearing prostitute outfit.")
-	MainScript.bOnlyLicensedApproach && !hasLicense && Debug.Notification("Simple Prostitution: Player doesn't have license.")
+	!playerWearingWhoreClothing && logText("Player is not wearing prostitute outfit.", true, true)
+	MainScript.bOnlyLicensedApproach && !hasLicense && logText("Player doesn't have license.", true, true)
 	if MainScript.bIs_SLA_Active
-		;Debug.trace("Simple Prostitution: Player arousal level is " +  MainScript.iSLA_PCArousal)
-		!MainScript.bIsPCAroused && Debug.Notification("Simple Prostitution: Player not aroused ("+ MainScript.iSLA_PCArousal + ")")
+		!MainScript.bIsPCAroused && logText("Player not aroused ("+ MainScript.iSLA_PCArousal + ")", true, true)
 	endif
 EndFunction
 
@@ -173,8 +172,8 @@ Function checkActorStatus(Actor akActor)
 	
 	if MainScript.bIs_SLA_Active
 		String actorname = akActor.getDisplayName()
-		Debug.trace("Simple Prostitution: " + actorName + " arousal level is " +  iActorArousal)
-		!bIsActorAroused && Debug.Notification("Simple Prostitution: " + actorName + " not aroused (" + iActorArousal + ")")
+		logText(actorName + " arousal level is " +  iActorArousal)
+		!bIsActorAroused && logText(actorName + " not aroused (" + iActorArousal + ")", true, true)
 	endif
 EndFunction
 

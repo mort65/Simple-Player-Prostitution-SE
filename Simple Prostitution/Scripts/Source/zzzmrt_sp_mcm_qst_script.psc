@@ -36,7 +36,7 @@ String data_path = "..\\simple-prostitution\\user-data"
 Int flag
 
 event OnConfigInit()
-  ModName = "Simple Prostitution"
+  ModName = "SPP"
   initPages()
 endevent
 
@@ -59,6 +59,15 @@ endevent
 
 event OnPageReset(String page)
   initPages()
+  If (page == "")
+	;LoadCustomContent supports two optional parameters for X and Y position offset. (0,0) is the top left corner of the option list area. The dimensions of this area are 770x446, the horizontal center point is at (376,223), which is not exactly at half of the width because the right side holds the scroll bar.
+	; Image size 512x256
+	; X offset = 376 - (imageWidth / 2) = 120
+	; Y offset = 223 - (imageHeight / 2) = 95
+    LoadCustomContent("res/spp_mcm.dds", 120.0, 95.0)
+  Else
+	UnloadCustomContent()
+  Endif
   flag = OPTION_FLAG_NONE
   SetCursorFillMode(TOP_TO_BOTTOM)
   if (page == "$MRT_SP_PAGE_DEBUG")
@@ -186,7 +195,7 @@ event OnPageReset(String page)
 
     SetCursorPosition(1)
     flag = OPTION_FLAG_DISABLED
-    _AddTextOptionST("DEBUG_MOD_VERSION_TXT", "Simple Prostitution v" + MainScript.getCurrentVersion(), "", flag)
+    _AddTextOptionST("DEBUG_MOD_VERSION_TXT", "Simple Player Prostitution v" + MainScript.getCurrentVersion(), "", flag)
     addEmptyOption()
     _AddTextOptionST("DEBUG_PAPYRUSUTIL_CHECK_TXT", "PapyrusUtil v3+", MainScript.bIsPapyrusUtilActive As String, flag)
     _AddTextOptionST("DEBUG_PYRAMIDUTILS_CHECK_TXT", "Scrab's Papyrus Extender 2.1.0+", MainScript.bIsPyramidUtilsOK As String, flag)
@@ -617,7 +626,7 @@ endevent
 
 event OnVersionUpdate(Int version)
   if (version >= 100 && CurrentVersion < 100)
-    Debug.Trace(self + ": Updating script to version " + 100)
+    logText(self + ": Updating script to version " + 100)
   endif
 endevent
 
@@ -1193,11 +1202,11 @@ state MOD_TOGGLE
     Utility.wait(0.5)
     if MainScript.bModEnabled
       MainQuest.Start()
-      Debug.Notification("Simple Prostitution enabled.")
+	  logText("Simple Player Prostitution enabled.", true, true, 0)
     else
       MainScript.ShutDown()
       MainQuest.Stop()
-      Debug.Notification("Simple Prostitution disabled.")
+	  logText("Simple Player Prostitution disabled.", true, true, 0)
     endif
   endevent
 endstate
@@ -3055,7 +3064,7 @@ endState
 
 Bool function loadUserSettingsPapyrus(Bool bSilence = False)
   if !jsonutil.IsGood(settings_path)
-    !bSilence && ShowMessage("SimpleProstitution: Can't load User Settings. Errors: {" + jsonutil.getErrors(settings_path) + "}", true, "$Accept", "$Cancel")
+    !bSilence && ShowMessage("Can't load User Settings. Errors: {" + jsonutil.getErrors(settings_path) + "}", true, "$Accept", "$Cancel")
     return false
   endIf
   MainScript.bWhoreNeedLicense = jsonutil.GetPathIntValue(settings_path, "bWhoreNeedLicense", MainScript.bWhoreNeedLicense as Int)
@@ -3640,7 +3649,7 @@ Bool function saveUserSettingsPapyrus()
   jsonutil.SetPathStringValue(settings_path, "sExtraTags_OS_Vaginal_FF", MainScript.sExtraTags_OS_Vaginal_FF)
 
   if !jsonutil.Save(settings_path, false)
-    debug.Trace("Simple Prostitution: Error saving user settings.", 0)
+    logText("Error saving user settings.", False, true, 2)
     return false
   endIf
   return true
@@ -3822,7 +3831,7 @@ Bool Function loadUserDataPapyrus(Bool bSilence = False)
     return False
   endif
   if !jsonutil.IsGood(data_path)
-    !bSilence && ShowMessage("SimpleProstitution: Can't load data. Errors: {" + jsonutil.getErrors(data_path) + "}", true, "$Accept", "$Cancel")
+    !bSilence && ShowMessage("Can't load data. Errors: {" + jsonutil.getErrors(data_path) + "}", true, "$Accept", "$Cancel")
     return false
   endif
   Form[] arr

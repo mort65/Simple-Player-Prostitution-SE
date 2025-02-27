@@ -1,5 +1,7 @@
 Scriptname zzzmrt_sp_int_flowergirls Hidden
 
+import zzzmrt_sp_utility
+
 Int function haveSexWithPlayerFG(Quest FlowerGirls, Actor partner, Int Position) Global
   if Position < 0
     return -1
@@ -9,7 +11,7 @@ Int function haveSexWithPlayerFG(Quest FlowerGirls, Actor partner, Int Position)
     return -1
   endif
   if FGScript.ThreadManager.GetActiveThreadForActor(partner as ObjectReference) != None
-    debug.trace("Simple Prostitution: [FG] partner is busy in another scene: " + partner)
+    logText("[FG] partner is busy in another scene: " + partner, False, True, 2)
     return -1
   endif
   Actor Actor1
@@ -54,7 +56,7 @@ Bool function bHaveRandomSexWithPlayerFG(Quest FlowerGirls, Actor partner) Globa
   dxFlowerGirlsScript FGScript = FlowerGirls as dxFlowerGirlsScript
   actor player = Game.GetPlayer()
   if (FGScript.ThreadManager.GetActiveThreadForActor(partner as ObjectReference) != None)
-    Debug.trace("Simple Prostitution: [FG] partner is busy in another scene: " + partner)
+	logText("[FG] partner is busy in another scene: " + partner, False, True, 2)
     return False
   endif
   if partner.GetLeveledActorBase().GetSex() == player.GetActorBase().GetSex()
@@ -70,16 +72,16 @@ Bool function bHaveGroupSexWithPlayerFG(Quest FlowerGirls, Actor[] partners) Glo
   dxFlowerGirlsScript FGScript = FlowerGirls as dxFlowerGirlsScript
   actor player = Game.getPlayer()
   if partners.Length > 2
-    Debug.trace("Simple Prostitution: [FG] too many partners for flowergirls: " + partners)
+    logText("[FG] too many partners for flowergirls: " + partners, False, true, 2)
     return False
   ElseIf partners.Length == 1
     if partners[0]
       return bHaveRandomSexWithPlayerFG(FlowerGirls, partners[0])
     endif
-    Debug.trace("Simple Prostitution: [FG] Not enough partners: " + partners)
+	logText("[FG] Not enough partners: " + partners, False, true, 2)
     return False
   ElseIf partners.Length == 0
-    Debug.trace("Simple Prostitution: [FG] Not enough partners: " + partners)
+    logText("[FG] Not enough partners: " + partners, False, true, 2)
     return False
   endif
   int totalPartners = partners.Length
@@ -88,7 +90,7 @@ Bool function bHaveGroupSexWithPlayerFG(Quest FlowerGirls, Actor[] partners) Glo
     iIndex -= 1
     if partners[iIndex]
       if FGScript.ThreadManager.GetActiveThreadForActor(partners[iIndex] as ObjectReference) != None
-        Debug.trace("Simple Prostitution: [FG] partner is busy in another scene: " + partners[iIndex])
+	    logText("[FG] partner is busy in another scene: " + partners[iIndex], False, True, 2)
         totalPartners -= 1
       endif
     else
@@ -109,9 +111,9 @@ Bool function bHaveGroupSexWithPlayerFG(Quest FlowerGirls, Actor[] partners) Glo
       FGScript.RandomScene(player, partner)
       return bCheckThreadForActorAndWaitFG(FlowerGirls, player)
     endif
-    Debug.trace("Simple Prostitution [FG] Not enough available partners: " + partners)
+	logText("[FG] Not enough available partners: " + partners, False, True, 2)
   else
-    Debug.trace("Simple Prostitution: [FG] Not enough available partners: " + partners)
+    logText("[FG] Not enough available partners: " + partners, False, True, 2)
     return False
   endif
   return False

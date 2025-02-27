@@ -288,3 +288,31 @@ Form Function GetRandomItemFromLeveledItem(LeveledItem akItemList, Int iMaxStepB
     EndWhile
     Return loc_form
 EndFunction
+
+Function logText(String asText, Bool bNotification = False, Bool bTrace = True, Int aiSeverity = 1, String asSender = "SPP", String asDefaultColor = "9F00FF", String asSuccessColor = "00FF00", String asInfoColor = "00FFFF", String asWarningColor = "FFFF00", String asErrorColor = "FF0000") Global
+	{Outputs a formatted message to log or/and on the screen. aiSeverity = (0,1,2,3) = (Success, Info, Warning, Error)}
+	If !asText || (!bTrace && !bNotification)
+		return
+	endif
+	String sColor
+	Int iSeverity
+	If aiSeverity >= 3
+		sColor = asErrorColor
+		iSeverity = 2
+	elseif aiSeverity == 2
+		sColor = asWarningColor
+		iSeverity = 1
+	elseif aiSeverity == 1
+		sColor = asInfoColor
+		iSeverity = 0
+	else
+		sColor = asSuccessColor
+		iSeverity = 0
+	endif
+	if bTrace
+		Debug.trace(asSender + " -:- " + asText, iSeverity)
+	endif
+	if 	bNotification
+		Debug.Notification("<font color='#" +  asDefaultColor + "'>" + asSender + "</font> -:- " + "<font color='#" + sColor  + "'>" + asText + "</font>")
+	endif
+EndFunction

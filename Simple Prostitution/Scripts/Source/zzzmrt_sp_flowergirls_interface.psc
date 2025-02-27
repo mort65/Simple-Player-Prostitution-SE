@@ -12,7 +12,7 @@ event OnEndState()
   FlowerGirls = Game.GetFormFromFile(0x0012C5, "FlowerGirls SE.esm") as Quest ; Get quest now
   AnimatingFaction = Game.GetFormFromFile(0x5bef2c, "FlowerGirls SE.esm") as Faction
   if isFormValid(FlowerGirls)
-    Debug.Notification("Simple Prostitution: FlowerGirls detected.")
+    logText("FlowerGirls detected.", true, true, 1)
   endif
 endevent
 
@@ -24,8 +24,8 @@ Bool function GetIsInterfaceActive()
 endfunction
 
 function PlayerLoadsGame()
-	bChecked = False
-  Debug.trace("Simple Prostitution: PlayerLoadsGame() triggered for " + self)
+  bChecked = False
+  logText("PlayerLoadsGame() triggered for " + self)
 
   ; Is the soft dependency installed and is our script in the right state? If not change state.
   if isPluginFound("FlowerGirls SE.esm")

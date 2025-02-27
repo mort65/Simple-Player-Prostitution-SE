@@ -15,7 +15,7 @@ else
 endif
 if QuestScript.canPunishPlayer(akSpeaker)
 	QuestScript.MainScript.bRejectOrgasm = True
-	Debug.Notification("Simple Prostitution: " + akSpeaker.GetDisplayName() + " not orgasmed.")
+	;zzzmrt_sp_utility.logText(akSpeaker.GetDisplayName() + " not orgasmed.", true, true)
 	QuestScript.MainScript.rejectCusomer(akSpeaker)
 endif
 akSpeaker.EvaluatePackage()

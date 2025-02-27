@@ -134,7 +134,7 @@ Bool Function _LockRandomDeviceOnActor(Quest zdxQuest, Actor akActor, Int iLevel
 				endwhile
 			endif
 			if _deviceHaveKeywordConflict(zdxQuest, akActor, rn_Dev)
-				Debug.trace("Simple Prostitution: Could not find devious Device without keyword conflict. keyword = " + Dev_kw)
+			    logText("Could not find devious Device without keyword conflict. keyword = " + Dev_kw, False, True, 1)
 				return _TightenRandomDevice(zdxQuest, akActor, devs)
 			endif
 		endif
@@ -146,7 +146,7 @@ Bool Function _LockRandomDeviceOnActor(Quest zdxQuest, Actor akActor, Int iLevel
 				Armor thisArmor = akActor.GetWornForm(thisSlot) as Armor
 				if (thisArmor)
 					if thisArmor.hasKeyword(DX.libs.zad_Lockable) && (Math.LogicalAnd(rn_SlotMask, thisSlot) == thisSlot)
-						Debug.trace("Simple Prostitution: Device has conflict with equipped DD items in slot: "+ thisSlot)
+					    logText("Device has conflict with equipped DD items in slot: " + thisSlot, False, True, 1)
 						return _TightenRandomDevice(zdxQuest, akActor, devs)
 					endif
 				else ;no armor was found on this slot
@@ -161,8 +161,7 @@ Bool Function _LockRandomDeviceOnActor(Quest zdxQuest, Actor akActor, Int iLevel
 		DX.libs.LockDevice(akActor, dev, false)
 		utility.wait(0.2)
 		if dev.GetName()
-			Debug.Notification("Simple Prostitution: " + dev.GetName() + " equipped.")
-			Debug.Trace("Simple Prostitution: " + dev.GetName() + " equipped.")
+		    logText(dev.GetName() + " equipped.", True, True, 1)
 		endif
 		return true
 	endif

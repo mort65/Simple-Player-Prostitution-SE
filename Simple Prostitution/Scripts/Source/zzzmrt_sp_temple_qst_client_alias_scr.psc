@@ -1,11 +1,13 @@
 Scriptname zzzmrt_sp_temple_qst_client_alias_scr extends ReferenceAlias  Conditional
 
+import zzzmrt_sp_utility
+
 event OnReset()
-  Debug.Trace("Simple Prostitution: Client is gone.")
+  logText("Client is gone.")
   GetOwningQuest().setStage(10)
 endevent
 
 event OnDying(Actor akKiller)
-  Debug.Trace("Simple Prostitution: Client is dying.")
+  logText("Client is dying.")
   GetOwningQuest().setStage(10)
 endevent

@@ -12,7 +12,7 @@ endevent
 
 Function setVars()
   sla_Framework = Game.GetFormFromFile(0x04290F, "SexLabAroused.esm") as Quest
-  Debug.Notification("Simple Prostitution: SL Aroused detected.")
+  logText("SL Aroused detected.", true, true, 1)
 endfunction
 
 Bool Function bCheckVars()
@@ -27,8 +27,8 @@ Bool function GetIsInterfaceActive()
 endfunction
 
 function PlayerLoadsGame(Bool bForce = False)
-	bChecked = False
-  Debug.trace("Simple Prostitution: PlayerLoadsGame() triggered for " + self)
+  bChecked = False
+  logText("PlayerLoadsGame() triggered for " + self)
 
   ; Is the soft dependency installed and is our script in the right state? If not change state.
   if isPluginFound("SexLabAroused.esm")

@@ -1,5 +1,7 @@
 Scriptname zzzmrt_sp_int_ostim Hidden
 
+import zzzmrt_sp_utility
+
 Actor[] function getActorsOS(Quest OSexIntegrationMainQuest) Global
 	;OSexIntegrationMain ostim = OSexIntegrationMainQuest as OSexIntegrationMain
 	return OThread.GetActors(0)
@@ -57,7 +59,7 @@ int function haveSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor partner, 
 			anim2 = getRandomAnimation(actors, sExtraTags[iExtraTagsIndex] + ",")
 		endif
 		if !anim2
-			Debug.trace("Simple Prostitution: [OStim] couldn't find any animation with these tags: " + sExtraTags[iExtraTagsIndex])
+		    logText("[OStim] couldn't find any animation with these tags: " + sExtraTags[iExtraTagsIndex], False, True, 2)
 		endif
 	endif
 	int i = 20
@@ -88,17 +90,17 @@ int function haveSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor partner, 
 	if myAnim && (OThread.QuickStart(actors, StartingAnimation = myAnim) > -1)
 		return Position
 	else
-		Debug.trace("Simple Prostitution: [OStim] couldn't find suitable animation.")
+		logText("[OStim] couldn't find suitable animation.", False, True, 2)
 		if bAllowAll
 			myAnim = OLibrary.GetRandomScene(actors)
 			if myAnim
 				if (OThread.QuickStart(actors, StartingAnimation = myAnim) > -1)
 					return Position
 				endif
-				Debug.trace("Simple Prostitution: [OStim] couldn't start animation.")
+				logText("[OStim] couldn't start animation.", True, True, 2)
 				return -1
 			endif
-			Debug.trace("Simple Prostitution: [OStim] couldn't find any animation.")
+			logText("[OStim] couldn't find any animation.", True, True, 2)
 		endif
 	endif
 	return -1
@@ -107,14 +109,14 @@ endfunction
 
 Bool Function IsSceneAggressiveOS(String SceneID) Global
     if OMetadata.HasAnySceneTagCSV(SceneID, "aggressive,forced,rough,")
-    	Debug.trace("Simple Prostitution: [OStim] Scene with aggressive tag found: " + SceneID)
+		logText("[OStim] Scene with aggressive tag found: " + SceneID)
     	Return true
     endif
     int aiIndex = OMetadata.GetActorCount(SceneID)
     While aiIndex > 0
         aiIndex -= 1
         if OMetadata.HasAnyActorTagCSV(SceneID, aiIndex, "aggressor,dominant,")
-        	Debug.trace("Simple Prostitution: [OStim] Scene with aggressive actor tag found: " + SceneID)
+		    logText("[OStim] Scene with aggressive actor tag found: " + SceneID)
         	Return true
         EndIf
     EndWhile
@@ -195,7 +197,7 @@ Bool function bHaveRandomSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor p
 	if bAggressive
 		myAnim = getRandomAnimation(actors, "dominant,aggressor,", "")
 		if myAnim == ""
-			Debug.trace("Simple Prostitution: [OStim] couldn't find any Aggressive animation.")
+		    logText("[OStim] couldn't find any Aggressive animation.", False, True, 2)
 			myAnim = OLibrary.GetRandomScene(actors)
 		endif
 	else
@@ -207,16 +209,16 @@ Bool function bHaveRandomSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor p
 		iIndex -= 1
 	EndWhile
 	if (IsSceneAggressiveOS(myAnim) != bAggressive)
-		Debug.trace("Simple Prostitution: [OStim] couldn't find any suitable animation.")
+	    logText("[OStim] couldn't find any suitable animation.", False, True, 2)
 	endif
 	if myAnim 
 		if (OThread.QuickStart(actors, StartingAnimation = myAnim) > -1)
 			return true
 		endif
-		Debug.trace("Simple Prostitution: [OStim] couldn't start animation.")
+		logText("[OStim] couldn't start animation.", True, True, 2)
 		return False
 	endif
-	Debug.trace("Simple Prostitution: [OStim] couldn't find any animation.")
+	logText("[OStim] couldn't find any animation.", True, True, 2)
 	return False
 endfunction
 
@@ -225,7 +227,7 @@ Bool function bHaveGroupSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor[] 
 	OSexIntegrationMain ostim = OSexIntegrationMainQuest as OSexIntegrationMain
 	Actor player = Game.GetPlayer()
 	if partners.length > 4
-		Debug.trace("Simple Prostitution: [OStim] too many partners: " + partners)
+	    logText("[OStim] too many partners: " + partners, False, True, 2)
 		return False
 	endif
 	int totalPartners = partners.Length
@@ -247,7 +249,7 @@ Bool function bHaveGroupSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor[] 
 	ElseIf totalActors == 2
 		actors = new actor[2]
 	elseIf totalActors <= 1 ; onlyplayer
-		Debug.trace("Simple Prostitution: [OStim] Not enough partners (OStim): " + partners)
+	    logText("[OStim] Not enough partners (OStim): " + partners, False, True, 2)
 		return False
 	endif
 		
@@ -283,13 +285,13 @@ Bool function bHaveGroupSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor[] 
 		EndWhile
 	endif
 	if sAnim
-    if OThread.QuickStart(actors, StartingAnimation = sAnim) > -1
-    	return True
-    endif
-    Debug.trace("Simple Prostitution: [OStim] couldn't start animation.") 
-    Return  false
+		if OThread.QuickStart(actors, StartingAnimation = sAnim) > -1
+			return True
+		endif
+		logText("[OStim] couldn't start animation.", True, True, 2)
+		Return  false
 	endif
-	Debug.trace("Simple Prostitution: [OStim] couldn't find any animation for " + actors.length + " actors." )
+	logText("[OStim] couldn't find any animation for " + actors.length + " actors.", True, True, 2)
 	return False
 EndFunction
 

@@ -20,8 +20,8 @@ endevent
 
 Function setVars()
   zadxQuest = Game.GetFormFromFile(0x00ca01, "Devious Devices - Expansion.esm") as Quest
-	setDevArrs()
-  Debug.Notification("Simple Prostitution: Devious Devices Expansion detected.")
+  setDevArrs()
+  logText("Devious Devices Expansion detected.", true, true, 1)
 endfunction
 
 Bool Function bCheckVars()
@@ -86,8 +86,8 @@ function InflateRandomPlug(Actor akActor)
 endfunction
 
 function PlayerLoadsGame(Bool bForce = False)
-	bChecked = False
-  Debug.trace("Simple Prostitution: PlayerLoadsGame() triggered for " + self)
+  bChecked = False
+  logText("PlayerLoadsGame() triggered for " + self)
 
   ; Is the soft dependency installed and is our script in the right state? If not change state.
   if isPluginFound("Devious Devices - Expansion.esm")

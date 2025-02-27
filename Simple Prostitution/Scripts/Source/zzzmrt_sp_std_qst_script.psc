@@ -99,8 +99,7 @@ Bool function cureActorSTDs(Actor akActor, Bool bPay = true, int maxStage = 0, i
 					totalPrice += priceArr[jIndex]
 					bCured = true
 					maxCures -= 1
-					Debug.trace("Simple Prostitution: " + std.GetName() + " cured.")
-					Debug.Notification(std.GetName() + " cured.")
+					logText(std.GetName() + " cured.", true, true)
 				endif
 			endif
 		endWhile
@@ -215,13 +214,13 @@ State Infecting
 				Spell nextSTDStage = nextSTDStages.GetAt(iIndex) As Spell
 				player.RemoveSpell(curSTDStage)
 				player.addSpell(nextSTDStage)
-				Debug.Trace("Simple Prostitution: STD progressed, Infected: " + player + ", CurrentStage: " + nextSTDStage.GetName() + ", PreviousStage: " + curSTDStage.GetName())
+				logText("STD progressed, Infected: " + player + ", CurrentStage: " + nextSTDStage.GetName() + ", PreviousStage: " + curSTDStage.GetName())
 			endif
 			if bInfect
 				iIndex = utility.randomint(0, possibleNewSTDs.GetSize() - 1)
 				spell std = possibleNewSTDs.GetAt(iIndex) As Spell
 				player.addSpell(std)
-				Debug.Trace("Simple Prostitution: STD transmitted, infected: " + player + ", CurrentStage: " + std.GetName())
+				logText("STD transmitted, infected: " + player + ", CurrentStage: " + std.GetName())
 			endif
 			setCureSTDCost(player)
 	    endif		

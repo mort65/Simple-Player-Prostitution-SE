@@ -13,8 +13,8 @@ endevent
 
 Function setVars()
   ;SLSFR_Main = Game.GetFormFromFile(0x000808, "SLSF Reloaded.esp") as Quest
-	SLSFR_CurrentWhoreFame = Game.GetFormFromFile(0x00080d, "SLSF Reloaded.esp") as GlobalVariable
-  Debug.Notification("Simple Prostitution: SLSF Reloaded detected.")
+  SLSFR_CurrentWhoreFame = Game.GetFormFromFile(0x00080d, "SLSF Reloaded.esp") as GlobalVariable
+  logText("SLSF Reloaded detected.", true, true , 1)
 endfunction
 
 Bool function GetIsInterfaceActive()
@@ -25,8 +25,8 @@ Bool function GetIsInterfaceActive()
 endfunction
 
 function PlayerLoadsGame(Bool bForce = False)
-	bChecked = False
-  Debug.trace("Simple Prostitution: PlayerLoadsGame() triggered for " + self)
+  bChecked = False
+  logText("PlayerLoadsGame() triggered for " + self)
 
   ; Is the soft dependency installed and is our script in the right state? If not change state.
   if isPluginFound("SLSF Reloaded.esp")

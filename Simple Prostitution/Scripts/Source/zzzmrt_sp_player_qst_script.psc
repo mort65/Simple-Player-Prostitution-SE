@@ -8,7 +8,6 @@ Bool bCheckVars = False
 Bool bInit = False
 
 event OnInit()
-  ;Debug.trace("Simple Prostitution: OnInit() triggered for " + self)
   bInit = True
   bCheckVars = True
   RegisterForSingleUpdate(3.0)
@@ -33,7 +32,11 @@ event OnUpdate()
   MainScript.snitch()
 	if bInit
 		bInit = False
-		Debug.Notification("Simple Prostitution started.")
+		logText("Test Success",True, True, 0)
+		logText("Test Info",True, True, 1)
+		logText("Test Warning",True, True, 2)
+		logText("Test Error",True, True, 3)
+		logText("Simple Player Prostitution started", True, True, 0)
 	endif
 endevent
 
@@ -67,7 +70,6 @@ Event OnStopDetectAssault(string eventName, string strArg, float numArg, Form se
 EndEvent
 
 Event OnStartFindSnitch(Form sender, Bool bCheckDibel)
-  ;Debug.Trace("Simple Prostitution: OnStartFindSnitch triggered.")
   MainScript.snitchers.revert()
   if !MainScript.GetState() == ""
     Bool bFound = False
@@ -155,7 +157,6 @@ endfunction
 
 State Assault
   Event OnHit(ObjectReference akAggressor, Form akSource, Projectile akProjectile, bool abPowerAttack, bool abSneakAttack, bool abBashAttack, bool abHitBlocked)
-    Debug.trace("Simple Prostitution: OnHit() triggered for " + self)
     MainScript.bAssaulted = true
     if GetState() == "Assault"
       GoToState("")

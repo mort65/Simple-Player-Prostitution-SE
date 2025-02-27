@@ -1,5 +1,7 @@
 Scriptname zzzmrt_sp_int_sexlab Hidden
 
+Import zzzmrt_sp_utility
+
 Actor[] Function hookActorsSL(Quest SexLabQuestFramework, String argString) Global
   SexLabFramework SexLab = SexLabQuestFramework As SexLabFramework
   return SexLab.ThreadSlots.GetController(argString as int).Positions
@@ -76,7 +78,7 @@ int function haveSexWithPlayerSL(Quest SexLabQuestFramework, Actor Partner, Int 
   if (iExtraTagsIndex > -1) && sExtraTags[iExtraTagsIndex]
     anims2 = SexLab.GetAnimationsByTags(2, sExtraTags[iExtraTagsIndex] + ",", "", RequireAll=bRequireAllTags[iExtraTagsIndex])
 		if anims2.length == 0
-			Debug.trace("Simple Prostitution: [SexLab] couldn't find any animation with these tags: " + sExtraTags[iExtraTagsIndex])
+			logText("[SexLab] couldn't find any animation with these tags: " + sExtraTags[iExtraTagsIndex], False, True, 2)
 		endif
   endif
   if Position == 0
@@ -105,12 +107,12 @@ int function haveSexWithPlayerSL(Quest SexLabQuestFramework, Actor Partner, Int 
       anims = SexLab.GetAnimationsByTags(2, "MF," + sType, SuppressTagsForNotRough, RequireAll=true)
     endif
     if anims.Length == 0
-      Debug.trace("Simple Prostitution: [SexLab] couldn't find suitable animation.")
+	  logText("[SexLab] couldn't find suitable animation.", False, True, 2)
       if bAllowAll
         anims = SexLab.GetAnimationsByTags(2, "MF,", "", RequireAll=true)
       endif
       if anims.Length == 0
-        Debug.trace("Simple Prostitution: [SexLab] couldn't find any animation.")
+	    logText("[SexLab] couldn't find any animation.", True, True, 2)
         return -1
       endif
     endif
@@ -123,7 +125,7 @@ int function haveSexWithPlayerSL(Quest SexLabQuestFramework, Actor Partner, Int 
   if SexLab.StartSex(sexActors, myAnims, none, none, true, "AnimationEnding,AnimationEnd") > -1
     return Position
   endif
-  Debug.trace("Simple Prostitution: [SexLab] couldn't start animation.")
+  logText("[SexLab] couldn't start animation.", True, true, 2)
   return -1
 endfunction
 
@@ -221,7 +223,7 @@ Bool function bHaveRandomSexWithPlayerSL(Quest SexLabQuestFramework, Actor Partn
         anims = SexLab.GetAnimationsByTags(2, "MF,", "", RequireAll=true)
       endif
       if anims.Length == 0
-        Debug.trace("Simple Prostitution: [SexLab] couldn't find any animation.")
+	    logText("[SexLab] couldn't find any animation.", True, True, 2)
         return False
       endif
     endif
@@ -230,7 +232,7 @@ Bool function bHaveRandomSexWithPlayerSL(Quest SexLabQuestFramework, Actor Partn
   if SexLab.StartSex(sexActors, anims, none, none, true, "AnimationEnding,AnimationEnd") > -1
     return True
   endif
-  Debug.trace("Simple Prostitution: [SexLab] couldn't start animation.")
+ logText("[SexLab] couldn't start animation.", True, True, 2)
   return False
 endfunction
 
@@ -243,7 +245,7 @@ Bool function bHaveGroupSexWithPlayerSL(Quest SexLabQuestFramework, Actor[] part
   Int iMales = 0
   Int iFemales = 0
   if partners.length > 4
-    Debug.trace("Simple Prostitution: [SexLab] too many partners: " + partners)
+    logText("[SexLab] too many partners: " + partners, False, True, 1)
     return False
   endif
   if isFemale(SexLabQuestFramework, player)
@@ -275,7 +277,7 @@ Bool function bHaveGroupSexWithPlayerSL(Quest SexLabQuestFramework, Actor[] part
   ElseIf totalActors == 2
     actors = new actor[2]
   elseIf totalActors <= 1
-    Debug.trace("Simple Prostitution: [SexLab] Not enough partners: " + partners)
+	logText("[SexLab] Not enough partners: " + partners, False, True, 1)
     return False
   endif
   actors[0] = player
@@ -303,10 +305,10 @@ Bool function bHaveGroupSexWithPlayerSL(Quest SexLabQuestFramework, Actor[] part
     if SexLab.StartSex(actors, anims, none, none, true, "AnimationEnding,AnimationEnd") > -1
       return True
     endif
-    Debug.trace("Simple Prostitution: [SexLab] couldn't start SexLab animation.") 
+	logText("[SexLab] couldn't start SexLab animation.", True, True, 2)
     Return  false
   endif
-  Debug.trace("Simple Prostitution: [SexLab] couldn't find any SexLab animation for " + actors.length + " actors." )
+  logText("[SexLab] couldn't find any SexLab animation for " + actors.length + " actors.", True, True, 2)
   return False
 EndFunction
 

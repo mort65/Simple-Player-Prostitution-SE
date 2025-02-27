@@ -14,7 +14,7 @@ else
 	QuestScript.MainScript.setRejectingCustomerResult(akSpeaker, true, false, false, false)
 endif
 QuestScript.MainScript.bRejectOrgasm = True
-Debug.Notification("Simple Prostitution: " + akSpeaker.GetDisplayName() + " not orgasmed.")
+;zzzmrt_sp_utility.logText(akSpeaker.GetDisplayName() + " not orgasmed.", true, true)
 ;END CODE
 EndFunction
 ;END FRAGMENT

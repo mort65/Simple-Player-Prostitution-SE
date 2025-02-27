@@ -1,11 +1,13 @@
 Scriptname zzzmrt_sp_pimp_alias_script extends ReferenceAlias  Conditional
 
+import zzzmrt_sp_utility
+
 event OnReset()
-  Debug.Trace("Simple Prostitution: Pimp is gone.")
+  logText("Pimp is gone.")
   GetOwningQuest().SetStage(10)
 endevent
 
 event OnDying(Actor akKiller)
-  Debug.Trace("Simple Prostitution: Pimp is dying.")
+  logText("Pimp is dying.")
   GetOwningQuest().SetStage(10)
 endevent

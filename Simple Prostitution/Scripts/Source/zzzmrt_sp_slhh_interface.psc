@@ -14,8 +14,8 @@ endevent
 
 Function setVars()
   SLHH = Game.GetFormFromFile(0x0012c4, "SexLabHorribleHarassment.esp") as Quest
-	SLHHScriptEventKeyword = Game.GetFormFromFile(0x00c510, "SexLabHorribleHarassment.esp") as Keyword
-  Debug.Notification("Simple Prostitution: Horrible Harassment Expansion detected.")
+  SLHHScriptEventKeyword = Game.GetFormFromFile(0x00c510, "SexLabHorribleHarassment.esp") as Keyword
+  logText("Horrible Harassment Expansion detected.", True, true, 1)
 endfunction
 
 Bool function GetIsInterfaceActive()
@@ -26,8 +26,8 @@ Bool function GetIsInterfaceActive()
 endfunction
 
 function PlayerLoadsGame(Bool bForce = False)
-	bChecked = False
-  Debug.trace("Simple Prostitution: PlayerLoadsGame() triggered for " + self)
+  bChecked = False
+  logText("PlayerLoadsGame() triggered for " + self)
 
   ; Is the soft dependency installed and is our script in the right state? If not change state.
   if isPluginFound("SexLabHorribleHarassment.esp")
