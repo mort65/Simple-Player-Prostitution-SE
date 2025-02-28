@@ -5804,6 +5804,7 @@ event OnOptionColorAccept(int a_option, int a_color)
 		SetColorOptionValue(a_option, a_color)
 		MainScript.sDefaultColor = Stringutil.Substring(sDecToHex(a_color),2)
 		bColorChanged = true
+		ForcePageReset()
 	elseif (a_option == OID_COLOR_SUCCESS)
 		MainScript.iSuccessColor = a_color
 		SetColorOptionValue(a_option, a_color)
