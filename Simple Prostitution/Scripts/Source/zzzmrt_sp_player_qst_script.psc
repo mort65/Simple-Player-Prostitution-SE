@@ -32,11 +32,7 @@ event OnUpdate()
   MainScript.snitch()
 	if bInit
 		bInit = False
-		logText("Test Success",True, True, 0)
-		logText("Test Info",True, True, 1)
-		logText("Test Warning",True, True, 2)
-		logText("Test Error",True, True, 3)
-		logText("Simple Player Prostitution started", True, True, 0)
+		MainScript.log("Simple Player Prostitution started", True, True, 0, True)
 	endif
 endevent
 

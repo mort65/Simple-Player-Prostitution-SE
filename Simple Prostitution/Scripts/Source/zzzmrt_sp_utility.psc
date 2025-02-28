@@ -289,7 +289,58 @@ Form Function GetRandomItemFromLeveledItem(LeveledItem akItemList, Int iMaxStepB
     Return loc_form
 EndFunction
 
-Function logText(String asText, Bool bNotification = False, Bool bTrace = True, Int aiSeverity = 1, String asSender = "SPP", String asDefaultColor = "9F00FF", String asSuccessColor = "00FF00", String asInfoColor = "00FFFF", String asWarningColor = "FFFF00", String asErrorColor = "FF0000") Global
+String function sDecToHex(Int iDec) Global
+{Converts a decimal integer to hexadecimal}
+  Bool bNegetive = False
+  if iDec <= 0
+    if iDec == 0
+      return "00000000"
+    else
+      iDec *= -1
+      bNegetive = True
+    endif
+  endif
+  String sHexes = "0123456789ABCDEF"
+  String r = ""
+  Bool bAddOne = True
+  Int n = iDec
+  Int i
+  while True
+    if bNegetive
+      i = 15 - (n % 16)
+      if bAddOne
+        i += 1
+        if i == 16
+          i = 0
+        else
+          bAddOne = False
+        endif
+      endif
+    else
+      i = n % 16
+    endif
+    r += GetNthChar(sHexes, i)
+    n = (n / 16) As Int
+    if n == 0
+      String sResult = ""
+      n = GetLength(r)
+      while n > 0
+        n -= 1
+        sResult += GetNthChar(r, n)
+      endwhile
+      if GetLength(sResult) < 8
+        if bNegetive
+          return Substring("FFFFFFFF", 0, 8 - GetLength(sResult)) + sResult
+        else
+          return Substring("00000000", 0, 8 - GetLength(sResult)) + sResult
+        endif
+      endif
+      return sResult
+    endif
+  endwhile
+endfunction
+
+Function logText(String asText, Bool bNotification = False, Bool bTrace = True, Int aiSeverity = 1, String asSender = "SPP", String asDefaultColor = "9F00FF", String asSuccessColor = "00FF00", String asInfoColor = "00FFFF", String asWarningColor = "FFFF00", String asErrorColor = "FF0000", String asSeparatorColor = "FFFFFF") Global
 	{Outputs a formatted message to log or/and on the screen. aiSeverity = (0,1,2,3) = (Success, Info, Warning, Error)}
 	If !asText || (!bTrace && !bNotification)
 		return
@@ -313,6 +364,6 @@ Function logText(String asText, Bool bNotification = False, Bool bTrace = True, 
 		Debug.trace(asSender + " -:- " + asText, iSeverity)
 	endif
 	if 	bNotification
-		Debug.Notification("<font color='#" +  asDefaultColor + "'>" + asSender + "</font> -:- " + "<font color='#" + sColor  + "'>" + asText + "</font>")
+		Debug.Notification("<font color='#" +  asDefaultColor + "'>" + asSender + "</font>" + "<font color='#" + asSeparatorColor +"'>" + " -:- " + "</font>" + "<font color='#" + sColor  + "'>" + asText + "</font>")
 	endif
 EndFunction

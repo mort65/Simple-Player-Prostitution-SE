@@ -1,6 +1,8 @@
 Scriptname zzzmrt_sp_slsfr_interface extends Quest
 
 import zzzmrt_sp_utility
+Quest property MainQuest auto
+zzzmrt_sp_main_qst_script property MainScript auto
 
 ;Quest SLSFR_Main
 GlobalVariable SLSFR_CurrentWhoreFame
@@ -14,7 +16,7 @@ endevent
 Function setVars()
   ;SLSFR_Main = Game.GetFormFromFile(0x000808, "SLSF Reloaded.esp") as Quest
   SLSFR_CurrentWhoreFame = Game.GetFormFromFile(0x00080d, "SLSF Reloaded.esp") as GlobalVariable
-  logText("SLSF Reloaded detected.", true, true , 1)
+  MainScript.log("SLSF Reloaded detected.", true, true , 1, true)
 endfunction
 
 Bool function GetIsInterfaceActive()

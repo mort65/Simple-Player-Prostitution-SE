@@ -2,14 +2,14 @@ Scriptname zzzmrt_sp_int_ddx Hidden
 
 import zzzmrt_sp_utility
 
-Bool Function _LockRandomDeviceOnActor(Quest zdxQuest, Actor akActor, Int iLevel = 0, Int[] weightedChanceArray, LeveledItem corsets_regular, Form[] devArray = None) Global
+Form Function _LockRandomDeviceOnActor(Quest zdxQuest, Actor akActor, Int iLevel = 0, Int[] weightedChanceArray, LeveledItem corsets_regular, Form[] devArray = None) Global
 	;iLevel 3 = Everything Allowed
 	;iLevel 2 = No Heavy restraint, Blindfold, Hood and Suit
 	;iLevel 1 = No Heavy restraint, Blindfold, Hood, Suit, closed belt, bra and gag other than ringed gaged
 	;iLevel 0 = No Heavy restraints, Blindfold, Hood, Suit, belt, bra, gag, boot, glove, corset, harness, collar
 	zadDeviceLists DX = zdxQuest as zadDeviceLists
 	if !akActor || !DX
-		return False
+		return None
 	endif
 
 	Bool isFemale = (akActor.GetLeveledActorBase().GetSex() == 1)
@@ -88,7 +88,8 @@ Bool Function _LockRandomDeviceOnActor(Quest zdxQuest, Actor akActor, Int iLevel
 	int iEmpty = deviceChances.Find(1)
 
 	if iEmpty < 0
-		return _TightenRandomDevice(zdxQuest, akActor, devs)
+		 _TightenRandomDevice(zdxQuest, akActor, devs)
+		 return None
 	endif
 
 	if weightedChanceArray
@@ -106,7 +107,7 @@ Bool Function _LockRandomDeviceOnActor(Quest zdxQuest, Actor akActor, Int iLevel
 
 	int iResult = weightedRandInt(deviceChances)
 	if (iResult < 0) || iResult > (devs.Length - 1)
-		return False
+		return None
 	endif
 
 	Armor dev
@@ -117,7 +118,7 @@ Bool Function _LockRandomDeviceOnActor(Quest zdxQuest, Actor akActor, Int iLevel
 		Dev_LVLI = devs[iResult] as LeveledItem
 		dev = DX.GetRandomDevice(Dev_LVLI)
 	else
-		return False
+		return None
 	endif
 	
 	keyWord Dev_kw = DX.libs.GetDeviceKeyword(dev)
@@ -135,7 +136,8 @@ Bool Function _LockRandomDeviceOnActor(Quest zdxQuest, Actor akActor, Int iLevel
 			endif
 			if _deviceHaveKeywordConflict(zdxQuest, akActor, rn_Dev)
 			    logText("Could not find devious Device without keyword conflict. keyword = " + Dev_kw, False, True, 1)
-				return _TightenRandomDevice(zdxQuest, akActor, devs)
+				_TightenRandomDevice(zdxQuest, akActor, devs)
+				Return None
 			endif
 		endif
 		Int rn_SlotMask = rn_Dev.GetSlotMask()
@@ -147,7 +149,8 @@ Bool Function _LockRandomDeviceOnActor(Quest zdxQuest, Actor akActor, Int iLevel
 				if (thisArmor)
 					if thisArmor.hasKeyword(DX.libs.zad_Lockable) && (Math.LogicalAnd(rn_SlotMask, thisSlot) == thisSlot)
 					    logText("Device has conflict with equipped DD items in slot: " + thisSlot, False, True, 1)
-						return _TightenRandomDevice(zdxQuest, akActor, devs)
+						_TightenRandomDevice(zdxQuest, akActor, devs)
+						Return None
 					endif
 				else ;no armor was found on this slot
 					slotsChecked += thisSlot
@@ -161,11 +164,11 @@ Bool Function _LockRandomDeviceOnActor(Quest zdxQuest, Actor akActor, Int iLevel
 		DX.libs.LockDevice(akActor, dev, false)
 		utility.wait(0.2)
 		if dev.GetName()
-		    logText(dev.GetName() + " equipped.", True, True, 1)
+		    logText(dev.GetName() + " equipped.", False, True, 1)
 		endif
-		return true
+		return dev
 	endif
-	return false
+	return None
 EndFunction
 
 Bool Function _IsPlugged(Quest zdxQuest, Actor akActor) Global

@@ -6,9 +6,9 @@ zzzmrt_sp_main_qst_script property MainScript auto
 import zzzmrt_sp_utility
 
 Event OnInit()
-	If ClientAlias
+	If ClientAlias && ClientAlias.GetReference()
 		actor client = ClientAlias.GetReference() as Actor
-		logText("Temple of Dibella client: "+ client.GetDisplayName() + " | " + client)
+		MainScript.log("Temple of Dibella client: "+ client.GetDisplayName() + " | " + client)
 	endif
 EndEvent
 

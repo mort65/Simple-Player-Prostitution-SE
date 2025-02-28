@@ -1,6 +1,8 @@
 Scriptname zzzmrt_sp_ostim_interface extends Quest
 
 import zzzmrt_sp_utility
+Quest property MainQuest auto
+zzzmrt_sp_main_qst_script property MainScript auto
 
 Quest OSexIntegrationMainQuest
 Bool property bChecked = False Auto Hidden
@@ -9,7 +11,7 @@ event OnEndState()
   Utility.Wait(5.0) ; Wait before entering active state to help avoid making function calls to scripts that may not have initialized yet.
   OSexIntegrationMainQuest = Game.GetFormFromFile(0x000801, "OStim.esp") as Quest
   if isFormValid(OSexIntegrationMainQuest)
-    logText("OStim detected.", True, True, 1)
+    MainScript.log("OStim detected.", True, True, 1, true)
   endif
 endevent
 

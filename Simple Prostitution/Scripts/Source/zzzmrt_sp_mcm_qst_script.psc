@@ -29,6 +29,7 @@ Int Property iTotalOfferedMarks = 0 Auto Hidden
 Int Property iTotalRefundableOfferedMarks = 0 Auto Hidden
 
 Bool setModVars = false
+Bool bColorChanged = false
 
 String settings_path = "..\\simple-prostitution\\user-settings"
 String data_path = "..\\simple-prostitution\\user-data"
@@ -72,7 +73,7 @@ event OnPageReset(String page)
   SetCursorFillMode(TOP_TO_BOTTOM)
   if (page == "$MRT_SP_PAGE_DEBUG")
     SetTitleText("$MRT_SP_PAGE_DEBUG")
-    _AddHeaderOption("$MRT_SP_HEAD_DEBUG")
+    AddColoredHeader("$MRT_SP_HEAD_DEBUG")
     _AddToggleOptionST("MOD_TOGGLE", "$MRT_SP_MOD_TOGGLE", MainScript.bModEnabled)
     addEmptyOption()
     if MainScript.bIsPapyrusUtilActive && jsonutil.JsonExists(settings_path)
@@ -94,7 +95,7 @@ event OnPageReset(String page)
     endIf
     _AddTextOptionST("LOAD_USER_DATA_TXT", "$MRT_SP_LOAD_DATA", "$go", flag)
 		addEmptyOption()
-		_AddHeaderOption("$MRT_SP_HEAD_DEBUG_PC")
+		AddColoredHeader("$MRT_SP_HEAD_DEBUG_PC")
     if MainScript.bModEnabled
       flag = OPTION_FLAG_NONE
     else
@@ -111,7 +112,7 @@ event OnPageReset(String page)
 			OID_DEBUG_PC_DIBEL_TAG = AddTextOption("$MRT_SP_DEBUG_PC_DIBEL_TAG_ON", "", flag)
 		endif
     addEmptyOption()
-    _AddHeaderOption("$MRT_SP_HEAD_DEBUG_CLOTHING")
+    AddColoredHeader("$MRT_SP_HEAD_DEBUG_CLOTHING")
     if MainScript.bIsPO3ExtenderActive
       flag = OPTION_FLAG_NONE
     else
@@ -135,7 +136,7 @@ event OnPageReset(String page)
       _AddTextOptionST("BEG_TAG_CHEST_CLOTH_TXT", "$MRT_SP_BEG_TAG_CHEST_CLOTH_OFF", "", OPTION_FLAG_DISABLED) 
     endif
     addEmptyOption()
-    _AddHeaderOption("$MRT_SP_HEAD_DEBUG_LOCATION")
+    AddColoredHeader("$MRT_SP_HEAD_DEBUG_LOCATION")
     Cell cel = player.GetParentCell()
     Location loc = player.GetCurrentLocation()
     if loc && cel
@@ -153,7 +154,7 @@ event OnPageReset(String page)
       _AddTextOptionST("WHORE_TAG_LOC_TXT", "$MRT_SP_WHORE_TAG_LOC_OFF", "", OPTION_FLAG_DISABLED) 
     Endif
     addEmptyOption()
-    _AddHeaderOption("$MRT_SP_HEAD_DEBUG_NPC")
+    AddColoredHeader("$MRT_SP_HEAD_DEBUG_NPC")
     Actor npc = Game.GetCurrentCrosshairRef() As Actor
     if !npc
       npc = Game.GetCurrentConsoleRef() As Actor
@@ -206,9 +207,23 @@ event OnPageReset(String page)
     _AddTextOptionST("DEBUG_LICENSES_CHECK_TXT", "$licenses", MainScript.bIsLicensesActive As String, flag)
     _AddTextOptionST("DEBUG_DDI_CHECK_TXT", "$DDIntegration", MainScript.bIsDDIntegrationActive As String, flag)
     _AddTextOptionST("DEBUG_DDX_CHECK_TXT", "$DDExpansion", MainScript.bIsDDExpansionActive As String, flag)
-		_AddTextOptionST("DEBUG_SLSFR_CHECK_TXT", "$SLSF_RELOADED", MainScript.bIs_SLSFR_Active As String, flag)
-		AddTextOption("$SL_AROUSED", MainScript.bIs_SLA_Active As String, flag)
-		AddTextOption("$SLHH_EXPANSION", MainScript.bIs_SLHH_Active As String, flag)
+	_AddTextOptionST("DEBUG_SLSFR_CHECK_TXT", "$SLSF_RELOADED", MainScript.bIs_SLSFR_Active As String, flag)
+	AddTextOption("$SL_AROUSED", MainScript.bIs_SLA_Active As String, flag)
+	AddTextOption("$SLHH_EXPANSION", MainScript.bIs_SLHH_Active As String, flag)
+	addEmptyOption()
+	AddColoredHeader("$MRT_SP_HEAD_DEBUG_DISPLAY")
+    if MainScript.bModEnabled
+      flag = OPTION_FLAG_NONE
+    else
+      flag = OPTION_FLAG_DISABLED
+    endif
+	OID_SHOW_NOTIFICATION = AddToggleOption("$MRT_SP_SHOW_NOTIFICATION_TOGGLE", MainScript.bShowNotification, flag)
+	OID_COLOR_DEFAULT = AddColorOption("$MRT_SP_COLOR_DEFAULT", MainScript.iDefaultColor, flag)
+	OID_COLOR_SUCCESS = AddColorOption("$MRT_SP_COLOR_SUCCESS", MainScript.iSuccessColor, flag)
+	OID_COLOR_INFO = AddColorOption("$MRT_SP_COLOR_INFO", MainScript.iInfoColor, flag)
+	OID_COLOR_WARNING = AddColorOption("$MRT_SP_COLOR_WARNING", MainScript.iWarningColor, flag)
+	OID_COLOR_ERROR = AddColorOption("$MRT_SP_COLOR_ERROR", MainScript.iErrorColor, flag)
+	OID_COLOR_SEPARATOR = AddColorOption("$MRT_SP_COLOR_SEPARATOR", MainScript.iSeparatorColor, flag)
   elseif (page == "$MRT_SP_PAGE_STATS")
     Mainscript.initStatArrs()
     if MainScript.bModEnabled
@@ -217,18 +232,18 @@ event OnPageReset(String page)
       flag = OPTION_FLAG_DISABLED
     endif
     SetTitleText("$MRT_SP_PAGE_STATS")
-    _AddHeaderOption("$MRT_SP_HEAD_WHORE_TOTAL_STATS")
+    AddColoredHeader("$MRT_SP_HEAD_WHORE_TOTAL_STATS")
     _AddTextOptionST("STAT_WHORE_ORAL_TXT", "$MRT_SP_STAT_ORAL",  sGetSexStatText(2, False, False), flag)
     _AddTextOptionST("STAT_WHORE_ANAL_TXT", "$MRT_SP_STAT_ANAL",  sGetSexStatText(1, False, False), flag)
     _AddTextOptionST("STAT_WHORE_VAGINAL_TXT", "$MRT_SP_STAT_VAGINAL",  sGetSexStatText(0, False, False), flag)
     addEmptyOption()
-    _AddHeaderOption("$MRT_SP_HEAD_WHORE_RACE_STATS")
+    AddColoredHeader("$MRT_SP_HEAD_WHORE_RACE_STATS")
     AddMenuOptionST("STAT_WHORE_RACE_MENU", "$MRT_SP_WHORE_RACE_STAT_MENU", sGetRaceNameArr()[iWhoreStatRace], flag)
     _AddTextOptionST("STAT_WHORE_RACE_ORAL_TXT", "$MRT_SP_STAT_ORAL", sGetSexStatText(2, True, False), flag)
     _AddTextOptionST("STAT_WHORE_RACE_ANAL_TXT", "$MRT_SP_STAT_ANAL", sGetSexStatText(1, True, False), flag)
     _AddTextOptionST("STAT_WHORE_RACE_VAGINAL_TXT", "$MRT_SP_STAT_VAGINAL", sGetSexStatText(0, True, False), flag)
     addEmptyOption()
-    _AddHeaderOption("$MRT_SP_HEAD_WHORE_REWARD_STATS")
+    AddColoredHeader("$MRT_SP_HEAD_WHORE_REWARD_STATS")
     if MainScript.bModEnabled && !bWhoreOralPerkRewardReceived
       flag = OPTION_FLAG_NONE
     else
@@ -253,18 +268,18 @@ event OnPageReset(String page)
     else
       flag = OPTION_FLAG_DISABLED
     endif
-    _AddHeaderOption("$MRT_SP_HEAD_DIBEL_TOTAL_STATS")
+    AddColoredHeader("$MRT_SP_HEAD_DIBEL_TOTAL_STATS")
     _AddTextOptionST("STAT_DIBEL_ORAL_TXT", "$MRT_SP_STAT_ORAL", sGetSexStatText(2, False, True), flag)
     _AddTextOptionST("STAT_DIBEL_ANAL_TXT", "$MRT_SP_STAT_ANAL",  sGetSexStatText(1, False, True), flag)
     _AddTextOptionST("STAT_DIBEL_VAGINAL_TXT", "$MRT_SP_STAT_VAGINAL",  sGetSexStatText(0, False, True), flag)
     addEmptyOption()
-    _AddHeaderOption("$MRT_SP_HEAD_DIBEL_RACE_STATS")
+    AddColoredHeader("$MRT_SP_HEAD_DIBEL_RACE_STATS")
     AddMenuOptionST("STAT_DIBEL_RACE_MENU", "$MRT_SP_DIBEL_RACE_STAT_MENU", sGetRaceNameArr()[iDibelStatRace], flag)
     _AddTextOptionST("STAT_DIBEL_RACE_ORAL_TXT", "$MRT_SP_STAT_ORAL", sGetSexStatText(2, True, True), flag)
     _AddTextOptionST("STAT_DIBEL_RACE_ANAL_TXT", "$MRT_SP_STAT_ANAL", sGetSexStatText(1, True, True), flag)
     _AddTextOptionST("STAT_DIBEL_RACE_VAGINAL_TXT", "$MRT_SP_STAT_VAGINAL", sGetSexStatText(0, True, True), flag)
     addEmptyOption()
-    _AddHeaderOption("$MRT_SP_HEAD_DIBEL_REWARD_STATS")
+    AddColoredHeader("$MRT_SP_HEAD_DIBEL_REWARD_STATS")
     if MainScript.bModEnabled && !bDibelOralPerkRewardReceived
       flag = OPTION_FLAG_NONE
     else
@@ -285,7 +300,7 @@ event OnPageReset(String page)
     _AddTextOptionST("STAT_DIBEL_VAGINAL_PERK_REWARD_TXT", "$MRT_SP_PERK_REWARD_VAGINAL", sGetStatRewardText(0, True), flag)
   elseif (page == "$MRT_SP_PAGE_INTEGRATION")
     SetTitleText("$MRT_SP_PAGE_INTEGRATION")
-    _AddHeaderOption("$MRT_SP_HEAD_INTEGRATION_INTERFACE")
+    AddColoredHeader("$MRT_SP_HEAD_INTEGRATION_INTERFACE")
     if MainScript.bModEnabled && (MainScript.iGetCurTotalAnimInterfaces() > 1)
       flag = OPTION_FLAG_NONE
     else
@@ -305,7 +320,7 @@ event OnPageReset(String page)
     endif
     _AddToggleOptionST("TRY_ALL_INTERFACES_TOGGLE", "$MRT_SP_TRY_ALL_INTERFACES_TOGGLE", MainScript.bTryAllInterfaces, flag)
     addEmptyOption()
-    _AddHeaderOption("$MRT_SP_HEAD_EXTRATAGS_SEXLAB")
+    AddColoredHeader("$MRT_SP_HEAD_EXTRATAGS_SEXLAB")
     if MainScript.bModEnabled
       flag = OPTION_FLAG_NONE
     else
@@ -320,7 +335,7 @@ event OnPageReset(String page)
     AddInputOptionST("EXTRATAGS_SEXLAB_VAGINAL_MF_INPUT", "$MRT_SP_EXTRATAGS_SEXLAB_VAGINAL_MF_INPUT", getInputTags(MainScript.sExtraTags_SL_VAGINAL_MF, MainScript.bExtraTags_SL_VAGINAL_MF_All, 13), flag)
     AddInputOptionST("EXTRATAGS_SEXLAB_VAGINAL_FF_INPUT", "$MRT_SP_EXTRATAGS_SEXLAB_VAGINAL_FF_INPUT", getInputTags(MainScript.sExtraTags_SL_VAGINAL_FF, MainScript.bExtraTags_SL_VAGINAL_FF_All, 13), flag)   
     addEmptyOption()
-    _AddHeaderOption("$MRT_SP_HEAD_EXTRATAGS_OSTIM")
+    AddColoredHeader("$MRT_SP_HEAD_EXTRATAGS_OSTIM")
     AddInputOptionST("EXTRATAGS_OSTIM_ORAL_MF_INPUT", "$MRT_SP_EXTRATAGS_OSTIM_ORAL_MF_INPUT", getInputTags(MainScript.sExtraTags_OS_Oral_MF, MainScript.bExtraTags_OS_Oral_MF_All, 13), flag)
     AddInputOptionST("EXTRATAGS_OSTIM_ORAL_FF_INPUT", "$MRT_SP_EXTRATAGS_OSTIM_ORAL_FF_INPUT", getInputTags(MainScript.sExtraTags_OS_Oral_FF, MainScript.bExtraTags_OS_Oral_FF_All, 13), flag)
     AddInputOptionST("EXTRATAGS_OSTIM_ORAL_MM_INPUT", "$MRT_SP_EXTRATAGS_OSTIM_ORAL_MM_INPUT", getInputTags(MainScript.sExtraTags_OS_Oral_MM, MainScript.bExtraTags_OS_Oral_MM_All, 13), flag)
@@ -331,7 +346,7 @@ event OnPageReset(String page)
     AddInputOptionST("EXTRATAGS_OSTIM_VAGINAL_FF_INPUT", "$MRT_SP_EXTRATAGS_OSTIM_VAGINAL_FF_INPUT", getInputTags(MainScript.sExtraTags_OS_VAGINAL_FF, MainScript.bExtraTags_OS_VAGINAL_FF_All, 13), flag)
     addEmptyOption()
     SetCursorPosition(1)
-    _AddHeaderOption("$MRT_SP_HEAD_INTEGRATION_LICENSE")
+    AddColoredHeader("$MRT_SP_HEAD_INTEGRATION_LICENSE")
     if MainScript.bModEnabled && MainScript.bIsLicensesActive
       flag = OPTION_FLAG_NONE
     else
@@ -343,7 +358,7 @@ event OnPageReset(String page)
     AddSliderOptionST("GUARD_REPORT_CHANCE_SLIDER", "$MRT_SP_GUARD_REPORT_CHANCE_SLIDER1", MainScript.fGuardReportChance, "$MRT_SP_GUARD_REPORT_CHANCE_SLIDER2", flag)
 		
 		addEmptyOption()
-		_AddHeaderOption("$MRT_SP_HEAD_INTEGRATION_SLA")
+		AddColoredHeader("$MRT_SP_HEAD_INTEGRATION_SLA")
 		
 		if MainScript.bModEnabled && MainScript.bIs_SLA_Active
       flag = OPTION_FLAG_NONE
@@ -356,7 +371,7 @@ event OnPageReset(String page)
 		OID_SLA_MIN_DIBEL_CUSTOMER_AROUSAL = AddSliderOption("$MRT_SP_SLA_MIN_DIBEL_CUSTOMER_AROUSAL_SLIDER1", MainScript.iSLA_MinDibelCustomerArousal, "$MRT_SP_SLA_MIN_DIBEL_CUSTOMER_AROUSAL_SLIDER2", flag)
 		OID_SLA_MIN_BEGGAR_SEX_OFFER_AROUSAL = AddSliderOption("$MRT_SP_SLA_MIN_BEGGAR_SEX_OFFER_AROUSAL_SLIDER1", MainScript.iSLA_MinBeggarSexOfferArousal, "$MRT_SP_SLA_MIN_BEGGAR_SEX_OFFER_AROUSAL_SLIDER2", flag)
 		addEmptyOption()
-		_AddHeaderOption("$MRT_SP_HEAD_INTEGRATION_SLSFR")
+		AddColoredHeader("$MRT_SP_HEAD_INTEGRATION_SLSFR")
 	  if MainScript.bModEnabled && MainScript.bIs_SLSFR_Active
       flag = OPTION_FLAG_NONE
     else
@@ -376,7 +391,7 @@ event OnPageReset(String page)
 	OID_SLSFR_TALK_MAX_FAME_GAIN = AddSliderOption("$MRT_SP_SLSFR_MAX_TALK_FAME_GAIN_SLIDER1", MainScript.fSLSFR_Talk_MaxGainFame, "$MRT_SP_SLSFR_MAX_TALK_FAME_GAIN_SLIDER2", flag)
 	OID_SLSFR_TALK_FAME_GAIN_CHANCE = AddSliderOption("$MRT_SP_SLSFR_TALK_FAME_GAIN_CHANCE_SLIDER1", MainScript.fSLSFR_Talk_FameGainChance, "$MRT_SP_SLSFR_TALK_FAME_GAIN_CHANCE_SLIDER2", flag)
 	addEmptyOption()
-	_AddHeaderOption("$MRT_SP_HEAD_INTEGRATION_SLHH")
+	AddColoredHeader("$MRT_SP_HEAD_INTEGRATION_SLHH")
 	if MainScript.bModEnabled && MainScript.bIs_SLHH_Active
       flag = OPTION_FLAG_NONE
     else
@@ -385,7 +400,7 @@ event OnPageReset(String page)
 	OID_SLHH_MALE_RAPIST = AddToggleOption("$MRT_SP_SLHH_MALE_RAPIST_TOGGLE", MainScript.bSLHH_MaleRapist, flag)
 	OID_SLHH_FEMALE_RAPIST = AddToggleOption("$MRT_SP_SLHH_FEMALE_RAPIST_TOGGLE", MainScript.bSLHH_FemaleRapist, flag)
 	addEmptyOption()
-	_AddHeaderOption("$MRT_SP_HEAD_INTEGRATION_ORGASM")
+	AddColoredHeader("$MRT_SP_HEAD_INTEGRATION_ORGASM")
 	if MainScript.bModEnabled
 		flag = OPTION_FLAG_NONE
 	else
@@ -398,7 +413,7 @@ event OnPageReset(String page)
 	OID_DIBEL_PUNISH_If_NOT_ORGASMED = AddToggleOption("$MRT_SP_DIBEL_PUNISH_If_NOT_ORGASMED_TOGGLE", MainScript.bDibelPunishIfClientNotOrgasmed, flag)
 elseif (page == "$MRT_SP_PAGE_BEGGING")
     SetTitleText("$MRT_SP_PAGE_BEGGING")
-    _AddHeaderOption("$MRT_SP_HEAD_BEG")
+    AddColoredHeader("$MRT_SP_HEAD_BEG")
     if (MainScript.bModEnabled)
       flag = OPTION_FLAG_NONE
     else
@@ -430,7 +445,7 @@ elseif (page == "$MRT_SP_PAGE_BEGGING")
     else
       flag = OPTION_FLAG_DISABLED
     endif
-    _AddHeaderOption("$MRT_SP_HEAD_BEG_WHORE")
+    AddColoredHeader("$MRT_SP_HEAD_BEG_WHORE")
     AddSliderOptionST("BEG_SEX_OFFER_SLIDER", "$MRT_SP_BEG_SEX_OFFER_SLIDER1", MainScript.fBeggarSexOfferChance, "$MRT_SP_BEG_SEX_OFFER_SLIDER2", flag)
     _AddToggleOptionST("BEGGING_MALE_SEX_OFFER_TOGGLE", "$MRT_SP_BEGGING_MALE_SEX_OFFER_TOGGLE", MainScript.bBeggingMaleSexOffer, flag)
     _AddToggleOptionST("BEGGING_FEMALE_SEX_OFFER_TOGGLE", "$MRT_SP_BEGGING_FEMALE_SEX_OFFER_TOGGLE", MainScript.bBeggingFemaleSexOffer, flag)
@@ -443,7 +458,7 @@ elseif (page == "$MRT_SP_PAGE_BEGGING")
 
   elseif (page == "$MRT_SP_PAGE_DD")
     SetTitleText("$MRT_SP_PAGE_DD")
-    _AddHeaderOption("$MRT_SP_HEAD_DD")
+    AddColoredHeader("$MRT_SP_HEAD_DD")
     if (MainScript.bModEnabled && MainScript.bIsDDIntegrationActive && MainScript.bIsDDExpansionActive)
       flag = OPTION_FLAG_NONE
     else
@@ -454,7 +469,7 @@ elseif (page == "$MRT_SP_PAGE_BEGGING")
 		OID_DD_Set_M = AddMenuOption("$MRT_SP_DD_Set_M", sGetDDSets()[MainScript.iDeviousDeviceSet], flag)
   elseif (page == "$MRT_SP_PAGE_STD")
     SetTitleText("$MRT_SP_PAGE_STD")
-    _AddHeaderOption("$MRT_SP_HEAD_STD")
+    AddColoredHeader("$MRT_SP_HEAD_STD")
     if (MainScript.bModEnabled)
       flag = OPTION_FLAG_NONE
     else
@@ -466,23 +481,23 @@ elseif (page == "$MRT_SP_PAGE_BEGGING")
     AddSliderOptionST("CURE_STDIII_COST_SLIDER", "$MRT_SP_CURE_STDIII_COST_SLIDER1", MainScript.fCureSTDIIICost, "$MRT_SP_CURE_STDIII_COST_SLIDER2", flag)
     AddSliderOptionST("CURE_STDIV_COST_SLIDER", "$MRT_SP_CURE_STDIV_COST_SLIDER1", MainScript.fCureSTDIVCost, "$MRT_SP_CURE_STDIV_COST_SLIDER2", flag)
     addEmptyOption()
-    _AddHeaderOption("$MRT_SP_HEAD_STD_NORMAL")
+    AddColoredHeader("$MRT_SP_HEAD_STD_NORMAL")
     AddSliderOptionST("NORMAL_STD_INFECT_CHANCE_SLIDER", "$MRT_SP_NORMAL_STD_INFECT_CHANCE_SLIDER1", MainScript.fNormalSTDInfectChance, "$MRT_SP_NORMAL_STD_INFECT_CHANCE_SLIDER2", flag)
     AddSliderOptionST("NORMAL_STD_PROGRESS_CHANCE_SLIDER", "$MRT_SP_NORMAL_STD_PROGRESS_CHANCE_SLIDER1", MainScript.fNormalSTDProgressChance, "$MRT_SP_NORMAL_STD_PROGRESS_CHANCE_SLIDER2", flag)
     _AddToggleOptionST("NORMAL_ALLOW_MULTIPLE_STD_TOGGLE", "$MRT_SP_NORMAL_ALLOW_MULTIPLE_STD_TOGGLE", MainScript.bNormalAllowMultipleSTDs, flag)
     SetCursorPosition(1)
-    _AddHeaderOption("$MRT_SP_HEAD_STD_WHORE")
+    AddColoredHeader("$MRT_SP_HEAD_STD_WHORE")
     AddSliderOptionST("WHORE_STD_INFECT_CHANCE_SLIDER", "$MRT_SP_WHORE_STD_INFECT_CHANCE_SLIDER1", MainScript.fWhoreSTDInfectChance, "$MRT_SP_WHORE_STD_INFECT_CHANCE_SLIDER2", flag)
     AddSliderOptionST("WHORE_STD_PROGRESS_CHANCE_SLIDER", "$MRT_SP_WHORE_STD_PROGRESS_CHANCE_SLIDER1", MainScript.fWhoreSTDProgressChance, "$MRT_SP_WHORE_STD_PROGRESS_CHANCE_SLIDER2", flag)
     _AddToggleOptionST("WHORE_ALLOW_MULTIPLE_STD_TOGGLE", "$MRT_SP_WHORE_ALLOW_MULTIPLE_STD_TOGGLE", MainScript.bWhoreAllowMultipleSTDs, flag)
     addEmptyOption()
-    _AddHeaderOption("$MRT_SP_HEAD_STD_DIBEL")
+    AddColoredHeader("$MRT_SP_HEAD_STD_DIBEL")
     AddSliderOptionST("DIBEL_STD_INFECT_CHANCE_SLIDER", "$MRT_SP_DIBEL_STD_INFECT_CHANCE_SLIDER1", MainScript.fDibelSTDInfectChance, "$MRT_SP_DIBEL_STD_INFECT_CHANCE_SLIDER2", flag)
     AddSliderOptionST("DIBEL_STD_PROGRESS_CHANCE_SLIDER", "$MRT_SP_DIBEL_STD_PROGRESS_CHANCE_SLIDER1", MainScript.fDibelSTDProgressChance, "$MRT_SP_DIBEL_STD_PROGRESS_CHANCE_SLIDER2", flag)
     _AddToggleOptionST("DIBEL_ALLOW_MULTIPLE_STD_TOGGLE", "$MRT_SP_DIBEL_ALLOW_MULTIPLE_STD_TOGGLE", MainScript.bDibelAllowMultipleSTDs, flag)
   elseIf page == "$MRT_SP_PAGE_DIBEL"
     SetTitleText("$MRT_SP_PAGE_DIBEL")
-    _AddHeaderOption("$MRT_SP_HEAD_DIBEL")
+    AddColoredHeader("$MRT_SP_HEAD_DIBEL")
     if (MainScript.bModEnabled)
       flag = OPTION_FLAG_NONE
     else
@@ -533,7 +548,7 @@ elseif (page == "$MRT_SP_PAGE_BEGGING")
     else
       flag = OPTION_FLAG_DISABLED
     endif
-    _AddHeaderOption("$MRT_SP_HEAD_DIBEL_REWARDS")
+    AddColoredHeader("$MRT_SP_HEAD_DIBEL_REWARDS")
     AddSliderOptionST("ATTRIBUTE_COST_SLIDER", "$MRT_SP_ATTRIBUTE_COST_SLIDER1", Mainscript.fAttributeCost, "$MRT_SP_ATTRIBUTE_COST_SLIDER2", flag)
     AddSliderOptionST("ATTRIBUTE_REWARD_SLIDER", "$MRT_SP_ATTRIBUTE_REWARD_SLIDER1", Mainscript.fAttributeIncrement, "$MRT_SP_ATTRIBUTE_REWARD_SLIDER2", flag)
     AddSliderOptionST("CARRYWEIGHT_COST_SLIDER", "$MRT_SP_CARRYWEIGHT_COST_SLIDER1", Mainscript.fCarryWeightCost, "$MRT_SP_CARRYWEIGHT_COST_SLIDER2", flag)
@@ -561,7 +576,7 @@ elseif (page == "$MRT_SP_PAGE_BEGGING")
     dibelRejectOptions(flag)
   elseif (page == "$MRT_SP_PAGE_PROSTITUTION")
     SetTitleText("$MRT_SP_PAGE_PROSTITUTION")
-    _AddHeaderOption("$MRT_SP_HEAD_WHORE")
+    AddColoredHeader("$MRT_SP_HEAD_WHORE")
     if (MainScript.bModEnabled)
       flag = OPTION_FLAG_NONE
     else
@@ -603,7 +618,7 @@ elseif (page == "$MRT_SP_PAGE_BEGGING")
     whoreRejectOptions(flag)
   elseif page == "$MRT_SP_PAGE_GENERAL"
     SetTitleText("$MRT_SP_PAGE_GENERAL")
-    _AddHeaderOption("$MRT_SP_HEAD_GENERAL")
+    AddColoredHeader("$MRT_SP_HEAD_GENERAL")
     if (MainScript.bModEnabled)
       flag = OPTION_FLAG_NONE
     else
@@ -626,7 +641,7 @@ endevent
 
 event OnVersionUpdate(Int version)
   if (version >= 100 && CurrentVersion < 100)
-    logText(self + ": Updating script to version " + 100)
+    MainScript.log(self + ": Updating script to version " + 100)
   endif
 endevent
 
@@ -640,6 +655,12 @@ Event OnConfigClose()
     endif
   endif
   Mainscript.ApproachMonitorScr.playerHasLicense()
+  if bColorChanged
+	if MainScript.bShowNotification
+		MainScript.testNotifications()
+	endif
+	bColorChanged = False
+  endif
 endEvent
 
 String[] function sGetAnimInerfaceMethodArr()
@@ -1202,11 +1223,11 @@ state MOD_TOGGLE
     Utility.wait(0.5)
     if MainScript.bModEnabled
       MainQuest.Start()
-	  logText("Simple Player Prostitution enabled.", true, true, 0)
+	  MainScript.log("Simple Player Prostitution enabled.", true, true, 0, true)
     else
       MainScript.ShutDown()
       MainQuest.Stop()
-	  logText("Simple Player Prostitution disabled.", true, true, 0)
+	  MainScript.log("Simple Player Prostitution disabled.", true, true, 0, true)
     endif
   endevent
 endstate
@@ -3144,6 +3165,7 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
   MainScript.bDibelPunishIfClientNotOrgasmed = jsonutil.GetPathIntValue(settings_path, "bDibelPunishIfClientNotOrgasmed", MainScript.bDibelPunishIfClientNotOrgasmed as int)
   MainScript.bNormalOnlyRewardIfPartnerOrgasmed = jsonutil.GetPathIntValue(settings_path, "bNormalOnlyRewardIfPartnerOrgasmed", MainScript.bNormalOnlyRewardIfPartnerOrgasmed as int)
   MainScript.bNormalNoRewardWhenVictim = jsonutil.GetPathIntValue(settings_path, "bNormalNoRewardWhenVictim", MainScript.bNormalNoRewardWhenVictim as int)
+  MainScript.bShowNotification = jsonutil.GetPathIntValue(settings_path, "bShowNotification", MainScript.bShowNotification as int)
 
   iAnimInterfaceMethod = jsonutil.GetPathIntValue(settings_path, "iAnimInterfaceMethod", iAnimInterfaceMethod)
   
@@ -3162,7 +3184,20 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
 	MainScript.iSLA_MinBeggarSexOfferArousal = jsonutil.GetPathIntValue(settings_path, "iSLA_MinBeggarSexOfferArousal", MainScript.iSLA_MinBeggarSexOfferArousal)
 	MainScript.iSLA_MinWhoreCustomerArousal = jsonutil.GetPathIntValue(settings_path, "iSLA_MinWhoreCustomerArousal", MainScript.iSLA_MinWhoreCustomerArousal)
 	MainScript.iSLA_MinDibelCustomerArousal = jsonutil.GetPathIntValue(settings_path, "iSLA_MinDibelCustomerArousal", MainScript.iSLA_MinDibelCustomerArousal)
-
+	
+	MainScript.iDefaultColor = jsonutil.GetPathIntValue(settings_path, "iDefaultColor", MainScript.iDefaultColor)
+	MainScript.sDefaultColor = Stringutil.Substring(sDecToHex(MainScript.iDefaultColor),2)
+	MainScript.iSuccessColor = jsonutil.GetPathIntValue(settings_path, "iSuccessColor", MainScript.iSuccessColor)
+	MainScript.sSuccessColor = Stringutil.Substring(sDecToHex(MainScript.iSuccessColor),2)
+	MainScript.iInfoColor = jsonutil.GetPathIntValue(settings_path, "iInfoColor", MainScript.iInfoColor)
+	MainScript.sInfoColor = Stringutil.Substring(sDecToHex(MainScript.iInfoColor),2)
+	MainScript.iWarningColor = jsonutil.GetPathIntValue(settings_path, "iWarningColor", MainScript.iWarningColor)
+	MainScript.sWarningColor = Stringutil.Substring(sDecToHex(MainScript.iWarningColor),2)
+	MainScript.iErrorColor = jsonutil.GetPathIntValue(settings_path, "iErrorColor", MainScript.iErrorColor)
+	MainScript.sErrorColor = Stringutil.Substring(sDecToHex(MainScript.iErrorColor),2)
+	MainScript.iSeparatorColor = jsonutil.GetPathIntValue(settings_path, "iSeparatorColor", MainScript.iSeparatorColor)
+	MainScript.sSeparatorColor = Stringutil.Substring(sDecToHex(MainScript.iSeparatorColor),2)
+	
 	MainScript.fCustomerApproachTimer = jsonutil.GetPathFloatValue(settings_path, "fCustomerApproachTimer", MainScript.fCustomerApproachTimer)
   MainScript.fWhoreOwnerShare = jsonutil.GetPathFloatValue(settings_path, "fWhoreOwnerShare", MainScript.fWhoreOwnerShare)
   MainScript.fBegPayMin = jsonutil.GetPathFloatValue(settings_path, "fBegPayMin", MainScript.fBegPayMin)
@@ -3440,6 +3475,7 @@ Bool function saveUserSettingsPapyrus()
 	jsonutil.SetPathIntValue(settings_path, "bDibelPunishIfClientNotOrgasmed", MainScript.bDibelPunishIfClientNotOrgasmed as Int)
 	jsonutil.SetPathIntValue(settings_path, "bNormalOnlyRewardIfPartnerOrgasmed", MainScript.bNormalOnlyRewardIfPartnerOrgasmed as Int)
 	jsonutil.SetPathIntValue(settings_path, "bNormalNoRewardWhenVictim", MainScript.bNormalNoRewardWhenVictim as Int)
+	jsonutil.SetPathIntValue(settings_path, "bShowNotification", MainScript.bShowNotification as Int)
 
   jsonutil.SetPathIntValue(settings_path, "iAnimInterfaceMethod", iAnimInterfaceMethod)
   jsonutil.SetPathIntValue(settings_path, "iCrimeBounty", MainScript.iCrimeBounty)
@@ -3457,6 +3493,13 @@ Bool function saveUserSettingsPapyrus()
 	Jsonutil.SetPathIntValue(settings_path, "iSLA_MinBeggarSexOfferArousal", MainScript.iSLA_MinBeggarSexOfferArousal)
 	Jsonutil.SetPathIntValue(settings_path, "iSLA_MinWhoreCustomerArousal", MainScript.iSLA_MinWhoreCustomerArousal)
 	Jsonutil.SetPathIntValue(settings_path, "iSLA_MinDibelCustomerArousal", MainScript.iSLA_MinDibelCustomerArousal)
+	
+	Jsonutil.SetPathIntValue(settings_path, "iDefaultColor", MainScript.iDefaultColor)
+	Jsonutil.SetPathIntValue(settings_path, "iSuccessColor", MainScript.iSuccessColor)
+	Jsonutil.SetPathIntValue(settings_path, "iInfoColor", MainScript.iInfoColor)
+	Jsonutil.SetPathIntValue(settings_path, "iWarningColor", MainScript.iWarningColor)
+	Jsonutil.SetPathIntValue(settings_path, "iErrorColor", MainScript.iErrorColor)
+	Jsonutil.SetPathIntValue(settings_path, "iSeparatorColor", MainScript.iSeparatorColor)
 	
 	jsonutil.SetPathFloatValue(settings_path, "fCustomerApproachTimer", MainScript.fCustomerApproachTimer)
   jsonutil.SetPathFloatValue(settings_path, "fWhoreOwnerShare", MainScript.fWhoreOwnerShare)
@@ -3649,7 +3692,7 @@ Bool function saveUserSettingsPapyrus()
   jsonutil.SetPathStringValue(settings_path, "sExtraTags_OS_Vaginal_FF", MainScript.sExtraTags_OS_Vaginal_FF)
 
   if !jsonutil.Save(settings_path, false)
-    logText("Error saving user settings.", False, true, 2)
+    MainScript.log("Error saving user settings.", False, true, 3)
     return false
   endIf
   return true
@@ -3670,6 +3713,10 @@ function loadSettingsAtStart()
     return 
   endIf
 endFunction
+
+Function AddColoredHeader(String In)
+	_AddHeaderOption("<font color='#" + MainScript.sDefaultColor +"'>" + In + "</font>")
+EndFunction
 
 function _AddHeaderOption(string a_text, int a_flags=0)
   AddHeaderOption(a_text, a_flags)
@@ -4132,6 +4179,9 @@ event OnOptionSelect(int option)
 	elseif option == OID_SLHH_MALE_RAPIST
 		MainScript.bSLHH_MaleRapist = !MainScript.bSLHH_MaleRapist
 		SetToggleOptionValue(option, MainScript.bSLHH_MaleRapist)
+	elseif option == OID_SHOW_NOTIFICATION
+		MainScript.bShowNotification = !MainScript.bShowNotification
+		SetToggleOptionValue(option, MainScript.bShowNotification)	
 	elseif option == OID_SLHH_FEMALE_RAPIST
 		MainScript.bSLHH_FemaleRapist = !MainScript.bSLHH_FemaleRapist
 		SetToggleOptionValue(option, MainScript.bSLHH_FemaleRapist)
@@ -4274,6 +4324,9 @@ event OnOptionDefault(int option)
 	elseif option == OID_SLHH_MALE_RAPIST
 		MainScript.bSLHH_MaleRapist = True
 		SetToggleOptionValue(option, MainScript.bSLHH_MaleRapist)
+	elseif option == OID_SHOW_NOTIFICATION
+		MainScript.bShowNotification = True
+		SetToggleOptionValue(option, MainScript.bShowNotification)
 	elseif option == OID_SLHH_FEMALE_RAPIST
 		MainScript.bSLHH_FemaleRapist = False
 		SetToggleOptionValue(option, MainScript.bSLHH_FemaleRapist)
@@ -4464,6 +4517,8 @@ event OnOptionHighlight(int option)
 	SetInfoText("$MRT_SP_DESC_DIBEL_PAY_AFTER_SEX")	
   elseif option == OID_SLHH_MALE_RAPIST
     SetInfoText("$MRT_SP_DESC_SLHH_MALE_RAPIST")
+  elseif option == OID_SHOW_NOTIFICATION
+    SetInfoText("$MRT_SP_DESC_SHOW_NOTIFICATION")
   elseif option == OID_SLHH_FEMALE_RAPIST
     SetInfoText("$MRT_SP_DESC_SLHH_FEMALE_RAPIST")	
   elseif option == OID_WHORE_PAY_IF_ORGASMED
@@ -4638,6 +4693,18 @@ event OnOptionHighlight(int option)
 		SetInfoText("$MRT_SP_DESC_DEBUG_PC_WHORE_TAG")
 	elseif option == OID_DEBUG_PC_DIBEL_TAG
 		SetInfoText("$MRT_SP_DESC_DEBUG_PC_DIBEL_TAG")
+	elseif option == OID_COLOR_DEFAULT
+		SetInfoText("$MRT_SP_DESC_COLOR_DEFAULT")
+	elseif option == OID_COLOR_SUCCESS
+	    SetInfoText("$MRT_SP_DESC_COLOR_SUCCESS")
+	elseif option == OID_COLOR_INFO
+	    SetInfoText("$MRT_SP_DESC_COLOR_INFO")
+	elseif option == OID_COLOR_WARNING
+	    SetInfoText("$MRT_SP_DESC_COLOR_WARNING")
+	elseif option == OID_COLOR_ERROR
+	    SetInfoText("$MRT_SP_DESC_COLOR_ERROR")
+	elseif option == OID_COLOR_SEPARATOR
+	    SetInfoText("$MRT_SP_DESC_COLOR_SEPARATOR")
 	endif
 endevent
 
@@ -5705,10 +5772,70 @@ event OnOptionMenuAccept(Int option, Int index)
   ;ForcePageReset()
 endevent
 
+event OnOptionColorOpen(int a_option)
+	{Called when a color option has been selected}
+
+	if (a_option == OID_COLOR_DEFAULT)
+		SetColorDialogStartColor(MainScript.iDefaultColor)
+		SetColorDialogDefaultColor(0x9F00FF)
+	elseif (a_option == OID_COLOR_SUCCESS)
+		SetColorDialogStartColor(MainScript.iSuccessColor)
+		SetColorDialogDefaultColor(0x00FF00)
+	elseif (a_option == OID_COLOR_INFO)
+		SetColorDialogStartColor(MainScript.iInfoColor)
+		SetColorDialogDefaultColor(0x00FFFF)
+	elseif (a_option == OID_COLOR_WARNING)
+		SetColorDialogStartColor(MainScript.iWarningColor)
+		SetColorDialogDefaultColor(0xFFFF00)
+	elseif (a_option == OID_COLOR_ERROR)
+		SetColorDialogStartColor(MainScript.iErrorColor)
+		SetColorDialogDefaultColor(0xFF0000)
+	elseif (a_option == OID_COLOR_SEPARATOR)
+		SetColorDialogStartColor(MainScript.iSeparatorColor)
+		SetColorDialogDefaultColor(0xFFFFFF)
+	endIf
+endEvent
+
+event OnOptionColorAccept(int a_option, int a_color)
+	{Called when a new color has been accepted}
+
+	if (a_option == OID_COLOR_DEFAULT)
+		MainScript.iDefaultColor = a_color
+		SetColorOptionValue(a_option, a_color)
+		MainScript.sDefaultColor = Stringutil.Substring(sDecToHex(a_color),2)
+		bColorChanged = true
+	elseif (a_option == OID_COLOR_SUCCESS)
+		MainScript.iSuccessColor = a_color
+		SetColorOptionValue(a_option, a_color)
+		MainScript.sSuccessColor = Stringutil.Substring(sDecToHex(a_color),2)
+		bColorChanged = true
+	elseif (a_option == OID_COLOR_INFO)
+		MainScript.iInfoColor = a_color
+		SetColorOptionValue(a_option, a_color)
+		MainScript.sInfoColor = Stringutil.Substring(sDecToHex(a_color),2)
+		bColorChanged = true
+	elseif (a_option == OID_COLOR_WARNING)
+		MainScript.iWarningColor = a_color
+		SetColorOptionValue(a_option, a_color)
+		MainScript.sWarningColor = Stringutil.Substring(sDecToHex(a_color),2)
+		bColorChanged = true
+	elseif (a_option == OID_COLOR_ERROR)
+		MainScript.iErrorColor = a_color
+		SetColorOptionValue(a_option, a_color)
+		MainScript.sErrorColor = Stringutil.Substring(sDecToHex(a_color),2)
+		bColorChanged = true
+	elseif (a_option == OID_COLOR_SEPARATOR)
+		MainScript.iSeparatorColor = a_color
+		SetColorOptionValue(a_option, a_color)
+		MainScript.sSeparatorColor = Stringutil.Substring(sDecToHex(a_color),2)
+		bColorChanged = true
+	endIf
+endEvent
+
 
 function beggarRejectOptions(Int iflag)
   int flg = iflag
-  _AddHeaderOption("$MRT_SP_HEAD_REJECT")
+  AddColoredHeader("$MRT_SP_HEAD_REJECT")
   OID_BEG_REJ_MALE_ACCEPT = AddSliderOption("$MRT_SP_BEG_REJ_MALE_ACCEPT_SLIDER1", MainScript.fBeggarRejectMaleAcceptChance, "$MRT_SP_BEG_REJ_MALE_ACCEPT_SLIDER2", flg)
   AddSliderOptionST("BEG_MALE_RAPE_SLIDER", "$MRT_SP_BEG_MALE_RAPE_SLIDER1", MainScript.fBeggingMaleRapistChance, "$MRT_SP_BEG_MALE_RAPE_SLIDER2", flg)
   OID_BEG_REJ_MALE_ASSAULT = AddSliderOption("$MRT_SP_BEG_REJ_MALE_ASSAULT_SLIDER1", MainScript.fBeggarRejectMaleAssaultChance, "$MRT_SP_BEG_REJ_MALE_ASSAULT_SLIDER2", flg)
@@ -5744,7 +5871,7 @@ EndFunction
 
 function whoreRejectOptions(Int iflag)
   int flg = iflag
-  _AddHeaderOption("$MRT_SP_HEAD_REJECT")
+  AddColoredHeader("$MRT_SP_HEAD_REJECT")
   OID_WHORE_REJ_MALE_ACCEPT = AddSliderOption("$MRT_SP_WHORE_REJ_MALE_ACCEPT_SLIDER1", MainScript.fWhoreRejectMaleAcceptChance, "$MRT_SP_WHORE_REJ_MALE_ACCEPT_SLIDER2", flg)
   OID_WHORE_REJ_MALE_RAPE = AddSliderOption("$MRT_SP_WHORE_REJ_MALE_RAPE_SLIDER1", MainScript.fWhoreRejectMaleRapeChance, "$MRT_SP_WHORE_REJ_MALE_RAPE_SLIDER2", flg)
   OID_WHORE_REJ_MALE_ASSAULT = AddSliderOption("$MRT_SP_WHORE_REJ_MALE_ASSAULT_SLIDER1", MainScript.fWhoreRejectMaleAssaultChance, "$MRT_SP_WHORE_REJ_MALE_ASSAULT_SLIDER2", flg)
@@ -5781,7 +5908,7 @@ EndFunction
 
 function dibelRejectOptions(Int iflag)
   Int flg = iflag
-  _AddHeaderOption("$MRT_SP_HEAD_REJECT")
+  AddColoredHeader("$MRT_SP_HEAD_REJECT")
   OID_DIBEL_REJ_MALE_ACCEPT = AddSliderOption("$MRT_SP_DIBEL_REJ_MALE_ACCEPT_SLIDER1", MainScript.fDibelRejectMaleAcceptChance, "$MRT_SP_DIBEL_REJ_MALE_ACCEPT_SLIDER2", flg)
   OID_DIBEL_REJ_MALE_RAPE = AddSliderOption("$MRT_SP_DIBEL_REJ_MALE_RAPE_SLIDER1", MainScript.fDibelRejectMaleRapeChance, "$MRT_SP_DIBEL_REJ_MALE_RAPE_SLIDER2", flg)
   OID_DIBEL_REJ_MALE_ASSAULT = AddSliderOption("$MRT_SP_DIBEL_REJ_MALE_ASSAULT_SLIDER1", MainScript.fDibelRejectMaleAssaultChance, "$MRT_SP_DIBEL_REJ_MALE_ASSAULT_SLIDER2", flg)
@@ -5818,7 +5945,7 @@ EndFunction
 
 function defaultRejectOptions(Int iflag)
   int flg = iflag
-  _AddHeaderOption("$MRT_SP_HEAD_REJECT_DEFAULT")
+  AddColoredHeader("$MRT_SP_HEAD_REJECT_DEFAULT")
   OID_DEFAULT_REJ_MALE_ACCEPT = AddSliderOption("$MRT_SP_DEFAULT_REJ_MALE_ACCEPT_SLIDER1", MainScript.fDefaultRejectMaleAcceptChance, "$MRT_SP_DIBEL_REJ_MALE_ACCEPT_SLIDER2", flg)
   OID_DEFAULT_REJ_MALE_RAPE = AddSliderOption("$MRT_SP_DEFAULT_REJ_MALE_RAPE_SLIDER1", MainScript.fDefaultRejectMaleRapeChance, "$MRT_SP_DEFAULT_REJ_MALE_RAPE_SLIDER2", flg)
   OID_DEFAULT_REJ_MALE_ASSAULT = AddSliderOption("$MRT_SP_DEFAULT_REJ_MALE_ASSAULT_SLIDER1", MainScript.fDefaultRejectMaleAssaultChance, "$MRT_SP_DEFAULT_REJ_MALE_ASSAULT_SLIDER2", flg)
@@ -5852,7 +5979,7 @@ function defaultRejectOptions(Int iflag)
 EndFunction
 
 Function approachOptions(Int iflag)
-  AddHeaderOption("$MRT_SP_HEAD_APPROACH")
+  AddColoredHeader("$MRT_SP_HEAD_APPROACH")
   int flg = iflag
   OID_CUSTOMER_APPROACH_INTERVAL =  AddSliderOption("$MRT_SP_CUSTOMER_APPROACH_INTERVAL_SLIDER1", MainScript.fCustomerApproachTimer, "$MRT_SP_CUSTOMER_APPROACH_INTERVAL_SLIDER2", flg)
   OID_CUSTOMER_APPROACH_CHANCE =  AddSliderOption("$MRT_SP_CUSTOMER_APPROACH_CHANCE_SLIDER1", MainScript.fCustomerApproachChance, "$MRT_SP_CUSTOMER_APPROACH_CHANCE_SLIDER2", flg)
@@ -5901,7 +6028,7 @@ EndFunction
 
 Function Dibel_Temple_Tasks(Int iflag)
   int flg = iflag
-  _AddHeaderOption("$MRT_SP_HEAD_DIBEL_TEMPLE_TASKS")
+  AddColoredHeader("$MRT_SP_HEAD_DIBEL_TEMPLE_TASKS")
 	OID_DIBEL_TEMPLE_TASK_MALE_CLIENT = AddToggleOption("$MRT_SP_DIBEL_TEMPLE_TASK_MALE_CLIENT", MainScript.bMaleTempleClient, flg)
 	OID_DIBEL_TEMPLE_TASK_FEMALE_CLIENT = AddToggleOption("$MRT_SP_DIBEL_TEMPLE_TASK_FEMALE_CLIENT", MainScript.bFemaleTempleClient, flg)
 	OID_DIBEL_TEMPLE_TASK_SEPTIM_COST = AddSliderOption("$MRT_SP_DIBEL_TEMPLE_TASK_SEPTIM_COST_SLIDER1", MainScript.fTempleTaskSeptimCost, "$MRT_SP_DIBEL_TEMPLE_TASK_SEPTIM_COST_SLIDER2", flg)
@@ -6135,3 +6262,11 @@ Int OID_DIBEL_TEMPLE_TASK_EXTRA_REWARD_MAX
 Int OID_NORMAL_MARK_CHANCE
 Int OID_NORMAL_REWARD_IF_ORGASMED
 Int OID_NORMAL_NO_REWARD_WHEN_VICTIM
+
+INT OID_SHOW_NOTIFICATION
+Int OID_COLOR_DEFAULT
+Int OID_COLOR_SUCCESS
+Int OID_COLOR_INFO
+Int OID_COLOR_WARNING
+Int OID_COLOR_ERROR
+Int OID_COLOR_SEPARATOR

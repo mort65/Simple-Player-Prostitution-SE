@@ -1,6 +1,8 @@
 Scriptname zzzmrt_sp_slhh_interface extends Quest
 
 import zzzmrt_sp_utility
+Quest property MainQuest auto
+zzzmrt_sp_main_qst_script property MainScript auto
 
 Keyword SLHHScriptEventKeyword
 Quest SLHH
@@ -15,7 +17,7 @@ endevent
 Function setVars()
   SLHH = Game.GetFormFromFile(0x0012c4, "SexLabHorribleHarassment.esp") as Quest
   SLHHScriptEventKeyword = Game.GetFormFromFile(0x00c510, "SexLabHorribleHarassment.esp") as Keyword
-  logText("Horrible Harassment Expansion detected.", True, true, 1)
+  MainScript.log("Horrible Harassment Expansion detected.", True, true, 1, true)
 endfunction
 
 Bool function GetIsInterfaceActive()

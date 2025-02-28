@@ -4,6 +4,8 @@ Quest sla_Framework
 Bool property bChecked = False Auto Hidden
 
 import zzzmrt_sp_utility
+Quest property MainQuest auto
+zzzmrt_sp_main_qst_script property MainScript auto
 
 event OnEndState()
   Utility.Wait(5.0)
@@ -12,7 +14,7 @@ endevent
 
 Function setVars()
   sla_Framework = Game.GetFormFromFile(0x04290F, "SexLabAroused.esm") as Quest
-  logText("SL Aroused detected.", true, true, 1)
+  MainScript.log("SL Aroused detected.", true, true, 1, true)
 endfunction
 
 Bool Function bCheckVars()

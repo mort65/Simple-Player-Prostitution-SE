@@ -1,5 +1,7 @@
 Scriptname zzzmrt_sp_licenses_interface extends Quest
 
+Quest property MainQuest auto
+zzzmrt_sp_main_qst_script property MainScript auto
 import zzzmrt_sp_utility
 
 Quest BMLicenses
@@ -9,7 +11,7 @@ event OnEndState()
   Utility.Wait(5.0) ; Wait before entering active state to help avoid making function calls to scripts that may not have initialized yet.
   BMLicenses = Game.GetFormFromFile(0x000d62, "Licenses.esp") as Quest ; Get quest now
   if isFormValid(BMLicenses)
-    logText("Licenses detected.", true, true, 1)
+    MainScript.log("Licenses detected.", true, true, 1, True)
   endif
 endevent
 

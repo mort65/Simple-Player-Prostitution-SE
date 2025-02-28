@@ -1,6 +1,8 @@
 Scriptname zzzmrt_sp_ddi_interface extends Quest
 
 import zzzmrt_sp_utility
+Quest property MainQuest auto
+zzzmrt_sp_main_qst_script property MainScript auto
 
 Form[] ddkeys
 Bool property bChecked = False Auto Hidden
@@ -17,21 +19,21 @@ Function setVars()
     iIndex += 1
   else
     restraintsKey = None
-	logText("[DD] Restraint key not found.", true, true, 2)
+	MainScript.log("[DD] Restraint key not found.", true, true, 2)
   endif
   form chastityKey = Game.GetFormFromFile(0x008a4f, "Devious Devices - Integration.esm")
   if isFormValid(chastityKey) && chastityKey.getType() == 45
     iIndex += 1
   else
     chastityKey = None
-	logText("[DD] Chastity key not found.", true, true, 2)
+	MainScript.log("[DD] Chastity key not found.", true, true, 2)
   endif
   form piercingKey = Game.GetFormFromFile(0x0409a4, "Devious Devices - Integration.esm")
   if isFormValid(piercingKey) && piercingKey.getType() == 45
     iIndex += 1
   else
     piercingKey = None
-	logText("[DD] Piercing key not found.", true, true, 2)
+	MainScript.log("[DD] Piercing key not found.", true, true, 2)
   endif
   if iIndex > 0
     ddkeys = utility.createFormArray(iIndex)
@@ -45,7 +47,7 @@ Function setVars()
         ddkeys[iIndex] = restraintsKey
       endif
     endWhile
-	logText("Devious Devices Integration detected.", true, true, 1)
+	MainScript.log("Devious Devices Integration detected.", true, true, 1, true)
   endif
 endfunction
 

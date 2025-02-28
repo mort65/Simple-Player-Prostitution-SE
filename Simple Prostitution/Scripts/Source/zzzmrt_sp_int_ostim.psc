@@ -97,10 +97,10 @@ int function haveSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor partner, 
 				if (OThread.QuickStart(actors, StartingAnimation = myAnim) > -1)
 					return Position
 				endif
-				logText("[OStim] couldn't start animation.", True, True, 2)
+				logText("[OStim] couldn't start animation.", False, True, 2)
 				return -1
 			endif
-			logText("[OStim] couldn't find any animation.", True, True, 2)
+			logText("[OStim] couldn't find any animation.", False, True, 2)
 		endif
 	endif
 	return -1
@@ -215,10 +215,10 @@ Bool function bHaveRandomSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor p
 		if (OThread.QuickStart(actors, StartingAnimation = myAnim) > -1)
 			return true
 		endif
-		logText("[OStim] couldn't start animation.", True, True, 2)
+		logText("[OStim] couldn't start animation.", False, True, 2)
 		return False
 	endif
-	logText("[OStim] couldn't find any animation.", True, True, 2)
+	logText("[OStim] couldn't find any animation.", False, True, 2)
 	return False
 endfunction
 
@@ -288,10 +288,10 @@ Bool function bHaveGroupSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor[] 
 		if OThread.QuickStart(actors, StartingAnimation = sAnim) > -1
 			return True
 		endif
-		logText("[OStim] couldn't start animation.", True, True, 2)
+		logText("[OStim] couldn't start animation.", False, True, 2)
 		Return  false
 	endif
-	logText("[OStim] couldn't find any animation for " + actors.length + " actors.", True, True, 2)
+	logText("[OStim] couldn't find any animation for " + actors.length + " actors.", False, True, 2)
 	return False
 EndFunction
 

@@ -19,7 +19,7 @@ Bool property playerWearingWhoreClothing = false Auto Hidden Conditional
 Bool property playerIsBusyInMOA = false Auto Hidden Conditional
 
 Event OnUpdateGameTime()
-    logText("OnUpdateGameTime() triggered for "+ self)
+    MainScript.log("OnUpdateGameTime() triggered for "+ self)
 	updateApproach(true)
 EndEvent
 
@@ -110,7 +110,7 @@ Function updateApproach(Bool bReset = False)
 					if (MainScript.bIs_SLA_Active && MainScript.iSLA_MinApproachArousal > 0)
 						msg = msg + " with this arousal: " +  iArousal
 					endif
-					logText(msg)
+					MainScript.log(msg)
 				endif
 			endif
 		endif
@@ -158,10 +158,10 @@ Function checkPlayerStatus()
 	MainScript.isPlayerGettingHarassed()
 	checkMOAStatus()
 	
-	!playerWearingWhoreClothing && logText("Player is not wearing prostitute outfit.", true, true)
-	MainScript.bOnlyLicensedApproach && !hasLicense && logText("Player doesn't have license.", true, true)
+	!playerWearingWhoreClothing && MainScript.log("Player is not wearing prostitute outfit.", true, true, 1)
+	MainScript.bOnlyLicensedApproach && !hasLicense && MainScript.log("Player doesn't have license.", true, true, 1)
 	if MainScript.bIs_SLA_Active
-		!MainScript.bIsPCAroused && logText("Player not aroused ("+ MainScript.iSLA_PCArousal + ")", true, true)
+		!MainScript.bIsPCAroused && MainScript.log("Player not aroused ("+ MainScript.iSLA_PCArousal + ")", true, true, 1)
 	endif
 EndFunction
 
@@ -172,8 +172,8 @@ Function checkActorStatus(Actor akActor)
 	
 	if MainScript.bIs_SLA_Active
 		String actorname = akActor.getDisplayName()
-		logText(actorName + " arousal level is " +  iActorArousal)
-		!bIsActorAroused && logText(actorName + " not aroused (" + iActorArousal + ")", true, true)
+		MainScript.log(actorName + " arousal level is " +  iActorArousal)
+		!bIsActorAroused && MainScript.log(actorName + " not aroused (" + iActorArousal + ")", true, true, 1)
 	endif
 EndFunction
 

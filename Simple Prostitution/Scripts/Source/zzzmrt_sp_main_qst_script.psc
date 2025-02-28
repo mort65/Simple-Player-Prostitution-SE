@@ -567,6 +567,30 @@ Bool property bNormalNoRewardWhenVictim = True Auto Hidden Conditional
 Bool Property bNormalOnlyRewardIfPartnerOrgasmed = False Auto Hidden Conditional
 Bool Property bNormalPCPartnerOrgasmed = False Auto Hidden Conditional
 
+Int Property iDefaultColor = 0x9F00FF  Auto Hidden Conditional 
+Int Property iSuccessColor = 0x00FF00  Auto Hidden Conditional
+Int Property iInfoColor = 0x00FFFF  Auto Hidden Conditional
+Int Property iWarningColor = 0xFFFF00  Auto Hidden Conditional
+Int Property iErrorColor = 0xFF0000 Auto Hidden Conditional
+Int Property iSeparatorColor = 0xFFFFFF Auto Hidden Conditional
+String Property sDefaultColor = "9F00FF"  Auto Hidden Conditional 
+String Property sSuccessColor = "00FF00"  Auto Hidden Conditional
+String Property sInfoColor = "00FFFF"  Auto Hidden Conditional
+String Property sWarningColor = "FFFF00"  Auto Hidden Conditional
+String Property sErrorColor = "FF0000" Auto Hidden Conditional
+String Property sSeparatorColor = "FFFFFF" Auto Hidden Conditional
+Bool property bShowNotification = True Auto Hidden Conditional
+
+function log(String sText, Bool bNotification = False, Bool bTrace = True, Int iSeverity = 1, Bool bForceNotif = False)
+	logText(sText, (bNotification && (bShowNotification || (iSeverity != 1) || bForceNotif)), bTrace, iSeverity, "SPP", sDefaultColor, sSuccessColor, sInfoColor, sWarningColor, sErrorColor, sSeparatorColor)
+endFunction
+
+function testNotifications()
+	log("Success Message", True, False, 0)
+	log("Info Message", True, False, 1)
+	log("Warning Message", True, False, 2)
+	log("Error Message", True, False, 3)
+endFunction
 
 function shutDown()
 	stopApproach(true)
@@ -717,8 +741,8 @@ function AllowProstitution(Actor akOwner)
 		if randInt(0, 999) < (fSLSFR_Talk_FameGainChance * 10) as Int
 			SLSFR_Interface.SLSFR_ManualWhoreFameGain(fSLSFR_Talk_MinGainFame as Int, fSLSFR_Talk_MaxGainFame as Int)
 		endif
-		logText("Work allowed in " + currentAllowedLocations.GetAt(0) + " that's owned by " + akOwner)
-		logText("Prostitution enabled for current location.", True, False)
+		log("Work allowed in " + currentAllowedLocations.GetAt(0) + " that's owned by " + akOwner)
+		log("Prostitution enabled for current location.", True, False, 0)
 	endif
 endfunction
 
@@ -761,7 +785,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-	return getBaseVersion() + 0.54
+	return getBaseVersion() + 0.55
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
@@ -826,8 +850,9 @@ int function haveSex(Actor akActor, String interface, Bool bAllowAggressive = Fa
 		result = playerSexSFW(akActor)
 	endif
 	if (result < 0)
+		log("Couldn't start the animation. Please check the log.", true, true, 3)
 		if bTryAllInterfaces && iGetCurTotalAnimInterfaces() > 1
-		    logText("Retrying with other interfaces.", true, true, 2)
+		    log("Retrying with other interfaces.", true, true, 2)
 			if interface == "sexlab"
 				result = playerSexOS(akActor, bAllowAggressive, bAllowAll)
 				if result < 0
@@ -846,7 +871,7 @@ int function haveSex(Actor akActor, String interface, Bool bAllowAggressive = Fa
 			endif
 		endif
 		if result < 0
-		    logText("Couldn't find any suitable animation.", true, true, 2)
+		    log("Couldn't find any suitable animation.", true, true, 3)
 			result = playerSexSFW(akActor)
 		endIf
 	endif
@@ -925,7 +950,7 @@ Bool Function bHaveGroupSex(String interface, Bool bAllowAggressive = False, Boo
 				if !bResult
 					currentCustomerList.revert()
 					partners = formListToActorArray(currentCustomerList)
-					logText("Couldn't start animation for the selected interface.", true, true, 2)
+					log("Couldn't start the animation. Please check the log.", true, true, 3)
 				endif
 				return bResult
 			else
@@ -1033,9 +1058,9 @@ Function setWhoreCustomer(Actor akActor, Bool bPay = False, Bool bPersuaded = Tr
 		customerSpell.Cast(akActor, akActor)
 	else
 		String msg = akActor.getDisplayName() + " is busy."
-		logText(msg, True, False)
+		log(msg, True, False, 1)
 		Scene curScene = akActor.GetCurrentScene()
-		logText(msg + " | Scene: " + curScene + " | Quest: " + curScene.GetOwningQuest())
+		log(msg + " | Scene: " + curScene + " | Quest: " + curScene.GetOwningQuest())
 		return
 	endif
 	if bPay
@@ -1113,9 +1138,9 @@ Function setDibelCustomer(Actor akActor, bool bPay = true )
 		customerSpell.Cast(akActor, akActor)
 	else
 		String msg = akActor.getDisplayName() + " is busy."
-		logText(msg, true, false)
+		log(msg, true, false, 1)
 		Scene curScene = akActor.GetCurrentScene()
-		logText(msg + " | Scene: " + curScene + " | Quest: " + curScene.GetOwningQuest())
+		log(msg + " | Scene: " + curScene + " | Quest: " + curScene.GetOwningQuest())
 		return
 	endif
 	int iPayment = 0
@@ -1710,7 +1735,7 @@ Bool Function stealFromPlayer(Actor Thief)
 	endif
 	if iGoldToRemove > 0
 		player.removeItem(gold, iGoldToRemove, false, Thief)
-		logText(Thief + " : " + Thief.GetDisplayName() + " stole " + iGoldToRemove + " septim.")
+		log(Thief + " : " + Thief.GetDisplayName() + " stole " + iGoldToRemove + " septim.")
 		bRobbed = true
 	endif
 	Form[] QuestItemsArr
@@ -1718,7 +1743,7 @@ Bool Function stealFromPlayer(Actor Thief)
 		itemToRob = player.GetWornForm(Armor.GetMaskForSlot(32))
 		if itemToRob && !hasInvalidKeyword(itemToRob) && (itemToRob.GetGoldValue() > 0)
 			player.removeItem(itemToRob, 1, false, Thief)
-			logText(Thief + " : " + Thief.GetDisplayName() + " stole " + itemToRob)
+			log(Thief + " : " + Thief.GetDisplayName() + " stole " + itemToRob)
 			bRobbed = true
 		else
 			if bIsPapyrusUtilActive
@@ -1737,7 +1762,7 @@ Bool Function stealFromPlayer(Actor Thief)
 						else
 							if itemToRob.GetGoldValue() > 0
 								player.removeItem(itemToRob, 1, false, Thief)
-								logText(Thief + " : " + Thief.GetDisplayName() + " stole " + itemToRob)
+								log(Thief + " : " + Thief.GetDisplayName() + " stole " + itemToRob)
 								bRobbed = true
 							elseif !itemToRob.HasKeywordString("ostimnostrip") && !itemToRob.HasKeywordString("sexlabnostrip")
 								player.UnequipItemSlot(iIndex)
@@ -1806,7 +1831,7 @@ Bool Function stealFromPlayer(Actor Thief)
 				endwhile
 				if iVal > 0
 					player.removeItem(itemToRob, 1, false, thief)
-					logText(Thief + " : " + Thief.GetDisplayName() + " stole " + itemToRob)
+					log(Thief + " : " + Thief.GetDisplayName() + " stole " + itemToRob)
 					bRobbed = true
 				endif
 				checkedItems.revert()
@@ -1862,7 +1887,11 @@ Function entrapPlayer(Actor akEntrapper)
 	Bool vagPlugged = DDX_Interface.isVaginallyPlugged(player)
 	Bool anlPlugged = DDX_Interface.isAnallyPlugged(player)
 	float fTimeStart = Utility.GetCurrentRealTime()
-	Bool bResult = DDX_Interface.lockRandomDeviceOnActor(player, iEntrapmentLevel, iDeviceChanceArr, iDeviousDeviceSet - 1)
+	Form  kDev = DDX_Interface.lockRandomDeviceOnActor(player, iEntrapmentLevel, iDeviceChanceArr, iDeviousDeviceSet - 1)
+	Bool bResult = isFormValid(kDev)
+	if bResult
+		log(kDev.GetName() + " equipped.", True, False, 1)
+	endif
 	float fTimeEnd = Utility.GetCurrentRealTime()
 	float fTotalTime = fTimeEnd - fTimeStart
 	if bAnimEntrapper
@@ -1881,7 +1910,7 @@ Function entrapPlayer(Actor akEntrapper)
 		if (!vagPlugged && DDX_Interface.isVaginallyPlugged(player)) || (!anlPlugged && DDX_Interface.isAnallyPlugged(player))
 			DDX_Interface.MoanAndPlayHornyAnimation(player)
 		endif
-	else
+	elseif randInt(0,1)
 		DDX_Interface.InflateRandomPlug(player)
 	endif
 	Game.setPlayerAiDriven(false)
@@ -1917,9 +1946,9 @@ function ProstitutePlayerTo(Actor akCustomer, bool bAccept=true)
 			customerSpell.Cast(akCustomer, akCustomer)
 		else
 			String msg = akCustomer.getDisplayName() + " is busy."
-			logText(msg, true, false)
+			log(msg, true, false)
 			Scene curScene = akCustomer.GetCurrentScene()
-			logText(msg + " | Scene: " + curScene + " | Quest: " + curScene.GetOwningQuest())
+			log(msg + " | Scene: " + curScene + " | Quest: " + curScene.GetOwningQuest())
 			return
 		endif
 		if !bAccept
@@ -1945,9 +1974,9 @@ function playerPracticeDibelArtWith(Actor akActor, bool bAccept=true)
 			customerSpell.Cast(akActor, akActor)
 		else
 			String msg = akActor.getDisplayName() + " is busy."
-			logText(msg, True, False, 1)
+			log(msg, True, False, 1)
 			Scene curScene = akActor.GetCurrentScene()
-			logText(msg + " | Scene: " + curScene + " | Quest: " + curScene.GetOwningQuest())
+			log(msg + " | Scene: " + curScene + " | Quest: " + curScene.GetOwningQuest())
 			return
 		endif
 		if !bAccept
@@ -2278,7 +2307,7 @@ Int function payWhore(actor whore, int position)
 		currentOwnerSeptimDisplay.SetValueInt(iCurrentOwnerSeptims)
 		UpdateCurrentInstanceGlobal(currentOwnerSeptimDisplay)
 		pimpTracker.UpdateCurrentInstanceGlobal(currentOwnerSeptimDisplay)
-		logText(totalPay + " septim added to " + ownerActor.getDisplayName(), true, true)
+		log(totalPay + " septim added to " + ownerActor.getDisplayName(), true, true, 0)
 	elseif isWhoringAlwaysAllowedInCurrentLocation || (ownerActor && (ownerActor.getParentCell() == whore.getParentCell()))
 		if bWhorePayAfterSex
 			iWhoreClientsPayment = iWhoreClientsPayment + totalPay
@@ -2480,7 +2509,7 @@ Bool Function checkSnitch(Actor npc, Bool bCompleteCheck = False, Bool bDibel = 
 				else
 					whoreSnitch = npc
 				endif
-				logText(npc.GetDisplayName() + " (" + npc + ") wants to snitch on player.")
+				log(npc.GetDisplayName() + " (" + npc + ") wants to snitch on player.")
 				Return True
 			endif
 		endif
@@ -2491,7 +2520,7 @@ Bool Function checkSnitch(Actor npc, Bool bCompleteCheck = False, Bool bDibel = 
 			else
 				whoreSnitch = npc
 			endif
-			logText(npc.GetDisplayName() + " (" + npc + ") wants to snitch on player.")
+			log(npc.GetDisplayName() + " (" + npc + ") wants to snitch on player.")
 			Return True
 		endif
 	endif
@@ -2622,8 +2651,8 @@ function snitch()
 			else
 				msg = "Someone reported you."
 			endif
-			logText(msg, True, False)
-			logText(msg + " (" + snitch + ")")
+			log(msg, True, False, 2)
+			log(msg + " (" + snitch + ")")
 			if ((snitch == angryDibelCustomer) || (snitch == angryWhoreCustomer)) || !LicensesInterface.bFlagWhoreViolation()
 				if !player.GetCurrentLocation() || !player.GetCurrentLocation().HasKeywordstring("loctypejail")
 					if iTotalCrimes > 0
@@ -3139,7 +3168,7 @@ State Dibeling
 			iDibelClientsPayment = 0
 		endif
 		if !bDibelClientOrgasmed && (origCustomersArr.length > 0)
-		    logText("Client not satisfied.", true, true)
+		    log("Client not satisfied.", true, true, 2)
 			if  bDibelPunishIfClientNotOrgasmed
 				i = randint(0,origCustomersArr.length - 1)
 				if origCustomersArr[i] as Actor
@@ -3376,7 +3405,7 @@ State Whoring
 					currentOwnerSeptimDisplay.SetValueInt(iCurrentOwnerSeptims)
 					UpdateCurrentInstanceGlobal(currentOwnerSeptimDisplay)
 					pimpTracker.UpdateCurrentInstanceGlobal(currentOwnerSeptimDisplay)
-					logText(iWhoreClientsPayment + " septim added to " + ownerActor.getDisplayName(), true, true)
+					log(iWhoreClientsPayment + " septim added to " + ownerActor.getDisplayName(), true, true, 0)
 				else
 					player.Additem(gold, iWhoreClientsPayment)
 				endif
@@ -3384,7 +3413,7 @@ State Whoring
 			iWhoreClientsPayment = 0
 		endif
 		if !bWhoreClientOrgasmed && (origCustomersArr.length > 0)
-		    logText("The client not satisfied.", True, true)
+		    log("The client not satisfied.", True, true, 2)
 			if bWhorePunishIfClientNotOrgasmed
 				i = randint(0,origCustomersArr.length - 1)
 				if origCustomersArr[i] as Actor
@@ -4231,7 +4260,7 @@ Function CheckAliases()
 	If ReApproachQst.isrunning()
 		ReApproachScript.stopReapproach()
 	endif
-	logText("Aliases were checked.")
+	log("Aliases were checked.")
 EndFunction
 
 Bool Function isCustomer(Actor akActor)
@@ -4324,8 +4353,8 @@ function checkWhoreCustomer(Actor akCustomer)
 	bISWhoreCustomerAroused = (!bIs_SLA_Active || ((iSLA_MinWhoreCustomerArousal == 0) || (iSLA_CurrentCustomerArousal >= iSLA_MinWhoreCustomerArousal)))
 	if bIs_SLA_Active
 		string actorName = akCustomer.getdisplayname()
-		logText(actorName + " arousal level is " +  iSLA_CurrentCustomerArousal)
-		!bISWhoreCustomerAroused && logText(actorName + " not aroused (" + iSLA_CurrentCustomerArousal + ")", true, false)
+		log(actorName + " arousal level is " +  iSLA_CurrentCustomerArousal)
+		!bISWhoreCustomerAroused && log(actorName + " not aroused (" + iSLA_CurrentCustomerArousal + ")", true, false, 1)
 	endif
 endfunction
 
@@ -4334,8 +4363,8 @@ function checkDibelCustomer(Actor akCustomer)
 	bIsDibelCustomerAroused = (!bIs_SLA_Active || ((iSLA_MinDibelCustomerArousal == 0) || (iSLA_CurrentCustomerArousal >= iSLA_MinDibelCustomerArousal)))
 	if bIs_SLA_Active
 		string actorName = akCustomer.getdisplayname()
-		logText(actorName + " arousal level is " +  iSLA_CurrentCustomerArousal)
-		!bIsDibelCustomerAroused && logText(actorName + " not aroused (" + iSLA_CurrentCustomerArousal + ")", true, false)
+		log(actorName + " arousal level is " +  iSLA_CurrentCustomerArousal)
+		!bIsDibelCustomerAroused && log(actorName + " not aroused (" + iSLA_CurrentCustomerArousal + ")", true, false, 1)
 	endif
 endfunction
 
@@ -4347,23 +4376,23 @@ function checkBeggarCustomer(Actor akCustomer)
 	ApproachMonitorScr.actorHavingSex = isActorHavingSex(akCustomer)
 	iSLA_CurrentCustomerArousal = SLA_Interface.GetActorArousal(akCustomer)
 	bIsBeggarHelperArroused = (!bIs_SLA_Active || ((iSLA_MinBeggarSexOfferArousal == 0) || (iSLA_CurrentCustomerArousal >= iSLA_MinBeggarSexOfferArousal)))
-	bIs_SLA_Active && logText(akCustomer.getDisplayName() + " arousal level is " +  iSLA_CurrentCustomerArousal)
+	bIs_SLA_Active && log(akCustomer.getDisplayName() + " arousal level is " +  iSLA_CurrentCustomerArousal)
 	isPlayerAroused()
 	isPlayerGettingHarassed()
 	
 	string actorName = akCustomer.getdisplayname()
 	if bIs_SLA_Active
-	    !bIsBeggarHelperArroused && logText(actorName + " not aroused (" + iSLA_CurrentCustomerArousal + ")", true, true)
-		!bIsPCAroused && logText("Player not aroused ("+ iSLA_PCArousal + ")", true, true)
+	    !bIsBeggarHelperArroused && log(actorName + " not aroused (" + iSLA_CurrentCustomerArousal + ")", true, true, 1)
+		!bIsPCAroused && log("Player not aroused ("+ iSLA_PCArousal + ")", true, true, 1)
 	endif
-	!bBeggarPlayerIsKnownWhore && logText("Player fame not enough (" + iSLSFR_CurrentWhoreFame + ")", true, true)
-	bOnlyLicensedBeggarSexOffer && !ApproachMonitorScr.hasLicense && logText("Player doesn't have license.", true, true)
+	!bBeggarPlayerIsKnownWhore && log("Player fame not enough (" + iSLSFR_CurrentWhoreFame + ")", true, true, 1)
+	bOnlyLicensedBeggarSexOffer && !ApproachMonitorScr.hasLicense && log("Player doesn't have license.", true, true, 1)
 endfunction
 
 Bool function isPlayerAroused()
 	iSLA_PCArousal = SLA_Interface.GetActorArousal(player)
 	bIsPCAroused = (!bIs_SLA_Active || ((iSLA_MinPCArousal == 0) || (iSLA_PCArousal >= iSLA_MinPCArousal)))
-	logText("Player arousal level is " + iSLA_PCArousal)
+	log("Player arousal level is " + iSLA_PCArousal)
 	return bIsPCAroused
 endfunction
 
@@ -4387,12 +4416,12 @@ Function addEnchantedRewardToPlayer(Float fRewardChance = 100.0, Float fRewardEn
 	endif
 	Form Item = GetRandomItemFromLeveledItem(LItemTempleReward)
 	if !isFormValid(Item)
-	    logText("No valid reward found.")
+	    log("No valid reward found.")
 		return
 	endif
-	logText("Reward is " + Item)
+	log("Reward is " + Item)
 	if (randInt(0, 999) >= (fRewardEnchantedChance * 10) as Int) || (!(Item As Armor) && !(Item As Weapon)) || ((Item As Armor) && (Item As Armor).GetEnchantment()) || ((Item As Weapon) && (Item As Weapon).GetEnchantment())
-		logText("Reward won't be enchanted.")
+		log("Reward won't be enchanted.")
 		player.additem(item, 1)
 		return
 	endif
@@ -4407,7 +4436,7 @@ Function addEnchantedRewardToPlayer(Float fRewardChance = 100.0, Float fRewardEn
 		enchList = Ench_Weapon_Lists
 	endif
 	if !enchList
-	    logText("No valid enchantment found for the reward.")
+	    log("No valid enchantment found for the reward.")
 		player.additem(item, 1)
 		return
 	endif
@@ -4423,7 +4452,7 @@ Function addEnchantedRewardToPlayer(Float fRewardChance = 100.0, Float fRewardEn
 		iIndex += 1
 	endWhile
 	if iTotal < 1
-	    logText("No valid enchantment found for the reward.")
+	    log("No valid enchantment found for the reward.")
 		player.additem(item, 1)
 		return
 	endif
@@ -4450,12 +4479,12 @@ Function addEnchantedRewardToPlayer(Float fRewardChance = 100.0, Float fRewardEn
 		iIndex += 1
 	endWhile
 	if isFormValid(ench) && (ench.GetFormID() <= 4278190080) ;An enchantment with a formID greater than 0xFF000000 will cause the game to crash according to https://ck.uesp.net/wiki/GetEnchantment_-_Armor
-	    logText("Reward's enchantment is " + ench)
+	    log("Reward's enchantment is " + ench)
 		ObjectReference itemRef = player.placeAtMe(Item, 1)
 		itemRef.SetEnchantment(ench, 100.0)
 		player.additem(itemRef, 1)
 	else
-	    logText("No valid enchantment found for the reward.")
+	    log("No valid enchantment found for the reward.")
 		player.additem(item, 1)
 	endif
 EndFunction

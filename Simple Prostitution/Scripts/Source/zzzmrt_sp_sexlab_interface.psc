@@ -1,6 +1,8 @@
 Scriptname zzzmrt_sp_sexlab_interface extends Quest
 
 import zzzmrt_sp_utility
+Quest property MainQuest auto
+zzzmrt_sp_main_qst_script property MainScript auto
 
 Quest SexLabQuestFramework
 Bool property bChecked = False Auto Hidden
@@ -9,7 +11,7 @@ event OnEndState()
   Utility.Wait(5.0) ; Wait before entering active state to help avoid making function calls to scripts that may not have initialized yet.
   SexLabQuestFramework = Game.GetFormFromFile(0x000d62, "SexLab.esm") as Quest ; Get quest now
   if isFormValid(SexLabQuestFramework)
-    logText("SexLab detected.", True, True, 1)
+    MainScript.log("SexLab detected.", True, True, 1, true)
   endif
 endevent
 

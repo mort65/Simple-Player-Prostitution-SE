@@ -1,5 +1,8 @@
 Scriptname zzzmrt_sp_ddx_interface extends Quest
 
+Quest property MainQuest auto
+zzzmrt_sp_main_qst_script property MainScript auto
+
 import zzzmrt_sp_utility
 
 Quest zadxQuest
@@ -21,7 +24,7 @@ endevent
 Function setVars()
   zadxQuest = Game.GetFormFromFile(0x00ca01, "Devious Devices - Expansion.esm") as Quest
   setDevArrs()
-  logText("Devious Devices Expansion detected.", true, true, 1)
+  MainScript.log("Devious Devices Expansion detected.", true, true, 1, True)
 endfunction
 
 Bool Function bCheckVars()
@@ -35,8 +38,8 @@ Bool function GetIsInterfaceActive()
   return false
 endfunction
 
-Bool Function lockRandomDeviceOnActor(Actor akActor, Int iLevel = 0, Int[] chanceArray, Int setIndex = -1)
-  Return false
+Form Function lockRandomDeviceOnActor(Actor akActor, Int iLevel = 0, Int[] chanceArray, Int setIndex = -1)
+  Return None
 endfunction
 
 Bool function isAnallyPlugged(Actor akActor)
@@ -110,7 +113,7 @@ state Installed
     return isFormValid(zadxQuest) && bDevArrsValid(16)
   endfunction
   
-  Bool Function lockRandomDeviceOnActor(Actor akActor, Int iLevel = 0, Int[] chanceArray, Int setIndex = -1)
+  Form Function lockRandomDeviceOnActor(Actor akActor, Int iLevel = 0, Int[] chanceArray, Int setIndex = -1)
 		return zzzmrt_sp_int_ddx._lockRandomDeviceOnActor(zadxQuest, akActor,  iLevel, chanceArray, corsets_regular, getDevArr(setIndex))
   endfunction
 	

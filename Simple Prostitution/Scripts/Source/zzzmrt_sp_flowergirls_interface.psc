@@ -3,6 +3,8 @@ Scriptname zzzmrt_sp_flowergirls_interface extends Quest
 import zzzmrt_sp_utility
 
 Bool property bChecked = False Auto Hidden
+Quest property MainQuest auto
+zzzmrt_sp_main_qst_script property MainScript auto
 
 Quest FlowerGirls
 Faction AnimatingFaction
@@ -12,7 +14,7 @@ event OnEndState()
   FlowerGirls = Game.GetFormFromFile(0x0012C5, "FlowerGirls SE.esm") as Quest ; Get quest now
   AnimatingFaction = Game.GetFormFromFile(0x5bef2c, "FlowerGirls SE.esm") as Faction
   if isFormValid(FlowerGirls)
-    logText("FlowerGirls detected.", true, true, 1)
+    MainScript.log("FlowerGirls detected.", true, true, 1, true)
   endif
 endevent
 
