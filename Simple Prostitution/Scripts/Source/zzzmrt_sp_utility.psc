@@ -346,22 +346,27 @@ Function logText(String asText, Bool bNotification = False, Bool bTrace = True, 
 		return
 	endif
 	String sColor
+	String sType
 	Int iSeverity
 	If aiSeverity >= 3
 		sColor = asErrorColor
 		iSeverity = 2
+		sType = "(Error)"
 	elseif aiSeverity == 2
 		sColor = asWarningColor
 		iSeverity = 1
+		sType = "(Warning)"
 	elseif aiSeverity == 1
 		sColor = asInfoColor
 		iSeverity = 0
+		sType = "(Info)"
 	else
 		sColor = asSuccessColor
 		iSeverity = 0
+		sType = "(Success)"
 	endif
 	if bTrace
-		Debug.trace(asSender + " -:- " + asText, iSeverity)
+		Debug.trace(asSender + " " + sType + " -:- " + asText, iSeverity)
 	endif
 	if 	bNotification
 		Debug.Notification("<font color='#" +  asDefaultColor + "'>" + asSender + "</font>" + "<font color='#" + asSeparatorColor +"'>" + " -:- " + "</font>" + "<font color='#" + sColor  + "'>" + asText + "</font>")
