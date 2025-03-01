@@ -18,7 +18,7 @@ Event OnUpdate()
 		Actor me = getReference() as Actor
 		if !ApproachMonitorScr.canContinueApproach(me)
 			ApproachMonitorScr.stopApproach(False)
-			ApproachMonitorScr.MainScript.log(me.getDisplayName() + " can't continue approaching player. | Approacher ID=" + me)
+			ApproachMonitorScr.MainScript.log(me.getDisplayName() + " can't continue approaching player. | Approacher ID = " + me)
 		elseif (GetOwningQuest().IsRunning() && !me.isInDialogueWithPlayer())
 			registerForSingleUpdate(1.0)
 		endif

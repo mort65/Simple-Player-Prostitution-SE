@@ -13,7 +13,7 @@ Event OnInit()
 			approachingCustomerAlias.RegisterforSingleupdate(1.0)
 		else
 			ApproachMonitorScr.stopApproach(False)
-			MainScript.log(approacher.getDisplayName() + " can't approach player. | Approacher ID=" + approacher)
+			MainScript.log(approacher.getDisplayName() + " can't approach player. | Approacher ID = " + approacher)
 		endif
 	endif
 EndEvent
