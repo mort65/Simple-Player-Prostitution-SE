@@ -13,7 +13,7 @@ event OnDying(Actor akKiller)
 endevent
 
 Event OnUpdate()
-	ApproachMonitorScr.MainScript.log("OnUpdate() triggered for " + self)
+	;ApproachMonitorScr.MainScript.log("OnUpdate() triggered for " + self)
 	if getReference()
 		Actor me = getReference() as Actor
 		if !ApproachMonitorScr.canContinueApproach(me)
