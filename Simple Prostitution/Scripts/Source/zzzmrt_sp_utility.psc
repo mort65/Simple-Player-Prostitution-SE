@@ -178,11 +178,11 @@ EndFunction
 
 
 Int function weightedRandInt(int[] weights, bool bUsePo3 = false) Global 
-	{Generates weighted random integers.}
-	if weights.Length < 1
-		return -1
-	endif
-	Int iLen = weights.Length
+  {Generates weighted random integers.}
+  if weights.Length < 1
+    return -1
+  endif
+  Int iLen = weights.Length
   int[] cumulWeights = Utility.createIntArray(iLen)
   int iIndex = 0
   int jIndex = 0

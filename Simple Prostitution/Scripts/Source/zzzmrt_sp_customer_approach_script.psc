@@ -7,4 +7,13 @@ zzzmrt_sp_main_qst_script property MainScript auto
 ReferenceAlias property approachingCustomerAlias Auto
 
 Event OnInit()
+	if isrunning() && (approachingCustomerAlias && approachingCustomerAlias.GetReference())
+	    Actor approacher = approachingCustomerAlias.GetReference() as Actor
+		if ApproachMonitorScr.canContinueApproach(approacher)
+			approachingCustomerAlias.RegisterforSingleupdate(1.0)
+		else
+			ApproachMonitorScr.stopApproach(False)
+			MainScript.log(approacher.getDisplayName() + " can't approach player. | Approacher ID=" + approacher)
+		endif
+	endif
 EndEvent
