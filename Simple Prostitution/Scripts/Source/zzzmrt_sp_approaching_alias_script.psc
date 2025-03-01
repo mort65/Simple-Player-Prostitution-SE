@@ -14,7 +14,7 @@ endevent
 
 Event OnUpdate()
 	;ApproachMonitorScr.MainScript.log("OnUpdate() triggered for " + self)
-	if getReference()
+	if getReference() && !((getReference() as Actor).isInDialogueWithPlayer())
 		Actor me = getReference() as Actor
 		if !ApproachMonitorScr.canContinueApproach(me)
 			ApproachMonitorScr.stopApproach(False)
