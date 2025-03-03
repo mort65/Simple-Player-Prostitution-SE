@@ -7,7 +7,7 @@ zzzmrt_sp_main_qst_script property MainScript auto
 ReferenceAlias property approachingCustomerAlias Auto
 
 Event OnInit()
-	if isrunning() && (approachingCustomerAlias && approachingCustomerAlias.GetReference()) && !((approachingCustomerAlias.getReference() as Actor).isInDialogueWithPlayer())
+	if isrunning() && MainScript.bPreventFruitlessApproaches && (approachingCustomerAlias && approachingCustomerAlias.GetReference()) && !((approachingCustomerAlias.getReference() as Actor).isInDialogueWithPlayer())
 	    Actor approacher = approachingCustomerAlias.GetReference() as Actor
 		if ApproachMonitorScr.canContinueApproach(approacher)
 			approachingCustomerAlias.RegisterforSingleupdate(1.0)

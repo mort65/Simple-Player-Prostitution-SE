@@ -624,6 +624,7 @@ elseif (page == "$MRT_SP_PAGE_BEGGING")
     else
       flag = OPTION_FLAG_DISABLED
     endif
+	OID_GROUP_SEX_CHANCE = AddSliderOption("$MRT_SP_GROUP_SEX_CHANCE_SLIDER1", MainScript.fGroupSexChance, "$MRT_SP_GROUP_SEX_CHANCE_SLIDER2", flag)
 	OID_CRIME_BOUNTY = AddSliderOption("$MRT_SP_CRIME_BOUNTY_SLIDER1", MainScript.iCrimeBounty, "$MRT_SP_CRIME_BOUNTY_SLIDER2", flag)
 	OID_NORMAL_MARK_CHANCE = AddSliderOption("$MRT_SP_NORMAL_MARK_CHANCE_SLIDER1", MainScript.fNormalMarkChance, "$MRT_SP_NORMAL_MARK_CHANCE_SLIDER2", flag)
 	OID_NORMAL_NO_REWARD_WHEN_VICTIM = AddToggleOption("$MRT_SP_OID_NORMAL_NO_REWARD_WHEN_VICTIM_TOGGLE", MainScript.bNormalNoRewardWhenVictim, flag)
@@ -3143,6 +3144,7 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
   MainScript.bTeamMatesMayApproach = jsonutil.GetPathIntValue(settings_path, "bTeamMatesMayApproach", MainScript.bTeamMatesMayApproach as Int)
   MainScript.bBeggarGuardsSexOffer = jsonutil.GetPathIntValue(settings_path, "bBeggarGuardsSexOffer", MainScript.bBeggarGuardsSexOffer as Int)
   MainScript.bEldersMayApproach = jsonutil.GetPathIntValue(settings_path, "bEldersMayApproach", MainScript.bEldersMayApproach as int)
+  MainScript.bPreventFruitlessApproaches = jsonutil.GetPathIntValue(settings_path, "bPreventFruitlessApproaches", MainScript.bPreventFruitlessApproaches as int)
   MainScript.bBeggarElderSexOffer = jsonutil.GetPathIntValue(settings_path, "bBeggarElderSexOffer", MainScript.bBeggarElderSexOffer as int)
   MainScript.bDibelAmulet = jsonutil.GetPathIntValue(settings_path, "bDibelAmulet", MainScript.bDibelAmulet as int)
   MainScript.bMaleTempleClient = jsonutil.GetPathIntValue(settings_path, "bMaleTempleClient", MainScript.bMaleTempleClient as int)
@@ -3351,6 +3353,7 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
 	MainScript.fTempleClientMaxExtraPay = jsonutil.GetPathFloatValue(settings_path, "fTempleClientMaxExtraPay", MainScript.fTempleClientMaxExtraPay)
 	MainScript.fDibelTempleMarkChance = jsonutil.GetPathFloatValue(settings_path, "fDibelTempleMarkChance", MainScript.fDibelTempleMarkChance)
 	MainScript.fNormalMarkChance = jsonutil.GetPathFloatValue(settings_path, "fNormalMarkChance", MainScript.fNormalMarkChance)
+	MainScript.fGroupSexChance = jsonutil.GetPathFloatValue(settings_path, "fGroupSexChance", MainScript.fGroupSexChance)
 	MainScript.fTempleMinMarkReward = jsonutil.GetPathFloatValue(settings_path, "fTempleMinMarkReward", MainScript.fTempleMinMarkReward)
 	MainScript.fTempleMaxMarkReward = jsonutil.GetPathFloatValue(settings_path, "fTempleMaxMarkReward", MainScript.fTempleMaxMarkReward)
 	MainScript.fDibelTempleExtraRewardChance = jsonutil.GetPathFloatValue(settings_path, "fDibelTempleExtraRewardChance", MainScript.fDibelTempleExtraRewardChance)
@@ -3398,62 +3401,63 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
 endFunction
 
 Bool function saveUserSettingsPapyrus()
-  jsonutil.SetPathIntValue(settings_path, "bWhoreNeedLicense", MainScript.bWhoreNeedLicense as Int)
-  jsonutil.SetPathIntValue(settings_path, "bDibelNeedLicense", MainScript.bDibelNeedLicense as Int)
-  jsonutil.SetPathIntValue(settings_path, "bBeggingEnabled", MainScript.bBeggingEnabled as Int)
-  jsonutil.SetPathIntValue(settings_path, "bBeggingClothing", MainScript.bBeggingClothing as Int)
-  jsonutil.SetPathIntValue(settings_path, "bPoorHelpBeggar", MainScript.bPoorHelpBeggar as Int)
-  jsonutil.SetPathIntValue(settings_path, "bGuardHelpBeggar", MainScript.bGuardHelpBeggar as Int)
-  jsonutil.SetPathIntValue(settings_path, "bWhoreEnabled", MainScript.bWhoreEnabled as Int)
-  jsonutil.SetPathIntValue(settings_path, "bWhoreClothing", MainScript.bWhoreClothing as Int)
-  jsonutil.SetPathIntValue(settings_path, "bDibelEnabled", MainScript.bDibelEnabled as Int)
-  jsonutil.SetPathIntValue(settings_path, "bDibelAgent", MainScript.bDibelAgent as Int)
-  jsonutil.SetPathIntValue(settings_path, "bDibelCrown", MainScript.bDibelCrown as Int)
-  jsonutil.SetPathIntValue(settings_path, "bDibelNaked", MainScript.bDibelNaked as Int)
-  jsonutil.SetPathIntValue(settings_path, "bWhoreAllowAggressive", MainScript.bWhoreAllowAggressive as Int)
-  jsonutil.SetPathIntValue(settings_path, "bDibelAllowAggressive", MainScript.bDibelAllowAggressive as Int)
-  jsonutil.SetPathIntValue(settings_path, "bTryAllInterfaces", MainScript.bTryAllInterfaces as Int)
-  jsonutil.SetPathIntValue(settings_path, "bExtraTags_SL_Oral_MF_ALL", MainScript.bExtraTags_SL_Oral_MF_ALL as Int)
-  jsonutil.SetPathIntValue(settings_path, "bExtraTags_SL_Oral_FF_ALL", MainScript.bExtraTags_SL_Oral_FF_ALL as Int)
-  jsonutil.SetPathIntValue(settings_path, "bExtraTags_SL_Oral_MM_ALL", MainScript.bExtraTags_SL_Oral_MM_ALL as Int)
-  jsonutil.SetPathIntValue(settings_path, "bExtraTags_SL_Anal_MF_ALL", MainScript.bExtraTags_SL_Anal_MF_ALL as Int)
-  jsonutil.SetPathIntValue(settings_path, "bExtraTags_SL_Anal_FF_ALL", MainScript.bExtraTags_SL_Anal_FF_ALL as Int)
-  jsonutil.SetPathIntValue(settings_path, "bExtraTags_SL_Anal_MM_ALL", MainScript.bExtraTags_SL_Anal_MM_ALL as Int)
-  jsonutil.SetPathIntValue(settings_path, "bExtraTags_SL_Vaginal_MF_ALL", MainScript.bExtraTags_SL_Vaginal_MF_ALL as Int)
-  jsonutil.SetPathIntValue(settings_path, "bExtraTags_SL_Vaginal_FF_ALL", MainScript.bExtraTags_SL_Vaginal_FF_ALL as Int)
-  jsonutil.SetPathIntValue(settings_path, "bExtraTags_OS_Oral_MF_ALL", MainScript.bExtraTags_OS_Oral_MF_ALL as Int)
-  jsonutil.SetPathIntValue(settings_path, "bExtraTags_OS_Oral_FF_ALL", MainScript.bExtraTags_OS_Oral_FF_ALL as Int)
-  jsonutil.SetPathIntValue(settings_path, "bExtraTags_OS_Oral_MM_ALL", MainScript.bExtraTags_OS_Oral_MM_ALL as Int)
-  jsonutil.SetPathIntValue(settings_path, "bExtraTags_OS_Anal_MF_ALL", MainScript.bExtraTags_OS_Anal_MF_ALL as Int)
-  jsonutil.SetPathIntValue(settings_path, "bExtraTags_OS_Anal_FF_ALL", MainScript.bExtraTags_OS_Anal_FF_ALL as Int)
-  jsonutil.SetPathIntValue(settings_path, "bExtraTags_OS_Anal_MM_ALL", MainScript.bExtraTags_OS_Anal_MM_ALL as Int)
-  jsonutil.SetPathIntValue(settings_path, "bExtraTags_OS_Vaginal_MF_ALL", MainScript.bExtraTags_OS_Vaginal_MF_ALL as Int)
-  jsonutil.SetPathIntValue(settings_path, "bExtraTags_OS_Vaginal_FF_ALL", MainScript.bExtraTags_OS_Vaginal_FF_ALL as Int)
-  jsonutil.SetPathIntValue(settings_path, "bDibelAllowMultipleSTDs", MainScript.bDibelAllowMultipleSTDs as Int)
-  jsonutil.SetPathIntValue(settings_path, "bWhoreAllowMultipleSTDs", MainScript.bWhoreAllowMultipleSTDs as Int)
-  jsonutil.SetPathIntValue(settings_path, "bNormalAllowMultipleSTDs", MainScript.bNormalAllowMultipleSTDs as Int)
-  jsonutil.SetPathIntValue(settings_path, "bSexAfterOffering", MainScript.bSexAfterOffering as Int)
-  jsonutil.SetPathIntValue(settings_path, "bBeggingFemaleSexOffer", MainScript.bBeggingFemaleSexOffer as Int)
-  jsonutil.SetPathIntValue(settings_path, "bBeggingMaleSexOffer", MainScript.bBeggingMaleSexOffer as Int)
-  jsonutil.SetPathIntValue(settings_path, "bBeggarRejectTheftOnlyGold", MainScript.bBeggarRejectTheftOnlyGold as Int)
-  jsonutil.SetPathIntValue(settings_path, "bDefaultRejectTheftOnlyGold", MainScript.bDefaultRejectTheftOnlyGold as Int)
-  jsonutil.SetPathIntValue(settings_path, "bDibelRejectTheftOnlyGold", MainScript.bDibelRejectTheftOnlyGold as Int)
-  jsonutil.SetPathIntValue(settings_path, "bWhoreRejectTheftOnlyGold", MainScript.bWhoreRejectTheftOnlyGold as Int)
-  jsonutil.SetPathIntValue(settings_path, "bMaleCustomerApproach", MainScript.bMaleCustomerApproach as Int)
-  jsonutil.SetPathIntValue(settings_path, "bFemaleCustomerApproach", MainScript.bFemaleCustomerApproach as Int)
-  jsonutil.SetPathIntValue(settings_path, "bOnlyWhoreClothingApproach", MainScript.bOnlyWhoreClothingApproach as Int)
-  jsonutil.SetPathIntValue(settings_path, "bOnlyInteriorApproach", MainScript.bOnlyInteriorApproach as Int)
-  jsonutil.SetPathIntValue(settings_path, "bOnlyLOSApproach", MainScript.bOnlyLOSApproach as Int)
-  jsonutil.SetPathIntValue(settings_path, "bOnlyLicensedApproach", MainScript.bOnlyLicensedApproach as Int)  
-  jsonutil.SetPathIntValue(settings_path, "bOnlyLicensedBeggarSexOffer", MainScript.bOnlyLicensedBeggarSexOffer as Int)
-  jsonutil.SetPathIntValue(settings_path, "bOnlyInteriorBeggarOfferSex", MainScript.bOnlyInteriorBeggarOfferSex as Int)
-  jsonutil.SetPathIntValue(settings_path, "bGuardsAreCruel", MainScript.bGuardsAreCruel as Int)
-  jsonutil.SetPathIntValue(settings_path, "bBeggarRejectWalkAwayCheck", MainScript.bBeggarRejectWalkAwayCheck as Int)
-  jsonutil.SetPathIntValue(settings_path, "bGuardsMayApproach", MainScript.bGuardsMayApproach as Int)
-  jsonutil.SetPathIntValue(settings_path, "bTeamMatesMayApproach", MainScript.bTeamMatesMayApproach as Int)
-  jsonutil.SetPathIntValue(settings_path, "bBeggarGuardsSexOffer", MainScript.bBeggarGuardsSexOffer as Int)
-  jsonutil.SetPathIntValue(settings_path, "bEldersMayApproach", MainScript.bEldersMayApproach as Int)
-  jsonutil.SetPathIntValue(settings_path, "bBeggarElderSexOffer", MainScript.bBeggarElderSexOffer as Int)
+	jsonutil.SetPathIntValue(settings_path, "bWhoreNeedLicense", MainScript.bWhoreNeedLicense as Int)
+	jsonutil.SetPathIntValue(settings_path, "bDibelNeedLicense", MainScript.bDibelNeedLicense as Int)
+	jsonutil.SetPathIntValue(settings_path, "bBeggingEnabled", MainScript.bBeggingEnabled as Int)
+	jsonutil.SetPathIntValue(settings_path, "bBeggingClothing", MainScript.bBeggingClothing as Int)
+	jsonutil.SetPathIntValue(settings_path, "bPoorHelpBeggar", MainScript.bPoorHelpBeggar as Int)
+	jsonutil.SetPathIntValue(settings_path, "bGuardHelpBeggar", MainScript.bGuardHelpBeggar as Int)
+	jsonutil.SetPathIntValue(settings_path, "bWhoreEnabled", MainScript.bWhoreEnabled as Int)
+	jsonutil.SetPathIntValue(settings_path, "bWhoreClothing", MainScript.bWhoreClothing as Int)
+	jsonutil.SetPathIntValue(settings_path, "bDibelEnabled", MainScript.bDibelEnabled as Int)
+	jsonutil.SetPathIntValue(settings_path, "bDibelAgent", MainScript.bDibelAgent as Int)
+	jsonutil.SetPathIntValue(settings_path, "bDibelCrown", MainScript.bDibelCrown as Int)
+	jsonutil.SetPathIntValue(settings_path, "bDibelNaked", MainScript.bDibelNaked as Int)
+	jsonutil.SetPathIntValue(settings_path, "bWhoreAllowAggressive", MainScript.bWhoreAllowAggressive as Int)
+	jsonutil.SetPathIntValue(settings_path, "bDibelAllowAggressive", MainScript.bDibelAllowAggressive as Int)
+	jsonutil.SetPathIntValue(settings_path, "bTryAllInterfaces", MainScript.bTryAllInterfaces as Int)
+	jsonutil.SetPathIntValue(settings_path, "bExtraTags_SL_Oral_MF_ALL", MainScript.bExtraTags_SL_Oral_MF_ALL as Int)
+	jsonutil.SetPathIntValue(settings_path, "bExtraTags_SL_Oral_FF_ALL", MainScript.bExtraTags_SL_Oral_FF_ALL as Int)
+	jsonutil.SetPathIntValue(settings_path, "bExtraTags_SL_Oral_MM_ALL", MainScript.bExtraTags_SL_Oral_MM_ALL as Int)
+	jsonutil.SetPathIntValue(settings_path, "bExtraTags_SL_Anal_MF_ALL", MainScript.bExtraTags_SL_Anal_MF_ALL as Int)
+	jsonutil.SetPathIntValue(settings_path, "bExtraTags_SL_Anal_FF_ALL", MainScript.bExtraTags_SL_Anal_FF_ALL as Int)
+	jsonutil.SetPathIntValue(settings_path, "bExtraTags_SL_Anal_MM_ALL", MainScript.bExtraTags_SL_Anal_MM_ALL as Int)
+	jsonutil.SetPathIntValue(settings_path, "bExtraTags_SL_Vaginal_MF_ALL", MainScript.bExtraTags_SL_Vaginal_MF_ALL as Int)
+	jsonutil.SetPathIntValue(settings_path, "bExtraTags_SL_Vaginal_FF_ALL", MainScript.bExtraTags_SL_Vaginal_FF_ALL as Int)
+	jsonutil.SetPathIntValue(settings_path, "bExtraTags_OS_Oral_MF_ALL", MainScript.bExtraTags_OS_Oral_MF_ALL as Int)
+	jsonutil.SetPathIntValue(settings_path, "bExtraTags_OS_Oral_FF_ALL", MainScript.bExtraTags_OS_Oral_FF_ALL as Int)
+	jsonutil.SetPathIntValue(settings_path, "bExtraTags_OS_Oral_MM_ALL", MainScript.bExtraTags_OS_Oral_MM_ALL as Int)
+	jsonutil.SetPathIntValue(settings_path, "bExtraTags_OS_Anal_MF_ALL", MainScript.bExtraTags_OS_Anal_MF_ALL as Int)
+	jsonutil.SetPathIntValue(settings_path, "bExtraTags_OS_Anal_FF_ALL", MainScript.bExtraTags_OS_Anal_FF_ALL as Int)
+	jsonutil.SetPathIntValue(settings_path, "bExtraTags_OS_Anal_MM_ALL", MainScript.bExtraTags_OS_Anal_MM_ALL as Int)
+	jsonutil.SetPathIntValue(settings_path, "bExtraTags_OS_Vaginal_MF_ALL", MainScript.bExtraTags_OS_Vaginal_MF_ALL as Int)
+	jsonutil.SetPathIntValue(settings_path, "bExtraTags_OS_Vaginal_FF_ALL", MainScript.bExtraTags_OS_Vaginal_FF_ALL as Int)
+	jsonutil.SetPathIntValue(settings_path, "bDibelAllowMultipleSTDs", MainScript.bDibelAllowMultipleSTDs as Int)
+	jsonutil.SetPathIntValue(settings_path, "bWhoreAllowMultipleSTDs", MainScript.bWhoreAllowMultipleSTDs as Int)
+	jsonutil.SetPathIntValue(settings_path, "bNormalAllowMultipleSTDs", MainScript.bNormalAllowMultipleSTDs as Int)
+	jsonutil.SetPathIntValue(settings_path, "bSexAfterOffering", MainScript.bSexAfterOffering as Int)
+	jsonutil.SetPathIntValue(settings_path, "bBeggingFemaleSexOffer", MainScript.bBeggingFemaleSexOffer as Int)
+	jsonutil.SetPathIntValue(settings_path, "bBeggingMaleSexOffer", MainScript.bBeggingMaleSexOffer as Int)
+	jsonutil.SetPathIntValue(settings_path, "bBeggarRejectTheftOnlyGold", MainScript.bBeggarRejectTheftOnlyGold as Int)
+	jsonutil.SetPathIntValue(settings_path, "bDefaultRejectTheftOnlyGold", MainScript.bDefaultRejectTheftOnlyGold as Int)
+	jsonutil.SetPathIntValue(settings_path, "bDibelRejectTheftOnlyGold", MainScript.bDibelRejectTheftOnlyGold as Int)
+	jsonutil.SetPathIntValue(settings_path, "bWhoreRejectTheftOnlyGold", MainScript.bWhoreRejectTheftOnlyGold as Int)
+	jsonutil.SetPathIntValue(settings_path, "bMaleCustomerApproach", MainScript.bMaleCustomerApproach as Int)
+	jsonutil.SetPathIntValue(settings_path, "bFemaleCustomerApproach", MainScript.bFemaleCustomerApproach as Int)
+	jsonutil.SetPathIntValue(settings_path, "bOnlyWhoreClothingApproach", MainScript.bOnlyWhoreClothingApproach as Int)
+	jsonutil.SetPathIntValue(settings_path, "bOnlyInteriorApproach", MainScript.bOnlyInteriorApproach as Int)
+	jsonutil.SetPathIntValue(settings_path, "bOnlyLOSApproach", MainScript.bOnlyLOSApproach as Int)
+	jsonutil.SetPathIntValue(settings_path, "bOnlyLicensedApproach", MainScript.bOnlyLicensedApproach as Int)  
+	jsonutil.SetPathIntValue(settings_path, "bOnlyLicensedBeggarSexOffer", MainScript.bOnlyLicensedBeggarSexOffer as Int)
+	jsonutil.SetPathIntValue(settings_path, "bOnlyInteriorBeggarOfferSex", MainScript.bOnlyInteriorBeggarOfferSex as Int)
+	jsonutil.SetPathIntValue(settings_path, "bGuardsAreCruel", MainScript.bGuardsAreCruel as Int)
+	jsonutil.SetPathIntValue(settings_path, "bBeggarRejectWalkAwayCheck", MainScript.bBeggarRejectWalkAwayCheck as Int)
+	jsonutil.SetPathIntValue(settings_path, "bGuardsMayApproach", MainScript.bGuardsMayApproach as Int)
+	jsonutil.SetPathIntValue(settings_path, "bTeamMatesMayApproach", MainScript.bTeamMatesMayApproach as Int)
+	jsonutil.SetPathIntValue(settings_path, "bBeggarGuardsSexOffer", MainScript.bBeggarGuardsSexOffer as Int)
+	jsonutil.SetPathIntValue(settings_path, "bEldersMayApproach", MainScript.bEldersMayApproach as Int)
+	jsonutil.SetPathIntValue(settings_path, "bPreventFruitlessApproaches", MainScript.bPreventFruitlessApproaches as Int)
+	jsonutil.SetPathIntValue(settings_path, "bBeggarElderSexOffer", MainScript.bBeggarElderSexOffer as Int)
 	jsonutil.SetPathIntValue(settings_path, "bDibelAmulet", MainScript.bDibelAmulet as Int)
 	jsonutil.SetPathIntValue(settings_path, "bMaleTempleClient", MainScript.bMaleTempleClient as Int)
 	jsonutil.SetPathIntValue(settings_path, "bFemaleTempleClient", MainScript.bFemaleTempleClient as Int)
@@ -3655,7 +3659,8 @@ Bool function saveUserSettingsPapyrus()
 	jsonutil.SetPathFloatValue(settings_path, "fTempleClientMinExtraPay", MainScript.fTempleClientMinExtraPay)
 	jsonutil.SetPathFloatValue(settings_path, "fTempleClientMaxExtraPay", MainScript.fTempleClientMaxExtraPay)
 	jsonutil.SetPathFloatValue(settings_path, "fDibelTempleMarkChance", MainScript.fDibelTempleMarkChance)
-	jsonutil.SetPathFloatValue(settings_path, "fNormalMarkChance", MainScript.fNormalMarkChance)	
+	jsonutil.SetPathFloatValue(settings_path, "fNormalMarkChance", MainScript.fNormalMarkChance)
+	jsonutil.SetPathFloatValue(settings_path, "fGroupSexChance", MainScript.fGroupSexChance)
 	jsonutil.SetPathFloatValue(settings_path, "fTempleTaskSeptimCost", MainScript.fTempleTaskSeptimCost)
 	jsonutil.SetPathFloatValue(settings_path, "fTempleMinMarkReward", MainScript.fTempleMinMarkReward)
 	jsonutil.SetPathFloatValue(settings_path, "fTempleMaxMarkReward", MainScript.fTempleMaxMarkReward)
@@ -4080,63 +4085,66 @@ endfunction
 
 
 event OnOptionSelect(int option)
-  if option == OID_WHORE_REJ_THEFT_ONLYGOLD
-    MainScript.bWhoreRejectTheftOnlyGold = !MainScript.bWhoreRejectTheftOnlyGold
-    SetToggleOptionValue(option, MainScript.bWhoreRejectTheftOnlyGold)
-  elseif option == OID_DIBEL_REJ_THEFT_ONLYGOLD
-    MainScript.bDibelRejectTheftOnlyGold = !MainScript.bDibelRejectTheftOnlyGold
-    SetToggleOptionValue(option, MainScript.bDibelRejectTheftOnlyGold)
-  elseif option == OID_BEG_REJ_THEFT_ONLYGOLD
-    MainScript.bBeggarRejectTheftOnlyGold = !MainScript.bBeggarRejectTheftOnlyGold
-    SetToggleOptionValue(option, MainScript.bBeggarRejectTheftOnlyGold)
-  elseif option == OID_BEG_REJ_WALKAWAY_CHECK
-    MainScript.bBeggarRejectWalkAwayCheck = !MainScript.bBeggarRejectWalkAwayCheck
-    SetToggleOptionValue(option, MainScript.bBeggarRejectWalkAwayCheck)
-  elseif option == OID_BEG_ONLY_INTERIOR_SEX_OFFER
-    MainScript.bOnlyInteriorBeggarOfferSex = !MainScript.bOnlyInteriorBeggarOfferSex
-    SetToggleOptionValue(option, MainScript.bOnlyInteriorBeggarOfferSex)
-  elseif option == OID_BEG_GUARDS_SEX_OFFER
-    MainScript.bBeggarGuardsSexOffer = !MainScript.bBeggarGuardsSexOffer
-    SetToggleOptionValue(option, MainScript.bBeggarGuardsSexOffer)
-  elseif option == OID_BEG_ELDER_SEX_OFFER
-    MainScript.bBeggarElderSexOffer = !MainScript.bBeggarElderSexOffer
-    SetToggleOptionValue(option, MainScript.bBeggarElderSexOffer)
-  elseif option == OID_MALE_CUSTOMER_APPROACH
-    MainScript.bMaleCustomerApproach = !MainScript.bMaleCustomerApproach
-    SetToggleOptionValue(option, MainScript.bMaleCustomerApproach)
-  elseif option == OID_FEMALE_CUSTOMER_APPROACH
-    MainScript.bFemaleCustomerApproach = !MainScript.bFemaleCustomerApproach
-    SetToggleOptionValue(option, MainScript.bFemaleCustomerApproach)
-  elseif option == OID_ONLY_WHORE_CLOTHING_APPROACH
-    MainScript.bOnlyWhoreClothingApproach =  !MainScript.bOnlyWhoreClothingApproach
-    SetToggleOptionValue(option, MainScript.bOnlyWhoreClothingApproach)
-  elseif option == OID_ONLY_INTERIOR_APPROACH
-    MainScript.bOnlyInteriorApproach = !MainScript.bOnlyInteriorApproach
-    SetToggleOptionValue(option, MainScript.bOnlyInteriorApproach)
-  elseif option == OID_ONLY_LOS_APPROACH
-    MainScript.bOnlyLOSApproach = !MainScript.bOnlyLOSApproach
-    SetToggleOptionValue(option, MainScript.bOnlyLOSApproach)
-  elseif option == OID_ONLY_LICENSED_APPROACH
-    MainScript.bOnlyLicensedApproach = !MainScript.bOnlyLicensedApproach
-    SetToggleOptionValue(option, MainScript.bOnlyLicensedApproach) 
-  elseif option == OID_BEG_ONLY_LICENSED_SEX_OFFER
-    MainScript.bOnlyLicensedBeggarSexOffer = !MainScript.bOnlyLicensedBeggarSexOffer
-    SetToggleOptionValue(option, MainScript.bOnlyLicensedBeggarSexOffer)
-  elseif option == OID_DEFAULT_REJ_THEFT_ONLYGOLD
-    MainScript.bDefaultRejectTheftOnlyGold = !MainScript.bDefaultRejectTheftOnlyGold
-    SetToggleOptionValue(option, MainScript.bDefaultRejectTheftOnlyGold)
-  elseif option == OID_CRUEL_GUARDS_APPROACH
-    MainScript.bGuardsAreCruel = !MainScript.bGuardsAreCruel
-    SetToggleOptionValue(option, MainScript.bGuardsAreCruel)
-  elseif option == OID_GUARDS_MAY_APPROACH
-    MainScript.bGuardsMayApproach = !MainScript.bGuardsMayApproach
-    SetToggleOptionValue(option, MainScript.bGuardsMayApproach)
-  elseif option == OID_TEAMMATE_MAY_APPROACH
-    MainScript.bTeamMatesMayApproach = !MainScript.bTeamMatesMayApproach
-    SetToggleOptionValue(option, MainScript.bTeamMatesMayApproach)
-  elseif option == OID_ELDER_MAY_APPROACH
-    MainScript.bEldersMayApproach = !MainScript.bEldersMayApproach
-    SetToggleOptionValue(option, MainScript.bEldersMayApproach)
+	if option == OID_WHORE_REJ_THEFT_ONLYGOLD
+		MainScript.bWhoreRejectTheftOnlyGold = !MainScript.bWhoreRejectTheftOnlyGold
+		SetToggleOptionValue(option, MainScript.bWhoreRejectTheftOnlyGold)
+	elseif option == OID_DIBEL_REJ_THEFT_ONLYGOLD
+		MainScript.bDibelRejectTheftOnlyGold = !MainScript.bDibelRejectTheftOnlyGold
+		SetToggleOptionValue(option, MainScript.bDibelRejectTheftOnlyGold)
+	elseif option == OID_BEG_REJ_THEFT_ONLYGOLD
+		MainScript.bBeggarRejectTheftOnlyGold = !MainScript.bBeggarRejectTheftOnlyGold
+		SetToggleOptionValue(option, MainScript.bBeggarRejectTheftOnlyGold)
+	elseif option == OID_BEG_REJ_WALKAWAY_CHECK
+		MainScript.bBeggarRejectWalkAwayCheck = !MainScript.bBeggarRejectWalkAwayCheck
+		SetToggleOptionValue(option, MainScript.bBeggarRejectWalkAwayCheck)
+	elseif option == OID_BEG_ONLY_INTERIOR_SEX_OFFER
+		MainScript.bOnlyInteriorBeggarOfferSex = !MainScript.bOnlyInteriorBeggarOfferSex
+		SetToggleOptionValue(option, MainScript.bOnlyInteriorBeggarOfferSex)
+	elseif option == OID_BEG_GUARDS_SEX_OFFER
+		MainScript.bBeggarGuardsSexOffer = !MainScript.bBeggarGuardsSexOffer
+		SetToggleOptionValue(option, MainScript.bBeggarGuardsSexOffer)
+	elseif option == OID_BEG_ELDER_SEX_OFFER
+		MainScript.bBeggarElderSexOffer = !MainScript.bBeggarElderSexOffer
+		SetToggleOptionValue(option, MainScript.bBeggarElderSexOffer)
+	elseif option == OID_MALE_CUSTOMER_APPROACH
+		MainScript.bMaleCustomerApproach = !MainScript.bMaleCustomerApproach
+		SetToggleOptionValue(option, MainScript.bMaleCustomerApproach)
+	elseif option == OID_FEMALE_CUSTOMER_APPROACH
+		MainScript.bFemaleCustomerApproach = !MainScript.bFemaleCustomerApproach
+		SetToggleOptionValue(option, MainScript.bFemaleCustomerApproach)
+	elseif option == OID_ONLY_WHORE_CLOTHING_APPROACH
+		MainScript.bOnlyWhoreClothingApproach =  !MainScript.bOnlyWhoreClothingApproach
+		SetToggleOptionValue(option, MainScript.bOnlyWhoreClothingApproach)
+	elseif option == OID_ONLY_INTERIOR_APPROACH
+		MainScript.bOnlyInteriorApproach = !MainScript.bOnlyInteriorApproach
+		SetToggleOptionValue(option, MainScript.bOnlyInteriorApproach)
+	elseif option == OID_ONLY_LOS_APPROACH
+		MainScript.bOnlyLOSApproach = !MainScript.bOnlyLOSApproach
+		SetToggleOptionValue(option, MainScript.bOnlyLOSApproach)
+	elseif option == OID_ONLY_LICENSED_APPROACH
+		MainScript.bOnlyLicensedApproach = !MainScript.bOnlyLicensedApproach
+		SetToggleOptionValue(option, MainScript.bOnlyLicensedApproach) 
+	elseif option == OID_BEG_ONLY_LICENSED_SEX_OFFER
+		MainScript.bOnlyLicensedBeggarSexOffer = !MainScript.bOnlyLicensedBeggarSexOffer
+		SetToggleOptionValue(option, MainScript.bOnlyLicensedBeggarSexOffer)
+	elseif option == OID_DEFAULT_REJ_THEFT_ONLYGOLD
+		MainScript.bDefaultRejectTheftOnlyGold = !MainScript.bDefaultRejectTheftOnlyGold
+		SetToggleOptionValue(option, MainScript.bDefaultRejectTheftOnlyGold)
+	elseif option == OID_CRUEL_GUARDS_APPROACH
+		MainScript.bGuardsAreCruel = !MainScript.bGuardsAreCruel
+		SetToggleOptionValue(option, MainScript.bGuardsAreCruel)
+	elseif option == OID_GUARDS_MAY_APPROACH
+		MainScript.bGuardsMayApproach = !MainScript.bGuardsMayApproach
+		SetToggleOptionValue(option, MainScript.bGuardsMayApproach)
+	elseif option == OID_TEAMMATE_MAY_APPROACH
+		MainScript.bTeamMatesMayApproach = !MainScript.bTeamMatesMayApproach
+		SetToggleOptionValue(option, MainScript.bTeamMatesMayApproach)
+	elseif option == OID_ELDER_MAY_APPROACH
+		MainScript.bEldersMayApproach = !MainScript.bEldersMayApproach
+		SetToggleOptionValue(option, MainScript.bEldersMayApproach)
+	elseif option == OID_PREVENT_FRUITLESS_APPROACH
+		MainScript.bPreventFruitlessApproaches = !MainScript.bPreventFruitlessApproaches
+		SetToggleOptionValue(option, MainScript.bPreventFruitlessApproaches)
 	elseif option == OID_DIBEL_AMULET
 		MainScript.bDibelAmulet = !MainScript.bDibelAmulet
 		SetToggleOptionValue(option, MainScript.bDibelAmulet)
@@ -4230,58 +4238,61 @@ event OnOptionSelect(int option)
 EndEvent
 
 event OnOptionDefault(int option)
-  if option == OID_WHORE_REJ_THEFT_ONLYGOLD
-    MainScript.bWhoreRejectTheftOnlyGold = True
-    SetToggleOptionValue(option, MainScript.bWhoreRejectTheftOnlyGold)
-  elseif option == OID_DIBEL_REJ_THEFT_ONLYGOLD
-    MainScript.bDibelRejectTheftOnlyGold = True
-    SetToggleOptionValue(option, MainScript.bDibelRejectTheftOnlyGold)
-  elseif option == OID_BEG_REJ_THEFT_ONLYGOLD
-    MainScript.bBeggarRejectTheftOnlyGold = True
-    SetToggleOptionValue(option, MainScript.bBeggarRejectTheftOnlyGold)
-  elseif option == OID_BEG_REJ_WALKAWAY_CHECK
-    MainScript.bBeggarRejectWalkAwayCheck = False
-    SetToggleOptionValue(option, MainScript.bBeggarRejectWalkAwayCheck)
-  elseif option == OID_BEG_ONLY_INTERIOR_SEX_OFFER
-    MainScript.bOnlyInteriorBeggarOfferSex = False
-    SetToggleOptionValue(option, MainScript.bOnlyInteriorBeggarOfferSex)
-  elseif option == OID_BEG_GUARDS_SEX_OFFER
-    MainScript.bBeggarGuardsSexOffer = True
-    SetToggleOptionValue(option, MainScript.bBeggarGuardsSexOffer)
-  elseif option == OID_BEG_ELDER_SEX_OFFER
-    MainScript.bBeggarElderSexOffer = True
-    SetToggleOptionValue(option, MainScript.bBeggarElderSexOffer)
-  elseif option == OID_MALE_CUSTOMER_APPROACH
-    MainScript.bMaleCustomerApproach = True
-    SetToggleOptionValue(option, MainScript.bMaleCustomerApproach)
-  elseif option == OID_FEMALE_CUSTOMER_APPROACH
-    MainScript.bFemaleCustomerApproach = True
-    SetToggleOptionValue(option, MainScript.bFemaleCustomerApproach)
-  elseif option == OID_ONLY_WHORE_CLOTHING_APPROACH
-    MainScript.bOnlyWhoreClothingApproach = False
-  elseif option == OID_ONLY_INTERIOR_APPROACH
-    MainScript.bOnlyInteriorApproach = False
-  elseif option == OID_ONLY_LOS_APPROACH
-    MainScript.bOnlyLOSApproach = True
-  elseif option == OID_ONLY_LICENSED_APPROACH
-    MainScript.bOnlyLicensedApproach = True
-  elseif option == OID_BEG_ONLY_LICENSED_SEX_OFFER
-    MainScript.bOnlyLicensedBeggarSexOffer = True
-  elseif option == OID_DEFAULT_REJ_THEFT_ONLYGOLD
-    MainScript.bDefaultRejectTheftOnlyGold = True
-    SetToggleOptionValue(option, MainScript.bDefaultRejectTheftOnlyGold)
-  elseif option == OID_CRUEL_GUARDS_APPROACH
-    MainScript.bGuardsAreCruel = True
-    SetToggleOptionValue(option, MainScript.bGuardsAreCruel)
-  elseif option == OID_GUARDS_MAY_APPROACH
-    MainScript.bGuardsMayApproach = true
-    SetToggleOptionValue(option, MainScript.bGuardsMayApproach)
-  elseif option == OID_TEAMMATE_MAY_APPROACH
-    MainScript.bTeamMatesMayApproach = False
-    SetToggleOptionValue(option, MainScript.bTeamMatesMayApproach)
-  elseif option == OID_ELDER_MAY_APPROACH
-    MainScript.bEldersMayApproach = true
-    SetToggleOptionValue(option, MainScript.bEldersMayApproach)
+	if option == OID_WHORE_REJ_THEFT_ONLYGOLD
+		MainScript.bWhoreRejectTheftOnlyGold = True
+		SetToggleOptionValue(option, MainScript.bWhoreRejectTheftOnlyGold)
+	elseif option == OID_DIBEL_REJ_THEFT_ONLYGOLD
+		MainScript.bDibelRejectTheftOnlyGold = True
+		SetToggleOptionValue(option, MainScript.bDibelRejectTheftOnlyGold)
+	elseif option == OID_BEG_REJ_THEFT_ONLYGOLD
+		MainScript.bBeggarRejectTheftOnlyGold = True
+		SetToggleOptionValue(option, MainScript.bBeggarRejectTheftOnlyGold)
+	elseif option == OID_BEG_REJ_WALKAWAY_CHECK
+		MainScript.bBeggarRejectWalkAwayCheck = False
+		SetToggleOptionValue(option, MainScript.bBeggarRejectWalkAwayCheck)
+	elseif option == OID_BEG_ONLY_INTERIOR_SEX_OFFER
+		MainScript.bOnlyInteriorBeggarOfferSex = False
+		SetToggleOptionValue(option, MainScript.bOnlyInteriorBeggarOfferSex)
+	elseif option == OID_BEG_GUARDS_SEX_OFFER
+		MainScript.bBeggarGuardsSexOffer = True
+		SetToggleOptionValue(option, MainScript.bBeggarGuardsSexOffer)
+	elseif option == OID_BEG_ELDER_SEX_OFFER
+		MainScript.bBeggarElderSexOffer = True
+		SetToggleOptionValue(option, MainScript.bBeggarElderSexOffer)
+	elseif option == OID_MALE_CUSTOMER_APPROACH
+		MainScript.bMaleCustomerApproach = True
+		SetToggleOptionValue(option, MainScript.bMaleCustomerApproach)
+	elseif option == OID_FEMALE_CUSTOMER_APPROACH
+		MainScript.bFemaleCustomerApproach = True
+		SetToggleOptionValue(option, MainScript.bFemaleCustomerApproach)
+	elseif option == OID_ONLY_WHORE_CLOTHING_APPROACH
+		MainScript.bOnlyWhoreClothingApproach = False
+	elseif option == OID_ONLY_INTERIOR_APPROACH
+		MainScript.bOnlyInteriorApproach = False
+	elseif option == OID_ONLY_LOS_APPROACH
+		MainScript.bOnlyLOSApproach = True
+	elseif option == OID_ONLY_LICENSED_APPROACH
+		MainScript.bOnlyLicensedApproach = True
+	elseif option == OID_BEG_ONLY_LICENSED_SEX_OFFER
+		MainScript.bOnlyLicensedBeggarSexOffer = True
+	elseif option == OID_DEFAULT_REJ_THEFT_ONLYGOLD
+		MainScript.bDefaultRejectTheftOnlyGold = True
+		SetToggleOptionValue(option, MainScript.bDefaultRejectTheftOnlyGold)
+	elseif option == OID_CRUEL_GUARDS_APPROACH
+		MainScript.bGuardsAreCruel = True
+		SetToggleOptionValue(option, MainScript.bGuardsAreCruel)
+	elseif option == OID_GUARDS_MAY_APPROACH
+		MainScript.bGuardsMayApproach = true
+		SetToggleOptionValue(option, MainScript.bGuardsMayApproach)
+	elseif option == OID_TEAMMATE_MAY_APPROACH
+		MainScript.bTeamMatesMayApproach = False
+		SetToggleOptionValue(option, MainScript.bTeamMatesMayApproach)
+	elseif option == OID_ELDER_MAY_APPROACH
+		MainScript.bEldersMayApproach = true
+		SetToggleOptionValue(option, MainScript.bEldersMayApproach)
+	elseif option == OID_PREVENT_FRUITLESS_APPROACH
+		MainScript.bPreventFruitlessApproaches = true
+		SetToggleOptionValue(option, MainScript.bPreventFruitlessApproaches)
 	elseif option == OID_DIBEL_AMULET
 		MainScript.bDibelAmulet = False
 		SetToggleOptionValue(option, MainScript.bDibelAmulet)
@@ -4531,6 +4542,8 @@ event OnOptionHighlight(int option)
     SetInfoText("$MRT_SP_DESC_NORMAL_NO_REWARD_WHEN_VICTIM")
   elseif option == OID_NORMAL_MARK_CHANCE
     SetInfoText("$MRT_SP_DESC_NORMAL_MARK_CHANCE")
+  elseif option == OID_GROUP_SEX_CHANCE
+    SetInfoText("$MRT_SP_DESC_GROUP_SEX_CHANCE")
   elseif option == OID_WHORE_PUNISH_If_NOT_ORGASMED
     SetInfoText("$MRT_SP_DESC_WHORE_PUNISH_If_NOT_ORGASMED")
   elseif option == OID_DIBEL_PUNISH_If_NOT_ORGASMED
@@ -4619,6 +4632,8 @@ event OnOptionHighlight(int option)
     SetInfoText("$MRT_SP_DESC_BEG_ELDER_SEX_OFFER")
   elseif option == OID_ELDER_MAY_APPROACH
     SetInfoText("$MRT_SP_DESC_ELDER_MAY_APPROACH")
+  elseif option == OID_PREVENT_FRUITLESS_APPROACH
+    SetInfoText("$MRT_SP_DESC_PREVENT_FRUITLESS_APPROACH")
   elseif option == OID_BEG_REJ_ENTRAPMENT_LVL_M
     SetInfoText("$MRT_SP_DESC_BEG_REJ_ENTRAPMENT_LVL_M")
   elseif option == OID_WHORE_REJ_ENTRAPMENT_LVL_M
@@ -5061,7 +5076,10 @@ event OnOptionSliderAccept(int option, float value)
 		SetSliderOptionValue(OID_DIBEL_TEMPLE_TASK_Mark_CHANCE , MainScript.fDibelTempleMarkChance, "$MRT_SP_DIBEL_TEMPLE_TASK_Mark_CHANCE_SLIDER2")	
 	elseif option == OID_NORMAL_MARK_CHANCE
 		MainScript.fNormalMarkChance = value
-		SetSliderOptionValue(OID_NORMAL_MARK_CHANCE , MainScript.fNormalMarkChance, "$MRT_SP_NORMAL_MARK_CHANCE_SLIDER2")	
+		SetSliderOptionValue(OID_NORMAL_MARK_CHANCE , MainScript.fNormalMarkChance, "$MRT_SP_NORMAL_MARK_CHANCE_SLIDER2")
+	elseif option == OID_GROUP_SEX_CHANCE
+		MainScript.fGroupSexChance = value
+		SetSliderOptionValue(OID_GROUP_SEX_CHANCE , MainScript.fGroupSexChance, "$MRT_SP_GROUP_SEX_CHANCE_SLIDER2")		
 	elseif option == OID_DIBEL_TEMPLE_TASK_EXTRA_REWARD_CHANCE
 		MainScript.fDibelTempleExtraRewardChance = value
 		SetSliderOptionValue(OID_DIBEL_TEMPLE_TASK_EXTRA_REWARD_CHANCE , MainScript.fDibelTempleExtraRewardChance, "$MRT_SP_DIBEL_TEMPLE_TASK_EXTRA_REWARD_CHANCE_SLIDER2")
@@ -5689,6 +5707,11 @@ event OnOptionSliderOpen(int option)
 		SetSliderDialogDefaultValue(0.0)
 		SetSliderDialogRange(0, 100)
 		SetSliderDialogInterval(0.1)
+	elseif option == OID_GROUP_SEX_CHANCE
+		SetSliderDialogStartValue(MainScript.fGroupSexChance)
+		SetSliderDialogDefaultValue(100.0)
+		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(0.1)
 	elseif option == OID_WHORE_PERSUADE_CHANCE
 		SetSliderDialogStartValue(MainScript.fWhorePersuadeChance)
 		SetSliderDialogDefaultValue(50.0)
@@ -6001,6 +6024,7 @@ Function approachOptions(Int iflag)
   OID_CRUEL_GUARDS_APPROACH = AddToggleOption("$MRT_SP_CRUEL_GUARDS_APPROACH_TOGGLE", MainScript.bGuardsAreCruel, flg)
   flg = iflag
   OID_ELDER_MAY_APPROACH = AddToggleOption("$MRT_SP_ELDER_MAY_APPROACH_TOGGLE", MainScript.bEldersMayApproach, flg)
+  OID_PREVENT_FRUITLESS_APPROACH = AddToggleOption("$MRT_SP_PREVENT_FRUITLESS_APPROACH_TOGGLE", MainScript.bPreventFruitlessApproaches, flg)
 EndFunction
 
 Function DD_Options(Int iFlag)
@@ -6271,3 +6295,6 @@ Int OID_COLOR_INFO
 Int OID_COLOR_WARNING
 Int OID_COLOR_ERROR
 Int OID_COLOR_SEPARATOR
+
+Int OID_PREVENT_FRUITLESS_APPROACH
+Int OID_GROUP_SEX_CHANCE

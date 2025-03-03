@@ -580,6 +580,9 @@ String Property sWarningColor = "FFFF00"  Auto Hidden Conditional
 String Property sErrorColor = "FF0000" Auto Hidden Conditional
 String Property sSeparatorColor = "FFFFFF" Auto Hidden Conditional
 Bool property bShowNotification = True Auto Hidden Conditional
+Bool property bPreventFruitlessApproaches = True Auto Hidden Conditional 
+Float property fGroupSexChance = 100.0 Auto Hidden Conditional 
+
 
 function log(String sText, Bool bNotification = False, Bool bTrace = True, Int iSeverity = 1, Bool bForceNotif = False)
 	logText(sText, (bNotification && (bShowNotification || (iSeverity != 1) || bForceNotif)), bTrace, iSeverity, "SPP", sDefaultColor, sSuccessColor, sInfoColor, sWarningColor, sErrorColor, sSeparatorColor)
@@ -937,8 +940,16 @@ Bool Function bHaveGroupSex(String interface, Bool bAllowAggressive = False, Boo
 		return True
 	else
 		bResult = False
+		Bool bAllowGroupSex
 		while !bResult && (currentCustomerList.GetSize() > 0)
-			if (currentCustomerList.GetSize() == 1) && (currentCustomerList.GetAt(0) as Actor) && (origCustomersArr.Find(currentCustomerList.GetAt(0) as Actor) > -1)
+			bAllowGroupSex = (randInt(0, 999) < (fGroupSexChance * 10) as Int)
+			if (!bAllowGroupSex || (currentCustomerList.GetSize() == 1))
+				if !(currentCustomerList.GetAt(0) as Actor) || (origCustomersArr.Find(currentCustomerList.GetAt(0) as Actor) < 0)
+					currentCustomerList.revert()
+					partners = formListToActorArray(currentCustomerList)
+					log("Client is invalid.", true, true, 3)
+					return False
+				endif
 				iIndex = origCustomersArr.Find(currentCustomerList.GetAt(0) as Actor)
 				iPosition = iPositions[iIndex]
 				if iPosition < 0
@@ -947,7 +958,13 @@ Bool Function bHaveGroupSex(String interface, Bool bAllowAggressive = False, Boo
 				int iResult = haveSex(currentCustomerList.GetAt(0) as Actor, interface, bAllowAggressive, bAllowAll)
 				iPositions[iIndex] = iResult
 				bResult = (iResult > -1)
-				if !bResult
+				if bResult
+					if currentCustomerList.GetSize() > 1 ;For When group sex disabled
+						Form lastCustomer = currentCustomerList.GetAt(0)
+						currentCustomerList.revert()
+						currentCustomerList.addform(lastCustomer)
+					endif
+				else
 					currentCustomerList.revert()
 					partners = formListToActorArray(currentCustomerList)
 					log("Couldn't start the animation. Please check the log.", true, true, 3)
