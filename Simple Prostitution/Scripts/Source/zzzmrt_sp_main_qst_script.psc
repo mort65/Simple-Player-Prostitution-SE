@@ -785,7 +785,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-	return getBaseVersion() + 0.56
+	return getBaseVersion() + 0.57
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
@@ -4456,7 +4456,7 @@ Function addEnchantedRewardToPlayer(Float fRewardChance = 100.0, Float fRewardEn
 		player.additem(item, 1)
 		return
 	endif
-	Int enchIndex = randInt(0, iTotal)
+	Int enchIndex = randInt(0, iTotal - 1)
 	iIndex = 0
 	Int iSubListSize = 0
 	Enchantment ench
