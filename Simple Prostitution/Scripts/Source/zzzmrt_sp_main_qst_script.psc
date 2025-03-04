@@ -4431,15 +4431,17 @@ Function addEnchantedRewardToPlayer(Float fRewardChance = 100.0, Float fRewardEn
 	if randInt(0, 999) >= (fRewardChance * 10) as Int
 		return
 	endif
-	Form Item = GetRandomItemFromLeveledItem(LItemTempleReward)
+	Form Item = GetRandomItemFromLeveledItem(LItemTempleReward, bIsPO3ExtenderActive)
+	String sName = item.GetName()
 	if !isFormValid(Item)
 	    log("No valid reward found.")
 		return
 	endif
-	log("Reward is " + Item)
+	log("The extra reward is " + Item + " | Available LeveledLists/Items = " + LItemTempleReward.GetNumForms())
 	if (randInt(0, 999) >= (fRewardEnchantedChance * 10) as Int) || (!(Item As Armor) && !(Item As Weapon)) || ((Item As Armor) && (Item As Armor).GetEnchantment()) || ((Item As Weapon) && (Item As Weapon).GetEnchantment())
 		log("Reward won't be enchanted.")
-		player.additem(item, 1)
+		player.additem(item, 1, true)
+		log(sName + " added.", true, false, 0)
 		return
 	endif
 	Formlist enchList
@@ -4454,7 +4456,8 @@ Function addEnchantedRewardToPlayer(Float fRewardChance = 100.0, Float fRewardEn
 	endif
 	if !enchList
 	    log("No valid enchantment found for the reward.")
-		player.additem(item, 1)
+		player.additem(item, 1, true)
+		log(sName + " added.", true, false, 0)
 		return
 	endif
 	int iTotal = 0
@@ -4470,7 +4473,8 @@ Function addEnchantedRewardToPlayer(Float fRewardChance = 100.0, Float fRewardEn
 	endWhile
 	if iTotal < 1
 	    log("No valid enchantment found for the reward.")
-		player.additem(item, 1)
+		player.additem(item, 1, true)
+		log(sName + " added.", true, false, 0)
 		return
 	endif
 	Int enchIndex = randInt(0, iTotal - 1)
@@ -4496,13 +4500,15 @@ Function addEnchantedRewardToPlayer(Float fRewardChance = 100.0, Float fRewardEn
 		iIndex += 1
 	endWhile
 	if isFormValid(ench) && (ench.GetFormID() <= 4278190080) ;An enchantment with a formID greater than 0xFF000000 will cause the game to crash according to https://ck.uesp.net/wiki/GetEnchantment_-_Armor
-	    log("Reward's enchantment is " + ench)
+	    log("Reward's enchantment is " + ench + " | Available enchantments For the Item = " + iTotal)
 		ObjectReference itemRef = player.placeAtMe(Item, 1)
 		itemRef.SetEnchantment(ench, 100.0)
-		player.additem(itemRef, 1)
+		player.additem(itemRef, 1, true)
+		log(itemRef.GetDisplayName() + " added.", true, false, 0)
 	else
 	    log("No valid enchantment found for the reward.")
-		player.additem(item, 1)
+		player.additem(item, 1, true)
+		log(sName + " added.", true, false, 0)
 	endif
 EndFunction
 

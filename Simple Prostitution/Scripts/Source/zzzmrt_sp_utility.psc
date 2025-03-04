@@ -255,10 +255,9 @@ Actor Function getPlayerDialogueTarget(Bool bPyramidUtil = False) Global
   Return None
 EndFunction
 
-Form Function GetRandomItemFromLeveledItem(LeveledItem akItemList, Int iMaxStepBacksLeveledItem = 10) Global
+Form Function GetRandomItemFromLeveledItemFast(LeveledItem akItemList, Int iMaxStepBacksLeveledItem = 5) Global
 	{Retrieves a random form from a given leveledlist.}
     Form loc_form = none
-    Form loc_startLeveledList = akItemList
     Int loc_size = akItemList.GetNumForms() - 1
     If loc_size < 0
         return none
@@ -270,7 +269,7 @@ Form Function GetRandomItemFromLeveledItem(LeveledItem akItemList, Int iMaxStepB
     While (loc_nestedLL) ;check if form is LL, otherwise do nothing
         ;it's a nested LeveledItem list
         loc_size = loc_nestedLL.GetNumForms() - 1
-        if loc_size > 0
+        if loc_size > -1
             loc_prevForm = loc_form
             loc_form = loc_nestedLL.GetNthForm(RandomInt(0, loc_size))
             waitMenuMode(0.01) ;little wait time in case of error
@@ -283,6 +282,97 @@ Form Function GetRandomItemFromLeveledItem(LeveledItem akItemList, Int iMaxStepB
                 ;no more chances, return none
                 return none
             endif
+        endif
+        loc_nestedLL = loc_form As LeveledItem
+    EndWhile
+    Return loc_form
+EndFunction
+
+Int function RandomIntWithExclusionArray(Int iFrom, Int iTo, Bool[] iFlagArray, bool bUsePo3 = false) Global
+{Generates a random integer between iFrom and iTo (inclusive), excluding false values with the same index in a bool array}
+  if iFrom == iTo
+    if iFlagArray[iFrom]
+      return iFrom
+    endif
+    return -1
+  elseif iFrom > iTo
+    Int iTemp = iFrom
+    iFrom = iTo
+    iTo = iTemp
+  endif
+  Int ExcludeCount = 0
+  Int iIndex = iFrom
+  while iIndex <= iTo
+    if (!iFlagArray[iIndex])
+      ExcludeCount += 1
+    endif
+    iIndex += 1
+  endwhile
+  if ExcludeCount > (iTo - iFrom)
+    return -1
+  endif
+  Int iRandom 
+  if bUsePo3
+	iRandom = PO3_SKSEFunctions.GenerateRandomInt(iFrom, iTo - ExcludeCount)
+  else
+	iRandom = RandomInt(iFrom, iTo - ExcludeCount)
+  endif
+  if ExcludeCount > 0
+    iIndex = iFrom
+    while (iIndex <= iTo)
+      if (iRandom < iIndex)
+        return iRandom
+      elseif ((iRandom >= iIndex) && !iFlagArray[iIndex])
+        iRandom += 1
+      endif
+      iIndex += 1
+    endwhile
+  endif
+  return iRandom
+endfunction
+
+Form Function GetRandomItemFromLeveledItem(LeveledItem akItemList, bool bUsePo3 = false) Global
+	{Retrieves a random form from a given leveledlist.}
+    Form loc_form = none
+    Int loc_size = akItemList.GetNumForms()
+    If loc_size < 1
+        return none
+    EndIf
+    LeveledItem loc_nestedLL = akItemList
+	Bool[] loc_flags
+	Int iIndex
+    While (loc_nestedLL) ;check if form is LL, otherwise do nothing
+        ;it's a nested LeveledItem list
+        loc_size = loc_nestedLL.GetNumForms()
+        if loc_size > 0
+			loc_flags = createBoolArray(loc_size, False)
+			iIndex = 0
+			While iIndex < loc_size
+				loc_form = loc_nestedLL.GetNthForm(iIndex)
+				if isFormValid(loc_form)
+					if (loc_form as LeveledItem)
+						loc_flags[iIndex] = (((loc_form as LeveledItem).GetNumForms() > 0) && isFormValid((loc_form as LeveledItem).GetNthForm(0)))
+					else
+						loc_flags[iIndex] = true
+					endif
+				endif
+				iIndex += 1
+			endWhile
+			if loc_flags.Find(True) < 0 ;All Empty
+				return None
+			endif
+			if loc_flags.Find(False) < 0
+				if bUsePo3
+					loc_form = loc_nestedLL.GetNthForm(PO3_SKSEFunctions.GenerateRandomInt(0, loc_size - 1))
+				else
+					loc_form = loc_nestedLL.GetNthForm(RandomInt(0, loc_size - 1))
+				endif
+			else
+				loc_form = loc_nestedLL.GetNthForm(RandomIntWithExclusionArray(0, loc_size - 1, loc_flags, bUsePo3))
+			endif
+            waitMenuMode(0.01) ;little wait time in case of error
+        else
+			return none
         endif
         loc_nestedLL = loc_form As LeveledItem
     EndWhile
