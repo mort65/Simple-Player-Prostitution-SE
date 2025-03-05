@@ -4431,7 +4431,7 @@ Function addEnchantedRewardToPlayer(Float fRewardChance = 100.0, Float fRewardEn
 	if randInt(0, 999) >= (fRewardChance * 10) as Int
 		return
 	endif
-	Form Item = GetRandomItemFromLeveledItem(LItemTempleReward, bIsPO3ExtenderActive)
+	Form Item = GetRandomItemFromLeveledList(LItemTempleReward, bIsPO3ExtenderActive)
 	String sName = item.GetName()
 	if !isFormValid(Item)
 	    log("No valid reward found.")

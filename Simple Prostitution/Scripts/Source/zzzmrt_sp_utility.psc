@@ -255,7 +255,7 @@ Actor Function getPlayerDialogueTarget(Bool bPyramidUtil = False) Global
   Return None
 EndFunction
 
-Form Function GetRandomItemFromLeveledItemFast(LeveledItem akItemList, Int iMaxStepBacksLeveledItem = 5) Global
+Form Function GetRandomItemFromLeveledListFast(LeveledItem akItemList, Int iMaxStepBacksLeveledItem = 5) Global
 	{Retrieves a random form from a given leveledlist.}
     Form loc_form = none
     Int loc_size = akItemList.GetNumForms() - 1
@@ -331,7 +331,7 @@ Int function RandomIntWithExclusionArray(Int iFrom, Int iTo, Bool[] iFlagArray, 
   return iRandom
 endfunction
 
-Form Function GetRandomItemFromLeveledItem(LeveledItem akItemList, bool bUsePo3 = false) Global
+Form Function GetRandomItemFromLeveledList(LeveledItem akItemList, bool bUsePo3 = false) Global
 	{Retrieves a random form from a given leveledlist.}
     Form loc_form = none
     Int loc_size = akItemList.GetNumForms()
