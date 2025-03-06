@@ -788,7 +788,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-	return getBaseVersion() + 0.57
+	return getBaseVersion() + 0.58
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
@@ -2884,7 +2884,7 @@ Function updateHistory(Actor partner, int iPos, Bool bDibel = False)
 		else
 			iTotalWhoreStats[iPos] = iTotalWhoreStats[iPos] + 1
 		endif
-	endif 
+	endif
 EndFunction
 
 Function initStatArrs()
@@ -2929,6 +2929,47 @@ Bool Function bCanReceiveReward(Int iPos, Bool bDibel = False)
 	endif
 	return False
 EndFunction
+
+Bool function bCanReceiveAnyPerkReward()
+	Int iZeroIndex
+	if !MCMScript.bWhoreOralPerkRewardReceived
+		iZeroIndex = iWhoreOralStatArr.Find(0)
+		if (iZeroIndex < 0) || (iZeroIndex == (iTotalRaces - 1))
+			return True
+		endif
+	endif
+	if !MCMScript.bWhoreAnalPerkRewardReceived
+		iZeroIndex = iWhoreAnalStatArr.Find(0)
+		if (iZeroIndex < 0) || (iZeroIndex == (iTotalRaces - 1))
+			return True
+		endif
+	endif
+	if !MCMScript.bWhoreVaginalPerkRewardReceived
+		iZeroIndex = iWhoreVaginalStatArr.Find(0)
+		if (iZeroIndex < 0) || (iZeroIndex == (iTotalRaces - 1))
+			return True
+		endif
+	endif
+	if !MCMScript.bDibelOralPerkRewardReceived
+		iZeroIndex = iDibelOralStatArr.Find(0)
+		if (iZeroIndex < 0) || (iZeroIndex == (iTotalRaces - 1))
+			return True
+		endif
+	endif
+	if !MCMScript.bDibelAnalPerkRewardReceived
+		iZeroIndex = iDibelAnalStatArr.Find(0)
+		if (iZeroIndex < 0) || (iZeroIndex == (iTotalRaces - 1))
+			return True
+		endif
+	endif
+	if !MCMScript.bDibelVaginalPerkRewardReceived
+		iZeroIndex = iDibelVaginalStatArr.Find(0)
+		if (iZeroIndex < 0) || (iZeroIndex == (iTotalRaces - 1))
+			return True
+		endif
+	endif
+	return False
+endFunction
 
 Bool function bRewardUnlocked(Int iPos, Bool bDibel = False)
 	if bDibel
@@ -3201,6 +3242,9 @@ State Dibeling
 		bDibelClientOrgasmed = False
 		clearDibelCustomers()
 		clearDibelPositions()
+		if bCanReceiveAnyPerkReward()
+			log("Perk reward is Available.", true, true, 1)
+		endif
 	EndEvent
 
 	Event OnEndState()
@@ -3446,6 +3490,9 @@ State Whoring
 		bWhoreClientOrgasmed = False
 		clearWhoreCustomers()
 		clearWhorePositions()
+		if bCanReceiveAnyPerkReward()
+			log("Perk reward is Available.", true, true, 1)
+		endif
 	EndEvent
 
 	Event OnEndState()
