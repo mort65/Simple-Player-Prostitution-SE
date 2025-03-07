@@ -4489,7 +4489,7 @@ Function addEnchantedRewardToPlayer(Float fRewardChance = 100.0, Float fRewardEn
 	if (randInt(0, 999) >= (fRewardEnchantedChance * 10) as Int) || (!(Item As Armor) && !(Item As Weapon)) || ((Item As Armor) && (Item As Armor).GetEnchantment()) || ((Item As Weapon) && (Item As Weapon).GetEnchantment())
 		log("Reward won't be enchanted.")
 		player.additem(item, 1, true)
-		log(sName + " added.", true, false, 0)
+		log(sName + " added.", true, true, 0)
 		return
 	endif
 	Formlist enchList
@@ -4505,7 +4505,7 @@ Function addEnchantedRewardToPlayer(Float fRewardChance = 100.0, Float fRewardEn
 	if !enchList
 	    log("No valid enchantment found for the reward.")
 		player.additem(item, 1, true)
-		log(sName + " added.", true, false, 0)
+		log(sName + " added.", true, true, 0)
 		return
 	endif
 	int iTotal = 0
@@ -4522,7 +4522,7 @@ Function addEnchantedRewardToPlayer(Float fRewardChance = 100.0, Float fRewardEn
 	if iTotal < 1
 	    log("No valid enchantment found for the reward.")
 		player.additem(item, 1, true)
-		log(sName + " added.", true, false, 0)
+		log(sName + " added.", true, true, 0)
 		return
 	endif
 	Int enchIndex = randInt(0, iTotal - 1)
@@ -4552,11 +4552,11 @@ Function addEnchantedRewardToPlayer(Float fRewardChance = 100.0, Float fRewardEn
 		ObjectReference itemRef = player.placeAtMe(Item, 1)
 		itemRef.SetEnchantment(ench, 100.0)
 		player.additem(itemRef, 1, true)
-		log(itemRef.GetDisplayName() + " added.", true, false, 0)
+		log(itemRef.GetDisplayName() + " added.", true, true, 0)
 	else
 	    log("No valid enchantment found for the reward.")
 		player.additem(item, 1, true)
-		log(sName + " added.", true, false, 0)
+		log(sName + " added.", true, true, 0)
 	endif
 EndFunction
 
