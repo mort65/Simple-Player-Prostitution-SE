@@ -3042,7 +3042,7 @@ function addDibelMarkToPlayer(float fChance, int iNumPartners = 1, int iMinAmoun
 	endWhile
 	if iAmount > 0
 		player.Additem(dibelMark, iAmount, true)
-		log(iAmount + " dibel mark added.", true, true, 0)
+		log(iAmount + " dibella mark added.", true, true, 0)
 	endif
 endFunction
 
