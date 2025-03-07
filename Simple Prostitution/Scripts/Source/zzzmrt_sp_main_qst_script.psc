@@ -226,11 +226,6 @@ Package Property entrapperPackage Auto
 Faction Property DibelCustomerFaction Auto
 Faction Property WhoreCustomerFaction Auto
 
-Bool Property bWhoreOralPerkRewardUnlocked = False Auto Hidden Conditional
-Bool Property bWhoreAnalPerkRewardUnlocked = False Auto Hidden Conditional
-Bool Property bWhoreVaginalPerkRewardUnlocked = False Auto Hidden Conditional
-
-
 Int Property iPaidGoldCustomer1 = 0 Auto Hidden Conditional
 Int Property iPaidGoldCustomer2 = 0 Auto Hidden Conditional
 Int Property iPaidGoldCustomer3 = 0 Auto Hidden Conditional
@@ -2934,68 +2929,47 @@ Bool function bCanReceiveAnyPerkReward()
 	Int iZeroIndex
 	if !MCMScript.bWhoreOralPerkRewardReceived
 		iZeroIndex = iWhoreOralStatArr.Find(0)
-		if (iZeroIndex < 0) || (iZeroIndex == (iTotalRaces - 1))
+		if (iZeroIndex < 0) || (iZeroIndex > (iTotalRaces - 2))
 			return True
 		endif
 	endif
 	if !MCMScript.bWhoreAnalPerkRewardReceived
 		iZeroIndex = iWhoreAnalStatArr.Find(0)
-		if (iZeroIndex < 0) || (iZeroIndex == (iTotalRaces - 1))
+		if (iZeroIndex < 0) || (iZeroIndex > (iTotalRaces - 2))
 			return True
 		endif
 	endif
 	if !MCMScript.bWhoreVaginalPerkRewardReceived
 		iZeroIndex = iWhoreVaginalStatArr.Find(0)
-		if (iZeroIndex < 0) || (iZeroIndex == (iTotalRaces - 1))
+		if (iZeroIndex < 0) || (iZeroIndex > (iTotalRaces - 2))
 			return True
 		endif
 	endif
 	if !MCMScript.bDibelOralPerkRewardReceived
 		iZeroIndex = iDibelOralStatArr.Find(0)
-		if (iZeroIndex < 0) || (iZeroIndex == (iTotalRaces - 1))
+		if (iZeroIndex < 0) || (iZeroIndex > (iTotalRaces - 2))
 			return True
 		endif
 	endif
 	if !MCMScript.bDibelAnalPerkRewardReceived
 		iZeroIndex = iDibelAnalStatArr.Find(0)
-		if (iZeroIndex < 0) || (iZeroIndex == (iTotalRaces - 1))
+		if (iZeroIndex < 0) || (iZeroIndex > (iTotalRaces - 2))
 			return True
 		endif
 	endif
 	if !MCMScript.bDibelVaginalPerkRewardReceived
 		iZeroIndex = iDibelVaginalStatArr.Find(0)
-		if (iZeroIndex < 0) || (iZeroIndex == (iTotalRaces - 1))
+		if (iZeroIndex < 0) || (iZeroIndex > (iTotalRaces - 2))
 			return True
 		endif
 	endif
 	return False
 endFunction
 
-Bool function bRewardUnlocked(Int iPos, Bool bDibel = False)
-	if bDibel
-		if iPos == 2
-			return (MCMScript.bDibelOralPerkRewardReceived || bCanReceiveReward(iPos, bDibel))
-		elseif iPos == 1
-			return (MCMScript.bDibelAnalPerkRewardReceived || bCanReceiveReward(iPos, bDibel))
-		elseif iPos == 0
-			return (MCMScript.bDibelVaginalPerkRewardReceived || bCanReceiveReward(iPos, bDibel))
-		endif
-	else
-		if iPos == 2
-			return (MCMScript.bWhoreOralPerkRewardReceived || bCanReceiveReward(iPos, bDibel))
-		elseif iPos == 1
-			return (MCMScript.bWhoreAnalPerkRewardReceived || bCanReceiveReward(iPos, bDibel))
-		elseif iPos == 0
-			return (MCMScript.bWhoreVaginalPerkRewardReceived || bCanReceiveReward(iPos, bDibel))
-		endif
+Function checkPerkRewards()
+	if bCanReceiveAnyPerkReward()
+		log("Perk reward is Available.", true, true, 1)
 	endif
-	return False
-endfunction
-
-Function checkRewards()
-	bWhoreOralPerkRewardUnlocked = bRewardUnlocked(2, false)
-	bWhoreAnalPerkRewardUnlocked = bRewardUnlocked(1, false)
-	bWhoreVaginalPerkRewardUnlocked = bRewardUnlocked(0, false)
 endfunction
 
 Float Function iRewardProgress(Int iPos, Bool bDibel = False)
@@ -3243,9 +3217,7 @@ State Dibeling
 		bDibelClientOrgasmed = False
 		clearDibelCustomers()
 		clearDibelPositions()
-		if bCanReceiveAnyPerkReward()
-			log("Perk reward is Available.", true, true, 1)
-		endif
+		checkPerkRewards()
 	EndEvent
 
 	Event OnEndState()
@@ -3491,9 +3463,7 @@ State Whoring
 		bWhoreClientOrgasmed = False
 		clearWhoreCustomers()
 		clearWhorePositions()
-		if bCanReceiveAnyPerkReward()
-			log("Perk reward is Available.", true, true, 1)
-		endif
+		checkPerkRewards()
 	EndEvent
 
 	Event OnEndState()

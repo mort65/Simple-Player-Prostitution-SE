@@ -2782,7 +2782,6 @@ State STAT_WHORE_ORAL_PERK_REWARD_TXT
     if !bWhoreOralPerkRewardReceived && MainScript.bCanReceiveReward(2, False)
       Game.AddPerkPoints(1)
       bWhoreOralPerkRewardReceived = True
-			MainScript.bWhoreOralPerkRewardUnlocked = true
       ForcePageReset()
     endif 
   endFunction
@@ -2797,7 +2796,6 @@ State STAT_WHORE_ANAL_PERK_REWARD_TXT
     if !bWhoreAnalPerkRewardReceived && MainScript.bCanReceiveReward(1, False)
       Game.AddPerkPoints(1)
       bWhoreAnalPerkRewardReceived = True
-			MainScript.bWhoreAnalPerkRewardUnlocked = true
       ForcePageReset()
     endif 
   endFunction
@@ -2812,7 +2810,6 @@ State STAT_WHORE_VAGINAL_PERK_REWARD_TXT
     if !bWhoreVaginalPerkRewardReceived && MainScript.bCanReceiveReward(0, False)
       Game.AddPerkPoints(1)
       bWhoreVaginalPerkRewardReceived = True
-			MainScript.bWhoreVaginalPerkRewardUnlocked = true
       ForcePageReset()
     endif 
   endFunction
