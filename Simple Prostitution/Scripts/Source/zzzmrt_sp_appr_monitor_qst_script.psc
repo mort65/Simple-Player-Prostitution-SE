@@ -17,11 +17,46 @@ Bool property actorHavingSex = False Auto Hidden Conditional
 Bool property bIsActorAroused = False Auto Hidden Conditional
 Bool property playerWearingWhoreClothing = false Auto Hidden Conditional
 Bool property playerIsBusyInMOA = false Auto Hidden Conditional
+Bool property bNoApproach = False Auto Hidden Conditional
+
+Event OnInit()
+	logText("OnInit() triggered for " + self)
+	RegisterForEvents()
+EndEvent
 
 Event OnUpdateGameTime()
-    MainScript.log("OnUpdateGameTime() triggered for "+ self)
+    MainScript.log("OnUpdateGameTime() triggered for " + self)
 	updateApproach(true)
 EndEvent
+
+Event onDisableApproach(string eventName, string strArg, float numArg, Form sender) ;ModEvent for disabling approach. spp_approach_enable must be send to enable approach afterward.
+	logText("onDisableApproach() triggered for " + self + " by " + sender)
+	bNoApproach = true
+	updateApproach(False)
+EndEvent
+
+Event onEnableApproach(string eventName, string strArg, float numArg, Form sender) ;ModEvent for enabling approach.
+	logText("onEnableApproach() triggered for " + self + " by " + sender)
+	bNoApproach = False
+	updateApproach(False)
+EndEvent
+
+Event onStopApproach(string eventName, string strArg, float numArg, Form sender) ;ModEvent for only stopping current approach without disabling it.
+	logText("onStopApproach() triggered for " + self + " by " + sender)
+	updateApproach(False)
+EndEvent
+
+Event onUpdateApproach(Form sender, Bool bReset)
+	logText("onUpdateApproach() triggered for " + self + " by " + sender) ;ModEvent for stopping current approach and trying to start a new one if bReset is true.
+	updateApproach(bReset)
+EndEvent
+
+Function RegisterForEvents()
+	RegisterForModEvent("spp_approach_disable", "onDisableApproach")
+	RegisterForModEvent("spp_approach_enable", "onEnableApproach")
+	RegisterForModEvent("spp_approach_stop", "onStopApproach")
+	RegisterForModEvent("spp_approach_update", "onUpdateApproach")
+EndFunction
 
 Function stopApproach(Bool bConfirm = true)
 	bCustomerCanApproach = False
@@ -34,8 +69,10 @@ Function stopApproach(Bool bConfirm = true)
 	if !bConfirm
 		return
 	endif
-	While ApproachQst.IsRunning()
+	int i = 0
+	While ApproachQst.IsRunning() && (i < 10)
 		Utility.WaitMenuMode(0.1)
+		i += 1
 	EndWhile
 EndFunction
 
@@ -54,7 +91,11 @@ Function updateApproach(Bool bReset = False)
 		endif
 	endif
 	
-	if MainScript.fCustomerApproachTimer < 0.2
+	if (MainScript.fCustomerApproachTimer < 0.2)
+		MainScript.log("The player can't be approached because approach timer is low: " + MainScript.fCustomerApproachTimer)
+		return
+	elseif bNoApproach
+		MainScript.log("The player can't be approached because approach is disabled by modevent")
 		return
 	endif
 

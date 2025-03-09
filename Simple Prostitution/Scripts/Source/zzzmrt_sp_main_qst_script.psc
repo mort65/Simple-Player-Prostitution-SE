@@ -652,7 +652,9 @@ Function SetVars()
 	if !ApproachMonitorScr
 		ApproachMonitorScr = ApproachMonitorQst as zzzmrt_sp_appr_monitor_qst_script
 	endif
-	if !ApproachMonitorQst.isRunning()
+	if ApproachMonitorQst.isRunning()
+		ApproachMonitorScr.RegisterForEvents()
+	else
 		ApproachMonitorQst.start()
 	endif
 	ApproachMonitorScr.updateApproach(False)
