@@ -80,29 +80,29 @@ state Installed
 	function SLSFR_toggle_WhoreFlag(Bool bFlag)
 		int handle = ModEvent.Create("SLSF_Reloaded_SetWhoreFlag")
 		if (handle)
-				ModEvent.PushString(handle, "mrt_SimpleProstitution.esp")
-				ModEvent.PushBool(handle, bFlag)
-				ModEvent.Send(handle)
+			ModEvent.PushString(handle, "mrt_SimpleProstitution.esp")
+			ModEvent.PushBool(handle, bFlag)
+			ModEvent.Send(handle)
 		endIf
 	endfunction
 	
 	function SLSFR_toggle_WhoreEventFlag(Bool bFlag) ;for sexlab
-		int handle = ModEvent.Create("SLSF_Reloaded_SetWhoreEventFlag")
+		int handle = ModEvent.Create("SLSF_Reloaded_SetSexWorkerFlag")
 		if (handle)
-				ModEvent.PushString(handle, "mrt_SimpleProstitution.esp")
-				ModEvent.PushBool(handle, bFlag)
-				ModEvent.Send(handle)
+			ModEvent.PushString(handle, "mrt_SimpleProstitution.esp")
+			ModEvent.PushBool(handle, bFlag)
+			ModEvent.Send(handle)
 		endIf
 	endfunction
 
 	function SLSFR_ManualWhoreFameGain(Int iMinFame, Int iMaxFame)
 		int handle = ModEvent.Create("SLSF_Reloaded_SendManualFameGain")
 		if (handle)
-				ModEvent.PushString(handle, "Whore")
-				ModEvent.PushString(handle, "Current")
-				ModEvent.PushInt(handle, minInt(iMinFame,iMaxFame))
-				ModEvent.PushInt(handle, maxInt(iMinFame,iMaxFame))
-				ModEvent.Send(handle)
+			ModEvent.PushString(handle, "Whore")
+			ModEvent.PushString(handle, "Current")
+			ModEvent.PushInt(handle, minInt(iMinFame,iMaxFame))
+			ModEvent.PushInt(handle, maxInt(iMinFame,iMaxFame))
+			ModEvent.Send(handle)
 		endIf
 	endfunction
 endState
