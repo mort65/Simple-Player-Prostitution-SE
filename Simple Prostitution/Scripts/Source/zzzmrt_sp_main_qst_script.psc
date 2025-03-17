@@ -17,6 +17,8 @@ zzzmrt_sp_slhh_interface Property SLHH_Interface Auto
 zzzmrt_sp_dibellan_lust_qst_script property dibellan_lust_qst_script auto
 zzzmrt_sp_player_qst_script	Property playerScript Auto
 zzzmrt_sp_reapproach_qst_script	Property ReApproachScript Auto
+zzzmrt_sp_inn_work_qst_script property InnWorkScript Auto
+Quest Property InnWorkQst Auto
 Quest Property SLA_Interface_Qst Auto
 Quest Property OStimInterfaceQst Auto
 Quest Property FlowerGirlsInterfaceQst Auto
@@ -576,18 +578,31 @@ String Property sErrorColor = "FF0000" Auto Hidden Conditional
 String Property sSeparatorColor = "FFFFFF" Auto Hidden Conditional
 Bool property bShowNotification = True Auto Hidden Conditional
 Bool property bPreventFruitlessApproaches = True Auto Hidden Conditional 
-Float property fGroupSexChance = 100.0 Auto Hidden Conditional 
+Float property fGroupSexChance = 100.0 Auto Hidden Conditional
+Float property fWhoreNotPayChance = 0.0 Auto Hidden Conditional 
+Float property fDibelNotPayChance = 0.0 Auto Hidden Conditional 
+Bool property bWhoreNotPayOnlyIfAlone = False Auto Hidden Conditional
+Float property fWhorePunishByUnpayClientChance = 0.0 Auto Hidden Conditional
+Float property fDibelPunishByUnpayClientChance = 0.0 Auto Hidden Conditional
+Bool property bNearbyMalesMayJoinSex = False Auto Hidden Conditional
+Bool property bNearbyFemalesMayJoinSex = False Auto Hidden Conditional
 
+Quest Property participantDetector Auto
+ReferenceAlias Property Participant1 Auto
+ReferenceAlias Property Participant2 Auto
+
+Bool Property bWhoreClientNotPaid = False Auto Hidden Conditional
+Bool Property bDibelClientNotPaid = False Auto Hidden Conditional
 
 function log(String sText, Bool bNotification = False, Bool bTrace = True, Int iSeverity = 1, Bool bForceNotif = False)
 	logText(sText, (bNotification && (bShowNotification || (iSeverity != 1) || bForceNotif)), bTrace, iSeverity, "SPP", sDefaultColor, sSuccessColor, sInfoColor, sWarningColor, sErrorColor, sSeparatorColor)
 endFunction
 
 function testNotifications()
-	log("Success Message", True, False, 0)
-	log("Info Message", True, False, 1)
-	log("Warning Message", True, False, 2)
-	log("Error Message", True, False, 3)
+	log("Success Test Message", True, False, 0)
+	log("Info Test Message", True, False, 1)
+	log("Warning Test Message", True, False, 2)
+	log("Error Test Message", True, False, 3)
 endFunction
 
 function shutDown()
@@ -597,6 +612,7 @@ function shutDown()
 	SLSFR_Interface.SLSFR_toggle_WhoreEventFlag(False)
 	snitchDetector.stop()
 	ApproachMonitorQst.stop()
+	participantDetector.Stop()
 	STD_Script.cureActorSTDs(player, False)
 	STD_Quest.Stop()
 	if pimpTracker.isRunning()
@@ -607,6 +623,9 @@ function shutDown()
 	endif
 	if TempleEscort_Qst.isrunning()
 		TempleEscort_Qst.setstage(10)
+	endif
+	if InnWorkQst.isRunning()
+		InnWorkScript.Succeed()
 	endif
 	currentAllowedLocations.Revert()
 	player.removeFromFaction(whoreFaction)
@@ -785,7 +804,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-	return getBaseVersion() + 0.58
+	return getBaseVersion() + 0.60
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
@@ -940,11 +959,29 @@ Bool Function bHaveGroupSex(String interface, Bool bAllowAggressive = False, Boo
 		Bool bAllowGroupSex
 		while !bResult && (currentCustomerList.GetSize() > 0)
 			bAllowGroupSex = (randInt(0, 999) < (fGroupSexChance * 10) as Int)
+			if bAllowGroupSex && (bNearbyMalesMayJoinSex || bNearbyFemalesMayJoinSex) && (currentCustomerList.GetSize() < 4)
+				participantDetector.Start()
+				Bool bClientAdded = False
+				if Participant1.GetActorReference()
+					currentCustomerList.AddForm(Participant1.GetActorReference())
+					log(Participant1.GetActorReference().getdisplayname() + " is joining.", true, true, 2)
+					bClientAdded = true
+				endif
+				if (Participant2.GetActorReference() && (currentCustomerList.GetSize() < 4) && randInt(0,1))
+					currentCustomerList.AddForm(Participant2.GetActorReference())
+					log(Participant2.GetActorReference().getdisplayname() + " is joining.", true, true, 2)
+					bClientAdded = true
+				endif
+				if bClientAdded
+					partners = formListToActorArray(currentCustomerList)
+				endif
+			endif
 			if (!bAllowGroupSex || (currentCustomerList.GetSize() == 1))
 				if !(currentCustomerList.GetAt(0) as Actor) || (origCustomersArr.Find(currentCustomerList.GetAt(0) as Actor) < 0)
 					currentCustomerList.revert()
 					partners = formListToActorArray(currentCustomerList)
 					log("Client is invalid.", true, true, 3)
+					participantDetector.Stop()
 					return False
 				endif
 				iIndex = origCustomersArr.Find(currentCustomerList.GetAt(0) as Actor)
@@ -966,6 +1003,7 @@ Bool Function bHaveGroupSex(String interface, Bool bAllowAggressive = False, Boo
 					partners = formListToActorArray(currentCustomerList)
 					log("Couldn't start the animation. Please check the log.", true, true, 3)
 				endif
+				participantDetector.Stop()
 				return bResult
 			else
 				if interface == "sexlab"
@@ -1013,6 +1051,7 @@ Bool Function bHaveGroupSex(String interface, Bool bAllowAggressive = False, Boo
 				endif
 			endif
 		endwhile
+		participantDetector.Stop()
 		return bResult
 	endif
 EndFunction
@@ -2062,6 +2101,18 @@ Function clearCustomer()
 	dibelCustomerList.Revert()
 	iTotalWhoreCustomers = 0
 	iTotalDibelCustomers = 0
+	iPaidGoldDibelCustomer1 = 0
+	iPaidGoldDibelCustomer2 = 0
+	iPaidGoldDibelCustomer3 = 0
+	iPaidGoldDibelCustomer4 = 0
+	iPaidGoldAllDibelCustomers = 0
+	iPaidGoldCustomer1 = 0
+	iPaidGoldCustomer2 = 0
+	iPaidGoldCustomer3 = 0
+	iPaidGoldCustomer4 = 0
+	iPaidGoldAllCustomers = 0
+	bWhoreClientNotPaid = False
+	bDibelClientNotPaid = False
 	SLSFR_Interface.SLSFR_toggle_WhoreFlag(isPlayerDibeling() || isPlayerWhoring())
 EndFunction
 
@@ -2097,6 +2148,7 @@ Function clearDibelCustomers()
 	iPaidGoldDibelCustomer3 = 0
 	iPaidGoldDibelCustomer4 = 0
 	iPaidGoldAllDibelCustomers = 0
+	bDibelClientNotPaid = False
 	SLSFR_Interface.SLSFR_toggle_WhoreFlag(isPlayerDibeling() || isPlayerWhoring())
 EndFunction
 
@@ -2132,6 +2184,7 @@ Function clearWhoreCustomers()
 	iPaidGoldCustomer3 = 0
 	iPaidGoldCustomer4 = 0
 	iPaidGoldAllCustomers = 0
+	bWhoreClientNotPaid = False
 	SLSFR_Interface.SLSFR_toggle_WhoreFlag(isPlayerDibeling() || isPlayerWhoring())
 EndFunction
 
@@ -2274,7 +2327,12 @@ Int function payDibel(Actor Dibel, int position, bool bSentByTemple = false)
 	endif
 	totalPay = maxInt(0, totalPay)
 	if bDibelPayAfterSex
-		iDibelClientsPayment = iDibelClientsPayment + totalPay
+		if !bSentByTemple && (randInt(0, 999) < (fDibelNotPayChance * 10) as Int)
+			totalPay = 0
+			bDibelClientNotPaid = True
+		else
+			iDibelClientsPayment = iDibelClientsPayment + totalPay
+		endif
 	else
 		Dibel.Additem(gold, totalPay)
 	endif
@@ -2290,10 +2348,17 @@ endfunction
 Int function payWhore(actor whore, int position)
 	int totalPay = 0
 	float fSpeech
+	Actor ownerActor = getOwner() as Actor
+	Bool bMayNotpay = (!bWhoreNotPayOnlyIfAlone || (ownerActor && (ownerActor != player) && (ownerActor.getParentCell() == player.getParentCell())))
 	if !isWhoringAllowedInCurrentLocation
 		totalPay = payBeggar(whore, True, bWhorePayAfterSex)
 		if bWhorePayAfterSex
-			iWhoreClientsPayment = iWhoreClientsPayment + totalPay
+			if bMayNotpay && (randInt(0, 999) < (fWhoreNotPayChance * 10) as Int)
+				totalPay = 0
+				bWhoreClientNotPaid = True
+			else
+				iWhoreClientsPayment = iWhoreClientsPayment + totalPay
+			endif
 		endif
 		return totalPay
 	endif
@@ -2315,8 +2380,10 @@ Int function payWhore(actor whore, int position)
 		positionReward = fWhoreOralPay As Int
 	endif
 	totalPay = maxInt(0, positionReward + randInt(minBonus, maxBonus))
-	Actor ownerActor = getOwner() As Actor
-	if !bWhorePayAfterSex && (fWhoreOwnerShare > 0.0) && ownerActor && (ownerActor != player) && (ownerActor.getParentCell() == whore.getParentCell())
+	if  (InnWorkScript.isPlayerInDebt() && InnWorkScript.innWorkOwnerHere())
+		log(totalPay + " septim added to " + InnWorkScript.InnOwner.GetActorReference().getDisplayName(), true, true, 0)
+		InnWorkScript.updateDebt(-1 * totalPay)
+	elseif !bWhorePayAfterSex && (fWhoreOwnerShare > 0.0) && ownerActor && (ownerActor != player) && (ownerActor.getParentCell() == whore.getParentCell())
 		iCurrentOwnerSeptims = iCurrentOwnerSeptims + totalPay
 		currentOwnerSeptimDisplay.SetValueInt(iCurrentOwnerSeptims)
 		UpdateCurrentInstanceGlobal(currentOwnerSeptimDisplay)
@@ -2324,14 +2391,24 @@ Int function payWhore(actor whore, int position)
 		log(totalPay + " septim added to " + ownerActor.getDisplayName(), true, true, 0)
 	elseif isWhoringAlwaysAllowedInCurrentLocation || (ownerActor && (ownerActor.getParentCell() == whore.getParentCell()))
 		if bWhorePayAfterSex
-			iWhoreClientsPayment = iWhoreClientsPayment + totalPay
+			if bMayNotpay && (randInt(0, 999) < (fWhoreNotPayChance * 10) as Int)
+				totalPay = 0
+				bWhoreClientNotPaid = True
+			else
+				iWhoreClientsPayment = iWhoreClientsPayment + totalPay
+			endif
 		else
 			whore.Additem(gold, totalPay)
 		endif
 	else
 		totalPay = payBeggar(whore, True, bWhorePayAfterSex)
 		if bWhorePayAfterSex
-			iWhoreClientsPayment = iWhoreClientsPayment + totalPay
+			if bMayNotpay && (randInt(0, 999) < (fWhoreNotPayChance * 10) as Int)
+				totalPay = 0
+				bWhoreClientNotPaid = True
+			else
+				iWhoreClientsPayment = iWhoreClientsPayment + totalPay
+			endif
 		endif
 	endif
 	return totalPay
@@ -2610,6 +2687,10 @@ EndFunction
 Bool function playerHasWhoreLicense()
 	return (isDibel && !bDibelNeedLicense) || (!bWhoreNeedLicense || LicensesInterface.bHasWhoreLicense())
 EndFunction
+
+Bool function playerNeedWhoreLicense()
+	return ((isDibel && bDibelNeedLicense) || bWhoreNeedLicense)
+endFunction
 
 Bool Function playerHasDibelLicence()
 	return !bDibelNeedLicense || LicensesInterface.bHasWhoreLicense()
@@ -3202,9 +3283,15 @@ State Dibeling
 			endif
 			iDibelClientsPayment = 0
 		endif
-		if !bDibelClientOrgasmed && (origCustomersArr.length > 0)
-		    log("Client not satisfied.", true, true, 2)
-			if  bDibelPunishIfClientNotOrgasmed
+		Bool bPunish = False
+		if bDibelClientNotPaid
+			log("Some Client(s) didn't pay.", True, true, 2)
+			bDibelClientNotPaid = False
+			bPunish = (randInt(0, 999) < (fDibelPunishByUnpayClientChance * 10) as Int)
+		endif
+		if (!bDibelClientOrgasmed || bPunish) && (origCustomersArr.length > 0)
+		    !bDibelClientOrgasmed && log("Client not satisfied.", true, true, 2)
+			if (bPunish || bDibelPunishIfClientNotOrgasmed)
 				i = randint(0,origCustomersArr.length - 1)
 				if origCustomersArr[i] as Actor
 					Actor act = origCustomersArr[i] as Actor
@@ -3448,9 +3535,15 @@ State Whoring
 			endif
 			iWhoreClientsPayment = 0
 		endif
-		if !bWhoreClientOrgasmed && (origCustomersArr.length > 0)
-		    log("The client not satisfied.", True, true, 2)
-			if bWhorePunishIfClientNotOrgasmed
+		Bool bPunish = False
+		if bWhoreClientNotPaid
+			log("Some Client(s) didn't pay.", True, true, 2)
+			bWhoreClientNotPaid = False
+			bPunish = (randInt(0, 999) < (fWhorePunishByUnpayClientChance * 10) as Int)
+		endif
+		if (!bWhoreClientOrgasmed || bPunish) && (origCustomersArr.length > 0)
+		    !bWhoreClientOrgasmed && log("The client not satisfied.", True, true, 2)
+			if (bPunish || bWhorePunishIfClientNotOrgasmed)
 				i = randint(0,origCustomersArr.length - 1)
 				if origCustomersArr[i] as Actor
 					Actor act = origCustomersArr[i] as Actor

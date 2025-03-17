@@ -11,7 +11,7 @@ event OnEndState()
   Utility.Wait(5.0) ; Wait before entering active state to help avoid making function calls to scripts that may not have initialized yet.
   BMLicenses = Game.GetFormFromFile(0x000d62, "Licenses.esp") as Quest ; Get quest now
   if isFormValid(BMLicenses)
-    MainScript.log("Licenses detected.", true, true, 1, True)
+    MainScript.log("Licenses - Player Oppression detected.", true, true, 1, True)
   endif
 endevent
 
@@ -55,6 +55,10 @@ endfunction
 Function setWhoreViolation()
 endfunction
 
+Int Function getWhoreLicenseCost()
+	return 0
+endfunction
+
 state Installed 
   function checkVars()
     if !isFormValid(BMLicenses)
@@ -73,4 +77,8 @@ state Installed
   Function setWhoreViolation()
     zzzmrt_sp_int_licenses.setWhoreViolationBM(BMLicenses)
   endfunction
+  
+  Int Function getWhoreLicenseCost()
+	return zzzmrt_sp_int_licenses.getWhoreLicenseCostBM(BMLicenses)
+  EndFunction
 endstate

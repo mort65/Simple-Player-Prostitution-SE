@@ -513,6 +513,8 @@ elseif (page == "$MRT_SP_PAGE_BEGGING")
     _AddToggleOptionST("DIBEL_ALLOW_AGGRESSIVE_TOGGLE", "$MRT_SP_DIBEL_ALLOW_AGGRESSIVE_TOGGLE", MainScript.bDIBELAllowAggressive, flag)
     _AddToggleOptionST("DIBEL_NAKED_TOGGLE", "$MRT_SP_DIBEL_NAKED_TOGGLE", MainScript.bDibelNaked, flag)
     OID_DIBEL_PAY_AFTER_SEX = AddToggleOption("$MRT_SP_DIBEL_PAY_AFTER_SEX_TOGGLE", MainScript.bDibelPayAfterSex , flag)
+	OID_DIBEL_NOTPAY_CHANCE = AddSliderOption("$MRT_SP_DIBEL_NOTPAY_CHANCE_SLIDER1", MainScript.fDibelNotPayChance, "$MRT_SP_DIBEL_NOTPAY_CHANCE_SLIDER2", flag)
+	OID_DIBEL_PUNISHBYUNPAYCLIENT_CHANCE = AddSliderOption("$MRT_SP_DIBEL_PUNISHBYUNPAYCLIENT_SLIDER1", MainScript.fDibelPunishByUnpayClientChance, "$MRT_SP_DIBEL_PUNISHBYUNPAYCLIENT_SLIDER2", flag)
 	OID_DIBEL_POSITION_MENU = AddToggleOption("$MRT_SP_DIBEL_POSITION_MENU_TOGGLE", MainScript.bDibelPositionMenu, flag)
 	AddSliderOptionST("DIBEL_ORAL_CHANCE_SLIDER", "$MRT_SP_DIBEL_ORAL_CHANCE_SLIDER1", MainScript.fDibelOralChance, "$MRT_SP_DIBEL_ORAL_CHANCE_SLIDER2", flag)
     AddSliderOptionST("DIBEL_ANAL_CHANCE_SLIDER", "$MRT_SP_DIBEL_ANAL_CHANCE_SLIDER1", MainScript.fDibelAnalChance, "$MRT_SP_DIBEL_ANAL_CHANCE_SLIDER2", flag)
@@ -525,7 +527,7 @@ elseif (page == "$MRT_SP_PAGE_BEGGING")
     OID_DIBEL_PAY_USE_BASE_SPEECH = AddToggleOption("$MRT_SP_DIBEL_PAY_USE_BASE_SPEECH_TOGGLE", MainScript.bDibelPayUseBaseSpeech, flag)
 	OID_DIBEL_PERSUADE_CHANCE = AddSliderOption("$MRT_SP_DIBEL_PERSUADE_CHANCE_SLIDER1", MainScript.fDibelPersuadeChance, "$MRT_SP_DIBEL_PERSUADE_CHANCE_SLIDER2", flag)
     AddSliderOptionST("SPEECH_DIBEL_XP_MULT_SLIDER", "$MRT_SP_SPEECH_DIBEL_XP_MULT_SLIDER1", MainScript.fDibelPersuasionXPMult, "$MRT_SP_SPEECH_DIBEL_XP_MULT_SLIDER2", flag)
-    AddSliderOptionST("DIBEL_MARK_CHANCE_SLIDER", "$MRT_SP_DIBEL_MARK_CHANCE_SLIDER1", Mainscript.fDibelMarkChance, "$MRT_SP_DIBEL_MARK_CHANCE_SLIDER2", flag)
+	AddSliderOptionST("DIBEL_MARK_CHANCE_SLIDER", "$MRT_SP_DIBEL_MARK_CHANCE_SLIDER1", Mainscript.fDibelMarkChance, "$MRT_SP_DIBEL_MARK_CHANCE_SLIDER2", flag)
 	OID_DIBEL_EXTRA_REWARD_CHANCE = AddSliderOption("$MRT_SP_DIBEL_EXTRA_REWARD_CHANCE_SLIDER1", MainScript.fDibelExtraRewardChance, "$MRT_SP_DIBEL_EXTRA_REWARD_CHANCE_SLIDER2", flag)
 	OID_DIBEL_EXTRA_REWARD_ENCHANTED_CHANCE = AddSliderOption("$MRT_SP_DIBEL_EXTRA_REWARD_ENCHANTED_CHANCE_SLIDER1", MainScript.fDibelExtraRewardEnchantedChance, "$MRT_SP_DIBEL_EXTRA_REWARD_ENCHANTED_CHANCE_SLIDER2", flag)
 	if MainScript.bModEnabled && (MainScript.bIsDDIntegrationActive && MainScript.bIsDDExpansionActive)
@@ -584,8 +586,11 @@ elseif (page == "$MRT_SP_PAGE_BEGGING")
     endif
     _AddToggleOptionST("WHORE_TOGGLE", "$MRT_SP_WHORE_TOGGLE", MainScript.bWhoreEnabled, flag)
     _AddToggleOptionST("WHORE_CLOTHING_TOGGLE", "$MRT_SP_WHORE_CLOTHING_TOGGLE", MainScript.bWhoreClothing, flag)
-		OID_WHORE_PAY_AFTER_SEX = AddToggleOption("$MRT_SP_WHORE_PAY_AFTER_SEX_TOGGLE", MainScript.bWhorePayAfterSex , flag)
-    _AddToggleOptionST("WHORE_ALLOW_AGGRESSIVE_TOGGLE", "$MRT_SP_WHORE_ALLOW_AGGRESSIVE_TOGGLE", MainScript.bWhoreAllowAggressive, flag)
+	OID_WHORE_PAY_AFTER_SEX = AddToggleOption("$MRT_SP_WHORE_PAY_AFTER_SEX_TOGGLE", MainScript.bWhorePayAfterSex , flag)
+    OID_WHORE_NOTPAY_CHANCE = AddSliderOption("$MRT_SP_WHORE_NOTPAY_CHANCE_SLIDER1", MainScript.fWhoreNotPayChance, "$MRT_SP_WHORE_NOTPAY_CHANCE_SLIDER2", flag)
+	OID_WHORE_NOTPAY_ONLY_IF_ALONE = AddToggleOption("$MRT_SP_WHORE_NOTPAY_ONLY_IF_ALONE_TOGGLE", MainScript.bWhoreNotPayOnlyIfAlone, flag)
+	OID_WHORE_PUNISHBYUNPAYCLIENT_CHANCE = AddSliderOption("$MRT_SP_WHORE_PUNISHBYUNPAYCLIENT_SLIDER1", MainScript.fWhorePunishByUnpayClientChance, "$MRT_SP_WHORE_PUNISHBYUNPAYCLIENT_SLIDER2", flag)
+	_AddToggleOptionST("WHORE_ALLOW_AGGRESSIVE_TOGGLE", "$MRT_SP_WHORE_ALLOW_AGGRESSIVE_TOGGLE", MainScript.bWhoreAllowAggressive, flag)
     AddSliderOptionST("WHORE_OWNER_SHARE_SLIDER", "$MRT_SP_WHORE_OWNER_SHARE_SLIDER1", MainScript.fWhoreOwnerShare, "$MRT_SP_WHORE_OWNER_SHARE_SLIDER2", flag)
     OID_WHORE_POSITION_MENU = AddToggleOption("$MRT_SP_WHORE_POSITION_MENU_TOGGLE", MainScript.bWhorePositionMenu, flag)
 		AddSliderOptionST("WHORE_ORAL_CHANCE_SLIDER", "$MRT_SP_WHORE_ORAL_CHANCE_SLIDER1", MainScript.fWhoreOralChance, "$MRT_SP_WHORE_ORAL_CHANCE_SLIDER2", flag)
@@ -599,7 +604,7 @@ elseif (page == "$MRT_SP_PAGE_BEGGING")
     OID_WHORE_PAY_USE_BASE_SPEECH = AddToggleOption("$MRT_SP_WHORE_PAY_USE_BASE_SPEECH_TOGGLE", MainScript.bWhorePayUseBaseSpeech, flag)
     OID_WHORE_PERSUADE_CHANCE = AddSliderOption("$MRT_SP_WHORE_PERSUADE_CHANCE_SLIDER1", MainScript.fWhorePersuadeChance, "$MRT_SP_WHORE_PERSUADE_CHANCE_SLIDER2", flag)
 	AddSliderOptionST("SPEECH_WHORE_XP_MULT_SLIDER", "$MRT_SP_SPEECH_WHORE_XP_MULT_SLIDER1", MainScript.fWhorePersuasionXPMult, "$MRT_SP_SPEECH_WHORE_XP_MULT_SLIDER2", flag)
-    AddSliderOptionST("WHORE_MARK_CHANCE_SLIDER", "$MRT_SP_WHORE_MARK_CHANCE_SLIDER1", Mainscript.fWhoreMarkChance, "$MRT_SP_WHORE_MARK_CHANCE_SLIDER2", flag)
+	AddSliderOptionST("WHORE_MARK_CHANCE_SLIDER", "$MRT_SP_WHORE_MARK_CHANCE_SLIDER1", Mainscript.fWhoreMarkChance, "$MRT_SP_WHORE_MARK_CHANCE_SLIDER2", flag)
 	OID_WHORE_EXTRA_REWARD_CHANCE = AddSliderOption("$MRT_SP_WHORE_EXTRA_REWARD_CHANCE_SLIDER1", MainScript.fWhoreExtraRewardChance, "$MRT_SP_WHORE_EXTRA_REWARD_CHANCE_SLIDER2", flag)
 	OID_WHORE_EXTRA_REWARD_ENCHANTED_CHANCE = AddSliderOption("$MRT_SP_WHORE_EXTRA_REWARD_ENCHANTED_CHANCE_SLIDER1", MainScript.fWhoreExtraRewardEnchantedChance, "$MRT_SP_WHORE_EXTRA_REWARD_ENCHANTED_CHANCE_SLIDER2", flag)	
     if MainScript.bModEnabled && (MainScript.bIsDDIntegrationActive && MainScript.bIsDDExpansionActive)
@@ -625,6 +630,8 @@ elseif (page == "$MRT_SP_PAGE_BEGGING")
       flag = OPTION_FLAG_DISABLED
     endif
 	OID_GROUP_SEX_CHANCE = AddSliderOption("$MRT_SP_GROUP_SEX_CHANCE_SLIDER1", MainScript.fGroupSexChance, "$MRT_SP_GROUP_SEX_CHANCE_SLIDER2", flag)
+	OID_NEARBY_MALES_MAY_JOIN_SEX = AddToggleOption("$MRT_SP_OID_NEARBY_MALES_MAY_JOIN_SEX_TOGGLE", MainScript.bNearbyMalesMayJoinSex, flag)
+	OID_NEARBY_FEMALES_MAY_JOIN_SEX = AddToggleOption("$MRT_SP_OID_NEARBY_FEMALES_MAY_JOIN_SEX_TOGGLE", MainScript.bNearbyFemalesMayJoinSex, flag)
 	OID_CRIME_BOUNTY = AddSliderOption("$MRT_SP_CRIME_BOUNTY_SLIDER1", MainScript.iCrimeBounty, "$MRT_SP_CRIME_BOUNTY_SLIDER2", flag)
 	OID_NORMAL_MARK_CHANCE = AddSliderOption("$MRT_SP_NORMAL_MARK_CHANCE_SLIDER1", MainScript.fNormalMarkChance, "$MRT_SP_NORMAL_MARK_CHANCE_SLIDER2", flag)
 	OID_NORMAL_NO_REWARD_WHEN_VICTIM = AddToggleOption("$MRT_SP_OID_NORMAL_NO_REWARD_WHEN_VICTIM_TOGGLE", MainScript.bNormalNoRewardWhenVictim, flag)
@@ -3165,6 +3172,9 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
   MainScript.bNormalOnlyRewardIfPartnerOrgasmed = jsonutil.GetPathIntValue(settings_path, "bNormalOnlyRewardIfPartnerOrgasmed", MainScript.bNormalOnlyRewardIfPartnerOrgasmed as int)
   MainScript.bNormalNoRewardWhenVictim = jsonutil.GetPathIntValue(settings_path, "bNormalNoRewardWhenVictim", MainScript.bNormalNoRewardWhenVictim as int)
   MainScript.bShowNotification = jsonutil.GetPathIntValue(settings_path, "bShowNotification", MainScript.bShowNotification as int)
+  MainScript.bNearbyMalesMayJoinSex = jsonutil.GetPathIntValue(settings_path, "bNearbyMalesMayJoinSex", MainScript.bNearbyMalesMayJoinSex as int)
+  MainScript.bNearbyFemalesMayJoinSex = jsonutil.GetPathIntValue(settings_path, "bNearbyFemalesMayJoinSex", MainScript.bNearbyFemalesMayJoinSex as int)
+  MainScript.bWhoreNotPayOnlyIfAlone = jsonutil.GetPathIntValue(settings_path, "bWhoreNotPayOnlyIfAlone", MainScript.bWhoreNotPayOnlyIfAlone as int)
 
   iAnimInterfaceMethod = jsonutil.GetPathIntValue(settings_path, "iAnimInterfaceMethod", iAnimInterfaceMethod)
   
@@ -3376,6 +3386,11 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
 	MainScript.fBeggarPersuadeChance = jsonutil.GetPathFloatValue(settings_path, "fBeggarPersuadeChance", MainScript.fBeggarPersuadeChance)
 	MainScript.fDibelPersuadeChance = jsonutil.GetPathFloatValue(settings_path, "fDibelPersuadeChance", MainScript.fDibelPersuadeChance)
 	
+	MainScript.fWhoreNotPayChance = jsonutil.GetPathFloatValue(settings_path, "fWhoreNotPayChance", MainScript.fWhoreNotPayChance)
+	MainScript.fDibelNotPayChance = jsonutil.GetPathFloatValue(settings_path, "fDibelNotPayChance", MainScript.fDibelNotPayChance)
+	MainScript.fWhorePunishByUnpayClientChance = jsonutil.GetPathFloatValue(settings_path, "fWhorePunishByUnpayClientChance", MainScript.fWhorePunishByUnpayClientChance)
+	MainScript.fDibelPunishByUnpayClientChance = jsonutil.GetPathFloatValue(settings_path, "fDibelPunishByUnpayClientChance", MainScript.fDibelPunishByUnpayClientChance)
+	
   MainScript.sExtraTags_SL_Oral_MF = jsonutil.GetPathStringValue(settings_path, "sExtraTags_SL_Oral_MF", MainScript.sExtraTags_SL_Oral_MF)
   MainScript.sExtraTags_SL_Oral_FF = jsonutil.GetPathStringValue(settings_path, "sExtraTags_SL_Oral_FF", MainScript.sExtraTags_SL_Oral_FF)
   MainScript.sExtraTags_SL_Oral_MM = jsonutil.GetPathStringValue(settings_path, "sExtraTags_SL_Oral_MM", MainScript.sExtraTags_SL_Oral_MM)
@@ -3477,6 +3492,9 @@ Bool function saveUserSettingsPapyrus()
 	jsonutil.SetPathIntValue(settings_path, "bNormalOnlyRewardIfPartnerOrgasmed", MainScript.bNormalOnlyRewardIfPartnerOrgasmed as Int)
 	jsonutil.SetPathIntValue(settings_path, "bNormalNoRewardWhenVictim", MainScript.bNormalNoRewardWhenVictim as Int)
 	jsonutil.SetPathIntValue(settings_path, "bShowNotification", MainScript.bShowNotification as Int)
+	jsonutil.SetPathIntValue(settings_path, "bNearbyMalesMayJoinSex", MainScript.bNearbyMalesMayJoinSex as Int)
+	jsonutil.SetPathIntValue(settings_path, "bNearbyFemalesMayJoinSex", MainScript.bNearbyFemalesMayJoinSex as Int)
+	jsonutil.SetPathIntValue(settings_path, "bWhoreNotPayOnlyIfAlone", MainScript.bWhoreNotPayOnlyIfAlone as Int)
 
   jsonutil.SetPathIntValue(settings_path, "iAnimInterfaceMethod", iAnimInterfaceMethod)
   jsonutil.SetPathIntValue(settings_path, "iCrimeBounty", MainScript.iCrimeBounty)
@@ -3675,6 +3693,11 @@ Bool function saveUserSettingsPapyrus()
 	jsonutil.SetPathFloatValue(settings_path, "fDibelPersuadeChance", MainScript.fDibelPersuadeChance)
 	jsonutil.SetPathFloatValue(settings_path, "fBeggarPersuadeChance", MainScript.fBeggarPersuadeChance)
 	jsonutil.SetPathFloatValue(settings_path, "fTempleTaskMarkCost", MainScript.fTempleTaskMarkCost)
+	
+	jsonutil.SetPathFloatValue(settings_path, "fWhoreNotPayChance", MainScript.fWhoreNotPayChance)
+	jsonutil.SetPathFloatValue(settings_path, "fDibelNotPayChance", MainScript.fDibelNotPayChance)
+	jsonutil.SetPathFloatValue(settings_path, "fWhorePunishByUnpayClientChance", MainScript.fWhorePunishByUnpayClientChance)
+	jsonutil.SetPathFloatValue(settings_path, "fDibelPunishByUnpayClientChance", MainScript.fDibelPunishByUnpayClientChance)
 	
   jsonutil.SetPathStringValue(settings_path, "sExtraTags_SL_Oral_MF", MainScript.sExtraTags_SL_Oral_MF)
   jsonutil.SetPathStringValue(settings_path, "sExtraTags_SL_Oral_FF", MainScript.sExtraTags_SL_Oral_FF)
@@ -4175,6 +4198,9 @@ event OnOptionSelect(int option)
 	elseif option == OID_DIBEL_PAY_USE_BASE_SPEECH
 		MainScript.bDibelPayUseBaseSpeech = !MainScript.bDibelPayUseBaseSpeech
 		SetToggleOptionValue(option, MainScript.bDibelPayUseBaseSpeech)
+	elseif option == OID_WHORE_NOTPAY_ONLY_IF_ALONE
+		MainScript.bWhoreNotPayOnlyIfAlone = !MainScript.bWhoreNotPayOnlyIfAlone
+		SetToggleOptionValue(option, MainScript.bWhoreNotPayOnlyIfAlone)
 	elseif option == OID_DIBEL_POSITION_MENU
 		MainScript.bDibelPositionMenu = !MainScript.bDibelPositionMenu
 		SetToggleOptionValue(option, MainScript.bDibelPositionMenu)
@@ -4202,6 +4228,12 @@ event OnOptionSelect(int option)
 	elseif option == OID_NORMAL_NO_REWARD_WHEN_VICTIM
 		MainScript.bNormalNoRewardWhenVictim = !MainScript.bNormalNoRewardWhenVictim
 		SetToggleOptionValue(option, MainScript.bNormalNoRewardWhenVictim)
+	elseif option == OID_NEARBY_MALES_MAY_JOIN_SEX
+		MainScript.bNearbyMalesMayJoinSex = !MainScript.bNearbyMalesMayJoinSex
+		SetToggleOptionValue(option, MainScript.bNearbyMalesMayJoinSex)
+	elseif option == OID_NEARBY_FEMALES_MAY_JOIN_SEX
+		MainScript.bNearbyFemalesMayJoinSex = !MainScript.bNearbyFemalesMayJoinSex
+		SetToggleOptionValue(option, MainScript.bNearbyFemalesMayJoinSex)
 	elseif option == OID_WHORE_PUNISH_If_NOT_ORGASMED
 		MainScript.bWhorePunishIfClientNotOrgasmed = !MainScript.bWhorePunishIfClientNotOrgasmed
 		SetToggleOptionValue(option, MainScript.bWhorePunishIfClientNotOrgasmed)
@@ -4323,6 +4355,9 @@ event OnOptionDefault(int option)
 	elseif option == OID_DIBEL_PAY_USE_BASE_SPEECH
 		MainScript.bDibelPayUseBaseSpeech = True
 		SetToggleOptionValue(option, MainScript.bDibelPayUseBaseSpeech)
+	elseif option == OID_WHORE_NOTPAY_ONLY_IF_ALONE
+		MainScript.bWhoreNotPayOnlyIfAlone = False
+		SetToggleOptionValue(option, MainScript.bWhoreNotPayOnlyIfAlone)
 	elseif option == OID_WHORE_POSITION_MENU
 		MainScript.bWhorePositionMenu = False
 		SetToggleOptionValue(option, MainScript.bWhorePositionMenu)
@@ -4350,6 +4385,12 @@ event OnOptionDefault(int option)
 	elseif option == OID_NORMAL_NO_REWARD_WHEN_VICTIM
 		MainScript.bNormalNoRewardWhenVictim = True
 		SetToggleOptionValue(option, MainScript.bNormalNoRewardWhenVictim)
+	elseif option == OID_NEARBY_MALES_MAY_JOIN_SEX
+		MainScript.bNearbyMalesMayJoinSex = False
+		SetToggleOptionValue(option, MainScript.bNearbyMalesMayJoinSex)
+	elseif option == OID_NEARBY_FEMALES_MAY_JOIN_SEX
+		MainScript.bNearbyFemalesMayJoinSex = False
+		SetToggleOptionValue(option, MainScript.bNearbyFemalesMayJoinSex)
 	elseif option == OID_WHORE_PUNISH_If_NOT_ORGASMED
 		MainScript.bWhorePunishIfClientNotOrgasmed  = False
 		SetToggleOptionValue(option, MainScript.bWhorePunishIfClientNotOrgasmed)
@@ -4537,6 +4578,10 @@ event OnOptionHighlight(int option)
     SetInfoText("$MRT_SP_DESC_NORMAL_REWARD_IF_ORGASMED")
   elseif option == OID_NORMAL_NO_REWARD_WHEN_VICTIM
     SetInfoText("$MRT_SP_DESC_NORMAL_NO_REWARD_WHEN_VICTIM")
+  elseif option == OID_NEARBY_MALES_MAY_JOIN_SEX
+    SetInfoText("$MRT_SP_DESC_NEARBY_MALES_MAY_JOIN_SEX")
+  elseif option == OID_NEARBY_FEMALES_MAY_JOIN_SEX
+    SetInfoText("$MRT_SP_DESC_NEARBY_FEMALES_MAY_JOIN_SEX")
   elseif option == OID_NORMAL_MARK_CHANCE
     SetInfoText("$MRT_SP_DESC_NORMAL_MARK_CHANCE")
   elseif option == OID_GROUP_SEX_CHANCE
@@ -4551,6 +4596,16 @@ event OnOptionHighlight(int option)
     SetInfoText("$MRT_SP_DESC_DIBEL_POSITION_MENU")
   elseif option == OID_DIBEL_PAY_USE_BASE_SPEECH
     SetInfoText("$MRT_SP_DESC_DIBEL_PAY_USE_BASE_SPEECH")
+  elseif option == OID_WHORE_NOTPAY_CHANCE
+    SetInfoText("$MRT_SP_DESC_WHORE_NOTPAY_CHANCE")
+  elseif option == OID_DIBEL_NOTPAY_CHANCE
+    SetInfoText("$MRT_SP_DESC_DIBEL_NOTPAY_CHANCE")
+  elseif option == OID_WHORE_NOTPAY_ONLY_IF_ALONE
+    SetInfoText("$MRT_SP_DESC_WHORE_NOTPAY_ONLY_IF_ALONE")
+  elseif option == OID_WHORE_PUNISHBYUNPAYCLIENT_CHANCE
+    SetInfoText("$MRT_SP_DESC_WHORE_PUNISHBYUNPAYCLIENT_CHANCE")
+  elseif option == OID_DIBEL_PUNISHBYUNPAYCLIENT_CHANCE
+    SetInfoText("$MRT_SP_DESC_DIBEL_PUNISHBYUNPAYCLIENT_CHANCE")
   elseif option == OID_DIBEL_TEMPLE_TASK_MIN_PAY
     SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_TASK_MIN_PAY")
   elseif option == OID_DIBEL_TEMPLE_TASK_MAX_PAY
@@ -5119,6 +5174,18 @@ event OnOptionSliderAccept(int option, float value)
 		MainScript.fBeggarPersuadeChance = value
 		SetSliderOptionValue(OID_BEG_PERSUADE_CHANCE , MainScript.fBeggarPersuadeChance, "$MRT_SP_BEG_PERSUADE_CHANCE_SLIDER2")
 		MainScript.setGlobalVaues()
+	elseif option == OID_WHORE_NOTPAY_CHANCE
+		MainScript.fWhoreNotPayChance = value
+		SetSliderOptionValue(OID_WHORE_NOTPAY_CHANCE , MainScript.fWhoreNotPayChance, "$MRT_SP_WHORE_NOTPAY_CHANCE_SLIDER2")
+	elseif option == OID_DIBEL_NOTPAY_CHANCE
+		MainScript.fDibelNotPayChance = value
+		SetSliderOptionValue(OID_DIBEL_NOTPAY_CHANCE , MainScript.fDibelNotPayChance, "$MRT_SP_DIBEL_NOTPAY_CHANCE_SLIDER2")
+	elseif option == OID_WHORE_PUNISHBYUNPAYCLIENT_CHANCE
+		MainScript.fWhorePunishByUnpayClientChance = value
+		SetSliderOptionValue(OID_WHORE_PUNISHBYUNPAYCLIENT_CHANCE , MainScript.fWhorePunishByUnpayClientChance, "$MRT_SP_WHORE_PUNISHBYUNPAYCLIENT_SLIDER2")
+	elseif option == OID_DIBEL_PUNISHBYUNPAYCLIENT_CHANCE
+		MainScript.fDibelPunishByUnpayClientChance = value
+		SetSliderOptionValue(OID_DIBEL_PUNISHBYUNPAYCLIENT_CHANCE , MainScript.fDibelPunishByUnpayClientChance, "$MRT_SP_DIBEL_PUNISHBYUNPAYCLIENT_SLIDER2")
 	endif
 	ForcePageReset()
 EndEvent
@@ -5724,6 +5791,26 @@ event OnOptionSliderOpen(int option)
         SetSliderDialogDefaultValue(30.0)
         SetSliderDialogRange(1, 100)
         SetSliderDialogInterval(1)
+	elseif option == OID_WHORE_NOTPAY_CHANCE
+	    SetSliderDialogStartValue(MainScript.fWhoreNotPayChance)
+        SetSliderDialogDefaultValue(0.0)
+        SetSliderDialogRange(0, 100)
+        SetSliderDialogInterval(0.1)
+	elseif option == OID_DIBEL_NOTPAY_CHANCE
+	    SetSliderDialogStartValue(MainScript.fDibelNotPayChance)
+        SetSliderDialogDefaultValue(0.0)
+        SetSliderDialogRange(0, 100)
+        SetSliderDialogInterval(0.1)
+	elseif option == OID_WHORE_PUNISHBYUNPAYCLIENT_CHANCE
+	    SetSliderDialogStartValue(MainScript.fWhorePunishByUnpayClientChance)
+        SetSliderDialogDefaultValue(0.0)
+        SetSliderDialogRange(0, 100)
+        SetSliderDialogInterval(0.1)
+	elseif option == OID_DIBEL_PUNISHBYUNPAYCLIENT_CHANCE
+	    SetSliderDialogStartValue(MainScript.fDibelPunishByUnpayClientChance)
+        SetSliderDialogDefaultValue(0.0)
+        SetSliderDialogRange(0, 100)
+        SetSliderDialogInterval(0.1)
   endif
 EndEvent
 
@@ -6295,3 +6382,11 @@ Int OID_COLOR_SEPARATOR
 
 Int OID_PREVENT_FRUITLESS_APPROACH
 Int OID_GROUP_SEX_CHANCE
+
+Int OID_WHORE_NOTPAY_CHANCE
+Int OID_DIBEL_NOTPAY_CHANCE
+Int OID_WHORE_NOTPAY_ONLY_IF_ALONE
+Int OID_WHORE_PUNISHBYUNPAYCLIENT_CHANCE
+Int OID_DIBEL_PUNISHBYUNPAYCLIENT_CHANCE
+Int OID_NEARBY_MALES_MAY_JOIN_SEX
+Int OID_NEARBY_FEMALES_MAY_JOIN_SEX

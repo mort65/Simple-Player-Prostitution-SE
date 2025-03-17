@@ -49,3 +49,11 @@ Bool Function bFlagWhoreViolationBM(Quest BMLicenses) Global
 		return Licenses.bmlUtility.FlagViolation(Licenses.bmlUtility.getLicenseID("Whore"))
 	endif
 EndFunction
+
+Int Function getWhoreLicenseCostBM(Quest BMLicenses) Global
+	BM_Licenses Licenses = BMLicenses as BM_Licenses
+	if !Licenses
+		return 0
+	endif
+	return Licenses.bmlmcm.BM_WhLCost.GetValueInt()
+EndFunction

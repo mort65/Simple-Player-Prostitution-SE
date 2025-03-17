@@ -48,6 +48,9 @@ Event OnLocationChange(Location akOldLoc, Location akNewLoc)
   if !mainscript.bPreventFruitlessApproaches
 	MainScript.stopApproach(true)
   endif
+  if !MainScript.InnWorkQst.isRunning()
+	MainScript.InnWorkQst.start()
+  endif
   MainScript.startCalcSTDCurePrice()
   MainScript.CheckAliases()
   MainScript.SLSFR_Interface.SLSFR_toggle_WhoreFlag(MainScript.isPlayerDibeling() || MainScript.isPlayerWhoring())
