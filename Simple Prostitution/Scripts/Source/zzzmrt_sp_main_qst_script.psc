@@ -4252,7 +4252,7 @@ Function rapePlayer(Actor akAggressor)
 	return
 EndFunction
 
-Bool Function struggleToEscape(Actor akAggressor, Actor akVictim, float fDuration = 6.0)
+Bool Function struggleToEscape(Actor akAggressor, Actor akVictim, float fDuration = 8.0)
 	if fDuration <= 0.0
 		return False
 	endif
@@ -4266,7 +4266,7 @@ Bool Function struggleToEscape(Actor akAggressor, Actor akVictim, float fDuratio
 	bStruggleEnded = False
 	RegisterForModEvent("SPP_AELStruggle", "OnStruggleEnd")
 	if (AELStruggle.Get() as AELStruggle).MakeStruggle(akAggressor, player, "SPP_AELStruggle", randFloat(1.0,70.0), fDuration)
-		int i = ((fDuration as Int) * 2) + 6
+		int i = ((fDuration as Int) * 2) + 4
 		while !bStruggleEnded && (i > 0)
 			Utility.wait(0.5)
 			i -= 1
