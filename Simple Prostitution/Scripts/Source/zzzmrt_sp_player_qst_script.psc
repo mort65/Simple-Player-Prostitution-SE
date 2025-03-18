@@ -126,6 +126,7 @@ function setVars()
   MainScript.bIsPapyrusUtilActive = MainScript.bCheckPapyrusUtil()
   MainScript.bIsPO3ExtenderActive = MainScript.bCheckPO3Extender()
   MainScript.bIsPyramidUtilsOK = MainScript.bCheckPyramidUtils()
+  MainScript.bIsAELStruggleOK = MainScript.bCheckAELStruggle()
 	if bInit
 		While MainScript.getState() == "Init"
 			Utility.wait(0.1)

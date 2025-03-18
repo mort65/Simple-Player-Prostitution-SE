@@ -198,18 +198,19 @@ event OnPageReset(String page)
     flag = OPTION_FLAG_DISABLED
     _AddTextOptionST("DEBUG_MOD_VERSION_TXT", "Simple Player Prostitution v" + MainScript.getCurrentVersion(), "", flag)
     addEmptyOption()
-    _AddTextOptionST("DEBUG_PAPYRUSUTIL_CHECK_TXT", "PapyrusUtil v3+", MainScript.bIsPapyrusUtilActive As String, flag)
-    _AddTextOptionST("DEBUG_PYRAMIDUTILS_CHECK_TXT", "Scrab's Papyrus Extender 2.1.0+", MainScript.bIsPyramidUtilsOK As String, flag)
-    _AddTextOptionST("DEBUG_PO3EXTENDER_CHECK_TXT", "PO3 Papyrus Extender v5+", MainScript.bIsPO3ExtenderActive As String, flag)
-    _AddTextOptionST("DEBUG_SEXLAB_CHECK_TXT", "$sexlab", MainScript.bIsSexlabActive As String, flag)
-    _AddTextOptionST("DEBUG_FLOWERGIRLS_CHECK_TXT", "$flowergirls", MainScript.bIsFlowerGirlsActive As String, flag)
-    _AddTextOptionST("DEBUG_OSTIM_CHECK_TXT", "$ostim_sa", MainScript.bIsOstimActive As String, flag)
-    _AddTextOptionST("DEBUG_LICENSES_CHECK_TXT", "$licenses", MainScript.bIsLicensesActive As String, flag)
-    _AddTextOptionST("DEBUG_DDI_CHECK_TXT", "$DDIntegration", MainScript.bIsDDIntegrationActive As String, flag)
-    _AddTextOptionST("DEBUG_DDX_CHECK_TXT", "$DDExpansion", MainScript.bIsDDExpansionActive As String, flag)
-	_AddTextOptionST("DEBUG_SLSFR_CHECK_TXT", "$SLSF_RELOADED", MainScript.bIs_SLSFR_Active As String, flag)
-	AddTextOption("$SL_AROUSED", MainScript.bIs_SLA_Active As String, flag)
-	AddTextOption("$SLHH_EXPANSION", MainScript.bIs_SLHH_Active As String, flag)
+    _AddTextOptionST("DEBUG_PAPYRUSUTIL_CHECK_TXT", "$MRT_SP_PAPYRUSUTIL_REQUIRED", sBoolToColoredTXT(MainScript.bIsPapyrusUtilActive, "$MRT_SP_REQUIRED_OK", "$MRT_SP_REQUIRED_NOT_OK"), flag)
+    _AddTextOptionST("DEBUG_PYRAMIDUTILS_CHECK_TXT", "$MRT_SP_PYRAMIDUTILS_REQUIRED", sBoolToColoredTXT(MainScript.bIsPyramidUtilsOK, "$MRT_SP_REQUIRED_OK", "$MRT_SP_REQUIRED_NOT_OK"), flag)
+    _AddTextOptionST("DEBUG_PO3EXTENDER_CHECK_TXT", "$MRT_SP_PO3EXTENDER_REQUIRED", sBoolToColoredTXT(MainScript.bIsPO3ExtenderActive, "$MRT_SP_REQUIRED_OK", "$MRT_SP_REQUIRED_NOT_OK"), flag)
+	_AddTextOptionST("DEBUG_AELSTRUGGLE_CHECK_TXT", "$MRT_SP_AELSTRUGGLE_REQUIRED", sBoolToColoredTXT(MainScript.bIsAELStruggleOK, "$MRT_SP_REQUIRED_OK", "$MRT_SP_REQUIRED_NOT_OK"), flag)
+    _AddTextOptionST("DEBUG_SEXLAB_CHECK_TXT", "$sexlab", sBoolToColoredTXT(MainScript.bIsSexlabActive, "$MRT_SP_REQUIRED_OK", "$MRT_SP_REQUIRED_NOT_OK"), flag)
+    _AddTextOptionST("DEBUG_FLOWERGIRLS_CHECK_TXT", "$flowergirls", sBoolToColoredTXT(MainScript.bIsFlowerGirlsActive, "$MRT_SP_REQUIRED_OK", "$MRT_SP_REQUIRED_NOT_OK"), flag)
+    _AddTextOptionST("DEBUG_OSTIM_CHECK_TXT", "$ostim_sa", sBoolToColoredTXT(MainScript.bIsOstimActive, "$MRT_SP_REQUIRED_OK", "$MRT_SP_REQUIRED_NOT_OK"), flag)
+    _AddTextOptionST("DEBUG_LICENSES_CHECK_TXT", "$licenses", sBoolToColoredTXT(MainScript.bIsLicensesActive, "$MRT_SP_REQUIRED_OK", "$MRT_SP_REQUIRED_NOT_OK"), flag)
+    _AddTextOptionST("DEBUG_DDI_CHECK_TXT", "$DDIntegration", sBoolToColoredTXT(MainScript.bIsDDIntegrationActive, "$MRT_SP_REQUIRED_OK", "$MRT_SP_REQUIRED_NOT_OK"), flag)
+    _AddTextOptionST("DEBUG_DDX_CHECK_TXT", "$DDExpansion", sBoolToColoredTXT(MainScript.bIsDDExpansionActive, "$MRT_SP_REQUIRED_OK", "$MRT_SP_REQUIRED_NOT_OK"), flag)
+	_AddTextOptionST("DEBUG_SLSFR_CHECK_TXT", "$SLSF_RELOADED", sBoolToColoredTXT(MainScript.bIs_SLSFR_Active, "$MRT_SP_REQUIRED_OK", "$MRT_SP_REQUIRED_NOT_OK"), flag)
+	AddTextOption("$SL_AROUSED", sBoolToColoredTXT(MainScript.bIs_SLA_Active, "$MRT_SP_REQUIRED_OK", "$MRT_SP_REQUIRED_NOT_OK"), flag)
+	AddTextOption("$SLHH_EXPANSION", sBoolToColoredTXT(MainScript.bIs_SLHH_Active, "$MRT_SP_REQUIRED_OK", "$MRT_SP_REQUIRED_NOT_OK"), flag)
 	addEmptyOption()
 	AddColoredHeader("$MRT_SP_HEAD_DEBUG_DISPLAY")
     if MainScript.bModEnabled
@@ -6172,6 +6173,13 @@ string[] function sGetDDSets()
 	sDDsets[5] = "$DD_Set_White_Ebonite"
 	sDDsets[6] = "$DD_Set_Red_Ebonite"
 	return sDDsets
+endfunction
+
+String Function sBoolToColoredTXT(Bool bBool, String sTrueText = "True", String sFalseText = "False")
+	if bBool
+		return "<font color='#" + MainScript.sSuccessColor + "'>"+ sTrueText + "</font>"
+	endif
+	return "<font color='#" + MainScript.sWarningColor + "'>"+ sFalseText + "</font>"
 endfunction
 
 Int OID_BEG_GUARDS_SEX_OFFER

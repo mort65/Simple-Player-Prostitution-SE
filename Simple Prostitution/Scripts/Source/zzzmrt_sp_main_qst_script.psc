@@ -90,6 +90,7 @@ Bool property bWhoreNeedLicense=True auto Hidden Conditional
 Bool Property bIsPapyrusUtilActive=False Auto Hidden Conditional
 Bool Property bIsPO3ExtenderActive=False Auto Hidden Conditional
 Bool Property bIsPyramidUtilsOK=False Auto Hidden Conditional
+Bool Property bIsAELStruggleOK=False Auto Hidden Conditional
 Bool Property bDibelAllowAggressive=True Auto Hidden Conditional
 Bool Property bWhoreAllowAggressive=True Auto Hidden Conditional
 Bool Property bTryAllInterfaces=True Auto Hidden Conditional
@@ -593,6 +594,9 @@ ReferenceAlias Property Participant2 Auto
 
 Bool Property bWhoreClientNotPaid = False Auto Hidden Conditional
 Bool Property bDibelClientNotPaid = False Auto Hidden Conditional
+
+Bool property bStruggleVictimEscaped = False Auto Hidden Conditional
+Bool property bStruggleEnded = False Auto Hidden Conditional
 
 function log(String sText, Bool bNotification = False, Bool bTrace = True, Int iSeverity = 1, Bool bForceNotif = False)
 	logText(sText, (bNotification && (bShowNotification || (iSeverity != 1) || bForceNotif)), bTrace, iSeverity, "SPP", sDefaultColor, sSuccessColor, sInfoColor, sWarningColor, sErrorColor, sSeparatorColor)
@@ -1698,6 +1702,11 @@ Function AssaultPlayer(Actor akAssaulter, Bool bEnslave = false, Bool bRape = fa
 		endif
 	endWhile
 	sendModEvent("SPP_StopDetectAssault")
+	if (bMurder || bEnslave) && struggleToEscape(akAssaulter, player)
+		log("Player won the struggle and won't be murdered or enslaved.")
+		bMurder = False
+		bEnslave = False
+	endif 
 	if bMurder
 		Game.setPlayerAiDriven(false)
 		player.SetDontMove(false)
@@ -2517,6 +2526,10 @@ Bool Function bCheckPyramidUtils()
 	return PyramidUtils.GetVersion() >= 0.002002
 EndFunction
 
+Bool Function bCheckAELStruggle()
+	return AELStruggle.Get() as Bool
+EndFunction
+
 Bool Function bAllPosAllowed(Float fVagChance, Float fAnalChance, Float fOralChance)
 	return ((fVagChance > 0.0) && (fAnalChance > 0.0) && (fOralChance > 0.0))
 EndFunction
@@ -3189,6 +3202,9 @@ Event on_spp_ostim_Orgasm(String EventName, String sceneId, Float index, Form Se
 	endif
 endevent
 
+Event OnStruggleEnd(Form akVictim, Form akAggressor, bool abVictimEscaped)
+EndEvent
+
 Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, form sender)
 	actor[] actorList = OStimInterface.getActors()
 	if actorList.Length > 1
@@ -3849,6 +3865,70 @@ State raped
 
 EndState
 
+State struggle
+
+	Event on_spp_sexlab_Sex_Start(string eventName, string argString, float argNum, form sender)
+	endEvent
+	
+	Event on_spp_sexlab_Orgasm(string eventName, string argString, float argNum, form sender)
+	endevent
+	
+	Event on_spp_sexlab_OrgasmSeparate(Form ActorRef, Int Thread)
+	endevent
+	
+	Event on_spp_sexlab_Sex_Ending(string eventName, string argString, float argNum, form sender)
+	EndEvent
+
+	event on_spp_sexlab_Sex_End(int tid, bool HasPlayer)
+		if HasPlayer
+			startInfectingPlayer("", 1)
+			GoToState("")
+		endif
+	endEvent
+	
+	Event on_spp_ostim_Sex_Start(string eventName, string strArg, float numArg, Form sender)
+	endEvent
+
+	Event on_spp_ostim_Orgasm(String EventName, String sceneId, Float index, Form Sender)
+	endevent
+
+	Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, form sender)
+		startInfectingPlayer("", 1)
+		GoToState("")
+	EndEvent
+	
+	Event OnStruggleEnd(Form akVictim, Form akAggressor, bool abVictimEscaped)
+		bStruggleVictimEscaped = abVictimEscaped
+		bStruggleEnded = true
+	EndEvent
+
+	event onUpdate()
+		startInfectingPlayer("", 1)
+		GoToState("")
+	endEvent
+
+	event OnUpdateGameTime()
+		RegisterForSingleUpdateGameTime(1.0)
+	endEvent
+
+	event OnEndState()
+		bIsBusy = false
+	endEvent
+
+	function snitch()
+	EndFunction
+
+	Function offerDibelMarks(Actor akActor)
+	endFunction
+
+	Function rapePlayer(Actor akAggressor)
+	endFunction
+	
+	Function rejectCusomer(Actor akCustomer)
+	endfunction
+
+EndState
+
 State rejecting
 	Function rejectCusomer(Actor akCustomer)
 	endfunction
@@ -4160,6 +4240,10 @@ Function rapePlayer(Actor akAggressor)
 		endif
 	endif
 	
+	if struggleToEscape(akAggressor, player)
+		log("Player won the struggle and won't be raped.")
+		return
+	endif
 	bIsBusy = True
 	gotostate("raped")
 	if !bRandomSexWithPlayer(akAggressor, True)
@@ -4167,6 +4251,33 @@ Function rapePlayer(Actor akAggressor)
 	endIf
 	return
 EndFunction
+
+Bool Function struggleToEscape(Actor akAggressor, Actor akVictim, float fDuration = 6.0)
+	if fDuration <= 0.0
+		return False
+	endif
+	if !bIsAELStruggleOK
+		log("“Flash Games - Struggling QTE” not found.")
+		return False
+	Endif
+	bIsBusy = True
+	gotostate("struggle")
+	bStruggleVictimEscaped = False
+	bStruggleEnded = False
+	RegisterForModEvent("SPP_AELStruggle", "OnStruggleEnd")
+	if (AELStruggle.Get() as AELStruggle).MakeStruggle(akAggressor, player, "SPP_AELStruggle", randFloat(1.0,70.0), fDuration)
+		int i = ((fDuration as Int) * 2) + 6
+		while !bStruggleEnded && (i > 0)
+			Utility.wait(0.5)
+			i -= 1
+		endwhile
+	else
+		gotoState("")
+		return False
+	endif
+	gotoState("")
+	return bStruggleVictimEscaped
+endFunction
 
 Int function randInt(int iMin, int iMax)
 	int _min =minInt(iMin, iMax)
