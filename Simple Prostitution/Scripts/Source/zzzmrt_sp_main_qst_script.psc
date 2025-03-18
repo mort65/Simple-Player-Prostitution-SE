@@ -3346,7 +3346,7 @@ State Dibeling
 
 	event on_spp_sexlab_Sex_End(int tid, bool HasPlayer)
 		if HasPlayer
-			if (!bDibelOnlyPayIfClientOrgasmed || bDibelClientOrgasmed)
+			if ((!bDibelOnlyPayIfClientOrgasmed || bDibelClientOrgasmed) && !bDibelClientNotPaid)
 				if bIsTempleClient
 					addDibelMarkToPlayer(fDibelTempleMarkChance, 1, fTempleMinMarkReward as Int, fTempleMaxMarkReward as Int)
 					addExtraRewardsToPlayer(fDibelTempleExtraRewardChance, fDibelTempleExtraRewardEnchantedChance, randInt(fDibelTempleMinExtraReward as Int, fDibelTempleMaxExtraReward as Int))
@@ -3389,7 +3389,7 @@ State Dibeling
 	endevent
 
 	Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, form sender)
-		if (!bDibelOnlyPayIfClientOrgasmed || bDibelClientOrgasmed)
+		if ((!bDibelOnlyPayIfClientOrgasmed || bDibelClientOrgasmed) && !bDibelClientNotPaid)
 			if bIsTempleClient
 				addDibelMarkToPlayer(fDibelTempleMarkChance, 1, fTempleMinMarkReward as Int, fTempleMaxMarkReward as Int)
 				addExtraRewardsToPlayer(fDibelTempleExtraRewardChance, fDibelTempleExtraRewardEnchantedChance, randInt(fDibelTempleMinExtraReward as Int, fDibelTempleMaxExtraReward as Int))
@@ -3420,7 +3420,7 @@ State Dibeling
 	EndEvent
 
 	event onUpdate()
-		if (!bDibelOnlyPayIfClientOrgasmed || bDibelClientOrgasmed)
+		if ((!bDibelOnlyPayIfClientOrgasmed || bDibelClientOrgasmed) && !bDibelClientNotPaid)
 			if bIsTempleClient
 				addDibelMarkToPlayer(fDibelTempleMarkChance, 1, fTempleMinMarkReward as Int, fTempleMaxMarkReward as Int)
 				addExtraRewardsToPlayer(fDibelTempleExtraRewardChance, fDibelTempleExtraRewardEnchantedChance, randInt(fDibelTempleMinExtraReward as Int, fDibelTempleMaxExtraReward as Int))
@@ -3598,7 +3598,7 @@ State Whoring
 
 	event on_spp_sexlab_Sex_End(int tid, bool HasPlayer)
 		if HasPlayer
-			if (!bWhoreOnlyPayIfClientOrgasmed || bWhoreClientOrgasmed)
+			if ((!bWhoreOnlyPayIfClientOrgasmed || bWhoreClientOrgasmed) && !bWhoreClientNotPaid)
 				addDibelMarkToPlayer(fWhoreMarkChance, iWhorePartners)
 				addExtraRewardsToPlayer(fWhoreExtraRewardChance, fWhoreExtraRewardEnchantedChance, iWhorePartners)
 			endif
@@ -3630,7 +3630,7 @@ State Whoring
 	endevent
 
 	Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, form sender)
-		if (!bWhoreOnlyPayIfClientOrgasmed || bWhoreClientOrgasmed)
+		if ((!bWhoreOnlyPayIfClientOrgasmed || bWhoreClientOrgasmed) && !bWhoreClientNotPaid)
 			addDibelMarkToPlayer(fWhoreMarkChance, iWhorePartners)
 			addExtraRewardsToPlayer(fWhoreExtraRewardChance, fWhoreExtraRewardEnchantedChance, iWhorePartners)
 		endif
@@ -3650,7 +3650,7 @@ State Whoring
 	EndEvent
 
 	event onUpdate()
-		if (!bWhoreOnlyPayIfClientOrgasmed || bWhoreClientOrgasmed)
+		if ((!bWhoreOnlyPayIfClientOrgasmed || bWhoreClientOrgasmed) && !bWhoreClientNotPaid)
 			addDibelMarkToPlayer(fWhoreMarkChance, iWhorePartners)
 			addExtraRewardsToPlayer(fWhoreExtraRewardChance, fWhoreExtraRewardEnchantedChance, iWhorePartners)
 		endif
