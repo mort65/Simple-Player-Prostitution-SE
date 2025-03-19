@@ -8,7 +8,7 @@ Actor akSpeaker = akSpeakerRef as Actor
 ;BEGIN CODE
 zzzmrt_sp_inn_work_qst_script myOwningScript = getOwningQuest() as zzzmrt_sp_inn_work_qst_script
 myOwningScript.checkStatus()
-myOwningScript.bPlayerPaid = False
+myOwningScript.bPlayerPaidForRoom = False
 ;END CODE
 EndFunction
 ;END FRAGMENT

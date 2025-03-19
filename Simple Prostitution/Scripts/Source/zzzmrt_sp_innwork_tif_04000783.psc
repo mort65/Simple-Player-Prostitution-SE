@@ -8,7 +8,7 @@ Actor akSpeaker = akSpeakerRef as Actor
 ;BEGIN CODE
 zzzmrt_sp_inn_work_qst_script myOwningScript = getOwningQuest() as zzzmrt_sp_inn_work_qst_script
 game.getPlayer().removeitem(myOwningScript.mainScript.gold, myOwningScript.RoomCost.GetValueInt())
-myOwningScript.bplayerPaid = True
+myOwningScript.bPlayerPaidForRoom = True
 ;END CODE
 EndFunction
 ;END FRAGMENT

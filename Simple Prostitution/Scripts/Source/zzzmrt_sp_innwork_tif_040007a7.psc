@@ -10,6 +10,11 @@ zzzmrt_sp_inn_work_qst_script myOwningScript = getOwningQuest() as zzzmrt_sp_inn
 if myOwningScript.iPlayerDebt > 0
 	myOwningScript.InnOwner.ForceRefTo(akSpeaker)
 	GetOwningQuest().SetStage(10)
+	if myOwningScript.bPlayerPaidForRoom || myOwningScript.bPlayerRentedRoom
+		myOwningScript.RentRoom(akSpeaker)
+	endif
+elseif myOwningScript.bPlayerPaidForRoom
+	myOwningScript.RentRoom(akSpeaker)
 endif
 ;END CODE
 EndFunction

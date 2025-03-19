@@ -592,11 +592,18 @@ Quest Property participantDetector Auto
 ReferenceAlias Property Participant1 Auto
 ReferenceAlias Property Participant2 Auto
 
+Quest property WerewolfQuest Auto
+Quest property VampireLordQuest Auto
+Race Property WereWolfBeastRace Auto
+Race Property DLC1VampireBeastRace Auto
+
 Bool Property bWhoreClientNotPaid = False Auto Hidden Conditional
 Bool Property bDibelClientNotPaid = False Auto Hidden Conditional
 
 Bool property bStruggleVictimEscaped = False Auto Hidden Conditional
 Bool property bStruggleEnded = False Auto Hidden Conditional
+
+Bool property bReverseSTDProgression = False Auto Hidden Conditional
 
 function log(String sText, Bool bNotification = False, Bool bTrace = True, Int iSeverity = 1, Bool bForceNotif = False)
 	logText(sText, (bNotification && (bShowNotification || (iSeverity != 1) || bForceNotif)), bTrace, iSeverity, "SPP", sDefaultColor, sSuccessColor, sInfoColor, sWarningColor, sErrorColor, sSeparatorColor)
@@ -4735,5 +4742,18 @@ Function addEnchantedRewardToPlayer(Float fRewardChance = 100.0, Float fRewardEn
 		log(sName + " added.", true, true, 0)
 	endif
 EndFunction
+
+Bool function isPlayerBeast()
+  if WerewolfQuest.IsRunning() || VampireLordQuest.IsRunning()
+    return True
+  elseif player.HasKeywordstring("actortypecreature") || player.HasKeywordstring("actortypeanimal")
+    return True
+  elseif (player.GetRace() == WereWolfBeastRace)
+    return True
+  elseif (player.GetRace() == DLC1VampireBeastRace)
+    return True
+  endif
+  return False
+endfunction
 
 

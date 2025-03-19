@@ -173,6 +173,7 @@ State Infecting
 			bProgress = bSucessCalculator(MainScript.fNormalSTDProgressChance)
 	    endif
 	    if bInfect || bProgress
+			Bool bReverseProgression = MainScript.bReverseSTDProgression
 			nextSTDStages.revert()
 			curSTDStages.revert()
 			possibleNewSTDs.revert()
@@ -184,7 +185,11 @@ State Infecting
 			while iIndex > 0
 				iIndex -= 1
 				stdList = stds_ByType.GetAt(iIndex) As FormList
-				firstSTDStage = stdList.GetAt(0)
+				if bReverseProgression
+					firstSTDStage = stdList.GetAt(stdList.GetSize() - 1)
+				else
+					firstSTDStage = stdList.GetAt(0)
+				endif
 				possibleNewSTDs.addForm(firstSTDStage)
 				jIndex = stdList.GetSize()
 				while jIndex > 0
@@ -192,9 +197,16 @@ State Infecting
 					stdStage = stdList.getAt(jIndex)
 					if player.hasSpell(stdStage As Spell)
 						possibleNewSTDs.removeAddedForm(firstSTDStage)
-						if jIndex < stdList.GetSize() - 1 ;not in last stage
-							curSTDStages.addForm(stdStage)
-							nextSTDStages.addForm(stdList.getAt(jIndex + 1))
+						If bReverseProgression
+							if jIndex > 0 ;not in last stage
+								curSTDStages.addForm(stdStage)
+								nextSTDStages.addForm(stdList.getAt(jIndex - 1))
+							endif
+						else
+							if jIndex < stdList.GetSize() - 1 ;not in last stage
+								curSTDStages.addForm(stdStage)
+								nextSTDStages.addForm(stdList.getAt(jIndex + 1))
+							endif
 						endif
 					endif
 				endWhile
@@ -214,13 +226,13 @@ State Infecting
 				Spell nextSTDStage = nextSTDStages.GetAt(iIndex) As Spell
 				player.RemoveSpell(curSTDStage)
 				player.addSpell(nextSTDStage)
-				MainScript.log("STD progressed, Infected: " + player + ", CurrentStage: " + nextSTDStage.GetName() + ", PreviousStage: " + curSTDStage.GetName(), 2)
+				MainScript.log("STD progressed, Infected: " + player + ", CurrentStage: " + nextSTDStage.GetName() + ", PreviousStage: " + curSTDStage.GetName(), False, True, 2)
 			endif
 			if bInfect
 				iIndex = utility.randomint(0, possibleNewSTDs.GetSize() - 1)
 				spell std = possibleNewSTDs.GetAt(iIndex) As Spell
 				player.addSpell(std)
-				MainScript.log("STD transmitted, infected: " + player + ", CurrentStage: " + std.GetName(), 2)
+				MainScript.log("STD transmitted, infected: " + player + ", CurrentStage: " + std.GetName(), False, True, 2)
 			endif
 			setCureSTDCost(player)
 	    endif		

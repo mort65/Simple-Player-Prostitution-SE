@@ -278,6 +278,8 @@ Bool Function canPlayerApproached()
 		MainScript.log("The player cannot be approached because they are getting horribly harassed (SLHH).")
 	elseif player.GetCurrentScene() != None
 		MainScript.log("The player cannot be approached because they are busy in a scene.")
+	elseif MainScript.isPlayerBeast()
+		MainScript.log("The player cannot be approached because they are in beast form.")
 	elseif isPlayerBusyInMOA()
 		MainScript.log("The player cannot be approached because they are getting handled by another mod (mark of aray).")
 	else

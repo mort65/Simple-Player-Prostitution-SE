@@ -466,8 +466,8 @@ elseif (page == "$MRT_SP_PAGE_BEGGING")
       flag = OPTION_FLAG_DISABLED
     endif
     DD_Options(flag)
-		SetCursorPosition(1)
-		OID_DD_Set_M = AddMenuOption("$MRT_SP_DD_Set_M", sGetDDSets()[MainScript.iDeviousDeviceSet], flag)
+	SetCursorPosition(1)
+	OID_DD_Set_M = AddMenuOption("$MRT_SP_DD_Set_M", sGetDDSets()[MainScript.iDeviousDeviceSet], flag)
   elseif (page == "$MRT_SP_PAGE_STD")
     SetTitleText("$MRT_SP_PAGE_STD")
     AddColoredHeader("$MRT_SP_HEAD_STD")
@@ -476,6 +476,7 @@ elseif (page == "$MRT_SP_PAGE_BEGGING")
     else
       flag = OPTION_FLAG_DISABLED
     endif
+	OID_STD_REVERSE_PROGRESSION = AddToggleOption("$MRT_SP_STD_REVERSE_PROGRESSION", MainScript.bReverseSTDProgression, flag)
     AddSliderOptionST("CURE_NORMAL_COST_SLIDER", "$MRT_SP_CURE_NORMAL_COST_SLIDER1", MainScript.fCureNormalDiseaseCost, "$MRT_SP_CURE_NORMAL_COST_SLIDER2", flag)
     AddSliderOptionST("CURE_STDI_COST_SLIDER", "$MRT_SP_CURE_STDI_COST_SLIDER1", MainScript.fCureSTDICost, "$MRT_SP_CURE_STDI_COST_SLIDER2", flag)
     AddSliderOptionST("CURE_STDII_COST_SLIDER", "$MRT_SP_CURE_STDII_COST_SLIDER1", MainScript.fCureSTDIICost, "$MRT_SP_CURE_STDII_COST_SLIDER2", flag)
@@ -3176,6 +3177,7 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
   MainScript.bNearbyMalesMayJoinSex = jsonutil.GetPathIntValue(settings_path, "bNearbyMalesMayJoinSex", MainScript.bNearbyMalesMayJoinSex as int)
   MainScript.bNearbyFemalesMayJoinSex = jsonutil.GetPathIntValue(settings_path, "bNearbyFemalesMayJoinSex", MainScript.bNearbyFemalesMayJoinSex as int)
   MainScript.bWhoreNotPayOnlyIfAlone = jsonutil.GetPathIntValue(settings_path, "bWhoreNotPayOnlyIfAlone", MainScript.bWhoreNotPayOnlyIfAlone as int)
+  MainScript.bReverseSTDProgression = jsonutil.GetPathIntValue(settings_path, "bReverseSTDProgression", MainScript.bReverseSTDProgression as int)
 
   iAnimInterfaceMethod = jsonutil.GetPathIntValue(settings_path, "iAnimInterfaceMethod", iAnimInterfaceMethod)
   
@@ -3496,6 +3498,7 @@ Bool function saveUserSettingsPapyrus()
 	jsonutil.SetPathIntValue(settings_path, "bNearbyMalesMayJoinSex", MainScript.bNearbyMalesMayJoinSex as Int)
 	jsonutil.SetPathIntValue(settings_path, "bNearbyFemalesMayJoinSex", MainScript.bNearbyFemalesMayJoinSex as Int)
 	jsonutil.SetPathIntValue(settings_path, "bWhoreNotPayOnlyIfAlone", MainScript.bWhoreNotPayOnlyIfAlone as Int)
+	jsonutil.SetPathIntValue(settings_path, "bReverseSTDProgression", MainScript.bReverseSTDProgression as Int)
 
   jsonutil.SetPathIntValue(settings_path, "iAnimInterfaceMethod", iAnimInterfaceMethod)
   jsonutil.SetPathIntValue(settings_path, "iCrimeBounty", MainScript.iCrimeBounty)
@@ -4127,6 +4130,9 @@ event OnOptionSelect(int option)
 	elseif option == OID_BEG_ELDER_SEX_OFFER
 		MainScript.bBeggarElderSexOffer = !MainScript.bBeggarElderSexOffer
 		SetToggleOptionValue(option, MainScript.bBeggarElderSexOffer)
+	elseif option == OID_STD_REVERSE_PROGRESSION
+		MainScript.bReverseSTDProgression = !MainScript.bReverseSTDProgression
+		SetToggleOptionValue(option, MainScript.bReverseSTDProgression)
 	elseif option == OID_MALE_CUSTOMER_APPROACH
 		MainScript.bMaleCustomerApproach = !MainScript.bMaleCustomerApproach
 		SetToggleOptionValue(option, MainScript.bMaleCustomerApproach)
@@ -4289,6 +4295,9 @@ event OnOptionDefault(int option)
 	elseif option == OID_BEG_ELDER_SEX_OFFER
 		MainScript.bBeggarElderSexOffer = True
 		SetToggleOptionValue(option, MainScript.bBeggarElderSexOffer)
+	elseif option == OID_STD_REVERSE_PROGRESSION
+		MainScript.bReverseSTDProgression = False
+		SetToggleOptionValue(option, MainScript.bReverseSTDProgression)
 	elseif option == OID_MALE_CUSTOMER_APPROACH
 		MainScript.bMaleCustomerApproach = True
 		SetToggleOptionValue(option, MainScript.bMaleCustomerApproach)
@@ -4683,6 +4692,8 @@ event OnOptionHighlight(int option)
     SetInfoText("$MRT_SP_DESC_DEVIOUS_SUIT")
   elseif option == OID_BEG_ELDER_SEX_OFFER
     SetInfoText("$MRT_SP_DESC_BEG_ELDER_SEX_OFFER")
+  elseif option == OID_STD_REVERSE_PROGRESSION
+    SetInfoText("$MRT_SP_DESC_STD_REVERSE_PROGRESSION")
   elseif option == OID_ELDER_MAY_APPROACH
     SetInfoText("$MRT_SP_DESC_ELDER_MAY_APPROACH")
   elseif option == OID_PREVENT_FRUITLESS_APPROACH
@@ -6179,7 +6190,7 @@ String Function sBoolToColoredTXT(Bool bBool, String sTrueText = "True", String 
 	if bBool
 		return "<font color='#" + MainScript.sSuccessColor + "'>"+ sTrueText + "</font>"
 	endif
-	return "<font color='#" + MainScript.sWarningColor + "'>"+ sFalseText + "</font>"
+	return "<font color='#" + MainScript.sInfoColor + "'>"+ sFalseText + "</font>"
 endfunction
 
 Int OID_BEG_GUARDS_SEX_OFFER
@@ -6398,3 +6409,5 @@ Int OID_WHORE_PUNISHBYUNPAYCLIENT_CHANCE
 Int OID_DIBEL_PUNISHBYUNPAYCLIENT_CHANCE
 Int OID_NEARBY_MALES_MAY_JOIN_SEX
 Int OID_NEARBY_FEMALES_MAY_JOIN_SEX
+
+Int OID_STD_REVERSE_PROGRESSION
