@@ -412,6 +412,14 @@ event OnPageReset(String page)
 	OID_NORMAL_REWARD_IF_ORGASMED = AddToggleOption("$MRT_SP_NORMAL_REWARD_IF_ORGASMED_TOGGLE", MainScript.bNormalOnlyRewardIfPartnerOrgasmed, flag)
 	OID_WHORE_PUNISH_If_NOT_ORGASMED = AddToggleOption("$MRT_SP_WHORE_PUNISH_If_NOT_ORGASMED_TOGGLE", MainScript.bWhorePunishIfClientNotOrgasmed, flag)
 	OID_DIBEL_PUNISH_If_NOT_ORGASMED = AddToggleOption("$MRT_SP_DIBEL_PUNISH_If_NOT_ORGASMED_TOGGLE", MainScript.bDibelPunishIfClientNotOrgasmed, flag)
+	addEmptyOption()
+	AddColoredHeader("$MRT_SP_HEAD_INTEGRATION_AELSTRUGGLE")
+	if MainScript.bModEnabled && MainScript.bIsAELStruggleOK
+      flag = OPTION_FLAG_NONE
+    else
+      flag = OPTION_FLAG_DISABLED
+    endif	
+	OID_AEL_STRUGGLE_DIFFICULTY = AddSliderOption("$MRT_SP_AEL_STRUGGLE_DIFFICULTY_SLIDER1", MainScript.fAELStruggleDifficulty, "$MRT_SP_AEL_STRUGGLE_DIFFICULTY_SLIDER2", flag)
 elseif (page == "$MRT_SP_PAGE_BEGGING")
     SetTitleText("$MRT_SP_PAGE_BEGGING")
     AddColoredHeader("$MRT_SP_HEAD_BEG")
@@ -3393,6 +3401,7 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
 	MainScript.fDibelNotPayChance = jsonutil.GetPathFloatValue(settings_path, "fDibelNotPayChance", MainScript.fDibelNotPayChance)
 	MainScript.fWhorePunishByUnpayClientChance = jsonutil.GetPathFloatValue(settings_path, "fWhorePunishByUnpayClientChance", MainScript.fWhorePunishByUnpayClientChance)
 	MainScript.fDibelPunishByUnpayClientChance = jsonutil.GetPathFloatValue(settings_path, "fDibelPunishByUnpayClientChance", MainScript.fDibelPunishByUnpayClientChance)
+	MainScript.fAELStruggleDifficulty = jsonutil.GetPathFloatValue(settings_path, "fAELStruggleDifficulty", MainScript.fAELStruggleDifficulty)
 	
   MainScript.sExtraTags_SL_Oral_MF = jsonutil.GetPathStringValue(settings_path, "sExtraTags_SL_Oral_MF", MainScript.sExtraTags_SL_Oral_MF)
   MainScript.sExtraTags_SL_Oral_FF = jsonutil.GetPathStringValue(settings_path, "sExtraTags_SL_Oral_FF", MainScript.sExtraTags_SL_Oral_FF)
@@ -3697,6 +3706,7 @@ Bool function saveUserSettingsPapyrus()
 	jsonutil.SetPathFloatValue(settings_path, "fDibelPersuadeChance", MainScript.fDibelPersuadeChance)
 	jsonutil.SetPathFloatValue(settings_path, "fBeggarPersuadeChance", MainScript.fBeggarPersuadeChance)
 	jsonutil.SetPathFloatValue(settings_path, "fTempleTaskMarkCost", MainScript.fTempleTaskMarkCost)
+	jsonutil.SetPathFloatValue(settings_path, "fAELStruggleDifficulty", MainScript.fAELStruggleDifficulty)
 	
 	jsonutil.SetPathFloatValue(settings_path, "fWhoreNotPayChance", MainScript.fWhoreNotPayChance)
 	jsonutil.SetPathFloatValue(settings_path, "fDibelNotPayChance", MainScript.fDibelNotPayChance)
@@ -4748,6 +4758,8 @@ event OnOptionHighlight(int option)
     SetInfoText("$MRT_SP_DESC_SLSFR_FAME_GAIN_CHANCE")
 	elseif option == OID_SLSFR_TALK_FAME_GAIN_CHANCE
 		SetInfoText("$MRT_SP_DESC_SLSFR_TALK_FAME_GAIN_CHANCE")
+	elseif option == OID_AEL_STRUGGLE_DIFFICULTY
+		SetInfoText("$MRT_SP_DESC_AEL_STRUGGLE_DIFFICULTY")
 	elseif option == OID_SLSFR_TALK_MIN_FAME_GAIN
 		SetInfoText("$MRT_SP_DESC_SLSFR_TALK_MIN_FAME_GAIN")
 	elseif option == OID_SLSFR_TALK_MAX_FAME_GAIN
@@ -5113,6 +5125,9 @@ event OnOptionSliderAccept(int option, float value)
 	elseif option == OID_SLSFR_TALK_FAME_GAIN_CHANCE 
 		MainScript.fSLSFR_Talk_FameGainChance = value
 		SetSliderOptionValue(OID_SLSFR_TALK_FAME_GAIN_CHANCE , MainScript.fSLSFR_Talk_FameGainChance, "$MRT_SP_SLSFR_TALK_FAME_GAIN_CHANCE_SLIDER2")
+	elseif option == OID_AEL_STRUGGLE_DIFFICULTY 
+		MainScript.fAELStruggleDifficulty = value
+		SetSliderOptionValue(OID_AEL_STRUGGLE_DIFFICULTY , MainScript.fAELStruggleDifficulty, "$MRT_SP_AEL_STRUGGLE_DIFFICULTY_SLIDER2")
 	elseif option == OID_DIBEL_TEMPLE_TASK_MIN_PAY
 		MainScript.fTempleClientMinExtraPay = value
 		SetSliderOptionValue(OID_DIBEL_TEMPLE_TASK_MIN_PAY , MainScript.fTempleClientMinExtraPay, "$MRT_SP_DIBEL_TEMPLE_TASK_MIN_PAY_SLIDER2")
@@ -5688,6 +5703,11 @@ event OnOptionSliderOpen(int option)
 		SetSliderDialogDefaultValue(100.0)
 		SetSliderDialogRange(0, 100)
 		SetSliderDialogInterval(0.1)
+	elseif option == OID_AEL_STRUGGLE_DIFFICULTY
+		SetSliderDialogStartValue(MainScript.fAELStruggleDifficulty)
+		SetSliderDialogDefaultValue(50.0)
+		SetSliderDialogRange(-1, 100)
+		SetSliderDialogInterval(1)
 	elseif option == OID_SLSFR_TALK_FAME_GAIN_CHANCE
 		SetSliderDialogStartValue(MainScript.fSLSFR_Talk_FameGainChance)
 		SetSliderDialogDefaultValue(100.0)
@@ -6056,7 +6076,7 @@ function dibelRejectOptions(Int iflag)
   else
     flg = OPTION_FLAG_DISABLED
   endIf    
-  OID_DIBEL_REJ_FEMALE_DD = AddSliderOption("$MRT_SP_DIBEL_REJ_MALE_DD_SLIDER1", MainScript.fDibelRejectFemaleDeviceChance, "$MRT_SP_DIBEL_REJ_FEMALE_DD_SLIDER2", flg)
+  OID_DIBEL_REJ_FEMALE_DD = AddSliderOption("$MRT_SP_DIBEL_REJ_FEMALE_DD_SLIDER1", MainScript.fDibelRejectFemaleDeviceChance, "$MRT_SP_DIBEL_REJ_FEMALE_DD_SLIDER2", flg)
   AddEmptyOption()
   flg = iflag
   OID_DIBEL_REJ_ENTRAPMENT_LVL_M = AddMenuOption("$MRT_SP_DIBEL_REJ_ENTRAPMENT_LVL", sGetEntrapmentLevels()[MainScript.iDibelRejectEntrapmentLevel], flg)
@@ -6411,3 +6431,4 @@ Int OID_NEARBY_MALES_MAY_JOIN_SEX
 Int OID_NEARBY_FEMALES_MAY_JOIN_SEX
 
 Int OID_STD_REVERSE_PROGRESSION
+Int OID_AEL_STRUGGLE_DIFFICULTY

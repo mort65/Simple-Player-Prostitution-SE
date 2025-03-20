@@ -22,6 +22,7 @@ Function RegisterForEvents()
   RegisterForModEvent("SPP_StartFindSnitch", "OnStartFindSnitch")
   RegisterForModEvent("SPP_StartDetectAssault", "OnStartDetectAssault")
   RegisterForModEvent("SPP_StopDetectAssault", "OnStopDetectAssault")
+  RegisterForModEvent("SPP_AELStruggle", "OnStruggleEnd")
 endfunction
 
 event OnUpdate()
@@ -86,6 +87,10 @@ function setVars()
   endIf
   RegisterForEvents()
   MainScript.STD_Script.registerForEvents()
+  if !MainScript.RewardHandlerScript
+	MainScript.RewardHandlerScript = (getOwningQuest() as zzzmrt_sp_reward_handler_script)
+  endif
+  MainScript.RewardHandlerScript.registerForEvents()
   if !MainScript.SexLabInterface
     MainScript.SexLabInterface = MainScript.SexLabInterfaceQst as zzzmrt_sp_sexlab_interface 
   endif
@@ -154,6 +159,9 @@ function setVars()
 
 endfunction
 
+Event OnStruggleEnd(Form akVictim, Form akAggressor, bool abVictimEscaped)
+endevent
+
 
 State Assault
   Event OnHit(ObjectReference akAggressor, Form akSource, Projectile akProjectile, bool abPowerAttack, bool abSneakAttack, bool abBashAttack, bool abHitBlocked)
@@ -168,4 +176,24 @@ State Assault
       GoToState("")
     endif
   EndEvent
+EndState
+
+State struggle
+
+	Event OnStruggleEnd(Form akVictim, Form akAggressor, bool abVictimEscaped)
+		MainScript.bStruggleVictimEscaped = abVictimEscaped
+		MainScript.bStruggleEnded = true
+		if GetState() == "struggle"
+			GoToState("")
+		endif
+	EndEvent
+
+	event OnBeginState()
+		MainScript.bStruggleEnded = False
+		MainScript.bStruggleVictimEscaped = True
+	EndEvent
+	
+	event OnEndState()
+	endEvent
+
 EndState

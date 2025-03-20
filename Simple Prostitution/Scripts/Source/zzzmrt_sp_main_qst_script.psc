@@ -18,6 +18,7 @@ zzzmrt_sp_dibellan_lust_qst_script property dibellan_lust_qst_script auto
 zzzmrt_sp_player_qst_script	Property playerScript Auto
 zzzmrt_sp_reapproach_qst_script	Property ReApproachScript Auto
 zzzmrt_sp_inn_work_qst_script property InnWorkScript Auto
+zzzmrt_sp_reward_handler_script property RewardHandlerScript Auto
 Quest Property InnWorkQst Auto
 Quest Property SLA_Interface_Qst Auto
 Quest Property OStimInterfaceQst Auto
@@ -605,6 +606,8 @@ Bool property bStruggleEnded = False Auto Hidden Conditional
 
 Bool property bReverseSTDProgression = False Auto Hidden Conditional
 
+Float Property fAELStruggleDifficulty = 50.0 Auto Hidden Conditional
+
 function log(String sText, Bool bNotification = False, Bool bTrace = True, Int iSeverity = 1, Bool bForceNotif = False)
 	logText(sText, (bNotification && (bShowNotification || (iSeverity != 1) || bForceNotif)), bTrace, iSeverity, "SPP", sDefaultColor, sSuccessColor, sInfoColor, sWarningColor, sErrorColor, sSeparatorColor)
 endFunction
@@ -975,12 +978,12 @@ Bool Function bHaveGroupSex(String interface, Bool bAllowAggressive = False, Boo
 				Bool bClientAdded = False
 				if Participant1.GetActorReference()
 					currentCustomerList.AddForm(Participant1.GetActorReference())
-					log(Participant1.GetActorReference().getdisplayname() + " is joining.", true, true, 2)
+					log(Participant1.GetActorReference().getdisplayname() + " is joining.", true, true, 1)
 					bClientAdded = true
 				endif
 				if (Participant2.GetActorReference() && (currentCustomerList.GetSize() < 4) && randInt(0,1))
 					currentCustomerList.AddForm(Participant2.GetActorReference())
-					log(Participant2.GetActorReference().getdisplayname() + " is joining.", true, true, 2)
+					log(Participant2.GetActorReference().getdisplayname() + " is joining.", true, true, 1)
 					bClientAdded = true
 				endif
 				if bClientAdded
@@ -1599,6 +1602,11 @@ Function SetFaceToFace(Actor akActor1, Actor akActor2, float fDistance = 75.0)
 EndFunction
 
 Function AssaultPlayer(Actor akAssaulter, Bool bEnslave = false, Bool bRape = false, Bool bSteal = false, Bool bMurder = False)
+	log(akAssaulter.getdisplayname() + " assaulting player.")
+	bEnslave && log(akAssaulter.getdisplayname() + " want to enslave player.")
+	bRape && log(akAssaulter.getdisplayname() + " want to rape player.")
+	bSteal && log(akAssaulter.getdisplayname() + " want to steal from player.")
+	bMurder && log(akAssaulter.getdisplayname() + " want to murder player.")
 	Debug.SetGodMode(true)
 	Game.setPlayerAiDriven(true)
 	if akAssaulter.IsOnMount()
@@ -1709,6 +1717,7 @@ Function AssaultPlayer(Actor akAssaulter, Bool bEnslave = false, Bool bRape = fa
 		endif
 	endWhile
 	sendModEvent("SPP_StopDetectAssault")
+	utility.wait(0.5)
 	if (bMurder || bEnslave) && struggleToEscape(akAssaulter, player)
 		log("Player won the struggle and won't be murdered or enslaved.")
 		bMurder = False
@@ -1793,6 +1802,7 @@ Function AssaultPlayer(Actor akAssaulter, Bool bEnslave = false, Bool bRape = fa
 endFunction
 
 Bool Function stealFromPlayer(Actor Thief)
+	log(Thief.getdisplayname() + " stealing from player.")
 	Int iGoldToRemove = 0
 	Form itemToRob
 	Int iMaxGold = player.getItemCount(Gold)
@@ -1921,6 +1931,7 @@ Function entrapPlayerBeggar(Actor akActor)
 EndFunction
 
 Function entrapPlayer(Actor akEntrapper)
+	log(akEntrapper.getdisplayname() + " is putting DD items on player.")
 	Bool bAnimEntrapper = false
 	if !bIsDDExpansionActive || !bIsDDIntegrationActive
 		return
@@ -3218,9 +3229,6 @@ Event on_spp_ostim_Orgasm(String EventName, String sceneId, Float index, Form Se
 	endif
 endevent
 
-Event OnStruggleEnd(Form akVictim, Form akAggressor, bool abVictimEscaped)
-EndEvent
-
 Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, form sender)
 	actor[] actorList = OStimInterface.getActors()
 	if actorList.Length > 1
@@ -3886,70 +3894,6 @@ State raped
 
 EndState
 
-State struggle
-
-	Event on_spp_sexlab_Sex_Start(string eventName, string argString, float argNum, form sender)
-	endEvent
-	
-	Event on_spp_sexlab_Orgasm(string eventName, string argString, float argNum, form sender)
-	endevent
-	
-	Event on_spp_sexlab_OrgasmSeparate(Form ActorRef, Int Thread)
-	endevent
-	
-	Event on_spp_sexlab_Sex_Ending(string eventName, string argString, float argNum, form sender)
-	EndEvent
-
-	event on_spp_sexlab_Sex_End(int tid, bool HasPlayer)
-		if HasPlayer
-			startInfectingPlayer("", 1)
-			GoToState("")
-		endif
-	endEvent
-	
-	Event on_spp_ostim_Sex_Start(string eventName, string strArg, float numArg, Form sender)
-	endEvent
-
-	Event on_spp_ostim_Orgasm(String EventName, String sceneId, Float index, Form Sender)
-	endevent
-
-	Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, form sender)
-		startInfectingPlayer("", 1)
-		GoToState("")
-	EndEvent
-	
-	Event OnStruggleEnd(Form akVictim, Form akAggressor, bool abVictimEscaped)
-		bStruggleVictimEscaped = abVictimEscaped
-		bStruggleEnded = true
-	EndEvent
-
-	event onUpdate()
-		startInfectingPlayer("", 1)
-		GoToState("")
-	endEvent
-
-	event OnUpdateGameTime()
-		RegisterForSingleUpdateGameTime(1.0)
-	endEvent
-
-	event OnEndState()
-		bIsBusy = false
-	endEvent
-
-	function snitch()
-	EndFunction
-
-	Function offerDibelMarks(Actor akActor)
-	endFunction
-
-	Function rapePlayer(Actor akAggressor)
-	endFunction
-	
-	Function rejectCusomer(Actor akCustomer)
-	endfunction
-
-EndState
-
 State rejecting
 	Function rejectCusomer(Actor akCustomer)
 	endfunction
@@ -4273,30 +4217,33 @@ Function rapePlayer(Actor akAggressor)
 	return
 EndFunction
 
-Bool Function struggleToEscape(Actor akAggressor, Actor akVictim, float fDuration = 8.0)
-	if fDuration <= 0.0
-		return False
-	endif
+Bool Function struggleToEscape(Actor akAggressor, Actor akVictim)
 	if !bIsAELStruggleOK
 		log("“Flash Games - Struggling QTE” not found.")
 		return False
 	Endif
-	bIsBusy = True
-	gotostate("struggle")
-	bStruggleVictimEscaped = False
-	bStruggleEnded = False
-	RegisterForModEvent("SPP_AELStruggle", "OnStruggleEnd")
-	if (AELStruggle.Get() as AELStruggle).MakeStruggle(akAggressor, player, "SPP_AELStruggle", randFloat(1.0,70.0), fDuration)
-		int i = ((fDuration as Int) * 2) + 4
+	Float fDifficulty
+	if (fAELStruggleDifficulty < 0.0) || (fAELStruggleDifficulty > 100.0)
+		fDifficulty = randFloat(0.0,100.0)
+	else
+		fDifficulty = 100.0 - fAELStruggleDifficulty
+	endif
+	playerScript.gotostate("struggle")
+	if (AELStruggle.Get() as AELStruggle).MakeStruggle(akAggressor, player, "SPP_AELStruggle", fDifficulty, 0.0)
+		int i = 30
 		while !bStruggleEnded && (i > 0)
 			Utility.wait(0.5)
 			i -= 1
 		endwhile
 	else
-		gotoState("")
+		if playerScript.GetState() == "struggle"
+			playerScript.gotoState("")
+		endif
 		return False
 	endif
-	gotoState("")
+	if playerScript.GetState() == "struggle"
+		playerScript.gotoState("")
+	endif
 	return bStruggleVictimEscaped
 endFunction
 
@@ -4665,97 +4612,14 @@ endfunction
 
 
 Function addExtraRewardsToPlayer(Float fRewardChance = 100.0, Float fRewardEnchantedChance = 100.0, int iCount = 1)
-	int iIndex = 0
-	While iIndex < iCount
-		addEnchantedRewardToPlayer(fRewardChance, fRewardEnchantedChance)
-		iIndex += 1
-	endWhile
+	int handle = ModEvent.Create("SPP_addRewardToPlayer")
+	ModEvent.PushForm(handle, self)
+	ModEvent.PushFloat(handle, fRewardChance)
+	ModEvent.PushFloat(handle, fRewardEnchantedChance)
+	ModEvent.PushInt(handle, iCount)
+	ModEvent.Send(handle)
 EndFunction
 
-Function addEnchantedRewardToPlayer(Float fRewardChance = 100.0, Float fRewardEnchantedChance = 100.0)
-	if randInt(0, 999) >= (fRewardChance * 10) as Int
-		return
-	endif
-	Form Item = GetRandomItemFromLeveledList(LItemTempleReward, bIsPO3ExtenderActive)
-	String sName = item.GetName()
-	if !isFormValid(Item)
-	    log("No valid reward found.")
-		return
-	endif
-	log("The extra reward is " + Item + " | Available LeveledLists/Items = " + LItemTempleReward.GetNumForms())
-	if (randInt(0, 999) >= (fRewardEnchantedChance * 10) as Int) || (!(Item As Armor) && !(Item As Weapon)) || ((Item As Armor) && (Item As Armor).GetEnchantment()) || ((Item As Weapon) && (Item As Weapon).GetEnchantment())
-		log("Reward won't be enchanted.")
-		player.additem(item, 1, true)
-		log(sName + " added.", true, true, 0)
-		return
-	endif
-	Formlist enchList
-	if Item As Armor
-		if (Item.HasKeywordstring("ArmorClothing") || Item.HasKeywordstring("ArmorJewelry"))
-			enchList = Ench_Clothing_Lists
-		else
-			enchList = Ench_Armor_Lists
-		endif
-	elseif Item as Weapon
-		enchList = Ench_Weapon_Lists
-	endif
-	if !enchList
-	    log("No valid enchantment found for the reward.")
-		player.additem(item, 1, true)
-		log(sName + " added.", true, true, 0)
-		return
-	endif
-	int iTotal = 0
-	int iIndex = 0
-	int iSize = enchList.getSize()
-	While iIndex < iSize
-		if enchList.getAt(iIndex) As FormList
-			iTotal = iTotal + (enchList.getAt(iIndex) As FormList).GetSize()
-		else
-			iTotal += 1
-		endif
-		iIndex += 1
-	endWhile
-	if iTotal < 1
-	    log("No valid enchantment found for the reward.")
-		player.additem(item, 1, true)
-		log(sName + " added.", true, true, 0)
-		return
-	endif
-	Int enchIndex = randInt(0, iTotal - 1)
-	iIndex = 0
-	Int iSubListSize = 0
-	Enchantment ench
-	While !ench && (iIndex < iSize) && (enchIndex > -1)
-		if enchList.getAt(iIndex) As FormList
-			iSubListSize = (enchList.getAt(iIndex) As FormList).GetSize()
-			if iSubListSize < 1
-			elseif (enchIndex - iSubListSize) > -1
-				enchIndex = enchIndex - iSubListSize
-			else
-				ench = (enchList.getAt(iIndex) As FormList).getAt(enchIndex) as Enchantment
-			endif
-		else
-			if (enchIndex == 0)
-				ench =  enchList.getAt(iIndex) As Enchantment
-			else
-				enchIndex -= 1
-			endif
-		endif
-		iIndex += 1
-	endWhile
-	if isFormValid(ench) && (ench.GetFormID() <= 4278190080) ;An enchantment with a formID greater than 0xFF000000 will cause the game to crash according to https://ck.uesp.net/wiki/GetEnchantment_-_Armor
-	    log("Reward's enchantment is " + ench + " | Available enchantments For the Item = " + iTotal)
-		ObjectReference itemRef = player.placeAtMe(Item, 1)
-		itemRef.SetEnchantment(ench, 100.0)
-		player.additem(itemRef, 1, true)
-		log(itemRef.GetDisplayName() + " added.", true, true, 0)
-	else
-	    log("No valid enchantment found for the reward.")
-		player.additem(item, 1, true)
-		log(sName + " added.", true, true, 0)
-	endif
-EndFunction
 
 Bool function isPlayerInBeastForm()
   if WerewolfQuest.IsRunning() || VampireLordQuest.IsRunning()
