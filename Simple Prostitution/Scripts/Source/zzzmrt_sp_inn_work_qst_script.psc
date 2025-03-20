@@ -11,6 +11,7 @@ Int Property iPlayerDebt = 0 Auto Hidden Conditional
 Bool Property bHasWhoreLicense = False Auto Hidden Conditional
 Bool property bNeedWhoreLicense = False Auto Hidden Conditional
 Armor property TavernClothing Auto
+Armor property TavernBoot Auto
 Bool property bPlayerPaidForRoom = False Auto Hidden Conditional
 Bool property bPlayerRentedRoom = False Auto Hidden Conditional
 Quest Property DialogueGeneric Auto
@@ -18,6 +19,7 @@ Float Property fDeadlineHours = 24.0 Auto Hidden Conditional
 Faction Property InnWorkDoneFaction Auto
 GlobalVariable property RoomCost Auto
 GlobalVariable property PlayerDebtDisplay Auto
+GlobalVariable property LicensePriceDisplay Auto
 
 
 Function checkStatus()
@@ -28,6 +30,7 @@ Function checkStatus()
 	else
 		iWhoreLicenseCost = 0
 	endif
+	LicensePriceDisplay.SetValueInt(iWhoreLicenseCost)
 	UpdateCurrentInstanceGlobal(RoomCost)
 EndFunction
 
@@ -71,6 +74,24 @@ Function RentRoom(Actor akInnOwner)
 		MainScript.player.additem(MainScript.gold, iRoomCost)
 	endif
 	(akInnOwner as RentRoomScript).RentRoom(DialogueGeneric as DialogueGenericScript)
+EndFunction
+
+Function addWhoreClothingToPlayer()
+	if MainScript.player.GetItemCount(TavernClothing) < 1
+		MainScript.player.additem(TavernClothing, 1)
+	endif
+	if MainScript.player.GetItemCount(TavernBoot) < 1
+		MainScript.player.additem(TavernBoot, 1)
+	endif
+EndFunction
+
+Function removeWhoreClothingFromPlayer()
+	if MainScript.player.GetItemCount(TavernClothing) > 0
+		MainScript.player.removeitem(TavernClothing, 1)
+	endif
+	if MainScript.player.GetItemCount(TavernBoot) > 0
+		MainScript.player.removeitem(TavernBoot, 1)
+	endif
 EndFunction
 
 Function resetWhoring()

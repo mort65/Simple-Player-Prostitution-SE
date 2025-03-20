@@ -2365,7 +2365,7 @@ Int function payWhore(actor whore, int position)
 	int totalPay = 0
 	float fSpeech
 	Actor ownerActor = getOwner() as Actor
-	Bool bMayNotpay = (!bWhoreNotPayOnlyIfAlone || (ownerActor && (ownerActor != player) && (ownerActor.getParentCell() == player.getParentCell())))
+	Bool bMayNotpay = (!bWhoreNotPayOnlyIfAlone || !(ownerActor && (ownerActor != player) && (ownerActor.getParentCell() == player.getParentCell())))
 	if !isWhoringAllowedInCurrentLocation
 		totalPay = payBeggar(whore, True, bWhorePayAfterSex)
 		if bWhorePayAfterSex
@@ -2397,8 +2397,17 @@ Int function payWhore(actor whore, int position)
 	endif
 	totalPay = maxInt(0, positionReward + randInt(minBonus, maxBonus))
 	if  (InnWorkScript.isPlayerInDebt() && InnWorkScript.innWorkOwnerHere())
-		log(totalPay + " septim added to " + InnWorkScript.InnOwner.GetActorReference().getDisplayName(), true, true, 0)
-		InnWorkScript.updateDebt(-1 * totalPay)
+		if bWhorePayAfterSex
+			if bMayNotpay && (randInt(0, 999) < (fWhoreNotPayChance * 10) as Int)
+				totalPay = 0
+				bWhoreClientNotPaid = True
+			else
+				iWhoreClientsPayment = iWhoreClientsPayment + totalPay
+			endif
+		else
+			log(totalPay + " septim added to " + InnWorkScript.InnOwner.GetActorReference().getDisplayName(), true, true, 0)
+			InnWorkScript.updateDebt(-1 * totalPay)
+		endif
 	elseif !bWhorePayAfterSex && (fWhoreOwnerShare > 0.0) && ownerActor && (ownerActor != player) && (ownerActor.getParentCell() == whore.getParentCell())
 		iCurrentOwnerSeptims = iCurrentOwnerSeptims + totalPay
 		currentOwnerSeptimDisplay.SetValueInt(iCurrentOwnerSeptims)
@@ -3545,15 +3554,20 @@ State Whoring
 		endWhile
 		if iWhoreClientsPayment > 0
 			if !bWhoreOnlyPayIfClientOrgasmed || bWhoreClientOrgasmed
-				Actor ownerActor = getOwner() As Actor
-				if (fWhoreOwnerShare > 0.0) && ownerActor && (ownerActor != player) && (ownerActor.getParentCell() == player.getParentCell())
-					iCurrentOwnerSeptims = iCurrentOwnerSeptims + iWhoreClientsPayment
-					currentOwnerSeptimDisplay.SetValueInt(iCurrentOwnerSeptims)
-					UpdateCurrentInstanceGlobal(currentOwnerSeptimDisplay)
-					pimpTracker.UpdateCurrentInstanceGlobal(currentOwnerSeptimDisplay)
-					log(iWhoreClientsPayment + " septim added to " + ownerActor.getDisplayName(), true, true, 0)
+				if  (InnWorkScript.isPlayerInDebt() && InnWorkScript.innWorkOwnerHere())
+					log(iWhoreClientsPayment + " septim added to " + InnWorkScript.InnOwner.GetActorReference().getDisplayName(), true, true, 0)
+					InnWorkScript.updateDebt(-1 * iWhoreClientsPayment)
 				else
-					player.Additem(gold, iWhoreClientsPayment)
+					Actor ownerActor = getOwner() As Actor
+					if (fWhoreOwnerShare > 0.0) && ownerActor && (ownerActor != player) && (ownerActor.getParentCell() == player.getParentCell())
+						iCurrentOwnerSeptims = iCurrentOwnerSeptims + iWhoreClientsPayment
+						currentOwnerSeptimDisplay.SetValueInt(iCurrentOwnerSeptims)
+						UpdateCurrentInstanceGlobal(currentOwnerSeptimDisplay)
+						pimpTracker.UpdateCurrentInstanceGlobal(currentOwnerSeptimDisplay)
+						log(iWhoreClientsPayment + " septim added to " + ownerActor.getDisplayName(), true, true, 0)
+					else
+						player.Additem(gold, iWhoreClientsPayment)
+					endif
 				endif
 			endif
 			iWhoreClientsPayment = 0
@@ -4743,14 +4757,12 @@ Function addEnchantedRewardToPlayer(Float fRewardChance = 100.0, Float fRewardEn
 	endif
 EndFunction
 
-Bool function isPlayerBeast()
+Bool function isPlayerInBeastForm()
   if WerewolfQuest.IsRunning() || VampireLordQuest.IsRunning()
     return True
   elseif player.HasKeywordstring("actortypecreature") || player.HasKeywordstring("actortypeanimal")
     return True
-  elseif (player.GetRace() == WereWolfBeastRace)
-    return True
-  elseif (player.GetRace() == DLC1VampireBeastRace)
+  elseif (player.GetRace() == WereWolfBeastRace) || (player.GetRace() == DLC1VampireBeastRace)
     return True
   endif
   return False

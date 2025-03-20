@@ -12,8 +12,8 @@ zzzmrt_sp_inn_work_qst_script myOwningScript = getOwningQuest() as zzzmrt_sp_inn
 Actor player = myOwningScript.MainScript.player
 MiscObject gold = myOwningScript.MainScript.Gold
 player.Removeitem(gold, maxInt(0, minInt(player.GetItemCount(gold), myOwningScript.iPlayerDebt)))
-myOwningScript.Succeed()
 myOwningScript.iPlayerDebt = 0
+myOwningScript.finishWhoring()
 ;END CODE
 EndFunction
 ;END FRAGMENT

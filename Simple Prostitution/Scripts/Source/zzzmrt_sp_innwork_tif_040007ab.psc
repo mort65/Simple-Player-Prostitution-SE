@@ -7,9 +7,7 @@ Function Fragment_0(ObjectReference akSpeakerRef)
 Actor akSpeaker = akSpeakerRef as Actor
 ;BEGIN CODE
 zzzmrt_sp_inn_work_qst_script myOwningScript = getOwningQuest() as zzzmrt_sp_inn_work_qst_script
-if game.getplayer().getItemCount(myOwningScript.TavernClothing) < 1
-	game.getplayer().addItem(myOwningScript.TavernClothing, 1)
-endif
+myOwningScript.addWhoreClothingToPlayer()
 myOwningScript.startWhoring(akSpeaker)
 ;END CODE
 EndFunction
