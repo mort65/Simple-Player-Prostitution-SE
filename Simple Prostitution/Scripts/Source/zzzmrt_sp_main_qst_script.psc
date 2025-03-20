@@ -4230,7 +4230,7 @@ Bool Function struggleToEscape(Actor akAggressor, Actor akVictim)
 	endif
 	playerScript.gotostate("struggle")
 	if (AELStruggle.Get() as AELStruggle).MakeStruggle(akAggressor, player, "SPP_AELStruggle", fDifficulty, 0.0)
-		int i = 30
+		int i = 20
 		while !bStruggleEnded && (i > 0)
 			Utility.wait(0.5)
 			i -= 1
