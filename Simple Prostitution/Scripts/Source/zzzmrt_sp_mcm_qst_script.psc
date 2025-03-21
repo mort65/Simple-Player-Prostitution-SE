@@ -28,6 +28,8 @@ Int Property iTotalCarryWeightRecieved = 0 Auto Hidden
 Int Property iTotalOfferedMarks = 0 Auto Hidden
 Int Property iTotalRefundableOfferedMarks = 0 Auto Hidden
 
+GlobalVariable property MCM_BUSY auto
+
 Bool setModVars = false
 Bool bColorChanged = false
 
@@ -69,6 +71,10 @@ event OnPageReset(String page)
   Else
 	UnloadCustomContent()
   Endif
+  If (MCM_BUSY.GetValueInt() != 0)
+	AddColoredHeader("$MRT_SP_Head_Busy", MainScript.sInfoColor)
+	Return
+  EndIf
   flag = OPTION_FLAG_NONE
   SetCursorFillMode(TOP_TO_BOTTOM)
   if (page == "$MRT_SP_PAGE_DEBUG")
@@ -664,22 +670,13 @@ event OnVersionUpdate(Int version)
 endevent
 
 Event OnConfigClose()
-  if setModVars
-    Mainscript.setVars()
-    setModVars = false
-  else
-    if MainScript.fWhoreOwnerShare > 0.0 && !Mainscript.pimpTracker.isRunning()
-      Mainscript.pimpTracker.start()
-    endif
-  endif
-  Mainscript.ApproachMonitorScr.playerHasLicense()
-  if bColorChanged
-	if MainScript.bShowNotification
-		MainScript.testNotifications()
-	endif
-	bColorChanged = False
-  endif
+  MCM_BUSY.SetValueInt(1)
+  registerForSingleUpdate(0.1)
 endEvent
+
+Event onUpdate()
+	gotoState("commit")
+EndEvent
 
 String[] function sGetAnimInerfaceMethodArr()
   String[] sAnimInterfaceMethods = new String[3]
@@ -1237,15 +1234,19 @@ state MOD_TOGGLE
 
   event OnSelectST()
     MainScript.bModEnabled = !MainScript.bModEnabled
+	MCM_BUSY.SetValue(1)
+	gotoState("reset")
     ShowMessage("Please close the MCM menu.", False)
     Utility.wait(0.5)
     if MainScript.bModEnabled
       MainQuest.Start()
-	  MainScript.log("Simple Player Prostitution enabled.", true, true, 0, true)
+	  MainScript.log("Simple Player Prostitution enabled.", true, true, 0, true) ;playerscript will reset MCM_BUSY and state
     else
       MainScript.ShutDown()
       MainQuest.Stop()
 	  MainScript.log("Simple Player Prostitution disabled.", true, true, 0, true)
+	  MCM_BUSY.SetValue(0)
+	  gotoState("")
     endif
   endevent
 endstate
@@ -3753,8 +3754,11 @@ function loadSettingsAtStart()
   endIf
 endFunction
 
-Function AddColoredHeader(String In)
-	_AddHeaderOption("<font color='#" + MainScript.sDefaultColor +"'>" + In + "</font>")
+Function AddColoredHeader(String In, String sColor = "")
+	If sColor == ""
+		sColor = MainScript.sDefaultColor
+	endif	
+	_AddHeaderOption("<font color='#" + sColor +"'>" + In + "</font>")
 EndFunction
 
 function _AddHeaderOption(string a_text, int a_flags=0)
@@ -6212,6 +6216,33 @@ String Function sBoolToColoredTXT(Bool bBool, String sTrueText = "True", String 
 	endif
 	return "<font color='#" + MainScript.sInfoColor + "'>"+ sFalseText + "</font>"
 endfunction
+
+State commit
+	Event OnBeginState()
+	  if setModVars
+		Mainscript.setVars()
+		setModVars = false
+	  else
+		if MainScript.fWhoreOwnerShare > 0.0 && !Mainscript.pimpTracker.isRunning()
+		  Mainscript.pimpTracker.start()
+		endif
+	  endif
+	  Mainscript.ApproachMonitorScr.playerHasLicense()
+	  if bColorChanged
+		if MainScript.bShowNotification
+			MainScript.testNotifications()
+		endif
+		bColorChanged = False
+	  endif
+	  GoToState("")
+	  MCM_BUSY.SetValueInt(0)
+	EndEvent
+EndState
+
+State reset
+	Event OnConfigClose()
+	endEvent
+EndState
 
 Int OID_BEG_GUARDS_SEX_OFFER
 Int OID_GUARDS_MAY_APPROACH

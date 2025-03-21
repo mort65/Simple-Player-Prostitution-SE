@@ -8,6 +8,7 @@ Bool bCheckVars = False
 Bool bInit = False
 
 event OnInit()
+  MainScript.MCMScript.MCM_BUSY.SetValue(1)
   bInit = True
   bCheckVars = True
   RegisterForSingleUpdate(3.0)
@@ -31,10 +32,14 @@ event OnUpdate()
     bCheckVars = False
   endif
   MainScript.snitch()
-	if bInit
-		bInit = False
-		MainScript.log("Simple Player Prostitution started", True, True, 0, True)
+  if bInit
+	bInit = False
+	MainScript.log("Simple Player Prostitution started", True, True, 0)
+	if MainScript.MCMScript.GetState() == "reset"
+		MainScript.MCMScript.gotostate("")
 	endif
+	MainScript.MCMScript.MCM_BUSY.SetValue(0)
+  endif
 endevent
 
 Event OnCellLoad()

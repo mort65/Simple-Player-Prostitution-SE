@@ -4219,7 +4219,7 @@ EndFunction
 
 Bool Function struggleToEscape(Actor akAggressor, Actor akVictim)
 	if !bIsAELStruggleOK
-		log("“Flash Games - Struggling QTE” not found.")
+		log("“Flash Games - Struggling QTE” not found or skipped.")
 		return False
 	Endif
 	Float fDifficulty
@@ -4230,11 +4230,15 @@ Bool Function struggleToEscape(Actor akAggressor, Actor akVictim)
 	endif
 	playerScript.gotostate("struggle")
 	if (AELStruggle.Get() as AELStruggle).MakeStruggle(akAggressor, player, "SPP_AELStruggle", fDifficulty, 0.0)
-		int i = 20
-		while !bStruggleEnded && (i > 0)
+		int i = 0
+		while !bStruggleEnded && (i < 60)
 			Utility.wait(0.5)
 			i -= 1
 		endwhile
+		if !bStruggleEnded
+			log("Flash Games — Struggling QTE took too long, so it won't be used until reload.", true, true, 2)
+			bIsAELStruggleOK = False
+		endif
 	else
 		if playerScript.GetState() == "struggle"
 			playerScript.gotoState("")
