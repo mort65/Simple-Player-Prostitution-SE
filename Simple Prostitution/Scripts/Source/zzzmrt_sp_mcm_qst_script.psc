@@ -5709,7 +5709,7 @@ event OnOptionSliderOpen(int option)
 		SetSliderDialogInterval(0.1)
 	elseif option == OID_AEL_STRUGGLE_DIFFICULTY
 		SetSliderDialogStartValue(MainScript.fAELStruggleDifficulty)
-		SetSliderDialogDefaultValue(50.0)
+		SetSliderDialogDefaultValue(30.0)
 		SetSliderDialogRange(-1, 100)
 		SetSliderDialogInterval(1)
 	elseif option == OID_SLSFR_TALK_FAME_GAIN_CHANCE

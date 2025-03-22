@@ -606,7 +606,7 @@ Bool property bStruggleEnded = False Auto Hidden Conditional
 
 Bool property bReverseSTDProgression = False Auto Hidden Conditional
 
-Float Property fAELStruggleDifficulty = 50.0 Auto Hidden Conditional
+Float Property fAELStruggleDifficulty = 30.0 Auto Hidden Conditional
 
 function log(String sText, Bool bNotification = False, Bool bTrace = True, Int iSeverity = 1, Bool bForceNotif = False)
 	logText(sText, (bNotification && (bShowNotification || (iSeverity != 1) || bForceNotif)), bTrace, iSeverity, "SPP", sDefaultColor, sSuccessColor, sInfoColor, sWarningColor, sErrorColor, sSeparatorColor)
