@@ -1857,8 +1857,8 @@ Bool Function stealFromPlayer(Actor Thief)
 			if bIsPyramidUtilsOK && bIsPapyrusUtilActive
 				keyword[] forbidenkw
 				form[] items = PyramidUtils.GetItemsByKeyword(player, forbidenkw)
-				if forbidenArmorKeywords.length != 11
-					forbidenArmorKeywords = new keyword[11]
+				if forbidenArmorKeywords.length != 14
+					forbidenArmorKeywords = new keyword[14]
 					forbidenArmorKeywords[0] = keyword.GetKeyword("zad_inventorydevice")
 					forbidenArmorKeywords[1] = keyword.GetKeyword("zzzmoa_ignoreitem")
 					forbidenArmorKeywords[2] = keyword.GetKeyword("zzzmrt_ignoreitem_kwd")
@@ -1870,6 +1870,9 @@ Bool Function stealFromPlayer(Actor Thief)
 					forbidenArmorKeywords[8] = keyword.GetKeyword("toystoy")
 					forbidenArmorKeywords[9] = keyword.GetKeyword("vendornosale")
 					forbidenArmorKeywords[10] = keyword.GetKeyword("magicdisallowenchanting")
+					forbidenArmorKeywords[11] = keyword.GetKeyword("clothingpoor")
+					forbidenArmorKeywords[12] = ProstituteClothing_kwd
+					forbidenArmorKeywords[13] = BeggarClothing_kwd
 				endif
 				forbidenkw = forbidenArmorKeywords
 				items = PyramidUtils.FilterFormsByKeyword(items, forbidenkw, false, true)
@@ -2002,7 +2005,9 @@ Function entrapPlayer(Actor akEntrapper)
 EndFunction
 
 Bool Function hasInvalidKeyword(Form kItem)
-	if kItem.HasKeywordString("vendornosale")
+	if (kItem.HasKeyword(ProstituteClothing_kwd) || kItem.HasKeyword(BeggarClothing_kwd))
+	elseif kItem.HasKeywordString("clothingpoor")
+	elseif kItem.HasKeywordString("vendornosale")
 	elseif kItem.HasKeywordString("magicdisallowenchanting")
 	elseif kItem.HasKeywordString("sos_underwear")
 	elseif kItem.HasKeywordString("sos_genitals")
@@ -4635,5 +4640,6 @@ Bool function isPlayerInBeastForm()
   endif
   return False
 endfunction
+
 
 
