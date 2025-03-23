@@ -838,6 +838,7 @@ Bool function bRandomSexWithPlayer(Actor akActor, Bool bAggressive = False, Bool
 	string interface = sGetCurAnimInteface()
 	int iTotalRapist = 1
 	Actor[] partners
+	iNumRapist = 0
 	if bGroup && (bNearbyMalesMayJoinSex || bNearbyFemalesMayJoinSex)
 		participantDetector.Start()
 		if Participant1.GetActorReference()
