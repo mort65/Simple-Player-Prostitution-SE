@@ -608,6 +608,8 @@ Bool property bReverseSTDProgression = False Auto Hidden Conditional
 
 Float Property fAELStruggleDifficulty = 30.0 Auto Hidden Conditional
 
+Int property iNumRapist = 0 Auto Hidden Conditional
+
 function log(String sText, Bool bNotification = False, Bool bTrace = True, Int iSeverity = 1, Bool bForceNotif = False)
 	logText(sText, (bNotification && (bShowNotification || (iSeverity != 1) || bForceNotif)), bTrace, iSeverity, "SPP", sDefaultColor, sSuccessColor, sInfoColor, sWarningColor, sErrorColor, sSeparatorColor)
 endFunction
@@ -834,8 +836,6 @@ Bool function bRandomSexWithPlayer(Actor akActor, Bool bAggressive = False, Bool
 		return False
 	endif
 	string interface = sGetCurAnimInteface()
-	
-	Bool bAllowGroupSex = (randInt(0, 999) < (fGroupSexChance * 10) as Int)
 	int iTotalRapist = 1
 	Actor[] partners
 	if bGroup && (bNearbyMalesMayJoinSex || bNearbyFemalesMayJoinSex)
@@ -870,22 +870,32 @@ Bool function bRandomSexWithPlayer(Actor akActor, Bool bAggressive = False, Bool
 		if bIsSexlabActive
 			if Partners && (Partners.Length > 1)
 				bResult = SexLabInterface.bHaveGroupSexWithPlayer(partners ,true, true)
-				if !bResult
+				if bResult
+					iNumRapist = partners.Length - 1
+					return true
+				else
 				    log("Couldn't start the animation. Please check the log.", true, true, 3)
+					iNumRapist = 1
 					return SexLabInterface.bHaveRandomSexWithPlayer(akActor, bAggressive)
 				endif
 			endif
+			iNumRapist = 1
 			return SexLabInterface.bHaveRandomSexWithPlayer(akActor, bAggressive)
 		endif
 	elseif interface == "ostim"
 		if bIsOstimActive
 			if Partners && (Partners.Length > 1)
 				bResult = OStimInterface.bHaveGroupSexWithPlayer(partners ,true)
-				if !bResult
+				if bResult
+					iNumRapist = partners.Length - 1
+					return true
+				else
 				    log("Couldn't start the animation. Please check the log.", true, true, 3)
+					iNumRapist = 1
 					return OStimInterface.bHaveRandomSexWithPlayer(akActor, bAggressive)
 				endif
 			endif
+			iNumRapist = 1
 			return OStimInterface.bHaveRandomSexWithPlayer(akActor, bAggressive)
 		endif   
 	elseif interface == "flowergirls"
@@ -894,16 +904,19 @@ Bool function bRandomSexWithPlayer(Actor akActor, Bool bAggressive = False, Bool
 				bResult = FlowerGirlsInterface.bHaveGroupSexWithPlayer(partners)
 				if bResult
 					registerForSingleUpdate(1.0)
+					iNumRapist = partners.Length - 1
 					return True
 				else
 					log("Couldn't start the animation. Please check the log.", true, true, 3)
 					if FlowerGirlsInterface.bHaveRandomSexWithPlayer(akActor)
 						registerForSingleUpdate(1.0)
+						iNumRapist = 1
 						return True
 					endif
 				endif
 			elseif FlowerGirlsInterface.bHaveRandomSexWithPlayer(akActor)
 				registerForSingleUpdate(1.0)
+				iNumRapist = 1
 				return True
 			endif
 		endif
@@ -920,6 +933,7 @@ Bool function bRandomSexWithPlayer(Actor akActor, Bool bAggressive = False, Bool
 		BlackScreen.PopTo(FadeIn)
 		Game.EnablePlayerControls()
 		registerForSingleUpdate(1.0)
+		iNumRapist = 1
 		return True
 	endif
 	return False
@@ -3914,7 +3928,7 @@ State raped
 
 	event on_spp_sexlab_Sex_End(int tid, bool HasPlayer)
 		if HasPlayer
-			startInfectingPlayer("", 1)
+			startInfectingPlayer("", iNumRapist)
 			GoToState("")
 		endif
 	endEvent
@@ -3926,12 +3940,12 @@ State raped
 	endevent
 
 	Event on_spp_ostim_Sex_End(string eventName, string argString, float argNum, form sender)
-		startInfectingPlayer("", 1)
+		startInfectingPlayer("", iNumRapist)
 		GoToState("")
 	EndEvent
 
 	event onUpdate()
-		startInfectingPlayer("", 1)
+		startInfectingPlayer("", iNumRapist)
 		GoToState("")
 	endEvent
 
