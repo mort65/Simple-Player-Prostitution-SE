@@ -818,7 +818,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-	return getBaseVersion() + 0.60
+	return getBaseVersion() + 0.61
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
@@ -829,22 +829,80 @@ Function persuade(Float fSpeechSkillMult)
 	;Game.IncrementStat("Persuasions")
 endFunction
 
-Bool function bRandomSexWithPlayer(Actor akActor, Bool bAggressive = False)
+Bool function bRandomSexWithPlayer(Actor akActor, Bool bAggressive = False, Bool bGroup = False)
 	if !akActor
 		return False
 	endif
 	string interface = sGetCurAnimInteface()
+	
+	Bool bAllowGroupSex = (randInt(0, 999) < (fGroupSexChance * 10) as Int)
+	int iTotalRapist = 1
+	Actor[] partners
+	if bGroup && (bNearbyMalesMayJoinSex || bNearbyFemalesMayJoinSex)
+		participantDetector.Start()
+		if Participant1.GetActorReference()
+			iTotalRapist += 1
+			log(Participant1.GetActorReference().getdisplayname() + " is joining.", true, true, 1)
+		endif
+		if (Participant2.GetActorReference() && randInt(0,1))
+			iTotalRapist += 1
+			log(Participant2.GetActorReference().getdisplayname() + " is joining.", true, true, 1)
+		endif
+		if iTotalRapist > 1
+		   if (iTotalRapist == 3) && (Participant1.GetActorReference() && Participant2.GetActorReference())
+		     partners = new Actor[3]
+			 partners[0] = akActor
+			 partners[1] = Participant1.GetActorReference()
+			 partners[2] = Participant2.GetActorReference()
+		   elseif (iTotalRapist == 2) && Participant1.GetActorReference() 
+		     partners = new Actor[2]
+			 partners[0] = akActor
+			 partners[1] = Participant1.GetActorReference()
+		   elseif (iTotalRapist == 2) && Participant2.GetActorReference() 
+		     partners = new Actor[2]
+			 partners[0] = akActor
+			 partners[1] = Participant2.GetActorReference()
+		   endif
+		endif
+	endif	
+	Bool bResult
 	if interface == "sexlab"
 		if bIsSexlabActive
+			if Partners && (Partners.Length > 1)
+				bResult = SexLabInterface.bHaveGroupSexWithPlayer(partners ,true, true)
+				if !bResult
+				    log("Couldn't start the animation. Please check the log.", true, true, 3)
+					return SexLabInterface.bHaveRandomSexWithPlayer(akActor, bAggressive)
+				endif
+			endif
 			return SexLabInterface.bHaveRandomSexWithPlayer(akActor, bAggressive)
 		endif
 	elseif interface == "ostim"
 		if bIsOstimActive
+			if Partners && (Partners.Length > 1)
+				bResult = OStimInterface.bHaveGroupSexWithPlayer(partners ,true)
+				if !bResult
+				    log("Couldn't start the animation. Please check the log.", true, true, 3)
+					return OStimInterface.bHaveRandomSexWithPlayer(akActor, bAggressive)
+				endif
+			endif
 			return OStimInterface.bHaveRandomSexWithPlayer(akActor, bAggressive)
 		endif   
 	elseif interface == "flowergirls"
 		if bIsFlowerGirlsActive
-			if FlowerGirlsInterface.bHaveRandomSexWithPlayer(akActor)
+			if Partners && (Partners.Length > 1)
+				bResult = FlowerGirlsInterface.bHaveGroupSexWithPlayer(partners)
+				if bResult
+					registerForSingleUpdate(1.0)
+					return True
+				else
+					log("Couldn't start the animation. Please check the log.", true, true, 3)
+					if FlowerGirlsInterface.bHaveRandomSexWithPlayer(akActor)
+						registerForSingleUpdate(1.0)
+						return True
+					endif
+				endif
+			elseif FlowerGirlsInterface.bHaveRandomSexWithPlayer(akActor)
 				registerForSingleUpdate(1.0)
 				return True
 			endif
@@ -4216,7 +4274,7 @@ Function rapePlayer(Actor akAggressor)
 	endif
 	bIsBusy = True
 	gotostate("raped")
-	if !bRandomSexWithPlayer(akAggressor, True)
+	if !bRandomSexWithPlayer(akAggressor, True, (randInt(0, 999) < (fGroupSexChance * 10) as Int))
 		GoToState("")
 	endIf
 	return

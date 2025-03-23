@@ -236,7 +236,7 @@ Bool function bHaveRandomSexWithPlayerSL(Quest SexLabQuestFramework, Actor Partn
   return False
 endfunction
 
-Bool function bHaveGroupSexWithPlayerSL(Quest SexLabQuestFramework, Actor[] partners, Bool bAllowAggressive = True) Global
+Bool function bHaveGroupSexWithPlayerSL(Quest SexLabQuestFramework, Actor[] partners, Bool bAllowAggressive = True, Bool bForceAgressive = false) Global
   SexLabFramework SexLab = SexLabQuestFramework As SexLabFramework
   if !SexLab.Enabled
     return False
@@ -296,7 +296,15 @@ Bool function bHaveGroupSexWithPlayerSL(Quest SexLabQuestFramework, Actor[] part
   sslBaseAnimation[] anims = SexLab.getAnimationsByType(totalActors, iMales, iFemales, -1, false, true)
   if bAllowAggressive
     sslBaseAnimation[] anims2 = SexLab.getAnimationsByType(totalActors, iMales, iFemales, -1, true, true)
-    myAnims = SexLab.MergeAnimationLists(anims,anims2)
+	if bForceAgressive
+		if anims2.length > 0
+			myAnims = anims2
+		else
+			myAnims = anims
+		endif
+	else
+		myAnims = SexLab.MergeAnimationLists(anims,anims2)
+	endif
   else
     myAnims = anims
   endif
