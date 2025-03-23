@@ -871,7 +871,7 @@ Bool function bRandomSexWithPlayer(Actor akActor, Bool bAggressive = False, Bool
 			if Partners && (Partners.Length > 1)
 				bResult = SexLabInterface.bHaveGroupSexWithPlayer(partners ,true, true)
 				if bResult
-					iNumRapist = partners.Length - 1
+					iNumRapist = partners.Length
 					return true
 				else
 				    log("Couldn't start the animation. Please check the log.", true, true, 3)
@@ -887,7 +887,7 @@ Bool function bRandomSexWithPlayer(Actor akActor, Bool bAggressive = False, Bool
 			if Partners && (Partners.Length > 1)
 				bResult = OStimInterface.bHaveGroupSexWithPlayer(partners ,true)
 				if bResult
-					iNumRapist = partners.Length - 1
+					iNumRapist = partners.Length
 					return true
 				else
 				    log("Couldn't start the animation. Please check the log.", true, true, 3)
@@ -903,20 +903,20 @@ Bool function bRandomSexWithPlayer(Actor akActor, Bool bAggressive = False, Bool
 			if Partners && (Partners.Length > 1)
 				bResult = FlowerGirlsInterface.bHaveGroupSexWithPlayer(partners)
 				if bResult
+				    iNumRapist = partners.Length
 					registerForSingleUpdate(1.0)
-					iNumRapist = partners.Length - 1
 					return True
 				else
 					log("Couldn't start the animation. Please check the log.", true, true, 3)
 					if FlowerGirlsInterface.bHaveRandomSexWithPlayer(akActor)
+					    iNumRapist = 1
 						registerForSingleUpdate(1.0)
-						iNumRapist = 1
 						return True
 					endif
 				endif
 			elseif FlowerGirlsInterface.bHaveRandomSexWithPlayer(akActor)
+			    iNumRapist = 1
 				registerForSingleUpdate(1.0)
-				iNumRapist = 1
 				return True
 			endif
 		endif
