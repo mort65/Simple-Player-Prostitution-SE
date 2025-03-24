@@ -609,6 +609,11 @@ Bool property bReverseSTDProgression = False Auto Hidden Conditional
 Float Property fAELStruggleDifficulty = 30.0 Auto Hidden Conditional
 
 Int property iNumRapist = 0 Auto Hidden Conditional
+Bool Property bAllyMayJoinSex = False Auto Hidden Conditional
+Bool Property bPimpMayJoinSex = False Auto Hidden Conditional
+
+Float Property fMaxDistanceToJoinSex = 2000.0 Auto Hidden Conditional
+GlobalVariable property maxJoinSexDistance Auto
 
 function log(String sText, Bool bNotification = False, Bool bTrace = True, Int iSeverity = 1, Bool bForceNotif = False)
 	logText(sText, (bNotification && (bShowNotification || (iSeverity != 1) || bForceNotif)), bTrace, iSeverity, "SPP", sDefaultColor, sSuccessColor, sInfoColor, sWarningColor, sErrorColor, sSeparatorColor)
@@ -820,7 +825,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-	return getBaseVersion() + 0.61
+	return getBaseVersion() + 0.62
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
@@ -845,7 +850,7 @@ Bool function bRandomSexWithPlayer(Actor akActor, Bool bAggressive = False, Bool
 			iTotalRapist += 1
 			log(Participant1.GetActorReference().getdisplayname() + " is joining.", true, true, 1)
 		endif
-		if (Participant2.GetActorReference() && randInt(0,1))
+		if Participant2.GetActorReference()
 			iTotalRapist += 1
 			log(Participant2.GetActorReference().getdisplayname() + " is joining.", true, true, 1)
 		endif
@@ -1054,7 +1059,7 @@ Bool Function bHaveGroupSex(String interface, Bool bAllowAggressive = False, Boo
 					log(Participant1.GetActorReference().getdisplayname() + " is joining.", true, true, 1)
 					bClientAdded = true
 				endif
-				if (Participant2.GetActorReference() && (currentCustomerList.GetSize() < 4) && randInt(0,1))
+				if (Participant2.GetActorReference() && (currentCustomerList.GetSize() < 4))
 					currentCustomerList.AddForm(Participant2.GetActorReference())
 					log(Participant2.GetActorReference().getdisplayname() + " is joining.", true, true, 1)
 					bClientAdded = true
@@ -2585,6 +2590,7 @@ function setGlobalVaues()
 	BeggarFailureChance.SetValueInt(maxInt(0, (100.0 - fBeggarPersuadeChance) as Int))
 	BeggarNoSexOfferChance.SetValueInt(maxInt(0, (100.0 - fBeggarSexOfferChance) as Int))
 	maxApproachDistance.SetValueInt(fMaxApproachDistance as Int)
+	maxJoinSexDistance.SetValueInt(fMaxDistanceToJoinSex as Int)
 endfunction
 
 Int function positionChooser(int vaginalWeight = 50, int AnalWeight = 50, int oralWeight = 50)

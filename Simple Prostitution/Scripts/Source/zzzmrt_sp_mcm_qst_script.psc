@@ -126,7 +126,7 @@ event OnPageReset(String page)
     endIf
     Armor chestArmor = (player.GetWornForm(0x00000004) As Armor)
     if chestArmor
-      _AddTextOptionST("WHORE_TAG_CLOTH_NAME_TXT", shortenString(chestArmor.GetName(), 32), "", OPTION_FLAG_DISABLED) 
+      _AddTextOptionST("WHORE_TAG_CLOTH_NAME_TXT", sColoredTXT(shortenString(chestArmor.GetName(), 32)), "", OPTION_FLAG_DISABLED) 
       If chestArmor.HasKeyword(MainScript.ProstituteClothing_kwd)
         _AddTextOptionST("WHORE_TAG_CHEST_CLOTH_TXT", "$MRT_SP_WHORE_TAG_CHEST_CLOTH_ON", "", flag) 
       else 
@@ -146,7 +146,7 @@ event OnPageReset(String page)
     Cell cel = player.GetParentCell()
     Location loc = player.GetCurrentLocation()
     if loc && cel
-      _AddTextOptionST("WHORE_TAG_LOC_NAME_TXT", shortenString(loc.GetName(), 32), "", OPTION_FLAG_DISABLED) 
+      _AddTextOptionST("WHORE_TAG_LOC_NAME_TXT", sColoredTXT(shortenString(loc.GetName(), 32)), "", OPTION_FLAG_DISABLED) 
       if cel.IsInterior()
         if loc.HasKeyword(Mainscript.prostituteLocation_KWD)
           _AddTextOptionST("WHORE_TAG_LOC_TXT", "$MRT_SP_WHORE_TAG_LOC_ON", "", flag) 
@@ -166,7 +166,7 @@ event OnPageReset(String page)
       npc = Game.GetCurrentConsoleRef() As Actor
     endif
     if npc && (npc != player)
-      _AddTextOptionST("WHORE_TAG_NPC_NAME_TXT", shortenString(npc.GetDisplayName(), 32), "", OPTION_FLAG_DISABLED) 
+      _AddTextOptionST("WHORE_TAG_NPC_NAME_TXT", sColoredTXT(shortenString(npc.GetDisplayName(), 32)), "", OPTION_FLAG_DISABLED) 
       if Mainscript.bCanPimp(npc)
         if npc.HasKeyword(Mainscript.prostituteManager_KWD)
           _AddTextOptionST("WHORE_TAG_OWNER_TXT", "$MRT_SP_WHORE_TAG_OWNER_ON", "", flag) 
@@ -197,7 +197,7 @@ event OnPageReset(String page)
     else
       _AddTextOptionST("WHORE_TAG_OWNER_TXT", "$MRT_SP_WHORE_TAG_OWNER_OFF", "", OPTION_FLAG_DISABLED)
       _AddTextOptionST("WHORE_TAG_HEALER_TXT", "$MRT_SP_WHORE_TAG_HEALER_OFF", "", OPTION_FLAG_DISABLED) 
-			_AddTextOptionST("WHORE_TAG_NotCUSTOMER_TXT", "$MRT_SP_WHORE_TAG_NotCUSTOMER_OFF", "", OPTION_FLAG_DISABLED) 
+	  _AddTextOptionST("WHORE_TAG_NotCUSTOMER_TXT", "$MRT_SP_WHORE_TAG_NotCUSTOMER_OFF", "", OPTION_FLAG_DISABLED) 
     endif
 
     SetCursorPosition(1)
@@ -646,8 +646,11 @@ elseif (page == "$MRT_SP_PAGE_BEGGING")
       flag = OPTION_FLAG_DISABLED
     endif
 	OID_GROUP_SEX_CHANCE = AddSliderOption("$MRT_SP_GROUP_SEX_CHANCE_SLIDER1", MainScript.fGroupSexChance, "$MRT_SP_GROUP_SEX_CHANCE_SLIDER2", flag)
+	OID_MAX_DISTANCE_JOIN_SEX = AddSliderOption("$MRT_SP_MAX_DISTANCE_JOIN_SEX_SLIDER1", MainScript.fMaxDistanceToJoinSex, "$MRT_SP_MAX_DISTANCE_JOIN_SEX_SLIDER2", flag)
 	OID_NEARBY_MALES_MAY_JOIN_SEX = AddToggleOption("$MRT_SP_OID_NEARBY_MALES_MAY_JOIN_SEX_TOGGLE", MainScript.bNearbyMalesMayJoinSex, flag)
 	OID_NEARBY_FEMALES_MAY_JOIN_SEX = AddToggleOption("$MRT_SP_OID_NEARBY_FEMALES_MAY_JOIN_SEX_TOGGLE", MainScript.bNearbyFemalesMayJoinSex, flag)
+	OID_ALLY_MAY_JOIN_SEX = AddToggleOption("$MRT_SP_OID_ALLY_JOIN_SEX_TOGGLE", MainScript.bAllyMayJoinSex, flag)
+	OID_PIMP_MAY_JOIN_SEX = AddToggleOption("$MRT_SP_OID_PIMP_JOIN_SEX_TOGGLE", MainScript.bPimpMayJoinSex, flag)
 	OID_CRIME_BOUNTY = AddSliderOption("$MRT_SP_CRIME_BOUNTY_SLIDER1", MainScript.iCrimeBounty, "$MRT_SP_CRIME_BOUNTY_SLIDER2", flag)
 	OID_NORMAL_MARK_CHANCE = AddSliderOption("$MRT_SP_NORMAL_MARK_CHANCE_SLIDER1", MainScript.fNormalMarkChance, "$MRT_SP_NORMAL_MARK_CHANCE_SLIDER2", flag)
 	OID_NORMAL_NO_REWARD_WHEN_VICTIM = AddToggleOption("$MRT_SP_OID_NORMAL_NO_REWARD_WHEN_VICTIM_TOGGLE", MainScript.bNormalNoRewardWhenVictim, flag)
@@ -3187,6 +3190,8 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
   MainScript.bNearbyFemalesMayJoinSex = jsonutil.GetPathIntValue(settings_path, "bNearbyFemalesMayJoinSex", MainScript.bNearbyFemalesMayJoinSex as int)
   MainScript.bWhoreNotPayOnlyIfAlone = jsonutil.GetPathIntValue(settings_path, "bWhoreNotPayOnlyIfAlone", MainScript.bWhoreNotPayOnlyIfAlone as int)
   MainScript.bReverseSTDProgression = jsonutil.GetPathIntValue(settings_path, "bReverseSTDProgression", MainScript.bReverseSTDProgression as int)
+  MainScript.bAllyMayJoinSex = jsonutil.GetPathIntValue(settings_path, "bAllyMayJoinSex", MainScript.bAllyMayJoinSex as int)
+  MainScript.bPimpMayJoinSex = jsonutil.GetPathIntValue(settings_path, "bPimpMayJoinSex", MainScript.bPimpMayJoinSex as int)
 
   iAnimInterfaceMethod = jsonutil.GetPathIntValue(settings_path, "iAnimInterfaceMethod", iAnimInterfaceMethod)
   
@@ -3373,6 +3378,7 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
 	MainScript.fDibelTempleMarkChance = jsonutil.GetPathFloatValue(settings_path, "fDibelTempleMarkChance", MainScript.fDibelTempleMarkChance)
 	MainScript.fNormalMarkChance = jsonutil.GetPathFloatValue(settings_path, "fNormalMarkChance", MainScript.fNormalMarkChance)
 	MainScript.fGroupSexChance = jsonutil.GetPathFloatValue(settings_path, "fGroupSexChance", MainScript.fGroupSexChance)
+	MainScript.fMaxDistanceToJoinSex = jsonutil.GetPathFloatValue(settings_path, "fMaxDistanceToJoinSex", MainScript.fMaxDistanceToJoinSex)
 	MainScript.fTempleMinMarkReward = jsonutil.GetPathFloatValue(settings_path, "fTempleMinMarkReward", MainScript.fTempleMinMarkReward)
 	MainScript.fTempleMaxMarkReward = jsonutil.GetPathFloatValue(settings_path, "fTempleMaxMarkReward", MainScript.fTempleMaxMarkReward)
 	MainScript.fDibelTempleExtraRewardChance = jsonutil.GetPathFloatValue(settings_path, "fDibelTempleExtraRewardChance", MainScript.fDibelTempleExtraRewardChance)
@@ -3509,6 +3515,8 @@ Bool function saveUserSettingsPapyrus()
 	jsonutil.SetPathIntValue(settings_path, "bNearbyFemalesMayJoinSex", MainScript.bNearbyFemalesMayJoinSex as Int)
 	jsonutil.SetPathIntValue(settings_path, "bWhoreNotPayOnlyIfAlone", MainScript.bWhoreNotPayOnlyIfAlone as Int)
 	jsonutil.SetPathIntValue(settings_path, "bReverseSTDProgression", MainScript.bReverseSTDProgression as Int)
+	jsonutil.SetPathIntValue(settings_path, "bAllyMayJoinSex", MainScript.bAllyMayJoinSex as Int)
+	jsonutil.SetPathIntValue(settings_path, "bPimpMayJoinSex", MainScript.bPimpMayJoinSex as Int)
 
   jsonutil.SetPathIntValue(settings_path, "iAnimInterfaceMethod", iAnimInterfaceMethod)
   jsonutil.SetPathIntValue(settings_path, "iCrimeBounty", MainScript.iCrimeBounty)
@@ -3690,6 +3698,7 @@ Bool function saveUserSettingsPapyrus()
 	jsonutil.SetPathFloatValue(settings_path, "fDibelTempleMarkChance", MainScript.fDibelTempleMarkChance)
 	jsonutil.SetPathFloatValue(settings_path, "fNormalMarkChance", MainScript.fNormalMarkChance)
 	jsonutil.SetPathFloatValue(settings_path, "fGroupSexChance", MainScript.fGroupSexChance)
+	jsonutil.SetPathFloatValue(settings_path, "fMaxDistanceToJoinSex", MainScript.fMaxDistanceToJoinSex)
 	jsonutil.SetPathFloatValue(settings_path, "fTempleTaskSeptimCost", MainScript.fTempleTaskSeptimCost)
 	jsonutil.SetPathFloatValue(settings_path, "fTempleMinMarkReward", MainScript.fTempleMinMarkReward)
 	jsonutil.SetPathFloatValue(settings_path, "fTempleMaxMarkReward", MainScript.fTempleMaxMarkReward)
@@ -4249,6 +4258,12 @@ event OnOptionSelect(int option)
 	elseif option == OID_NORMAL_NO_REWARD_WHEN_VICTIM
 		MainScript.bNormalNoRewardWhenVictim = !MainScript.bNormalNoRewardWhenVictim
 		SetToggleOptionValue(option, MainScript.bNormalNoRewardWhenVictim)
+	elseif option == OID_ALLY_MAY_JOIN_SEX
+		MainScript.bAllyMayJoinSex = !MainScript.bAllyMayJoinSex
+		SetToggleOptionValue(option, MainScript.bAllyMayJoinSex)
+	elseif option == OID_PIMP_MAY_JOIN_SEX
+		MainScript.bPimpMayJoinSex = !MainScript.bPimpMayJoinSex
+		SetToggleOptionValue(option, MainScript.bPimpMayJoinSex)
 	elseif option == OID_NEARBY_MALES_MAY_JOIN_SEX
 		MainScript.bNearbyMalesMayJoinSex = !MainScript.bNearbyMalesMayJoinSex
 		SetToggleOptionValue(option, MainScript.bNearbyMalesMayJoinSex)
@@ -4409,12 +4424,18 @@ event OnOptionDefault(int option)
 	elseif option == OID_NORMAL_NO_REWARD_WHEN_VICTIM
 		MainScript.bNormalNoRewardWhenVictim = True
 		SetToggleOptionValue(option, MainScript.bNormalNoRewardWhenVictim)
-	elseif option == OID_NEARBY_MALES_MAY_JOIN_SEX
-		MainScript.bNearbyMalesMayJoinSex = False
-		SetToggleOptionValue(option, MainScript.bNearbyMalesMayJoinSex)
+	elseif option == OID_ALLY_MAY_JOIN_SEX
+		MainScript.bAllyMayJoinSex = False
+		SetToggleOptionValue(option, MainScript.bAllyMayJoinSex)
+	elseif option == OID_PIMP_MAY_JOIN_SEX
+		MainScript.bPimpMayJoinSex = False
+		SetToggleOptionValue(option, MainScript.bPimpMayJoinSex)
 	elseif option == OID_NEARBY_FEMALES_MAY_JOIN_SEX
 		MainScript.bNearbyFemalesMayJoinSex = False
 		SetToggleOptionValue(option, MainScript.bNearbyFemalesMayJoinSex)
+	elseif option == OID_NEARBY_MALES_MAY_JOIN_SEX
+		MainScript.bNearbyMalesMayJoinSex = False
+		SetToggleOptionValue(option, MainScript.bNearbyMalesMayJoinSex)
 	elseif option == OID_WHORE_PUNISH_If_NOT_ORGASMED
 		MainScript.bWhorePunishIfClientNotOrgasmed  = False
 		SetToggleOptionValue(option, MainScript.bWhorePunishIfClientNotOrgasmed)
@@ -4606,10 +4627,16 @@ event OnOptionHighlight(int option)
     SetInfoText("$MRT_SP_DESC_NEARBY_MALES_MAY_JOIN_SEX")
   elseif option == OID_NEARBY_FEMALES_MAY_JOIN_SEX
     SetInfoText("$MRT_SP_DESC_NEARBY_FEMALES_MAY_JOIN_SEX")
+  elseif option == OID_ALLY_MAY_JOIN_SEX
+    SetInfoText("$MRT_SP_DESC_ALLY_MAY_JOIN_SEX")
+  elseif option == OID_PIMP_MAY_JOIN_SEX
+    SetInfoText("$MRT_SP_DESC_PIMP_MAY_JOIN_SEX")
   elseif option == OID_NORMAL_MARK_CHANCE
     SetInfoText("$MRT_SP_DESC_NORMAL_MARK_CHANCE")
   elseif option == OID_GROUP_SEX_CHANCE
     SetInfoText("$MRT_SP_DESC_GROUP_SEX_CHANCE")
+  elseif option == OID_MAX_DISTANCE_JOIN_SEX
+    SetInfoText("$MRT_SP_DESC_MAX_DISTANCE_JOIN_SEX")
   elseif option == OID_WHORE_PUNISH_If_NOT_ORGASMED
     SetInfoText("$MRT_SP_DESC_WHORE_PUNISH_If_NOT_ORGASMED")
   elseif option == OID_DIBEL_PUNISH_If_NOT_ORGASMED
@@ -5162,7 +5189,11 @@ event OnOptionSliderAccept(int option, float value)
 		SetSliderOptionValue(OID_NORMAL_MARK_CHANCE , MainScript.fNormalMarkChance, "$MRT_SP_NORMAL_MARK_CHANCE_SLIDER2")
 	elseif option == OID_GROUP_SEX_CHANCE
 		MainScript.fGroupSexChance = value
-		SetSliderOptionValue(OID_GROUP_SEX_CHANCE , MainScript.fGroupSexChance, "$MRT_SP_GROUP_SEX_CHANCE_SLIDER2")		
+		SetSliderOptionValue(OID_GROUP_SEX_CHANCE , MainScript.fGroupSexChance, "$MRT_SP_GROUP_SEX_CHANCE_SLIDER2")	
+	elseif option == OID_MAX_DISTANCE_JOIN_SEX
+		MainScript.fMaxDistanceToJoinSex = value
+		SetSliderOptionValue(OID_MAX_DISTANCE_JOIN_SEX , MainScript.fMaxDistanceToJoinSex, "$MRT_SP_MAX_DISTANCE_JOIN_SEX_SLIDER2")		
+		MainScript.setGlobalVaues()		
 	elseif option == OID_DIBEL_TEMPLE_TASK_EXTRA_REWARD_CHANCE
 		MainScript.fDibelTempleExtraRewardChance = value
 		SetSliderOptionValue(OID_DIBEL_TEMPLE_TASK_EXTRA_REWARD_CHANCE , MainScript.fDibelTempleExtraRewardChance, "$MRT_SP_DIBEL_TEMPLE_TASK_EXTRA_REWARD_CHANCE_SLIDER2")
@@ -5812,6 +5843,11 @@ event OnOptionSliderOpen(int option)
 		SetSliderDialogDefaultValue(100.0)
 		SetSliderDialogRange(0, 100)
 		SetSliderDialogInterval(0.1)
+	elseif option == OID_MAX_DISTANCE_JOIN_SEX
+		SetSliderDialogStartValue(MainScript.fMaxDistanceToJoinSex)
+		SetSliderDialogDefaultValue(2000.0)
+		SetSliderDialogRange(500, 5000)
+		SetSliderDialogInterval(50)
 	elseif option == OID_WHORE_PERSUADE_CHANCE
 		SetSliderDialogStartValue(MainScript.fWhorePersuadeChance)
 		SetSliderDialogDefaultValue(50.0)
@@ -6217,6 +6253,13 @@ String Function sBoolToColoredTXT(Bool bBool, String sTrueText = "True", String 
 	return "<font color='#" + MainScript.sInfoColor + "'>"+ sFalseText + "</font>"
 endfunction
 
+String Function sColoredTXT(String sText, String sColor = "")
+	If sColor == ""
+		sColor = MainScript.sInfoColor
+	endif	
+	return "<font color='#" + sColor + "'>"+ sText + "</font>"
+endfunction
+
 State commit
 	Event OnBeginState()
 	  if setModVars
@@ -6463,3 +6506,8 @@ Int OID_NEARBY_FEMALES_MAY_JOIN_SEX
 
 Int OID_STD_REVERSE_PROGRESSION
 Int OID_AEL_STRUGGLE_DIFFICULTY
+
+Int OID_ALLY_MAY_JOIN_SEX
+Int OID_PIMP_MAY_JOIN_SEX
+
+Int OID_MAX_DISTANCE_JOIN_SEX 

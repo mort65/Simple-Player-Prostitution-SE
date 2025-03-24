@@ -1,0 +1,1001 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:java="http://www.yworks.com/xml/yfiles-common/1.0/java" xmlns:sys="http://www.yworks.com/xml/yfiles-common/markup/primitives/2.0" xmlns:x="http://www.yworks.com/xml/yfiles-common/markup/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:y="http://www.yworks.com/xml/graphml" xmlns:yed="http://www.yworks.com/xml/yed/3" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://www.yworks.com/xml/schema/graphml/1.1/ygraphml.xsd">
+  <!--Created by yEd 3.25.1-->
+  <key attr.name="Description" attr.type="string" for="graph" id="d0"/>
+  <key for="port" id="d1" yfiles.type="portgraphics"/>
+  <key for="port" id="d2" yfiles.type="portgeometry"/>
+  <key for="port" id="d3" yfiles.type="portuserdata"/>
+  <key attr.name="url" attr.type="string" for="node" id="d4"/>
+  <key attr.name="description" attr.type="string" for="node" id="d5"/>
+  <key for="node" id="d6" yfiles.type="nodegraphics"/>
+  <key for="graphml" id="d7" yfiles.type="resources"/>
+  <key attr.name="url" attr.type="string" for="edge" id="d8"/>
+  <key attr.name="description" attr.type="string" for="edge" id="d9"/>
+  <key for="edge" id="d10" yfiles.type="edgegraphics"/>
+  <graph edgedefault="directed" id="G">
+    <data key="d0" xml:space="preserve"/>
+    <node id="n0">
+      <data key="d6">
+        <y:GenericNode configuration="com.yworks.flowchart.process">
+          <y:Geometry height="122.74999999999989" width="1553.3333333333333" x="9087.88630952381" y="268.7499999999999"/>
+          <y:Fill color="#E8EEF7" color2="#B7C9E3" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="92.20703125" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="1512.1328125" x="20.60026041666606" xml:space="preserve" y="15.271484374999943">zzzmrt_SimpleProstitutionTopic_InnWork_0_1 [DIAL:FE0000AB]  &gt;[INFO:FE0000AC] ('Sure, there's always some work for a young girl such as you. But first, you'll have to rent a room here.' in GRUP Topic Children of zzzmrt_SimpleProstitutionTopic_InnWork_0_1 [DIAL:FE0000AB])  
+
+&gt;[INFO:FE0000AC] ('Sure, there's always some work for a young girl such as you. But first, you'll have to rent a room here.' in GRUP Topic Children of zzzmrt_SimpleProstitutionTopic_InnWork_0_1 [DIAL:FE0000AB])
+
+&gt;[INFO:FE0000AD] ('Sure, there's always some work for someone like you. But first, you'll have to rent a room here.' in GRUP Topic Children of zzzmrt_SimpleProstitutionTopic_InnWork_0_1 [DIAL:FE0000AB]) 
+
+<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+        </y:GenericNode>
+      </data>
+    </node>
+    <node id="n1">
+      <data key="d6">
+        <y:GenericNode configuration="com.yworks.flowchart.process">
+          <y:Geometry height="227.8125000000001" width="1385.4687499999993" x="10172.585466269842" y="866.3123759920634"/>
+          <y:Fill color="#E8EEF7" color2="#B7C9E3" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="48.103515625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="791.37109375" x="297.048828125" xml:space="preserve" y="89.8544921875">zzzmrt_SimpleProstitutionTopic_InnWork_1 "Alright, I'll rent a room then." [DIAL:FE00077A]
+
+&gt;[INFO:FE00077B] ('Great.' in GRUP Topic Children of zzzmrt_SimpleProstitutionTopic_InnWork_1 "Alright, I'll rent a room then." [DIAL:FE00077A])
+<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+        </y:GenericNode>
+      </data>
+    </node>
+    <node id="n2">
+      <data key="d6">
+        <y:GenericNode configuration="com.yworks.flowchart.process">
+          <y:Geometry height="165.0" width="1260.9895833333333" x="9234.05818452381" y="422.4999999999998"/>
+          <y:Fill color="#E8EEF7" color2="#B7C9E3" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="48.103515625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="1148.59375" x="56.19791666666606" xml:space="preserve" y="58.4482421875">zzzmrt_SimpleProstitutionTopic_InnWork_2 "Why do I need to rent a room? I just need a job." [DIAL:FE00077C]
+
+&gt;[INFO:FE00077D] ('Where else would you take your customers, dummy?' in GRUP Topic Children of zzzmrt_SimpleProstitutionTopic_InnWork_2 "Why do I need to rent a room? I just need a job." [DIAL:FE00077C])<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+        </y:GenericNode>
+      </data>
+    </node>
+    <node id="n3">
+      <data key="d6">
+        <y:GenericNode configuration="com.yworks.flowchart.process">
+          <y:Geometry height="248.7499999999999" width="1127.037760416667" x="9301.034095982142" y="0.0"/>
+          <y:Fill color="#E8EEF7" color2="#B7C9E3" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="860.55859375" x="133.23958333333394" xml:space="preserve" y="115.02441406249994">=0= zzzmrt_SimpleProstitutionTopic_InnWork_0 "Hello, I'm looking for a job. Do you have any work for me?" [DIAL:FE000778]  zzzmrt_sp_innwork_tif_040000a5<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+        </y:GenericNode>
+      </data>
+    </node>
+    <node id="n4">
+      <data key="d6">
+        <y:GenericNode configuration="com.yworks.flowchart.process">
+          <y:Geometry height="191.49401709401718" width="1278.7994711538452" x="8570.753439026252" y="636.6592414529912"/>
+          <y:Fill color="#E8EEF7" color2="#B7C9E3" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="48.103515625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#FF0000" verticalTextPosition="bottom" visible="true" width="1193.552734375" x="42.62336838942247" xml:space="preserve" y="71.69525073450859">zzzmrt_SimpleProstitutionTopic_InnWork_3 "Wait, you mean you want me to sell my body? No way!" [DIAL:FE00077E]
+
+&gt;[INFO:FE00077F] ([G]'Well, it's your choice. Good luck finding another job.' in GRUP Topic Children of zzzmrt_SimpleProstitutionTopic_InnWork_3 "Wait, you mean you want me to sell my body? No way!" [DIAL:FE00077E])<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+        </y:GenericNode>
+      </data>
+    </node>
+    <node id="n5">
+      <data key="d6">
+        <y:GenericNode configuration="com.yworks.flowchart.process">
+          <y:Geometry height="227.8125" width="1278.7994711538452" x="9879.553042200856" y="618.4999999999998"/>
+          <y:Fill color="#E8EEF7" color2="#B7C9E3" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="48.103515625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="823.884765625" x="227.45735276442247" xml:space="preserve" y="89.8544921875">zzzmrt_SimpleProstitutionTopic_InnWork_4 "Ah, I see. You could have made it clearer." [DIAL:FE000780]
+
+&gt;[INFO:FE000781] (in GRUP Topic Children of zzzmrt_SimpleProstitutionTopic_InnWork_4 "Ah, I see. You could have made it clearer." [DIAL:FE000780])<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+        </y:GenericNode>
+      </data>
+    </node>
+    <node id="n6">
+      <data key="d6">
+        <y:GenericNode configuration="com.yworks.flowchart.process">
+          <y:Geometry height="227.8125" width="1278.7994711538452" x="9580.572883470697" y="1125.1248759920636"/>
+          <y:Fill color="#E8EEF7" color2="#B7C9E3" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="48.103515625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="903.478515625" x="187.66047776442247" xml:space="preserve" y="89.8544921875">zzzmrt_SimpleProstitutionTopic_InnWork_5 "Here you are. (&lt;Global=RoomCost&gt; septim)" [DIAL:FE000782]
+
+&gt;[INFO:FE000783] ('Thank you.' in GRUP Topic Children of zzzmrt_SimpleProstitutionTopic_InnWork_5 "Here you are. (&lt;Global=RoomCost&gt; septim)" [DIAL:FE000782])<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+        </y:GenericNode>
+      </data>
+    </node>
+    <node id="n7">
+      <data key="d6">
+        <y:GenericNode configuration="com.yworks.flowchart.process">
+          <y:Geometry height="227.8125" width="1743.5430608974345" x="10889.37251717033" y="1125.1248759920636"/>
+          <y:Fill color="#E8EEF7" color2="#B7C9E3" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="48.103515625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="1430.640625" x="156.45121794871739" xml:space="preserve" y="89.8544921875">zzzmrt_SimpleProstitutionTopic_InnWork_6 "I'm afraid I don't have enough money." [DIAL:FE000784]
+
+&gt;[INFO:FE000785] ('Don't you worry honey, I can lend you the money, and you'll pay me back with what you earn here. What do you say?' in GRUP Topic Children of zzzmrt_SimpleProstitutionTopic_InnWork_6 "I'm afraid I don't have enough money." [DIAL:FE000784])<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+        </y:GenericNode>
+      </data>
+    </node>
+    <node id="n8">
+      <data key="d6">
+        <y:GenericNode configuration="com.yworks.flowchart.process">
+          <y:Geometry height="269.27350427350484" width="1908.991778846152" x="10447.12077724359" y="1415.9373759920636"/>
+          <y:Fill color="#E8EEF7" color2="#B7C9E3" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="48.103515625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="1838.259765625" x="35.36600661057673" xml:space="preserve" y="110.58499432425242">zzzmrt_SimpleProstitutionTopic_InnWork_7 "Oh, that's very nice of you, thank you!" [DIAL:FE000786]
+
+&gt;[INFO:FE000787] ('Now, put these on and keep our guests company. Don't forget to close the door when you take them to your room. Pretty much everyone here is a regular, so they should know how much to pay.' in GRUP Topic Children of zzzmrt_SimpleProstitutionTopic_InnWork_7 "Oh, that's very nice of you, thank you!" [DIAL:FE000786])<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+        </y:GenericNode>
+      </data>
+    </node>
+    <node id="n9">
+      <data key="d6">
+        <y:GenericNode configuration="com.yworks.flowchart.process">
+          <y:Geometry height="227.8125" width="1908.9917788461519" x="11913.974745497559" y="1716.2108802655684"/>
+          <y:Fill color="#E8EEF7" color2="#B7C9E3" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="48.103515625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="1213.97265625" x="347.50956129807673" xml:space="preserve" y="89.8544921875">zzzmrt_SimpleProstitutionTopic_InnWork_8 "Wait what? You mean you want me to sell my body?" [DIAL:FE00078A]
+
+&gt;[INFO:FE00078B] ('Obviously. What did you think? Now shut up and get to work!' in GRUP Topic Children of zzzmrt_SimpleProstitutionTopic_InnWork_8 "Wait what? You mean you want me to sell my body?" [DIAL:FE00078A])<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+        </y:GenericNode>
+      </data>
+    </node>
+    <node id="n10">
+      <data key="d6">
+        <y:GenericNode configuration="com.yworks.flowchart.process">
+          <y:Geometry height="216.60256410256352" width="1919.2120512820486" x="9964.762625152627" y="1721.8158482142867"/>
+          <y:Fill color="#E8EEF7" color2="#B7C9E3" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="48.103515625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#FF0000" verticalTextPosition="bottom" visible="true" width="958.802734375" x="480.20465845352373" xml:space="preserve" y="84.24952423878176">zzzmrt_SimpleProstitutionTopic_InnWork_9 "Got it. Thank you." [DIAL:FE00078C]
+
+&gt;[INFO:FE00078D] ([G]'Good. Report back to me when you're done.' in GRUP Topic Children of zzzmrt_SimpleProstitutionTopic_InnWork_9 "Got it. Thank you." [DIAL:FE00078C])<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+        </y:GenericNode>
+      </data>
+    </node>
+    <node id="n11">
+      <data key="d6">
+        <y:GenericNode configuration="com.yworks.flowchart.process">
+          <y:Geometry height="141.52478632478596" width="1908.9917788461519" x="9725.866412164225" y="1991.0233802655684"/>
+          <y:Fill color="#E8EEF7" color2="#B7C9E3" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="48.103515625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#FF0000" verticalTextPosition="bottom" visible="true" width="1153.515625" x="377.73807692307673" xml:space="preserve" y="46.71063534989298">zzzmrt_SimpleProstitutionTopic_InnWork_10 "No way! I'm not a whore, give me my money back." [DIAL:FE00078E]
+
+&gt;[INFO:FE00078F] ([G]'Sorry honey, no refunds. Stop wasting my time.' in GRUP Topic Children of zzzmrt_SimpleProstitutionTopic_InnWork_10 "No way! I'm not a whore, give me my money back." [DIAL:FE00078E])<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+        </y:GenericNode>
+      </data>
+    </node>
+    <node id="n12">
+      <data key="d6">
+        <y:GenericNode configuration="com.yworks.flowchart.process">
+          <y:Geometry height="141.52478632478596" width="1929.9767008547" x="13624.83545909646" y="1991.0233802655684"/>
+          <y:Fill color="#E8EEF7" color2="#B7C9E3" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="48.103515625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#FF0000" verticalTextPosition="bottom" visible="true" width="1534.09375" x="197.94147542734936" xml:space="preserve" y="46.71063534989298">zzzmrt_SimpleProstitutionTopic_InnWork_11 "No way! I'm not a whore!" [DIAL:FE000790]
+
+&gt;[INFO:FE000791] ([G]'But you are, and you better get to work. You have to pay me back for the room. You have one day to pay me back, or I'll report you to the guards.' in GRUP Topic Children of zzzmrt_SimpleProstitutionTopic_InnWork_11 "No way! I'm not a whore!" [DIAL:FE000790])<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+        </y:GenericNode>
+      </data>
+    </node>
+    <node id="n13">
+      <data key="d6">
+        <y:GenericNode configuration="com.yworks.flowchart.process">
+          <y:Geometry height="141.52478632478596" width="1929.9767008547" x="11664.858474969476" y="1991.0233802655684"/>
+          <y:Fill color="#E8EEF7" color2="#B7C9E3" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="48.103515625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#FF0000" verticalTextPosition="bottom" visible="true" width="1085.177734375" x="422.39948323984936" xml:space="preserve" y="46.71063534989298">zzzmrt_SimpleProstitutionTopic_InnWork_12 "Well, I really do need the money. I'll do it." [DIAL:FE000792]
+
+&gt;[INFO:FE000793] ([G]'Good. Report back to me when you're done.' in GRUP Topic Children of zzzmrt_SimpleProstitutionTopic_InnWork_12 "Well, I really do need the money. I'll do it." [DIAL:FE000792])<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+        </y:GenericNode>
+      </data>
+    </node>
+    <node id="n14">
+      <data key="d6">
+        <y:GenericNode configuration="com.yworks.flowchart.process">
+          <y:Geometry height="141.52478632478596" width="1919.2120512820486" x="8031.05587912088" y="1479.811734966423"/>
+          <y:Fill color="#E8EEF7" color2="#CCFFCC" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="48.103515625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="1292.341796875" x="313.43512720352464" xml:space="preserve" y="46.71063534989298">zzzmrt_SimpleProstitutionTopic_InnWork_License_1 "Oh, that's very nice of you, thank you!" [DIAL:FE000796]
+
+&gt;[INFO:FE000797] ('Now, go find a guard and buy a whoring license from them, and come back to me.' in GRUP Topic Children of zzzmrt_SimpleProstitutionTopic_InnWork_License_1 "Oh, that's very nice of you, thank you!" [DIAL:FE000796])<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+        </y:GenericNode>
+      </data>
+    </node>
+    <node id="n15">
+      <data key="d6">
+        <y:GenericNode configuration="com.yworks.flowchart.annotation">
+          <y:Geometry height="117.33333333333303" width="1857.8735042735034" x="5463.193009768011" y="1771.450463598902"/>
+          <y:Fill color="#E8EEF7" color2="#CCFFCC" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="48.103515625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="1159.298828125" x="349.28733807425124" xml:space="preserve" y="34.614908854166515">zzzmrt_SimpleProstitutionTopic_InnWork_License_2 "Wait what? You mean you want me to sell my body?" [DIAL:FE000798]
+
+&gt;[INFO:FE000799] ('Obviously. What did you think? Get going!' in GRUP Topic Children of zzzmrt_SimpleProstitutionTopic_InnWork_License_2 "Wait what? You mean you want me to sell my body?" [DIAL:FE000798])<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+          <y:StyleProperties>
+            <y:Property class="java.lang.Byte" name="com.yworks.flowchart.style.orientation" value="0"/>
+          </y:StyleProperties>
+        </y:GenericNode>
+      </data>
+    </node>
+    <node id="n16">
+      <data key="d6">
+        <y:GenericNode configuration="com.yworks.flowchart.annotation">
+          <y:Geometry height="117.33333333333303" width="1857.8735042735034" x="10503.665231990233" y="2214.1379101800985"/>
+          <y:Fill color="#E8EEF7" color2="#CCFFCC" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="48.103515625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#FF0000" verticalTextPosition="bottom" visible="true" width="1074.87109375" x="391.50120526175124" xml:space="preserve" y="34.614908854166515">zzzmrt_SimpleProstitutionTopic_InnWork_License_3 "Okay, I'll be right back." [DIAL:FE00079A]
+
+&gt;[INFO:FE00079B] ([G]'Good. Come back to me when you have the license.' in GRUP Topic Children of zzzmrt_SimpleProstitutionTopic_InnWork_License_3 "Okay, I'll be right back." [DIAL:FE00079A])<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+          <y:StyleProperties>
+            <y:Property class="java.lang.Byte" name="com.yworks.flowchart.style.orientation" value="0"/>
+          </y:StyleProperties>
+        </y:GenericNode>
+      </data>
+    </node>
+    <node id="n17">
+      <data key="d6">
+        <y:GenericNode configuration="com.yworks.flowchart.annotation">
+          <y:Geometry height="154.51282051282033" width="2067.565811965811" x="8406.099236874237" y="2195.5481665903544"/>
+          <y:Fill color="#E8EEF7" color2="#CCFFCC" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="48.103515625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#FF0000" verticalTextPosition="bottom" visible="true" width="2033.40625" x="17.079780982905504" xml:space="preserve" y="53.20465244391016">zzzmrt_SimpleProstitutionTopic_InnWork_License_4 "I already have one." [DIAL:FE00079C]
+
+&gt;[INFO:FE00079D] ([G]'Perfect. I see you know your way around. Here, put these on and keep our guests company. Don't forget to close the door when you take them to your room. Pretty much everyone here is a regular, so they should know how much to pay.' in GRUP Topic Children of zzzmrt_SimpleProstitutionTopic_InnWork_License_4 "I already have one." [DIAL:FE00079C])<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+          <y:StyleProperties>
+            <y:Property class="java.lang.Byte" name="com.yworks.flowchart.style.orientation" value="0"/>
+          </y:StyleProperties>
+        </y:GenericNode>
+      </data>
+    </node>
+    <node id="n18">
+      <data key="d6">
+        <y:GenericNode configuration="com.yworks.flowchart.annotation">
+          <y:Geometry height="104.94017094016999" width="2015.6675382612166" x="6360.431310234471" y="2220.3344913766796"/>
+          <y:Fill color="#E8EEF7" color2="#CCFFCC" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="48.103515625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="1309.896484375" x="352.88552694310783" xml:space="preserve" y="28.418327657584996">zzzmrt_SimpleProstitutionTopic_InnWork_License_5 "I don't think I have enough money to get a license." [DIAL:FE0017A0]
+
+&gt;[INFO:FE0007A1] ('Don't worry honey, I'll lend you the money for the fee, and you'll work it off. Here you are.' in GRUP Topic Children of zzzmrt_SimpleProstitutionTopic_InnWork_License_5 "I don't think I have enough money" [DIAL:FE0007A0])<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+          <y:StyleProperties>
+            <y:Property class="java.lang.Byte" name="com.yworks.flowchart.style.orientation" value="0"/>
+          </y:StyleProperties>
+        </y:GenericNode>
+      </data>
+    </node>
+    <node id="n19">
+      <data key="d6">
+        <y:GenericNode configuration="com.yworks.flowchart.annotation">
+          <y:Geometry height="195.68910256410254" width="2028.415256637285" x="20.000308189293946" y="2399.877771180831"/>
+          <y:Fill color="#E8EEF7" color2="#CCFFCC" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="48.103515625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#FF0000" verticalTextPosition="bottom" visible="true" width="1195.55078125" x="416.4322376936425" xml:space="preserve" y="73.79279346955127">zzzmrt_SimpleProstitutionTopic_InnWork_License_6 "No way! I'm not a whore, give me my money back." [DIAL:FE0007A2]
+
+&gt;[INFO:FE0007A3] ([G]'Sorry honey, no refunds. Stop wasting my time.' in GRUP Topic Children of zzzmrt_SimpleProstitutionTopic_InnWork_License_6 "No way! I'm not a whore, give me my money back." [DIAL:FE0007A2])<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+          <y:StyleProperties>
+            <y:Property class="java.lang.Byte" name="com.yworks.flowchart.style.orientation" value="0"/>
+          </y:StyleProperties>
+        </y:GenericNode>
+      </data>
+    </node>
+    <node id="n20">
+      <data key="d6">
+        <y:GenericNode configuration="com.yworks.flowchart.process">
+          <y:Geometry height="78.74999999999909" width="2015.6675382612166" x="7663.198373726535" y="2022.4107734279619"/>
+          <y:Fill color="#E8EEF7" color2="#CCFFCC" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="48.103515625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="1563.361328125" x="226.15310506810783" xml:space="preserve" y="15.323242187499545">zzzmrt_SimpleProstitutionTopic_InnWork_License_7 "No way! I'm not a whore!" [DIAL:FE0007A4]
+
+&gt;[INFO:FE0007A5] ('But you are, and don't forget, you owe me for that room. If you don't pay me back in one day, I'll report you to the guards. Now go get that license!' in GRUP Topic Children of zzzmrt_SimpleProstitutionTopic_InnWork_License_7 "No way! I'm not a whore!" [DIAL:FE0007A4])<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+        </y:GenericNode>
+      </data>
+    </node>
+    <node id="n21">
+      <data key="d6">
+        <y:GenericNode configuration="com.yworks.flowchart.process">
+          <y:Geometry height="195.68910256410254" width="2015.6675382612166" x="5856.514246742408" y="2399.877771180831"/>
+          <y:Fill color="#E8EEF7" color2="#CCFFCC" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="48.103515625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#FF0000" verticalTextPosition="bottom" visible="true" width="1176.267578125" x="419.69998006810783" xml:space="preserve" y="73.79279346955127">zzzmrt_SimpleProstitutionTopic_InnWork_License_8 "Well, I really do need the money. I'll do it." [DIAL:FE0007A6]
+
+&gt;[INFO:FE0007A7] ([G]'Good. Report back to me when you have the license.' in GRUP Topic Children of zzzmrt_SimpleProstitutionTopic_InnWork_License_8 "Well, I really do need the money. I'll do it." [DIAL:FE0007A6])<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+        </y:GenericNode>
+      </data>
+    </node>
+    <node id="n22">
+      <data key="d6">
+        <y:GenericNode configuration="com.yworks.flowchart.process">
+          <y:Geometry height="78.74999999999909" width="2015.6675382612166" x="5616.530119758281" y="2022.4107734279619"/>
+          <y:Fill color="#E8EEF7" color2="#CCFFCC" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="48.103515625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="797.505859375" x="609.0808394431078" xml:space="preserve" y="15.323242187499545">zzzmrt_SimpleProstitutionTopic_InnWork_License_9 "But I don't have the money!" [DIAL:FE0007A8]
+
+&gt;[INFO:FE0007A9] (in GRUP Topic Children of zzzmrt_SimpleProstitutionTopic_InnWork_License_9 "But I don't have the money!" [DIAL:FE0007A8])<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+        </y:GenericNode>
+      </data>
+    </node>
+    <node id="n23">
+      <data key="d6">
+        <y:GenericNode configuration="com.yworks.flowchart.process">
+          <y:Geometry height="121.25" width="2002.9198198851482" x="4307.621439263775" y="2212.1795768467646"/>
+          <y:Fill color="#E8EEF7" color2="#CCFFCC" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="48.103515625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#FF0000" verticalTextPosition="bottom" visible="true" width="2042.69921875" x="-19.889699432425914" xml:space="preserve" y="36.5732421875">zzzmrt_SimpleProstitutionTopic_InnWork_License_10 "I got the license." [DIAL:FE0007AA]
+
+&gt;[INFO:FE0007AB] ([G]'Great. Now, start making me some money, whore. Put these on and keep our guests company. Don't forget to close the door when you take them to your room. Pretty much everyone here is a regular, so they should know how much to pay.' in GRUP Topic Children of zzzmrt_SimpleProstitutionTopic_InnWork_License_10 "I got the license." [DIAL:FE0007AA])<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+        </y:GenericNode>
+      </data>
+    </node>
+    <node id="n24">
+      <data key="d6">
+        <y:GenericNode configuration="com.yworks.flowchart.process">
+          <y:Geometry height="58.399999999999636" width="2015.6675382612166" x="3570.8622626154233" y="2032.5857734279616"/>
+          <y:Fill color="#E8EEF7" color2="#CCFFCC" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="48.103515625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="750.49609375" x="632.5857222556083" xml:space="preserve" y="5.148242187499818">zzzmrt_SimpleProstitutionTopic_InnWork_License_11 "About the work..." [DIAL:FE0007AE]
+
+&gt;[INFO:FE0007AF] (in GRUP Topic Children of zzzmrt_SimpleProstitutionTopic_InnWork_License_11 "About the work..." [DIAL:FE0007AE])<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+        </y:GenericNode>
+      </data>
+    </node>
+    <node id="n25">
+      <data key="d6">
+        <y:GenericNode configuration="com.yworks.flowchart.process">
+          <y:Geometry height="113.75" width="2003.3863593683209" x="12386.112772696792" y="1493.699128128816"/>
+          <y:Fill color="#E8EEF7" color2="#B7C9E3" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="48.103515625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#FF0000" verticalTextPosition="bottom" visible="true" width="1283.623046875" x="359.88165624666" xml:space="preserve" y="32.8232421875">zzzmrt_SimpleProstitutionTopic_InnWork_13 "I don't want to owe money. Maybe another time." [DIAL:FE0007B2]
+
+&gt;[INFO:FE0007B3] ([G]'What a shame. Well, if you change your mind, you know where to find me.' in GRUP Topic Children of zzzmrt_SimpleProstitutionTopic_InnWork_13 "I don't want to owe money. Maybe another time." [DIAL:FE0007B2])<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+        </y:GenericNode>
+      </data>
+    </node>
+    <node id="n26">
+      <data key="d6">
+        <y:GenericNode configuration="com.yworks.flowchart.process">
+          <y:Geometry height="113.75" width="1990.6386409922525" x="7559.933854107048" y="1182.1561259920636"/>
+          <y:Fill color="#E8EEF7" color2="#B7C9E3" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="48.103515625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="739.15234375" x="625.7431486211262" xml:space="preserve" y="32.8232421875">zzzmrt_SimpleProstitutionTopic_InnWork_14 "I already rented a room." [DIAL:FE00082C]
+
+&gt;[INFO:FE00082D] (in GRUP Topic Children of zzzmrt_SimpleProstitutionTopic_InnWork_14 "I already rented a room." [DIAL:FE00082C])<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+        </y:GenericNode>
+      </data>
+    </node>
+    <node id="n27">
+      <data key="d6">
+        <y:GenericNode configuration="com.yworks.flowchart.process">
+          <y:Geometry height="132.1875" width="2093.126947122061" x="14000.467081994524" y="2431.6285724628824"/>
+          <y:Fill color="#E8EEF7" color2="#B7C9E3" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="48.103515625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#FF0000" verticalTextPosition="bottom" visible="true" width="1040.447265625" x="526.3398407485311" xml:space="preserve" y="42.0419921875">zzzmrt_SimpleProstitutionTopic_InnWork_15 "No way! I'm not a whore!" [DIAL:FE00082E]
+
+&gt;[INFO:FE00082F] ([G]'Well, it's your choice. Good luck finding another job.' in GRUP Topic Children of zzzmrt_SimpleProstitutionTopic_InnWork_15 "No way! I'm not a whore!" [DIAL:FE00082E])<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+        </y:GenericNode>
+      </data>
+    </node>
+    <node id="n28">
+      <data key="d5"/>
+      <data key="d6">
+        <y:GenericNode configuration="com.yworks.flowchart.process">
+          <y:Geometry height="160.14638866813266" width="2353.5632960553726" x="574.6040662580281" y="2192.7313825126985"/>
+          <y:Fill color="#E8EEF7" color2="#CCFFCC" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="33.40234375" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="1177.966796875" x="587.7982495901863" xml:space="preserve" y="63.3720224590661">zzzmrt_SimpleProstitutionTopic_InnWork_16 "I want to pay back my debt." [DIAL:FE001E37]
+&gt;[INFO:FE001E39] ([G]'Alright. In the future, whenever you need work, you know where to find me.' in GRUP Topic Children of zzzmrt_SimpleProstitutionTopic_InnWork_16 "I want to pay back my debt." [DIAL:FE001E37])<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+        </y:GenericNode>
+      </data>
+    </node>
+    <node id="n29">
+      <data key="d5"/>
+      <data key="d6">
+        <y:GenericNode configuration="com.yworks.flowchart.process">
+          <y:Geometry height="40.0" width="910.1023217070988" x="2112.250823273435" y="2041.7857734279614"/>
+          <y:Fill color="#E8EEF7" color2="#CCFFCC" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="33.40234375" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="443.388671875" x="233.3568249160494" xml:space="preserve" y="3.298828125">zzzmrt_SimpleProstitutionTopic_InnWork_17 "About the debt..." [DIAL:FE001DAA]
+&gt;<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+        </y:GenericNode>
+      </data>
+    </node>
+    <node id="n30">
+      <data key="d5"/>
+      <data key="d6">
+        <y:GenericNode configuration="com.yworks.flowchart.process">
+          <y:Geometry height="100.33325145239542" width="1299.5638621170447" x="2958.1676721160807" y="2222.637951120567"/>
+          <y:Fill color="#E8EEF7" color2="#CCFFCC" transparent="false"/>
+          <y:BorderStyle color="#000000" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="48.103515625" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="1263.337890625" x="18.112985746022332" xml:space="preserve" y="26.114867913697708">zzzmrt_SimpleProstitutionTopic_InnWork_18 "Nevermind." [DIAL:FE0010A3]
+&gt;[INFO:FE0010A4] ([G]'Are you trying to annoy me on purpose? Where is your license? Get lost, and come back when you have it!' in GRUP Topic Children of zzzmrt_SimpleProstitutionTopic_InnWork_18 "Nevermind." [DIAL:FE0010A3])
+&gt;[INFO:FE0015DF] ([G]'Are you trying to annoy me on purpose? Get lost, and come back when you have the gold!' in GRUP Topic Children of zzzmrt_SimpleProstitutionTopic_InnWork_18 "Nevermind." [DIAL:FE0010A3])
+<y:LabelModel><y:SmartNodeLabelModel distance="4.0"/></y:LabelModel><y:ModelParameter><y:SmartNodeLabelModelParameter labelRatioX="0.0" labelRatioY="0.0" nodeRatioX="0.0" nodeRatioY="0.0" offsetX="0.0" offsetY="0.0" upX="0.0" upY="-1.0"/></y:ModelParameter></y:NodeLabel>
+        </y:GenericNode>
+      </data>
+    </node>
+    <edge id="e0" source="n3" target="n0">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="0.0" sy="124.37499999999994" tx="0.0" ty="-61.37499999999994"/>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e1" source="n0" target="n1">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="517.7777777777774" sy="61.37499999999994" tx="346.3671875" ty="-113.90625">
+            <y:Point x="10382.330753968254" y="406.9999999999998"/>
+            <y:Point x="11211.686904761904" y="406.9999999999998"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e2" source="n0" target="n2">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="-1.1368683772161603E-13" sy="61.37499999999994" tx="0.0" ty="-82.5"/>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e3" source="n0" target="n26">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="-517.7777777777774" sy="61.37499999999994" tx="0.0" ty="-56.875">
+            <y:Point x="9346.775198412699" y="406.9999999999998"/>
+            <y:Point x="8555.253174603175" y="406.9999999999998"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e4" source="n1" target="n6">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="-346.3671874999999" sy="113.90625000000006" tx="0.0" ty="-113.90625">
+            <y:Point x="10518.952653769842" y="1109.6248759920636"/>
+            <y:Point x="10219.97261904762" y="1109.6248759920636"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e5" source="n1" target="n7">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="346.36718749999983" sy="113.90625000000006" tx="0.0" ty="-113.90625">
+            <y:Point x="11211.687028769842" y="1109.6248759920636"/>
+            <y:Point x="11761.144047619047" y="1109.6248759920636"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e6" source="n2" target="n4">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="-315.24739583333337" sy="82.5" tx="0.0" ty="-95.74700854700859">
+            <y:Point x="9549.305580357142" y="602.9999999999998"/>
+            <y:Point x="9210.153174603174" y="602.9999999999998"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e7" source="n2" target="n5">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="315.2473958333333" sy="82.5" tx="0.0" ty="-113.90625">
+            <y:Point x="10179.80037202381" y="602.9999999999998"/>
+            <y:Point x="10518.952777777778" y="602.9999999999998"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e8" source="n5" target="n1">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="0.0" sy="113.90625" tx="-346.36718749999983" ty="-113.90625000000006"/>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e9" source="n6" target="n8">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="319.6998677884613" sy="113.90625" tx="-477.247944711538" ty="-134.63675213675242">
+            <y:Point x="10539.672486836082" y="1368.4373759920636"/>
+            <y:Point x="10924.368721955128" y="1368.4373759920636"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e10" source="n6" target="n14">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="-319.69986778846135" sy="113.90625" tx="1.1368683772161603E-13" ty="-70.76239316239298">
+            <y:Point x="9900.272751259157" y="1368.4373759920636"/>
+            <y:Point x="8990.661904761904" y="1368.4373759920636"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e11" source="n7" target="n8">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="-435.8857652243586" sy="113.90625" tx="-159.08264823717934" ty="-134.63675213675242">
+            <y:Point x="11325.258282394689" y="1368.4373759920636"/>
+            <y:Point x="11242.534018429487" y="1368.4373759920636"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e12" source="n7" target="n8">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="-145.29525507478616" sy="113.90625" tx="159.08264823717923" ty="-134.63675213675242">
+            <y:Point x="11615.84879254426" y="1368.4373759920636"/>
+            <y:Point x="11560.699314903846" y="1368.4373759920636"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e13" source="n7" target="n8">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="145.29525507478627" sy="113.90625" tx="477.2479447115379" ty="-134.63675213675242">
+            <y:Point x="11906.439302693834" y="1368.4373759920636"/>
+            <y:Point x="11878.864611378205" y="1368.4373759920636"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e14" source="n7" target="n8">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="435.88576522435864" sy="113.90625" tx="795.4132411858966" ty="-134.63675213675242"/>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e15" source="n7" target="n14">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="-726.4762753739311" sy="113.90625" tx="639.7373504273497" ty="-70.76239316239298">
+            <y:Point x="11034.667772245117" y="1400.4373759920636"/>
+            <y:Point x="9630.399255189253" y="1400.4373759920636"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e16" source="n7" target="n25">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="726.476275373931" sy="113.90625" tx="0.0" ty="-56.875">
+            <y:Point x="12487.620322992978" y="1368.4373759920636"/>
+            <y:Point x="13387.805952380952" y="1368.4373759920636"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e17" source="n8" target="n9">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="477.247944711538" sy="134.63675213675242" tx="0.0" ty="-113.90625">
+            <y:Point x="11878.864611378205" y="1700.7108802655684"/>
+            <y:Point x="12868.470634920635" y="1700.7108802655684"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e18" source="n8" target="n10">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="-477.24794471153814" sy="134.63675213675242" tx="0.0" ty="-108.30128205128176"/>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e19" source="n9" target="n11">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="-715.871917067307" sy="113.90625" tx="0.0" ty="-70.76239316239298">
+            <y:Point x="12152.598717853329" y="1959.5233802655684"/>
+            <y:Point x="10680.362301587302" y="1959.5233802655684"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e20" source="n9" target="n12">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="238.62397235576896" sy="113.90625" tx="0.0" ty="-70.76239316239298">
+            <y:Point x="13107.094607276404" y="1975.5233802655684"/>
+            <y:Point x="14589.82380952381" y="1975.5233802655684"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e21" source="n9" target="n13">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="-238.62397235576907" sy="113.90625" tx="0.0" ty="-70.76239316239298"/>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e22" source="n9" target="n27">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="715.8719170673066" sy="113.90625" tx="523.2817367805146" ty="-66.09375">
+            <y:Point x="13584.342551987942" y="1959.5233802655684"/>
+            <y:Point x="15570.3123015873" y="1959.5233802655684"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e23" source="n14" target="n15">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="-719.7045192307681" sy="70.76239316239298" tx="0.0" ty="-58.666666666666515">
+            <y:Point x="8270.957385531136" y="1636.836521291209"/>
+            <y:Point x="6392.129761904762" y="1636.836521291209"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e24" source="n14" target="n16">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="719.7045192307687" sy="70.76239316239298" tx="464.46837606837653" ty="-58.666666666666515">
+            <y:Point x="9710.36626984127" y="2148.0481665903544"/>
+            <y:Point x="11897.070360195361" y="2148.0481665903544"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e25" source="n14" target="n17">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="239.90150641025684" sy="70.76239316239298" tx="516.8914529914528" ty="-77.25641025641016">
+            <y:Point x="9230.563411172161" y="1636.836521291209"/>
+            <y:Point x="9694.36626984127" y="1636.836521291209"/>
+            <y:Point x="9694.36626984127" y="2180.0481665903544"/>
+            <y:Point x="9956.773595848596" y="2180.0481665903544"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e26" source="n14" target="n18">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="-239.90150641025684" sy="70.76239316239298" tx="0.0" ty="-52.470085470084996">
+            <y:Point x="8750.760317460317" y="1920.283796932235"/>
+            <y:Point x="7647.698015873016" y="1920.283796932235"/>
+            <y:Point x="7647.698015873016" y="2116.660773427961"/>
+            <y:Point x="7368.265079365079" y="2116.660773427961"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e27" source="n15" target="n19">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="-696.7025641025639" sy="58.666666666666515" tx="-507.10381415932125" ty="-97.84455128205127">
+            <y:Point x="5695.427197802198" y="1904.283796932235"/>
+            <y:Point x="527.1039682539682" y="1904.283796932235"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e28" source="n15" target="n20">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="696.7025641025638" sy="58.666666666666515" tx="0.0" ty="-39.374999999999545">
+            <y:Point x="7088.832326007326" y="1904.283796932235"/>
+            <y:Point x="8671.032142857142" y="1904.283796932235"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e29" source="n15" target="n21">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="-232.23418803418826" sy="58.666666666666515" tx="-503.9168845653039" ty="-97.84455128205127">
+            <y:Point x="6159.895573870574" y="1920.283796932235"/>
+            <y:Point x="543.1039682539682" y="1920.283796932235"/>
+            <y:Point x="543.1039682539682" y="2384.377771180831"/>
+            <y:Point x="6360.431131307712" y="2384.377771180831"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e30" source="n15" target="n22">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="232.23418803418792" sy="58.666666666666515" tx="0.0" ty="-39.374999999999545"/>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e31" source="n18" target="n19">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="-671.8891794204055" sy="52.470085470084996" tx="507.10381415932125" ty="-97.84455128205127">
+            <y:Point x="6696.375899944674" y="2368.377771180831"/>
+            <y:Point x="1541.3117506672577" y="2368.377771180831"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e32" source="n18" target="n20">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="403.13350765224345" sy="-52.470085470084996" tx="-755.8753268479561" ty="39.374999999999545">
+            <y:Point x="7771.398587017323" y="2116.660773427961"/>
+            <y:Point x="7915.1568160091865" y="2116.660773427961"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e33" source="n18" target="n21">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="0.0" sy="52.470085470084996" tx="503.91688456530414" ty="-97.84455128205127"/>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e34" source="n18" target="n27">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="671.8891794204055" sy="52.470085470084996" tx="-523.2817367805153" ty="-66.09375">
+            <y:Point x="8040.154258785485" y="2365.5609871031747"/>
+            <y:Point x="14523.74881877504" y="2365.5609871031747"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e35" source="n20" target="n16">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="755.8753268479562" sy="39.374999999999545" tx="-464.46837606837585" ty="-58.666666666666515">
+            <y:Point x="9426.907469705098" y="2164.0481665903544"/>
+            <y:Point x="10968.133608058608" y="2164.0481665903544"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e36" source="n20" target="n17">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="251.95844228265207" sy="39.374999999999545" tx="-516.8914529914528" ty="-77.25641025641016"/>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e37" source="n20" target="n18">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="-251.95844228265196" sy="39.374999999999545" tx="806.2670153044869" ty="-52.470085470084996">
+            <y:Point x="8419.07370057449" y="2116.660773427961"/>
+            <y:Point x="8174.5320946695665" y="2116.660773427961"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e38" source="n22" target="n18">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="0.0" sy="39.374999999999545" tx="-403.1335076522432" ty="-52.470085470084996">
+            <y:Point x="6624.363888888889" y="2116.660773427961"/>
+            <y:Point x="6965.131571712836" y="2116.660773427961"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e39" source="n24" target="n23">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="0.0" sy="29.199999999999818" tx="0.0" ty="-60.625">
+            <y:Point x="4578.696031746032" y="2132.660773427961"/>
+            <y:Point x="5309.081349206349" y="2132.660773427961"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e40" source="n26" target="n8">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="497.6596602480631" sy="56.875" tx="-795.4132411858967" ty="-134.63675213675242">
+            <y:Point x="9052.912834851239" y="1384.4373759920636"/>
+            <y:Point x="10606.20342548077" y="1384.4373759920636"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e41" source="n26" target="n14">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="-497.6596602480631" sy="56.875" tx="-639.7373504273496" ty="-70.76239316239298">
+            <y:Point x="8057.593514355111" y="1311.4061259920636"/>
+            <y:Point x="8350.924554334555" y="1311.4061259920636"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e42" source="n29" target="n28">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="-227.5255804267747" sy="20.0" tx="588.3908240138433" ty="-80.07319433406633"/>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e43" source="n28" target="n28">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="-1176.781648027686" sy="0.0" tx="-588.3908240138435" ty="-80.0731943340661">
+            <y:Point x="559.1040662580281" y="2272.8045768467646"/>
+            <y:Point x="559.1040662580281" y="2177.2313825126985"/>
+            <y:Point x="1162.9948902718709" y="2177.2313825126985"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e44" source="n29" target="n30">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="227.5255804267747" sy="20.0" tx="-324.89096552926117" ty="-50.16662572619771">
+            <y:Point x="2794.8275645537587" y="2097.2857734279614"/>
+            <y:Point x="3283.058637645342" y="2097.2857734279614"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e45" source="n24" target="n18">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="671.8891794204055" sy="29.199999999999818" tx="-806.2670153044867" ty="-52.470085470084996">
+            <y:Point x="5250.585211166437" y="2116.660773427961"/>
+            <y:Point x="6561.998064060593" y="2116.660773427961"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+    <edge id="e46" source="n24" target="n30">
+      <data key="d10">
+        <y:PolyLineEdge>
+          <y:Path sx="-671.8891794204055" sy="29.199999999999818" tx="324.89096552926117" ty="-50.16662572619771">
+            <y:Point x="3906.806852325626" y="2106.4857734279612"/>
+            <y:Point x="3932.840568703864" y="2106.4857734279612"/>
+          </y:Path>
+          <y:LineStyle color="#000000" type="dashed" width="1.0"/>
+          <y:Arrows source="none" target="plain"/>
+          <y:BendStyle smoothed="false"/>
+        </y:PolyLineEdge>
+      </data>
+    </edge>
+  </graph>
+  <data key="d7">
+    <y:Resources/>
+  </data>
+</graphml>
