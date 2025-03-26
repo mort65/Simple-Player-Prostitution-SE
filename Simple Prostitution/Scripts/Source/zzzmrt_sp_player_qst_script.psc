@@ -31,7 +31,12 @@ event OnUpdate()
     setVars()
     bCheckVars = False
   endif
-  MainScript.snitch()
+  if (MainScript.InnWorkScript.doSendToSlavey && MainScript.canPlayerEnslaved())
+	MainScript.InnWorkScript.sendToSlavery()
+  else
+	MainScript.snitch()
+  endif
+  RegisterForSleep()
   if bInit
 	bInit = False
 	MainScript.log("Simple Player Prostitution started", True, True, 0)
@@ -44,7 +49,7 @@ endevent
 
 Event OnCellLoad()
   MainScript.GoToState("")
-	MainScript.SLSFR_Interface.SLSFR_toggle_WhoreFlag(MainScript.isPlayerDibeling() || MainScript.isPlayerWhoring())
+  MainScript.SLSFR_Interface.SLSFR_toggle_WhoreFlag(MainScript.isPlayerDibeling() || MainScript.isPlayerWhoring())
 EndEvent
 
 Event OnLocationChange(Location akOldLoc, Location akNewLoc)
@@ -60,12 +65,21 @@ Event OnLocationChange(Location akOldLoc, Location akNewLoc)
   MainScript.startCalcSTDCurePrice()
   MainScript.CheckAliases()
   MainScript.SLSFR_Interface.SLSFR_toggle_WhoreFlag(MainScript.isPlayerDibeling() || MainScript.isPlayerWhoring())
-  if (MainScript.whoreSnitch || MainScript.dibelSnitch || MainScript.angryDibelCustomer || MainScript.angryWhoreCustomer)
+  if (MainScript.whoreSnitch || MainScript.dibelSnitch || MainScript.angryDibelCustomer || MainScript.angryWhoreCustomer || MainScript.InnWorkScript.doSendToSlavey)
     RegisterForSingleUpdate(utility.randomFloat(10.0,30.0)) 
   endif
 endevent
 
 Event OnHit(ObjectReference akAggressor, Form akSource, Projectile akProjectile, bool abPowerAttack, bool abSneakAttack, bool abBashAttack, bool abHitBlocked)
+EndEvent
+
+Event OnSleepStop(bool abInterrupted)
+	if !abInterrupted
+		if (MainScript.InnWorkScript.doSendToSlavey && MainScript.canPlayerEnslaved())
+			Utility.wait(3.0)
+			MainScript.InnWorkScript.sendToSlavery()
+		 endif
+	endif
 EndEvent
 
 Event OnStartDetectAssault(string eventName, string strArg, float numArg, Form sender)

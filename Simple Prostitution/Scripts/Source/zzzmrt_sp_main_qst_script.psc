@@ -588,6 +588,8 @@ Float property fWhorePunishByUnpayClientChance = 0.0 Auto Hidden Conditional
 Float property fDibelPunishByUnpayClientChance = 0.0 Auto Hidden Conditional
 Bool property bNearbyMalesMayJoinSex = False Auto Hidden Conditional
 Bool property bNearbyFemalesMayJoinSex = False Auto Hidden Conditional
+FormList property forbidenLocations Auto
+FormList property forbidenQuests Auto
 
 Quest Property participantDetector Auto
 ReferenceAlias Property Participant1 Auto
@@ -614,6 +616,9 @@ Bool Property bPimpMayJoinSex = False Auto Hidden Conditional
 
 Float Property fMaxDistanceToJoinSex = 2000.0 Auto Hidden Conditional
 GlobalVariable property maxJoinSexDistance Auto
+
+Float Property fInnWorkDeadlineDays = 3.0 Auto Hidden Conditional
+Float property fInnWorkSendToSlaveryChance = 0.0 Auto Hidden Conditional
 
 function log(String sText, Bool bNotification = False, Bool bTrace = True, Int iSeverity = 1, Bool bForceNotif = False)
 	logText(sText, (bNotification && (bShowNotification || (iSeverity != 1) || bForceNotif)), bTrace, iSeverity, "SPP", sDefaultColor, sSuccessColor, sInfoColor, sWarningColor, sErrorColor, sSeparatorColor)
@@ -825,7 +830,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-	return getBaseVersion() + 0.62
+	return getBaseVersion() + 0.63
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
@@ -845,6 +850,12 @@ Bool function bRandomSexWithPlayer(Actor akActor, Bool bAggressive = False, Bool
 	Actor[] partners
 	iNumRapist = 0
 	if bGroup && (bNearbyMalesMayJoinSex || bNearbyFemalesMayJoinSex)
+		if participantDetector.isRunning()
+			participantDetector.stop()
+			while participantDetector.isRunning()
+				Utility.wait(0.1)
+			endwhile
+		endif
 		participantDetector.Start()
 		if Participant1.GetActorReference()
 			iTotalRapist += 1
@@ -878,14 +889,17 @@ Bool function bRandomSexWithPlayer(Actor akActor, Bool bAggressive = False, Bool
 				bResult = SexLabInterface.bHaveGroupSexWithPlayer(partners ,true, true)
 				if bResult
 					iNumRapist = partners.Length
+					participantDetector.stop()
 					return true
 				else
 				    log("Couldn't start the animation. Please check the log.", true, true, 3)
 					iNumRapist = 1
+					participantDetector.stop()
 					return SexLabInterface.bHaveRandomSexWithPlayer(akActor, bAggressive)
 				endif
 			endif
 			iNumRapist = 1
+			participantDetector.stop()
 			return SexLabInterface.bHaveRandomSexWithPlayer(akActor, bAggressive)
 		endif
 	elseif interface == "ostim"
@@ -894,14 +908,17 @@ Bool function bRandomSexWithPlayer(Actor akActor, Bool bAggressive = False, Bool
 				bResult = OStimInterface.bHaveGroupSexWithPlayer(partners ,true)
 				if bResult
 					iNumRapist = partners.Length
+					participantDetector.stop()
 					return true
 				else
 				    log("Couldn't start the animation. Please check the log.", true, true, 3)
 					iNumRapist = 1
+					participantDetector.stop()
 					return OStimInterface.bHaveRandomSexWithPlayer(akActor, bAggressive)
 				endif
 			endif
 			iNumRapist = 1
+			participantDetector.stop()
 			return OStimInterface.bHaveRandomSexWithPlayer(akActor, bAggressive)
 		endif   
 	elseif interface == "flowergirls"
@@ -910,18 +927,21 @@ Bool function bRandomSexWithPlayer(Actor akActor, Bool bAggressive = False, Bool
 				bResult = FlowerGirlsInterface.bHaveGroupSexWithPlayer(partners)
 				if bResult
 				    iNumRapist = partners.Length
+					participantDetector.stop()
 					registerForSingleUpdate(1.0)
 					return True
 				else
 					log("Couldn't start the animation. Please check the log.", true, true, 3)
 					if FlowerGirlsInterface.bHaveRandomSexWithPlayer(akActor)
 					    iNumRapist = 1
+						participantDetector.stop()
 						registerForSingleUpdate(1.0)
 						return True
 					endif
 				endif
 			elseif FlowerGirlsInterface.bHaveRandomSexWithPlayer(akActor)
 			    iNumRapist = 1
+				participantDetector.stop()
 				registerForSingleUpdate(1.0)
 				return True
 			endif
@@ -940,8 +960,10 @@ Bool function bRandomSexWithPlayer(Actor akActor, Bool bAggressive = False, Bool
 		Game.EnablePlayerControls()
 		registerForSingleUpdate(1.0)
 		iNumRapist = 1
+		participantDetector.stop()
 		return True
 	endif
+	participantDetector.stop()
 	return False
 endFunction
 
@@ -1052,6 +1074,12 @@ Bool Function bHaveGroupSex(String interface, Bool bAllowAggressive = False, Boo
 		while !bResult && (currentCustomerList.GetSize() > 0)
 			bAllowGroupSex = (randInt(0, 999) < (fGroupSexChance * 10) as Int)
 			if bAllowGroupSex && (bNearbyMalesMayJoinSex || bNearbyFemalesMayJoinSex) && (currentCustomerList.GetSize() < 4)
+				if participantDetector.isRunning()
+					participantDetector.stop()
+					while participantDetector.isRunning()
+						Utility.wait(0.1)
+					endwhile
+				endif
 				participantDetector.Start()
 				Bool bClientAdded = False
 				if Participant1.GetActorReference()
@@ -1535,7 +1563,12 @@ Function setRejectingCustomerResult(Actor akActor, Bool bWhore = False, Bool bDi
 		iRejectSlaveryChance = 0
 		iRejectMurderChance = 0 
 	endif
-
+	
+	if !isEnslavementAllowed()
+		log("Player currently can't be enslaved.")
+		iRejectSlaveryChance = 0
+	endif
+	
 	if (bApproach || !akActor.GetCrimeFaction())
 		iRejectReportChance = 0
 	endif
@@ -2590,7 +2623,11 @@ function setGlobalVaues()
 	BeggarFailureChance.SetValueInt(maxInt(0, (100.0 - fBeggarPersuadeChance) as Int))
 	BeggarNoSexOfferChance.SetValueInt(maxInt(0, (100.0 - fBeggarSexOfferChance) as Int))
 	maxApproachDistance.SetValueInt(fMaxApproachDistance as Int)
+	if !maxJoinSexDistance
+		maxJoinSexDistance = Game.GetFormFromFile(0x0000A6, "mrt_SimpleProstitution.esp") As GlobalVariable
+	endif
 	maxJoinSexDistance.SetValueInt(fMaxDistanceToJoinSex as Int)
+	InnWorkScript.InnWorkDeadLineDisplay.SetValueInt((fInnWorkDeadlineDays as Int) * 24)
 endfunction
 
 Int function positionChooser(int vaginalWeight = 50, int AnalWeight = 50, int oralWeight = 50)
@@ -2836,13 +2873,13 @@ function snitch()
 	endif
 	if bIsLicensesActive
 		if whoreSnitch
-			if !inSameCell(player, whoreSnitch)
+			if (whoreSnitch.isGuard() || !inSameCell(player, whoreSnitch))
 				snitch = whoreSnitch
 				whoreSnitch = None
 				dibelSnitch = None
 			endif
 		elseif dibelSnitch
-			if !inSameCell(player, whoreSnitch)
+			if (dibelSnitch.isGuard() || !inSameCell(player, dibelSnitch))
 				snitch = dibelSnitch
 				whoreSnitch = None
 				dibelSnitch = None
@@ -2850,18 +2887,18 @@ function snitch()
 		endif
 	endif
 	if (whoreSnitch || dibelSnitch) || (!snitch && (angryWhoreCustomer || angryDibelCustomer)) ;Snitches can't report so checking angry customers
-		if angryWhoreCustomer && !inSameCell(player, angryWhoreCustomer)
+		if angryWhoreCustomer && (angryWhoreCustomer.isGuard() || !inSameCell(player, angryWhoreCustomer))
 			snitch = angryWhoreCustomer
-		elseif angryDibelCustomer && !inSameCell(player, angryDibelCustomer)
+		elseif angryDibelCustomer && (angryDibelCustomer.isGuard() || !inSameCell(player, angryDibelCustomer))
 			snitch = angryDibelCustomer
 		else
-			RegisterForSingleUpdateGameTime(randInt(4,8) As Float)
+			RegisterForSingleUpdateGameTime(1.0)
 		endif
 	endif
 	if snitch
 		if snitch.getcrimefaction()
 			String msg
-			if (iTotalCrimes > 1) && ((snitch == angryDibelCustomer) || (snitch == angryWhoreCustomer))
+			if snitch.isGuard() || ((iTotalCrimes > 1) && ((snitch == angryDibelCustomer) || (snitch == angryWhoreCustomer)))
 				msg = "You have been reported to the guards."
 			elseif snitch.GetDisplayName()
 				msg = snitch.GetDisplayName() + " reported you."
@@ -3904,6 +3941,10 @@ State offeringToDibella
 		STD_Script.cureActorSTDs(player, False)
 		GoToState("")
 	endEvent
+	
+	event OnEndState()
+		participantDetector.stop()
+	endevent
 
 	event OnUpdateGameTime()
 		RegisterForSingleUpdateGameTime(1.0)
@@ -3961,6 +4002,7 @@ State raped
 	endEvent
 
 	event OnEndState()
+		participantDetector.stop()
 		bIsBusy = false
 	endEvent
 
@@ -4719,6 +4761,75 @@ Bool function isPlayerInBeastForm()
   endif
   return False
 endfunction
+
+
+Bool function canPlayerEnslaved()
+	if getState() != ""
+	elseif bIsBusy == true
+	elseif (player.IsOnMount() || player.isSwimming() || player.isFlying())
+	elseif isPlayerInBeastForm()
+	elseif isActorHavingSex(player)
+	elseif getPlayerDialogueTarget(bIsPyramidUtilsOK)
+	else
+		return isEnslavementAllowed()
+	endif
+	return false
+endFunction
+
+Bool function isEnslavementAllowed()
+	if isForbiddenQuestRunning()
+		return False
+	endif
+	if player.getParentCell().GetName() == "Dream" ;Fever Dreams
+		return False
+	endif
+	Location CurrLoc = Player.GetCurrentLocation()
+	if CurrLoc
+		 if CurrLoc.HasKeywordString("loctypejail")
+		 elseif isLocationForbidden(CurrLoc)
+		 else 
+			return true
+		 endif
+		 return False
+	endif
+	return true
+endFunction
+
+Bool Function isCurrentLocationForbidden()
+	Location CurrLoc = Player.GetCurrentLocation()
+	if CurrLoc
+		return isLocationForbidden(CurrLoc)
+	endif
+	return False
+endFunction
+
+Bool function isLocationForbidden(Location akLoc)
+  Int iIndex = forbidenLocations.GetSize()
+  while iIndex > 0
+    iIndex -= 1
+    Location ForbiddenLocation = forbidenLocations.GetAt(iIndex) As Location
+    if ForbiddenLocation
+      if akLoc == ForbiddenLocation || ForbiddenLocation.IsChild(akLoc)
+        return True
+      endif
+    endif
+  endwhile
+  return False
+endfunction
+
+Bool function isForbiddenQuestRunning()
+	Int iIndex = ForbidenQuests.GetSize()
+	while iIndex > 0
+		iIndex -= 1
+		Quest ForbidenQuest = ForbidenQuests.GetAt(iIndex) As Quest
+		if ForbidenQuest
+			if ForbidenQuest.IsRunning()
+				return True
+			endif
+		endif
+	endwhile
+	return False
+ endFunction
 
 
 

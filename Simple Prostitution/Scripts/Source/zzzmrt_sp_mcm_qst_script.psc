@@ -609,7 +609,7 @@ elseif (page == "$MRT_SP_PAGE_BEGGING")
 	_AddToggleOptionST("WHORE_ALLOW_AGGRESSIVE_TOGGLE", "$MRT_SP_WHORE_ALLOW_AGGRESSIVE_TOGGLE", MainScript.bWhoreAllowAggressive, flag)
     AddSliderOptionST("WHORE_OWNER_SHARE_SLIDER", "$MRT_SP_WHORE_OWNER_SHARE_SLIDER1", MainScript.fWhoreOwnerShare, "$MRT_SP_WHORE_OWNER_SHARE_SLIDER2", flag)
     OID_WHORE_POSITION_MENU = AddToggleOption("$MRT_SP_WHORE_POSITION_MENU_TOGGLE", MainScript.bWhorePositionMenu, flag)
-		AddSliderOptionST("WHORE_ORAL_CHANCE_SLIDER", "$MRT_SP_WHORE_ORAL_CHANCE_SLIDER1", MainScript.fWhoreOralChance, "$MRT_SP_WHORE_ORAL_CHANCE_SLIDER2", flag)
+	AddSliderOptionST("WHORE_ORAL_CHANCE_SLIDER", "$MRT_SP_WHORE_ORAL_CHANCE_SLIDER1", MainScript.fWhoreOralChance, "$MRT_SP_WHORE_ORAL_CHANCE_SLIDER2", flag)
     AddSliderOptionST("WHORE_ANAL_CHANCE_SLIDER", "$MRT_SP_WHORE_ANAL_CHANCE_SLIDER1", MainScript.fWhoreAnalChance, "$MRT_SP_WHORE_ANAL_CHANCE_SLIDER2", flag)
     AddSliderOptionST("WHORE_VAG_CHANCE_SLIDER", "$MRT_SP_WHORE_VAG_CHANCE_SLIDER1", MainScript.fWhoreVagChance, "$MRT_SP_WHORE_VAG_CHANCE_SLIDER2", flag)
     AddSliderOptionST("WHORE_ORAL_PAY_SLIDER", "$MRT_SP_WHORE_ORAL_PAY_SLIDER1", MainScript.fWhoreOralPay, "$MRT_SP_WHORE_ORAL_PAY_SLIDER2", flag)
@@ -630,13 +630,22 @@ elseif (page == "$MRT_SP_PAGE_BEGGING")
     endIf
     OID_WHORE_DD_CHANCE = AddSliderOption("$MRT_SP_WHORE_DD_CHANCE_SLIDER1", MainScript.fWhoreDeviceChance, "$MRT_SP_WHORE_DD_CHANCE_SLIDER2", flag)
     OID_WHORE_ENTRAPMENT_LVL_M = AddMenuOption("$MRT_SP_WHORE_ENTRAPMENT_LVL", sGetEntrapmentLevels()[MainScript.iWhoreEntrapmentLevel], flag)
-    SetCursorPosition(1)
+	SetCursorPosition(1)
     if MainScript.bModEnabled
       flag = OPTION_FLAG_NONE
     else
       flag = OPTION_FLAG_DISABLED
     endif
     whoreRejectOptions(flag)
+	AddEmptyOption()
+	if MainScript.bModEnabled
+      flag = OPTION_FLAG_NONE
+    else
+      flag = OPTION_FLAG_DISABLED
+    endIf
+	AddColoredHeader("$MRT_SP_HEAD_WHORE_INNWORK")
+	OID_WHORE_INNWORK_DEADLINE_DAYS = AddSliderOption("$MRT_SP_WHORE_INNWORK_DEADLINE_DAYS_SLIDER1", MainScript.fInnWorkDeadlineDays, "$MRT_SP_WHORE_INNWORK_DEADLINE_DAYS_SLIDER2", flag)
+	OID_WHORE_INNWORK_SLAVERY_CHANCE = AddSliderOption("$MRT_SP_WHORE_INNWORK_SLAVERY_CHANCE_SLIDER1", MainScript.fInnWorkSendToSlaveryChance, "$MRT_SP_WHORE_INNWORK_SLAVERY_CHANCE_SLIDER2", flag)
   elseif page == "$MRT_SP_PAGE_GENERAL"
     SetTitleText("$MRT_SP_PAGE_GENERAL")
     AddColoredHeader("$MRT_SP_HEAD_GENERAL")
@@ -3365,6 +3374,10 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
   MainScript.fWhoreDeviceChance = jsonutil.GetPathFloatValue(settings_path, "fWhoreDeviceChance", MainScript.fWhoreDeviceChance)
   MainScript.fDibelDeviceChance = jsonutil.GetPathFloatValue(settings_path, "fDibelDeviceChance", MainScript.fDibelDeviceChance)
   MainScript.fBeggarDeviceChance = jsonutil.GetPathFloatValue(settings_path, "fBeggarDeviceChance", MainScript.fBeggarDeviceChance)
+	
+	MainScript.fInnWorkSendToSlaveryChance = jsonutil.GetPathFloatValue(settings_path, "fInnWorkSendToSlaveryChance", MainScript.fInnWorkSendToSlaveryChance)
+	MainScript.fInnWorkDeadlineDays = jsonutil.GetPathFloatValue(settings_path, "fInnWorkDeadlineDays", MainScript.fInnWorkDeadlineDays)
+	
 	MainScript.fSLSFR_MinApproachRequiredFame = jsonutil.GetPathFloatValue(settings_path, "fSLSFR_MinApproachRequiredFame", MainScript.fSLSFR_MinApproachRequiredFame)
 	MainScript.fSLSFR_MinBeggarSexOfferRequiredFame = jsonutil.GetPathFloatValue(settings_path, "fSLSFR_MinBeggarSexOfferRequiredFame", MainScript.fSLSFR_MinBeggarSexOfferRequiredFame)
 	MainScript.fSLSFR_MinGainFame = jsonutil.GetPathFloatValue(settings_path, "fSLSFR_MinGainFame", MainScript.fSLSFR_MinGainFame)
@@ -3685,6 +3698,10 @@ Bool function saveUserSettingsPapyrus()
   jsonutil.SetPathFloatValue(settings_path, "fWhoreDeviceChance", MainScript.fWhoreDeviceChance)
   jsonutil.SetPathFloatValue(settings_path, "fDibelDeviceChance", MainScript.fDibelDeviceChance)
   jsonutil.SetPathFloatValue(settings_path, "fBeggarDeviceChance", MainScript.fBeggarDeviceChance)
+  
+	jsonutil.SetPathFloatValue(settings_path, "fInnWorkSendToSlaveryChance", MainScript.fInnWorkSendToSlaveryChance)
+	jsonutil.SetPathFloatValue(settings_path, "fInnWorkDeadlineDays", MainScript.fInnWorkDeadlineDays)
+	
 	jsonutil.SetPathFloatValue(settings_path, "fSLSFR_MinApproachRequiredFame", MainScript.fSLSFR_MinApproachRequiredFame)
 	jsonutil.SetPathFloatValue(settings_path, "fSLSFR_MinBeggarSexOfferRequiredFame", MainScript.fSLSFR_MinBeggarSexOfferRequiredFame)
 	jsonutil.SetPathFloatValue(settings_path, "fSLSFR_MinGainFame", MainScript.fSLSFR_MinGainFame)
@@ -4755,6 +4772,10 @@ event OnOptionHighlight(int option)
     SetInfoText("$MRT_SP_DESC_WHORE_ENTRAPMENT_LVL_M")
   elseif option == OID_DIBEL_ENTRAPMENT_LVL_M
     SetInfoText("$MRT_SP_DESC_DIBEL_ENTRAPMENT_LVL_M")
+  elseif option == OID_WHORE_INNWORK_DEADLINE_DAYS
+    SetInfoText("$MRT_SP_DESC_HORE_INNWORK_DEADLINE_DAYS")
+  elseif option == OID_WHORE_INNWORK_SLAVERY_CHANCE
+    SetInfoText("$MRT_SP_DESC_WHORE_INNWORK_SLAVERY_CHANCE")
   elseif option == OID_WHORE_DD_CHANCE
     SetInfoText("$MRT_SP_DESC_WHORE_DD_CHANCE")
   elseif option == OID_DIBEL_DD_CHANCE
@@ -5116,7 +5137,14 @@ event OnOptionSliderAccept(int option, float value)
 		SetSliderOptionValue(OID_DIBEL_DD_CHANCE, MainScript.fDibelDeviceChance, "$MRT_SP_DIBEL_DD_CHANCE_SLIDER2")
 	elseif option == OID_WHORE_DD_CHANCE
 		MainScript.fWhoreDeviceChance = value
-		SetSliderOptionValue(OID_WHORE_DD_CHANCE, MainScript.fWhoreDeviceChance, "$MRT_SP_WHORE_DD_CHANCE_SLIDER2")
+		SetSliderOptionValue(OID_WHORE_DD_CHANCE, MainScript.fWhoreDeviceChance, "$MRT_SP_WHORE_DD_CHANCE_SLIDER2")	
+	elseif option == OID_WHORE_INNWORK_DEADLINE_DAYS
+		MainScript.fInnWorkDeadlineDays = value
+		SetSliderOptionValue(OID_WHORE_INNWORK_DEADLINE_DAYS, MainScript.fInnWorkDeadlineDays, "$MRT_SP_WHORE_INNWORK_DEADLINE_DAYS_SLIDER2")
+		MainScript.setGlobalVaues()		
+	elseif option == OID_WHORE_INNWORK_SLAVERY_CHANCE
+		MainScript.fInnWorkSendToSlaveryChance = value
+		SetSliderOptionValue(OID_WHORE_INNWORK_SLAVERY_CHANCE, MainScript.fInnWorkSendToSlaveryChance, "$MRT_SP_WHORE_INNWORK_SLAVERY_CHANCE_SLIDER2")	
 	elseif option == OID_SLSFR_MIN_APPROACH_REQ_FAME
 		MainScript.fSLSFR_MinApproachRequiredFame = value
 		SetSliderOptionValue(OID_SLSFR_MIN_APPROACH_REQ_FAME, MainScript.fSLSFR_MinApproachRequiredFame, "$MRT_SP_SLSFR_MIN_APPROACH_REQ_FAME_SLIDER2")	
@@ -5673,6 +5701,16 @@ event OnOptionSliderOpen(int option)
     SetSliderDialogDefaultValue(0.0)
     SetSliderDialogRange(0, 100)
     SetSliderDialogInterval(0.1)
+  elseif option == OID_WHORE_INNWORK_DEADLINE_DAYS
+    SetSliderDialogStartValue(MainScript.fInnWorkDeadlineDays)
+    SetSliderDialogDefaultValue(3.0)
+    SetSliderDialogRange(1, 7)
+    SetSliderDialogInterval(1)
+  elseif option == OID_WHORE_INNWORK_SLAVERY_CHANCE
+    SetSliderDialogStartValue(MainScript.fInnWorkSendToSlaveryChance)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)	
   elseif option == OID_DIBEL_DD_CHANCE
     SetSliderDialogStartValue(MainScript.fDibelDeviceChance)
     SetSliderDialogDefaultValue(0.0)
@@ -6511,3 +6549,6 @@ Int OID_ALLY_MAY_JOIN_SEX
 Int OID_PIMP_MAY_JOIN_SEX
 
 Int OID_MAX_DISTANCE_JOIN_SEX 
+
+Int OID_WHORE_INNWORK_DEADLINE_DAYS
+Int OID_WHORE_INNWORK_SLAVERY_CHANCE

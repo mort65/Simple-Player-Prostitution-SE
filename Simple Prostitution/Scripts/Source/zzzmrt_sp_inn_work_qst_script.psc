@@ -20,6 +20,9 @@ Faction Property InnWorkDoneFaction Auto
 GlobalVariable property RoomCost Auto
 GlobalVariable property PlayerDebtDisplay Auto
 GlobalVariable property LicensePriceDisplay Auto
+GlobalVariable property InnWorkDeadLineDisplay Auto
+Message Property sendToSlaveryMessage Auto
+Bool property doSendToSlavey = False Auto Hidden Conditional
 
 
 Function checkStatus()
@@ -98,22 +101,33 @@ Function resetWhoring()
 	iPlayerDebt = 0
 	bPlayerPaidForRoom = False
 	bPlayerRentedRoom = False
+	doSendToSlavey = False
 	InnOwner.Clear()
 	SetStage(0)
 EndFunction
 
 Function finishWhoring()
-	InnOwner.GetActorReference() && InnOwner.GetActorReference().AddToFaction(InnWorkDoneFaction)
 	if InnOwner.GetActorReference() && (iPlayerDebt > 0)
 		Actor ownerActor = InnOwner.GetActorReference()
-		ownerActor.getcrimefaction().ModCrimeGold(maxInt(MainScript.iCrimeBounty, iPlayerDebt))
-		if ownerActor.GetDisplayName()
-			MainScript.log(ownerActor.GetDisplayName() + " reported you for not paying your debt.", True, True, 2)
+		if doSendToSlavey || (MainScript.randInt(0, 999) < (MainScript.fInnWorkSendToSlaveryChance * 10) as Int)
+			if doSendToSlavey
+				sendToSlavery()
+			else
+				doSendToSlavey = True
+				return
+			endif
 		else
-			MainScript.log("Inn owner reported you for not paying your debt.", True, True, 2)
+			ownerActor.getcrimefaction().ModCrimeGold(maxInt(MainScript.iCrimeBounty, iPlayerDebt))
+			if ownerActor.GetDisplayName()
+				MainScript.log(ownerActor.GetDisplayName() + " reported you for not paying your debt.", True, True, 2)
+			else
+				MainScript.log("Inn owner reported you for not paying your debt.", True, True, 2)
+			endif
+			InnOwner.GetActorReference() && InnOwner.GetActorReference().AddToFaction(InnWorkDoneFaction)
+			fail()
 		endif
-		fail()
 	else
+		InnOwner.GetActorReference() && InnOwner.GetActorReference().AddToFaction(InnWorkDoneFaction)
 		Succeed()
 	endif
 	iPlayerDebt = 0
@@ -121,6 +135,11 @@ Function finishWhoring()
 	bPlayerRentedRoom = False
 	InnOwner.Clear()
 EndFunction
+
+function sendToSlavery()
+	GoToState("SendToSlavery")
+EndFunction
+
 
 Function updateDebt(Int iAmount)
 	iPlayerDebt = maxInt(0, iPlayerDebt + iAmount)
@@ -140,11 +159,31 @@ Bool Function innWorkOwnerHere()
 EndFunction
 
 Function Fail()
+	doSendToSlavey = False
 	SetStage(30)
 EndFunction
 
-
 Function Succeed()
+	doSendToSlavey = False
 	SetStage(40)
 EndFunction
+
+State SendToSlavery
+	Event OnBeginState()
+		if doSendToSlavey && isRunning() && ((GetStage() == 10) || (GetStage() == 20))
+			InnOwner.GetActorReference() && InnOwner.GetActorReference().AddToFaction(InnWorkDoneFaction)
+			if InnOwner.GetActorReference() && (iPlayerDebt > 0)
+				fail()
+				sendToSlaveryMessage.Show()
+				sendModEvent("SSLV Entry")
+			else
+				Succeed()
+			endif
+		endif
+		GoToState("")
+	EndEvent
+	
+	function sendToSlavery()
+	EndFunction
+endState
 

@@ -34,11 +34,11 @@ Function addEnchantedRewardToPlayer(Float fRewardChance = 100.0, Float fRewardEn
 		return
 	endif
 	Form Item = GetRandomItemFromLeveledList(MainScript.LItemTempleReward, MainScript.bIsPO3ExtenderActive)
-	String sName = item.GetName()
 	if !isFormValid(Item)
 	    mainscript.log("No valid reward found.")
 		return
 	endif
+	String sName = item.GetName()
 	mainscript.log("The extra reward is " + Item + " | Available LeveledLists/Items = " + MainScript.LItemTempleReward.GetNumForms())
 	if (mainscript.randInt(0, 999) >= (fRewardEnchantedChance * 10) as Int) || (!(Item As Armor) && !(Item As Weapon)) || ((Item As Armor) && (Item As Armor).GetEnchantment()) || ((Item As Weapon) && (Item As Weapon).GetEnchantment())
 		mainscript.log("Reward won't be enchanted.")
