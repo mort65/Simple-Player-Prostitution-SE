@@ -32,6 +32,7 @@ Bool property doSendToSlavey = False Auto Hidden Conditional
 Faction Property TempleLoanFailedFaction Auto
 Actor property player auto
 Int property iLoanIndex = -1 Auto Hidden Conditional
+Int property maxGold = 65534 auto Hidden Conditional
 
 Function updateDebt(Int iAmount, Bool bLog = False)
 	if iAmount > 0
@@ -55,26 +56,26 @@ Function setLoanValues()
 	fDailyInterest = (MainScript.iTempleLoanInterestDaily / 100.0)
 	bCompoundInterest = MainScript.bTempleLoanInterestCompound
 	fLoanSpeechMult = MainScript.fTempleLoanSpeechMult
-	iGoldToLend1 = minInt(65534, (20.0 * fLoanSpeechMult) as Int) ; largest integer for gold is 65,535
-	iGoldToLend2 = minInt(65534, (40.0 * fLoanSpeechMult) as Int)
-	iGoldToLend3 = minInt(65534, (60.0 * fLoanSpeechMult) as Int)
-	iGoldToLend4 = minInt(65534, (80.0 * fLoanSpeechMult) as Int)
-	iGoldToLend5 = minInt(65534, (100.0 * fLoanSpeechMult) as Int)
+	iGoldToLend1 = minInt(maxGold, (20.0 * fLoanSpeechMult) as Int) ; largest integer for gold is 65,535
+	iGoldToLend2 = minInt(maxGold, (40.0 * fLoanSpeechMult) as Int)
+	iGoldToLend3 = minInt(maxGold, (60.0 * fLoanSpeechMult) as Int)
+	iGoldToLend4 = minInt(maxGold, (80.0 * fLoanSpeechMult) as Int)
+	iGoldToLend5 = minInt(maxGold, (100.0 * fLoanSpeechMult) as Int)
 	int iGold = player.getItemCount(MainScript.gold)
-	if ((iGold + iGoldToLend1) > 65534)
-		iGoldToLend1 = maxInt(0, (65534 - iGold))
+	if ((iGold + iGoldToLend1) > maxGold)
+		iGoldToLend1 = maxInt(0, (maxGold - iGold))
 	endif
-	if ((iGold + iGoldToLend2) > 65534)
-		iGoldToLend2 = maxInt(0, (65534 - iGold))
+	if ((iGold + iGoldToLend2) > maxGold)
+		iGoldToLend2 = maxInt(0, (maxGold - iGold))
 	endif
-	if ((iGold + iGoldToLend3) > 65534)
-		iGoldToLend3 = maxInt(0, (65534 - iGold))
+	if ((iGold + iGoldToLend3) > maxGold)
+		iGoldToLend3 = maxInt(0, (maxGold - iGold))
 	endif
-	if ((iGold + iGoldToLend4) > 65534)
-		iGoldToLend4 = maxInt(0, (65534 - iGold))
+	if ((iGold + iGoldToLend4) > maxGold)
+		iGoldToLend4 = maxInt(0, (maxGold - iGold))
 	endif
-	if ((iGold + iGoldToLend5) > 65534)
-		iGoldToLend5 = maxInt(0, (65534 - iGold))
+	if ((iGold + iGoldToLend5) > maxGold)
+		iGoldToLend5 = maxInt(0, (maxGold - iGold))
 	endif
 	GoldToLendDisplay1.SetValueInt(iGoldToLend1)
 	GoldToLendDisplay2.SetValueInt(iGoldToLend2)
@@ -115,7 +116,7 @@ Function FinishLoan()
 				return
 			endif
 		else
-			CrimeFactionReach.ModCrimeGold(maxInt(MainScript.iCrimeBounty, iPlayerDebt))
+			CrimeFactionReach.ModCrimeGold(maxInt(0, minInt(maxGold - iPlayerDebt, iPlayerDebt)))
 			MainScript.log("You reported by the temple for not paying your debt.", True, True, 2)
 			fail()
 		endif
