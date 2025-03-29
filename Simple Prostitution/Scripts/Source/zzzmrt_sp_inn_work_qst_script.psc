@@ -109,9 +109,11 @@ EndFunction
 Function finishWhoring()
 	if InnOwner.GetActorReference() && (iPlayerDebt > 0)
 		Actor ownerActor = InnOwner.GetActorReference()
-		if doSendToSlavey || (MainScript.randInt(0, 999) < (MainScript.fInnWorkSendToSlaveryChance * 10) as Int)
+		if doSendToSlavey || !ownerActor.getcrimefaction() || (MainScript.randInt(0, 999) < (MainScript.fInnWorkSendToSlaveryChance * 10) as Int)
 			if doSendToSlavey
-				sendToSlavery()
+				if MainScript.canPlayerEnslaved()
+					sendToSlavery()
+				endif
 			else
 				doSendToSlavey = True
 				return
@@ -179,6 +181,8 @@ State SendToSlavery
 			else
 				Succeed()
 			endif
+		else
+			doSendToSlavey = False
 		endif
 		GoToState("")
 	EndEvent

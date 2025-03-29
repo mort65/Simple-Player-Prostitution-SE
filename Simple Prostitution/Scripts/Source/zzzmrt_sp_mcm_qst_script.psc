@@ -592,6 +592,18 @@ elseif (page == "$MRT_SP_PAGE_BEGGING")
       flag = OPTION_FLAG_DISABLED
     endif
     dibelRejectOptions(flag)
+	addEmptyOption()
+	AddColoredHeader("$MRT_SP_HEAD_DIBEL_TEMPLE_LOAN")
+	if (MainScript.bModEnabled)
+      flag = OPTION_FLAG_NONE
+    else
+      flag = OPTION_FLAG_DISABLED
+    endif
+	OID_DIBEL_LOAN_INTEREST_COMPOUND = AddToggleOption("$MRT_SP_DIBEL_LOAN_INTEREST_COMPOUND_TOGGLE", MainScript.bTempleLoanInterestCompound, flag)
+	OID_DIBEL_LOAN_INTEREST_DAILY = AddSliderOption("$MRT_SP_DIBEL_LOAN_INTEREST_DAILY_SLIDER1", MainScript.iTempleLoanInterestDaily, "$MRT_SP_DIBEL_LOAN_INTEREST_DAILY_SLIDER2", flag)
+	OID_DIBEL_LOAN_SPEECH_MULT = AddSliderOption("$MRT_SP_DIBEL_LOAN_SPEECH_MULT_SLIDER1", MainScript.fTempleLoanSpeechMult, "$MRT_SP_DIBEL_LOAN_SPEECH_MULT_SLIDER2", flag)
+	OID_DIBEL_LOAN_DEADLINE_DAYS = AddSliderOption("$MRT_SP_DIBEL_LOAN_DEADLINE_DAYS_SLIDER1", MainScript.fTempleLoanDeadlineDays, "$MRT_SP_DIBEL_LOAN_DEADLINE_DAYS_SLIDER2", flag)
+	OID_DIBEL_LOAN_SLAVERY_CHANCE = AddSliderOption("$MRT_SP_DIBEL_LOAN_SLAVERY_CHANCE_SLIDER1", MainScript.fTempleLoanSendToSlaveryChance, "$MRT_SP_DIBEL_LOAN_SLAVERY_CHANCE_SLIDER2", flag)
   elseif (page == "$MRT_SP_PAGE_PROSTITUTION")
     SetTitleText("$MRT_SP_PAGE_PROSTITUTION")
     AddColoredHeader("$MRT_SP_HEAD_WHORE")
@@ -3182,6 +3194,7 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
   MainScript.bBeggarPayUseBaseSpeech = jsonutil.GetPathIntValue(settings_path, "bBeggarPayUseBaseSpeech", MainScript.bBeggarPayUseBaseSpeech as int)
   MainScript.bWhorePayUseBaseSpeech = jsonutil.GetPathIntValue(settings_path, "bWhorePayUseBaseSpeech", MainScript.bWhorePayUseBaseSpeech as int)
   MainScript.bDibelPayUseBaseSpeech = jsonutil.GetPathIntValue(settings_path, "bDibelPayUseBaseSpeech", MainScript.bDibelPayUseBaseSpeech as int)
+  MainScript.bTempleLoanInterestCompound = jsonutil.GetPathIntValue(settings_path, "bTempleLoanInterestCompound", MainScript.bTempleLoanInterestCompound as int)
   MainScript.bWhorePayAfterSex = jsonutil.GetPathIntValue(settings_path, "bWhorePayAfterSex", MainScript.bWhorePayAfterSex as int)
   MainScript.bDibelPayAfterSex = jsonutil.GetPathIntValue(settings_path, "bDibelPayAfterSex", MainScript.bDibelPayAfterSex as int)
   MainScript.bWhorePositionMenu = jsonutil.GetPathIntValue(settings_path, "bWhorePositionMenu", MainScript.bWhorePositionMenu as int)
@@ -3219,6 +3232,7 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
 	MainScript.iSLA_MinBeggarSexOfferArousal = jsonutil.GetPathIntValue(settings_path, "iSLA_MinBeggarSexOfferArousal", MainScript.iSLA_MinBeggarSexOfferArousal)
 	MainScript.iSLA_MinWhoreCustomerArousal = jsonutil.GetPathIntValue(settings_path, "iSLA_MinWhoreCustomerArousal", MainScript.iSLA_MinWhoreCustomerArousal)
 	MainScript.iSLA_MinDibelCustomerArousal = jsonutil.GetPathIntValue(settings_path, "iSLA_MinDibelCustomerArousal", MainScript.iSLA_MinDibelCustomerArousal)
+	MainScript.iTempleLoanInterestDaily = jsonutil.GetPathIntValue(settings_path, "iTempleLoanInterestDaily", MainScript.iTempleLoanInterestDaily)
 	
 	MainScript.iDefaultColor = jsonutil.GetPathIntValue(settings_path, "iDefaultColor", MainScript.iDefaultColor)
 	MainScript.sDefaultColor = Stringutil.Substring(sDecToHex(MainScript.iDefaultColor),2)
@@ -3374,6 +3388,11 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
   MainScript.fWhoreDeviceChance = jsonutil.GetPathFloatValue(settings_path, "fWhoreDeviceChance", MainScript.fWhoreDeviceChance)
   MainScript.fDibelDeviceChance = jsonutil.GetPathFloatValue(settings_path, "fDibelDeviceChance", MainScript.fDibelDeviceChance)
   MainScript.fBeggarDeviceChance = jsonutil.GetPathFloatValue(settings_path, "fBeggarDeviceChance", MainScript.fBeggarDeviceChance)
+  
+  MainScript.fTempleLoanSpeechMult = jsonutil.GetPathFloatValue(settings_path, "fTempleLoanSpeechMult", MainScript.fTempleLoanSpeechMult)
+  MainScript.fTempleLoanDeadlineDays = jsonutil.GetPathFloatValue(settings_path, "fTempleLoanDeadlineDays", MainScript.fTempleLoanDeadlineDays)
+  MainScript.fTempleLoanSendToSlaveryChance = jsonutil.GetPathFloatValue(settings_path, "fTempleLoanSendToSlaveryChance", MainScript.fTempleLoanSendToSlaveryChance)
+  
 	
 	MainScript.fInnWorkSendToSlaveryChance = jsonutil.GetPathFloatValue(settings_path, "fInnWorkSendToSlaveryChance", MainScript.fInnWorkSendToSlaveryChance)
 	MainScript.fInnWorkDeadlineDays = jsonutil.GetPathFloatValue(settings_path, "fInnWorkDeadlineDays", MainScript.fInnWorkDeadlineDays)
@@ -3511,6 +3530,7 @@ Bool function saveUserSettingsPapyrus()
 	jsonutil.SetPathIntValue(settings_path, "bBeggarPayUseBaseSpeech", MainScript.bBeggarPayUseBaseSpeech as Int)
 	jsonutil.SetPathIntValue(settings_path, "bWhorePayUseBaseSpeech", MainScript.bWhorePayUseBaseSpeech as Int)
 	jsonutil.SetPathIntValue(settings_path, "bDibelPayUseBaseSpeech", MainScript.bDibelPayUseBaseSpeech as Int)
+	jsonutil.SetPathIntValue(settings_path, "bTempleLoanInterestCompound", MainScript.bTempleLoanInterestCompound as Int)
 	jsonutil.SetPathIntValue(settings_path, "bWhorePayAfterSex", MainScript.bWhorePayAfterSex as Int)
 	jsonutil.SetPathIntValue(settings_path, "bDibelPayAfterSex", MainScript.bDibelPayAfterSex as Int)
 	jsonutil.SetPathIntValue(settings_path, "bWhorePositionMenu", MainScript.bWhorePositionMenu as Int)
@@ -3547,6 +3567,7 @@ Bool function saveUserSettingsPapyrus()
 	Jsonutil.SetPathIntValue(settings_path, "iSLA_MinBeggarSexOfferArousal", MainScript.iSLA_MinBeggarSexOfferArousal)
 	Jsonutil.SetPathIntValue(settings_path, "iSLA_MinWhoreCustomerArousal", MainScript.iSLA_MinWhoreCustomerArousal)
 	Jsonutil.SetPathIntValue(settings_path, "iSLA_MinDibelCustomerArousal", MainScript.iSLA_MinDibelCustomerArousal)
+	Jsonutil.SetPathIntValue(settings_path, "iTempleLoanInterestDaily", MainScript.iTempleLoanInterestDaily)
 	
 	Jsonutil.SetPathIntValue(settings_path, "iDefaultColor", MainScript.iDefaultColor)
 	Jsonutil.SetPathIntValue(settings_path, "iSuccessColor", MainScript.iSuccessColor)
@@ -3698,6 +3719,10 @@ Bool function saveUserSettingsPapyrus()
   jsonutil.SetPathFloatValue(settings_path, "fWhoreDeviceChance", MainScript.fWhoreDeviceChance)
   jsonutil.SetPathFloatValue(settings_path, "fDibelDeviceChance", MainScript.fDibelDeviceChance)
   jsonutil.SetPathFloatValue(settings_path, "fBeggarDeviceChance", MainScript.fBeggarDeviceChance)
+  
+  jsonutil.SetPathFloatValue(settings_path, "fTempleLoanSpeechMult", MainScript.fTempleLoanSpeechMult)
+  jsonutil.SetPathFloatValue(settings_path, "fTempleLoanDeadlineDays", MainScript.fTempleLoanDeadlineDays)
+  jsonutil.SetPathFloatValue(settings_path, "fTempleLoanSendToSlaveryChance", MainScript.fTempleLoanSendToSlaveryChance)
   
 	jsonutil.SetPathFloatValue(settings_path, "fInnWorkSendToSlaveryChance", MainScript.fInnWorkSendToSlaveryChance)
 	jsonutil.SetPathFloatValue(settings_path, "fInnWorkDeadlineDays", MainScript.fInnWorkDeadlineDays)
@@ -4245,6 +4270,9 @@ event OnOptionSelect(int option)
 	elseif option == OID_DIBEL_PAY_USE_BASE_SPEECH
 		MainScript.bDibelPayUseBaseSpeech = !MainScript.bDibelPayUseBaseSpeech
 		SetToggleOptionValue(option, MainScript.bDibelPayUseBaseSpeech)
+	elseif option == OID_DIBEL_LOAN_INTEREST_COMPOUND
+		MainScript.bTempleLoanInterestCompound = !MainScript.bTempleLoanInterestCompound
+		SetToggleOptionValue(option, MainScript.bTempleLoanInterestCompound)
 	elseif option == OID_WHORE_NOTPAY_ONLY_IF_ALONE
 		MainScript.bWhoreNotPayOnlyIfAlone = !MainScript.bWhoreNotPayOnlyIfAlone
 		SetToggleOptionValue(option, MainScript.bWhoreNotPayOnlyIfAlone)
@@ -4411,6 +4439,9 @@ event OnOptionDefault(int option)
 	elseif option == OID_DIBEL_PAY_USE_BASE_SPEECH
 		MainScript.bDibelPayUseBaseSpeech = True
 		SetToggleOptionValue(option, MainScript.bDibelPayUseBaseSpeech)
+	elseif option == OID_DIBEL_LOAN_INTEREST_COMPOUND
+		MainScript.bTempleLoanInterestCompound = False
+		SetToggleOptionValue(option, MainScript.bTempleLoanInterestCompound)
 	elseif option == OID_WHORE_NOTPAY_ONLY_IF_ALONE
 		MainScript.bWhoreNotPayOnlyIfAlone = False
 		SetToggleOptionValue(option, MainScript.bWhoreNotPayOnlyIfAlone)
@@ -4664,6 +4695,8 @@ event OnOptionHighlight(int option)
     SetInfoText("$MRT_SP_DESC_DIBEL_POSITION_MENU")
   elseif option == OID_DIBEL_PAY_USE_BASE_SPEECH
     SetInfoText("$MRT_SP_DESC_DIBEL_PAY_USE_BASE_SPEECH")
+  elseif option == OID_DIBEL_LOAN_INTEREST_COMPOUND
+    SetInfoText("$MRT_SP_DESC_DIBEL_LOAN_INTEREST_COMPOUND")
   elseif option == OID_WHORE_NOTPAY_CHANCE
     SetInfoText("$MRT_SP_DESC_WHORE_NOTPAY_CHANCE")
   elseif option == OID_DIBEL_NOTPAY_CHANCE
@@ -4766,7 +4799,7 @@ event OnOptionHighlight(int option)
     SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_ENTRAPMENT_LVL_M")
   elseif option == OID_BEG_ENTRAPMENT_LVL_M
     SetInfoText("$MRT_SP_DESC_BEG_ENTRAPMENT_LVL_M")
-	elseif option == OID_DD_Set_M
+  elseif option == OID_DD_Set_M
     SetInfoText("$MRT_SP_DESC_DD_Set_M")
   elseif option == OID_WHORE_ENTRAPMENT_LVL_M
     SetInfoText("$MRT_SP_DESC_WHORE_ENTRAPMENT_LVL_M")
@@ -4780,6 +4813,14 @@ event OnOptionHighlight(int option)
     SetInfoText("$MRT_SP_DESC_WHORE_DD_CHANCE")
   elseif option == OID_DIBEL_DD_CHANCE
     SetInfoText("$MRT_SP_DESC_DIBEL_DD_CHANCE")
+  elseif option == OID_DIBEL_LOAN_INTEREST_DAILY
+    SetInfoText("$MRT_SP_DESC_DIBEL_LOAN_INTEREST_DAILY")
+  elseif option == OID_DIBEL_LOAN_SPEECH_MULT
+    SetInfoText("$MRT_SP_DESC_DIBEL_LOAN_SPEECH_MULT")
+  elseif option == OID_DIBEL_LOAN_DEADLINE_DAYS
+    SetInfoText("$MRT_SP_DESC_DIBEL_LOAN_DEADLINE_DAYS")
+  elseif option == OID_DIBEL_LOAN_SLAVERY_CHANCE
+    SetInfoText("$MRT_SP_DESC_DIBEL_LOAN_SLAVERY_CHANCE")
   elseif option == OID_BEG_DD_CHANCE
     SetInfoText("$MRT_SP_DESC_BEG_DD_CHANCE")
   elseif option == OID_BEG_REJ_FEMALE_DD
@@ -5129,12 +5170,22 @@ event OnOptionSliderAccept(int option, float value)
 	elseif option == OID_DIBEL_DD_CHANCE
 		MainScript.fDibelDeviceChance = value
 		SetSliderOptionValue(OID_DIBEL_DD_CHANCE, MainScript.fDibelDeviceChance, "$MRT_SP_DIBEL_DD_CHANCE_SLIDER2")
+	elseif option == OID_DIBEL_LOAN_INTEREST_DAILY
+		MainScript.iTempleLoanInterestDaily = value as int
+		SetSliderOptionValue(OID_DIBEL_LOAN_INTEREST_DAILY, MainScript.iTempleLoanInterestDaily, "$MRT_SP_DIBEL_LOAN_INTEREST_DAILY_SLIDER2")
+	elseif option == OID_DIBEL_LOAN_SPEECH_MULT
+		MainScript.fTempleLoanSpeechMult = value
+		SetSliderOptionValue(OID_DIBEL_LOAN_SPEECH_MULT, MainScript.fTempleLoanSpeechMult, "$MRT_SP_DIBEL_LOAN_SPEECH_MULT_SLIDER2")
+	elseif option == OID_DIBEL_LOAN_DEADLINE_DAYS
+		MainScript.fTempleLoanDeadlineDays = value
+		SetSliderOptionValue(OID_DIBEL_LOAN_DEADLINE_DAYS, MainScript.fTempleLoanDeadlineDays, "$MRT_SP_DIBEL_LOAN_DEADLINE_DAYS_SLIDER2")
+		MainScript.setGlobalVaues()	
+	elseif option == OID_DIBEL_LOAN_SLAVERY_CHANCE
+		MainScript.fTempleLoanSendToSlaveryChance = value
+		SetSliderOptionValue(OID_DIBEL_LOAN_SLAVERY_CHANCE, MainScript.fTempleLoanSendToSlaveryChance, "$MRT_SP_DIBEL_LOAN_SLAVERY_CHANCE_SLIDER2")
 	elseif option == OID_BEG_DD_CHANCE
 		MainScript.fBeggarDeviceChance = value
 		SetSliderOptionValue(OID_BEG_DD_CHANCE, MainScript.fBeggarDeviceChance, "$MRT_SP_BEG_DD_CHANCE_SLIDER2")
-	elseif option == OID_DIBEL_DD_CHANCE
-		MainScript.fDibelDeviceChance = value
-		SetSliderOptionValue(OID_DIBEL_DD_CHANCE, MainScript.fDibelDeviceChance, "$MRT_SP_DIBEL_DD_CHANCE_SLIDER2")
 	elseif option == OID_WHORE_DD_CHANCE
 		MainScript.fWhoreDeviceChance = value
 		SetSliderOptionValue(OID_WHORE_DD_CHANCE, MainScript.fWhoreDeviceChance, "$MRT_SP_WHORE_DD_CHANCE_SLIDER2")	
@@ -5704,7 +5755,7 @@ event OnOptionSliderOpen(int option)
   elseif option == OID_WHORE_INNWORK_DEADLINE_DAYS
     SetSliderDialogStartValue(MainScript.fInnWorkDeadlineDays)
     SetSliderDialogDefaultValue(3.0)
-    SetSliderDialogRange(1, 7)
+    SetSliderDialogRange(1, 31)
     SetSliderDialogInterval(1)
   elseif option == OID_WHORE_INNWORK_SLAVERY_CHANCE
     SetSliderDialogStartValue(MainScript.fInnWorkSendToSlaveryChance)
@@ -5716,7 +5767,27 @@ event OnOptionSliderOpen(int option)
     SetSliderDialogDefaultValue(0.0)
     SetSliderDialogRange(0, 100)
     SetSliderDialogInterval(0.1)
-	elseif option == OID_SLA_MIN_PC_AROUSAL
+  elseif option == OID_DIBEL_LOAN_INTEREST_DAILY
+    SetSliderDialogStartValue(MainScript.iTempleLoanInterestDaily)
+    SetSliderDialogDefaultValue(5.0)
+    SetSliderDialogRange(0, 10)
+    SetSliderDialogInterval(1)	
+  elseif option == OID_DIBEL_LOAN_SPEECH_MULT
+    SetSliderDialogStartValue(MainScript.fTempleLoanSpeechMult)
+    SetSliderDialogDefaultValue(10.0)
+    SetSliderDialogRange(1, 100)
+    SetSliderDialogInterval(1)
+  elseif option == OID_DIBEL_LOAN_DEADLINE_DAYS
+    SetSliderDialogStartValue(MainScript.fTempleLoanDeadlineDays)
+    SetSliderDialogDefaultValue(7.0)
+    SetSliderDialogRange(1, 31)
+    SetSliderDialogInterval(1)
+  elseif option == OID_DIBEL_LOAN_SLAVERY_CHANCE
+    SetSliderDialogStartValue(MainScript.fTempleLoanSendToSlaveryChance)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(0.1)	
+  elseif option == OID_SLA_MIN_PC_AROUSAL
 	  SetSliderDialogStartValue(MainScript.iSLA_MinPCArousal)
     SetSliderDialogDefaultValue(0.0)
     SetSliderDialogRange(0, 100)
@@ -6552,3 +6623,9 @@ Int OID_MAX_DISTANCE_JOIN_SEX
 
 Int OID_WHORE_INNWORK_DEADLINE_DAYS
 Int OID_WHORE_INNWORK_SLAVERY_CHANCE
+
+Int OID_DIBEL_LOAN_INTEREST_DAILY
+Int OID_DIBEL_LOAN_SPEECH_MULT
+Int OID_DIBEL_LOAN_DEADLINE_DAYS
+Int OID_DIBEL_LOAN_SLAVERY_CHANCE
+Int OID_DIBEL_LOAN_INTEREST_COMPOUND

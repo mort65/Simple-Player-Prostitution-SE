@@ -18,7 +18,9 @@ zzzmrt_sp_dibellan_lust_qst_script property dibellan_lust_qst_script auto
 zzzmrt_sp_player_qst_script	Property playerScript Auto
 zzzmrt_sp_reapproach_qst_script	Property ReApproachScript Auto
 zzzmrt_sp_inn_work_qst_script property InnWorkScript Auto
+zzzmrt_sp_temple_loan_qst_script property TempleLoanScript Auto
 zzzmrt_sp_reward_handler_script property RewardHandlerScript Auto
+Quest Property TempleLoanQst Auto
 Quest Property InnWorkQst Auto
 Quest Property SLA_Interface_Qst Auto
 Quest Property OStimInterfaceQst Auto
@@ -620,6 +622,12 @@ GlobalVariable property maxJoinSexDistance Auto
 Float Property fInnWorkDeadlineDays = 3.0 Auto Hidden Conditional
 Float property fInnWorkSendToSlaveryChance = 0.0 Auto Hidden Conditional
 
+Int property iTempleLoanInterestDaily = 5 Auto Hidden Conditional
+Bool property bTempleLoanInterestCompound = False Auto Hidden Conditional
+Float Property fTempleLoanSpeechMult = 10.0 Auto Hidden Conditional
+Float Property fTempleLoanDeadlineDays = 7.0 Auto Hidden Conditional
+Float property fTempleLoanSendToSlaveryChance = 0.0 Auto Hidden Conditional
+
 function log(String sText, Bool bNotification = False, Bool bTrace = True, Int iSeverity = 1, Bool bForceNotif = False)
 	logText(sText, (bNotification && (bShowNotification || (iSeverity != 1) || bForceNotif)), bTrace, iSeverity, "SPP", sDefaultColor, sSuccessColor, sInfoColor, sWarningColor, sErrorColor, sSeparatorColor)
 endFunction
@@ -651,7 +659,11 @@ function shutDown()
 		TempleEscort_Qst.setstage(10)
 	endif
 	if InnWorkQst.isRunning()
+		InnWorkScript.iPlayerDebt = 0
 		InnWorkScript.Succeed()
+	endif
+	If TempleLoanQst.IsRunning()
+		TempleLoanScript.Succeed()
 	endif
 	currentAllowedLocations.Revert()
 	player.removeFromFaction(whoreFaction)
@@ -830,7 +842,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-	return getBaseVersion() + 0.63
+	return getBaseVersion() + 0.64
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
@@ -2628,6 +2640,7 @@ function setGlobalVaues()
 	endif
 	maxJoinSexDistance.SetValueInt(fMaxDistanceToJoinSex as Int)
 	InnWorkScript.InnWorkDeadLineDisplay.SetValueInt((fInnWorkDeadlineDays as Int) * 24)
+	TempleLoanScript.TempleLoanDeadLineDisplay.SetValueInt(fTempleLoanDeadlineDays as Int)
 endfunction
 
 Int function positionChooser(int vaginalWeight = 50, int AnalWeight = 50, int oralWeight = 50)

@@ -31,8 +31,8 @@ event OnUpdate()
     setVars()
     bCheckVars = False
   endif
-  if (MainScript.InnWorkScript.doSendToSlavey && MainScript.canPlayerEnslaved())
-	MainScript.InnWorkScript.sendToSlavery()
+  if ((MainScript.InnWorkScript.doSendToSlavey || MainScript.TempleLoanScript.doSendToSlavey) && MainScript.canPlayerEnslaved())
+	sendToSlavery()
   else
 	MainScript.snitch()
   endif
@@ -62,6 +62,9 @@ Event OnLocationChange(Location akOldLoc, Location akNewLoc)
   if !MainScript.InnWorkQst.isRunning()
 	MainScript.InnWorkQst.start()
   endif
+  if !MainScript.TempleLoanQst.isRunning()
+	MainScript.TempleLoanQst.start()
+  endif
   MainScript.startCalcSTDCurePrice()
   MainScript.CheckAliases()
   MainScript.SLSFR_Interface.SLSFR_toggle_WhoreFlag(MainScript.isPlayerDibeling() || MainScript.isPlayerWhoring())
@@ -75,9 +78,11 @@ EndEvent
 
 Event OnSleepStop(bool abInterrupted)
 	if !abInterrupted
-		if (MainScript.InnWorkScript.doSendToSlavey && MainScript.canPlayerEnslaved())
+		if (MainScript.InnWorkScript.doSendToSlavey || MainScript.TempleLoanScript.doSendToSlavey)
 			Utility.wait(3.0)
-			MainScript.InnWorkScript.sendToSlavery()
+			if MainScript.canPlayerEnslaved()
+				sendToSlavery()
+			endif
 		 endif
 	endif
 EndEvent
@@ -176,6 +181,19 @@ function setVars()
   MainScript.templeTaskMarkCostDisplay.SetValueInt(MainScript.fTempleTaskMarkCost as Int)
   MainScript.MCMScript.MainQuest.UpdateCurrentInstanceGlobal(MainScript.templeTaskMarkCostDisplay)
 
+endfunction
+
+Function sendToSlavery()
+	if  MainScript.TempleLoanScript.doSendToSlavey
+		if MainScript.InnWorkScript.doSendToSlavey
+			MainScript.InnWorkScript.InnOwner.GetActorReference() && MainScript.InnWorkScript.InnOwner.GetActorReference().AddToFaction(MainScript.InnWorkScript.InnWorkDoneFaction)
+			MainScript.InnWorkScript.iPlayerDebt = 0
+			MainScript.InnWorkScript.Fail()
+		endif
+		MainScript.TempleLoanScript.sendToSlavery()
+	elseif MainScript.InnWorkScript.doSendToSlavey 
+		MainScript.InnWorkScript.sendToSlavery()
+	endif
 endfunction
 
 Event OnStruggleEnd(Form akVictim, Form akAggressor, bool abVictimEscaped)
