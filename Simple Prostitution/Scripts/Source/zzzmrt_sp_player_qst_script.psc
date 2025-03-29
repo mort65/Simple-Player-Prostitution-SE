@@ -68,7 +68,7 @@ Event OnLocationChange(Location akOldLoc, Location akNewLoc)
   MainScript.startCalcSTDCurePrice()
   MainScript.CheckAliases()
   MainScript.SLSFR_Interface.SLSFR_toggle_WhoreFlag(MainScript.isPlayerDibeling() || MainScript.isPlayerWhoring())
-  if (MainScript.whoreSnitch || MainScript.dibelSnitch || MainScript.angryDibelCustomer || MainScript.angryWhoreCustomer || MainScript.InnWorkScript.doSendToSlavey)
+  if (MainScript.whoreSnitch || MainScript.dibelSnitch || MainScript.angryDibelCustomer || MainScript.angryWhoreCustomer || MainScript.InnWorkScript.doSendToSlavey || MainScript.TempleLoanScript.doSendToSlavey)
     RegisterForSingleUpdate(utility.randomFloat(10.0,30.0)) 
   endif
 endevent
@@ -185,11 +185,6 @@ endfunction
 
 Function sendToSlavery()
 	if  MainScript.TempleLoanScript.doSendToSlavey
-		if MainScript.InnWorkScript.doSendToSlavey
-			MainScript.InnWorkScript.InnOwner.GetActorReference() && MainScript.InnWorkScript.InnOwner.GetActorReference().AddToFaction(MainScript.InnWorkScript.InnWorkDoneFaction)
-			MainScript.InnWorkScript.iPlayerDebt = 0
-			MainScript.InnWorkScript.Fail()
-		endif
 		MainScript.TempleLoanScript.sendToSlavery()
 	elseif MainScript.InnWorkScript.doSendToSlavey 
 		MainScript.InnWorkScript.sendToSlavery()

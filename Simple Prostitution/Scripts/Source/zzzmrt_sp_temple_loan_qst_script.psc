@@ -25,7 +25,8 @@ GlobalVariable property TempleLoanDeadLineDisplay Auto
 Float property fLoanSpeechMult = 100.0 Auto Hidden Conditional
 Float property fLoanTimeGameDaysPassed = 0.0 Auto Hidden Conditional
 Int Property iPlayerDebt = 0 Auto Hidden Conditional
-Int Property iPlayerBaseDebt = 0 Auto Hidden Conditional
+Int Property iInitialDebt = 0 Auto Hidden Conditional
+Int Property iCurrentBaseDebt = 0 Auto Hidden Conditional
 Faction property CrimeFactionReach Auto
 Message Property TempleSendToSlaveryMessage Auto
 Bool property doSendToSlavey = False Auto Hidden Conditional
@@ -33,26 +34,54 @@ Faction Property TempleLoanFailedFaction Auto
 Actor property player auto
 Int property iLoanIndex = -1 Auto Hidden Conditional
 Int property maxGold = 65534 auto Hidden Conditional
+Float property fDeadline = 0.0 auto Hidden Conditional
+Float property fPaidTimeDayPassed = 0.0 auto Hidden Conditional
 
 Function updateDebt(Int iAmount, Bool bLog = False)
-	if iAmount > 0
-		iPlayerBaseDebt = maxInt(0, iPlayerBaseDebt + iAmount)
-		iPlayerDebt = maxInt(0, GetPlayerDebt(iPlayerBaseDebt, bCompoundInterest))
+	if (iAmount > 0)
+		if iPlayerDebt < 1
+			iInitialDebt = maxInt(0, iInitialDebt + iAmount)
+			iCurrentBaseDebt = iInitialDebt
+			iPlayerDebt = maxInt(0, GetPlayerDebt(iCurrentBaseDebt, bCompoundInterest))
+		else
+			MainScript.log("You can't get another loan when you're already in debt.", true, true, 2)
+		endif
 	else
-		iPlayerDebt = maxInt(0, GetPlayerDebt(iPlayerBaseDebt, bCompoundInterest))
-		iPlayerDebt = iPlayerDebt + iAmount
+		iPlayerDebt = maxInt(0, GetPlayerDebt(iCurrentBaseDebt, bCompoundInterest)) ;Calc current debt
+		if (iAmount < 0)
+			iPlayerDebt = iPlayerDebt + iAmount
+			fPaidTimeDayPassed = GameDaysPassed.GetValue()
+			iCurrentBaseDebt = iPlayerDebt
+		endif
 	endif
 	PlayerTempleDebtDisplay.SetValueInt(iPlayerDebt)
 	UpdateCurrentInstanceGlobal(PlayerTempleDebtDisplay)
 	If bLog
 		MainScript.log("Your current debt is " + iPlayerDebt + " septim.", true, true, 1)
-		MainScript.log("Your initial debt was " + iPlayerBaseDebt + " septim.", true, true, 1)
-		Float fDays = (GameDaysPassed.GetValue() - fLoanTimeGameDaysPassed)
-		MainScript.log("You have " + (fDays as int) + " day and " + (((fDays - (fDays as Int)) * 24) as int) + " hour to repay.", true, true, 1)
+		MainScript.log("Your initial debt was " + iInitialDebt + " septim.", true, true, 1)
+		Float fDays = maxFloat(0.0, (fDeadline - (GameDaysPassed.GetValue() - fLoanTimeGameDaysPassed)))
+		MainScript.log("You have " + (fDays as int) + " day and " + maxInt(0, (((fDays - (fDays as Int)) * 24) as int)) + " hour to repay.", true, true, 1)
 	endif
 EndFunction
 
+Int function GetPlayerDebt(Int iDebt, Bool bCompounded = False)
+	if fDailyInterest <= 0.0
+		return iDebt
+	endif
+	if bCompounded
+		int iDaysPassed = (GameDaysPassed.GetValue() - fPaidTimeDayPassed) As int
+		Float fTotalDebt = iDebt
+		While iDaysPassed > 0
+			fTotalDebt = fTotalDebt + (fTotalDebt * fDailyInterest)
+			iDaysPassed -= 1
+		endWhile
+		return (fTotalDebt as Int)
+	endif
+	return ((iDebt + (((GameDaysPassed.GetValue() - fPaidTimeDayPassed) As int) * fDailyInterest * iDebt)) as Int)
+EndFunction
+
 Function setLoanValues()
+	fDeadline = MainScript.fTempleLoanDeadlineDays
 	fDailyInterest = (MainScript.iTempleLoanInterestDaily / 100.0)
 	bCompoundInterest = MainScript.bTempleLoanInterestCompound
 	fLoanSpeechMult = MainScript.fTempleLoanSpeechMult
@@ -151,28 +180,17 @@ Function Succeed()
 EndFunction
 
 function addLoanToPlayer(Int iAmount)
-	iPlayerBaseDebt = 0
+	if iAmount < 1
+		return
+	endif
+	iInitialDebt = 0
+	iCurrentBaseDebt = 0
 	iPlayerDebt = 0
 	player.addItem(MainScript.gold, iAmount)
 	fLoanTimeGameDaysPassed = GameDaysPassed.GetValue()
+	fPaidTimeDayPassed = fLoanTimeGameDaysPassed
 	updateDebt(iAmount)
 	SetStage(10)
-EndFunction
-
-Int function GetPlayerDebt(Int iDebt, Bool bCompounded = False)
-	if fDailyInterest <= 0.0
-		return iDebt
-	endif
-	if bCompounded
-		int iDaysPassed = (GameDaysPassed.GetValue() - fLoanTimeGameDaysPassed) As int
-		int iTotalDebt = iDebt
-		While iDaysPassed > 0
-			iTotalDebt = iTotalDebt + (iTotalDebt * fDailyInterest) as Int
-			iDaysPassed -= 1
-		endWhile
-		return iTotalDebt
-	endif
-	return (iDebt + (((GameDaysPassed.GetValue() - fLoanTimeGameDaysPassed) As int) * fDailyInterest * iDebt) as Int)
 EndFunction
 
 function sendToSlavery()
@@ -183,6 +201,9 @@ State SendToSlavery
 	Event OnBeginState()
 		if doSendToSlavey && isRunning() && (GetStage() == 10)
 			if (iPlayerDebt > 0)
+				if MainScript.InnWorkScript.doSendToSlavey
+					MainScript.InnWorkScript.Fail()
+				endif
 				fail()
 				TempleSendToSlaveryMessage.Show()
 				sendModEvent("SSLV Entry")

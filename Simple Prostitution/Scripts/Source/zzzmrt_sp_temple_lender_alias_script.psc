@@ -21,10 +21,10 @@ event OnUpdateGameTime()
 		if (GetActorReference().GetParentCell() != myQuestScript.player.GetParentCell())
 			myQuestScript.FinishLoan()
 			if (GetActorReference() && myQuestScript.doSendToSlavey && myQuest.isRunning() && (myQuest.GetStage() == 10))
-				RegisterForSingleUpdateGameTime(myQuestScript.MainScript.randint(1,3))
+				RegisterForSingleUpdateGameTime(1.0)
 			endif
 		else
-			RegisterForSingleUpdateGameTime(3.0)
+			RegisterForSingleUpdateGameTime(1.0)
 		endif
 	endif
 endEvent 

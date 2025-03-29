@@ -14,9 +14,9 @@ Quest __temp = self as Quest
 zzzmrt_sp_temple_loan_qst_script kmyQuest = __temp as zzzmrt_sp_temple_loan_qst_script
 ;END AUTOCAST
 ;BEGIN CODE
-kmyQuest.TempleLoanDeadLineDisplay.SetValueInt(kmyQuest.MainScript.fTempleLoanDeadlineDays as int)
+kmyQuest.TempleLoanDeadLineDisplay.SetValueInt(kmyQuest.fDeadline as int)
 kmyQuest.UpdateCurrentInstanceGlobal(kmyQuest.TempleLoanDeadLineDisplay)
-kmyQuest.LenderScript.RegisterForSingleUpdateGameTime((kmyQuest.MainScript.fTempleLoanDeadlineDays as Int) * 24)
+kmyQuest.LenderScript.RegisterForSingleUpdateGameTime((kmyQuest.fDeadline as Int) * 24)
 SetObjectiveDisplayed(0, true)
 ;END CODE
 EndFunction

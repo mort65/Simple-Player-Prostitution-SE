@@ -125,7 +125,6 @@ Function finishWhoring()
 			else
 				MainScript.log("Inn owner reported you for not paying your debt.", True, True, 2)
 			endif
-			InnOwner.GetActorReference() && InnOwner.GetActorReference().AddToFaction(InnWorkDoneFaction)
 			fail()
 		endif
 	else
@@ -161,11 +160,14 @@ Bool Function innWorkOwnerHere()
 EndFunction
 
 Function Fail()
+	iPlayerDebt = 0
 	doSendToSlavey = False
+	InnOwner.GetActorReference() && InnOwner.GetActorReference().AddToFaction(InnWorkDoneFaction)
 	SetStage(30)
 EndFunction
 
 Function Succeed()
+	iPlayerDebt = 0
 	doSendToSlavey = False
 	SetStage(40)
 EndFunction
@@ -175,6 +177,9 @@ State SendToSlavery
 		if doSendToSlavey && isRunning() && ((GetStage() == 10) || (GetStage() == 20))
 			InnOwner.GetActorReference() && InnOwner.GetActorReference().AddToFaction(InnWorkDoneFaction)
 			if InnOwner.GetActorReference() && (iPlayerDebt > 0)
+				if MainScript.TempleLoanScript.doSendToSlavey
+					MainScript.TempleLoanScript.fail()
+				endif
 				fail()
 				sendToSlaveryMessage.Show()
 				sendModEvent("SSLV Entry")
