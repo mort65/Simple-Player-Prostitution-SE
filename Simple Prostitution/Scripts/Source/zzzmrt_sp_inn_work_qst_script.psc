@@ -21,8 +21,11 @@ GlobalVariable property RoomCost Auto
 GlobalVariable property PlayerDebtDisplay Auto
 GlobalVariable property LicensePriceDisplay Auto
 GlobalVariable property InnWorkDeadLineDisplay Auto
+GlobalVariable property GameDaysPassed Auto
 Message Property sendToSlaveryMessage Auto
 Bool property doSendToSlavey = False Auto Hidden Conditional
+Float property fInnDebtTimeGameDaysPassed = 0.0 Auto Hidden Conditional
+Float Property fInnWorkDeadlineDays = 0.0 Auto Hidden Conditional
 
 
 Function checkStatus()
@@ -195,4 +198,21 @@ State SendToSlavery
 	function sendToSlavery()
 	EndFunction
 endState
+
+
+Function logDebtStatus()
+	if (!MainScript.InnWorkQst.isRunning() || ((MainScript.InnWorkQst.GetStage() != 10) && (MainScript.InnWorkQst.GetStage() != 20)))
+		return
+	endif
+	float fDays = -1.0
+	if fInnDebtTimeGameDaysPassed > 0
+		if MainScript.InnWorkQst.GetStage() == 10
+			fDays = maxFloat(0.0, ((fDeadlineHours / 24.0) - (GameDaysPassed.GetValue() - fInnDebtTimeGameDaysPassed)))
+		elseif MainScript.InnWorkQst.GetStage() == 20
+			fDays = maxFloat(0.0, (fInnWorkDeadlineDays - (GameDaysPassed.GetValue() - fInnDebtTimeGameDaysPassed)))
+		endif
+	endif
+	MainScript.log("Your debt is " + iPlayerDebt + " septim.", true, true, 1)
+	(fDays >= 0) && MainScript.log("You have " + (fDays as int) + " day and " + maxInt(0, (((fDays - (fDays as Int)) * 24) as int)) + " hour to repay.", true, true, 1)
+EndFunction
 

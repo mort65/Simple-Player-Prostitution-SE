@@ -14,8 +14,12 @@ Quest __temp = self as Quest
 zzzmrt_sp_inn_work_qst_script kmyQuest = __temp as zzzmrt_sp_inn_work_qst_script
 ;END AUTOCAST
 ;BEGIN CODE
+float fHours = ((kmyQuest.MainScript.fInnWorkDeadlineDays as Int) * 24)
+kmyQuest.InnWorkDeadLineDisplay.SetValueInt(fHours as Int)
 kmyQuest.UpdateCurrentInstanceGlobal(kmyQuest.InnWorkDeadLineDisplay)
-kmyQuest.InnOwnerScript.RegisterForSingleUpdateGameTime((kmyQuest.MainScript.fInnWorkDeadlineDays as Int) * 24)
+kmyQuest.fInnWorkDeadlineDays = kmyQuest.MainScript.fInnWorkDeadlineDays
+kmyQuest.InnOwnerScript.RegisterForSingleUpdateGameTime(fHours)
+kmyQuest.fInnDebtTimeGameDaysPassed = kmyQuest.GameDaysPassed.GetValue()
 SetObjectiveCompleted(0)
 SetObjectiveDisplayed(1, true)
 ;END CODE
@@ -44,6 +48,7 @@ zzzmrt_sp_inn_work_qst_script kmyQuest = __temp as zzzmrt_sp_inn_work_qst_script
 ;BEGIN CODE
 kmyQuest.UpdateCurrentInstanceGlobal(kmyQuest.InnWorkDeadLineDisplay)
 kmyQuest.InnOwnerScript.RegisterForSingleUpdateGameTime(kmyQuest.fDeadlineHours)
+kmyQuest.fInnDebtTimeGameDaysPassed = kmyQuest.GameDaysPassed.GetValue()
 SetObjectiveDisplayed(0, true)
 ;END CODE
 EndFunction

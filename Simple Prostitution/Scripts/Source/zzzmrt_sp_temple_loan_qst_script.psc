@@ -57,10 +57,7 @@ Function updateDebt(Int iAmount, Bool bLog = False)
 	PlayerTempleDebtDisplay.SetValueInt(iPlayerDebt)
 	UpdateCurrentInstanceGlobal(PlayerTempleDebtDisplay)
 	If bLog
-		MainScript.log("Your current debt is " + iPlayerDebt + " septim.", true, true, 1)
-		MainScript.log("Your initial debt was " + iInitialDebt + " septim.", true, true, 1)
-		Float fDays = maxFloat(0.0, (fDeadline - (GameDaysPassed.GetValue() - fLoanTimeGameDaysPassed)))
-		MainScript.log("You have " + (fDays as int) + " day and " + maxInt(0, (((fDays - (fDays as Int)) * 24) as int)) + " hour to repay.", true, true, 1)
+		logLoanStatus()
 	endif
 EndFunction
 
@@ -214,3 +211,10 @@ State SendToSlavery
 	function sendToSlavery()
 	EndFunction
 endState
+
+Function logLoanStatus()
+	MainScript.log("Your current debt is " + iPlayerDebt + " septim.", true, true, 1)
+	MainScript.log("Your initial debt was " + iInitialDebt + " septim.", true, true, 1)
+	Float fDays = maxFloat(0.0, (fDeadline - (GameDaysPassed.GetValue() - fLoanTimeGameDaysPassed)))
+	MainScript.log("You have " + (fDays as int) + " day and " + maxInt(0, (((fDays - (fDays as Int)) * 24) as int)) + " hour to repay.", true, true, 1)
+EndFunction
