@@ -69,10 +69,10 @@ Int function GetPlayerDebt(Int iDebt, Bool bCompounded = False)
 		return iDebt
 	endif
 	if bCompounded ;A=P(1+(r/n))^nt=>P*((1+(r))^t)
-		return ((iDebt * Math.pow(1 + fDailyInterest, (GameDaysPassed.GetValue() - fPaidTimeDayPassed) As int)) as Int)
+		return maxInt(iDebt, (iDebt * Math.pow(1 + fDailyInterest, (GameDaysPassed.GetValue() - fPaidTimeDayPassed) As int)) as Int)
 	endif
 	;A=P(1+rt)
-	return ((iDebt + (((GameDaysPassed.GetValue() - fPaidTimeDayPassed) As int) * fDailyInterest * iDebt)) as Int)
+	return maxInt(iDebt, (iDebt + (((GameDaysPassed.GetValue() - fPaidTimeDayPassed) As int) * fDailyInterest * iDebt)) as Int)
 EndFunction
 
 Function setLoanValues()
