@@ -69,13 +69,14 @@ Int function GetPlayerDebt(Int iDebt, Bool bCompounded = False)
 		return iDebt
 	endif
 	if bCompounded ;A=P(1+(r/n))^nt=>P*((1+(r))^t)=> (iDebt * Math.pow(1 + fDailyInterest, iDaysPassed)) as Int
-		int iDaysPassed = (GameDaysPassed.GetValue() - fPaidTimeDayPassed) As int
-		Float fTotalDebt = iDebt
-		While iDaysPassed > 0
-			fTotalDebt = fTotalDebt + (fTotalDebt * fDailyInterest)
-			iDaysPassed -= 1
-		endWhile
-		return (fTotalDebt as Int)
+		;int iDaysPassed = (GameDaysPassed.GetValue() - fPaidTimeDayPassed) As int
+		;Float fTotalDebt = iDebt
+		;While iDaysPassed > 0
+		;	fTotalDebt = fTotalDebt + (fTotalDebt * fDailyInterest)
+		;	iDaysPassed -= 1
+		;endWhile
+		;return (fTotalDebt as Int)
+		return ((iDebt * Math.pow(1 + fDailyInterest, (GameDaysPassed.GetValue() - fPaidTimeDayPassed) As int)) as Int)
 	endif
 	;A=P(1+rt)
 	return ((iDebt + (((GameDaysPassed.GetValue() - fPaidTimeDayPassed) As int) * fDailyInterest * iDebt)) as Int)
