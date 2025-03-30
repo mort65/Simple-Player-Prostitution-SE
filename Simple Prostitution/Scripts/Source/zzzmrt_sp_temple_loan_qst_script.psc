@@ -9,11 +9,11 @@ ReferenceAlias Property TempleLender Auto
 
 Float property fDailyInterest = 0.0 Auto Hidden Conditional
 Bool property bCompoundInterest = true Auto Hidden Conditional
-Int property iGoldToLend1 = 2000 Auto Hidden Conditional
-Int property iGoldToLend2 = 4000 Auto Hidden Conditional
-Int property iGoldToLend3 = 6000 Auto Hidden Conditional
-Int property iGoldToLend4 = 8000 Auto Hidden Conditional
-Int property iGoldToLend5 = 10000 Auto Hidden Conditional
+Int property iGoldToLend1 = 200 Auto Hidden Conditional
+Int property iGoldToLend2 = 400 Auto Hidden Conditional
+Int property iGoldToLend3 = 600 Auto Hidden Conditional
+Int property iGoldToLend4 = 800 Auto Hidden Conditional
+Int property iGoldToLend5 = 1000 Auto Hidden Conditional
 GlobalVariable property GoldToLendDisplay1 Auto
 GlobalVariable property GoldToLendDisplay2 Auto
 GlobalVariable property GoldToLendDisplay3 Auto
