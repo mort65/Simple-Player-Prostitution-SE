@@ -85,7 +85,7 @@ Function setLoanValues()
 	fDailyInterest = (MainScript.iTempleLoanInterestDaily / 100.0)
 	bCompoundInterest = MainScript.bTempleLoanInterestCompound
 	fLoanSpeechMult = MainScript.fTempleLoanSpeechMult
-	iGoldToLend1 = minInt(maxGold, (20.0 * fLoanSpeechMult) as Int) ; largest integer for gold is 65,535
+	iGoldToLend1 = minInt(maxGold, (20.0 * fLoanSpeechMult) as Int)
 	iGoldToLend2 = minInt(maxGold, (40.0 * fLoanSpeechMult) as Int)
 	iGoldToLend3 = minInt(maxGold, (60.0 * fLoanSpeechMult) as Int)
 	iGoldToLend4 = minInt(maxGold, (80.0 * fLoanSpeechMult) as Int)
