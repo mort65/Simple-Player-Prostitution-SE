@@ -675,6 +675,7 @@ elseif (page == "$MRT_SP_PAGE_BEGGING")
 	OID_CRIME_BOUNTY = AddSliderOption("$MRT_SP_CRIME_BOUNTY_SLIDER1", MainScript.iCrimeBounty, "$MRT_SP_CRIME_BOUNTY_SLIDER2", flag)
 	OID_NORMAL_MARK_CHANCE = AddSliderOption("$MRT_SP_NORMAL_MARK_CHANCE_SLIDER1", MainScript.fNormalMarkChance, "$MRT_SP_NORMAL_MARK_CHANCE_SLIDER2", flag)
 	OID_NORMAL_NO_REWARD_WHEN_VICTIM = AddToggleOption("$MRT_SP_OID_NORMAL_NO_REWARD_WHEN_VICTIM_TOGGLE", MainScript.bNormalNoRewardWhenVictim, flag)
+	OID_EXCLUDE_IF_IN_SCENE = AddToggleOption("$MRT_SP_OID_EXCLUDE_IF_IN_SCENE_TOGGLE", MainScript.bExcludeIfInScene, flag)
 	AddEmptyOption()
     approachOptions(flag)
     SetCursorPosition(1)
@@ -3214,7 +3215,8 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
   MainScript.bReverseSTDProgression = jsonutil.GetPathIntValue(settings_path, "bReverseSTDProgression", MainScript.bReverseSTDProgression as int)
   MainScript.bAllyMayJoinSex = jsonutil.GetPathIntValue(settings_path, "bAllyMayJoinSex", MainScript.bAllyMayJoinSex as int)
   MainScript.bPimpMayJoinSex = jsonutil.GetPathIntValue(settings_path, "bPimpMayJoinSex", MainScript.bPimpMayJoinSex as int)
-
+  MainScript.bExcludeIfInScene = jsonutil.GetPathIntValue(settings_path, "bExcludeIfInScene", MainScript.bExcludeIfInScene as int)
+  MainScript.bApproachExcludeIfInScene = jsonutil.GetPathIntValue(settings_path, "bApproachExcludeIfInScene", MainScript.bApproachExcludeIfInScene as int)
   iAnimInterfaceMethod = jsonutil.GetPathIntValue(settings_path, "iAnimInterfaceMethod", iAnimInterfaceMethod)
   
   MainScript.iCrimeBounty = jsonutil.GetPathIntValue(settings_path, "iCrimeBounty", MainScript.iCrimeBounty)
@@ -3550,6 +3552,8 @@ Bool function saveUserSettingsPapyrus()
 	jsonutil.SetPathIntValue(settings_path, "bReverseSTDProgression", MainScript.bReverseSTDProgression as Int)
 	jsonutil.SetPathIntValue(settings_path, "bAllyMayJoinSex", MainScript.bAllyMayJoinSex as Int)
 	jsonutil.SetPathIntValue(settings_path, "bPimpMayJoinSex", MainScript.bPimpMayJoinSex as Int)
+	jsonutil.SetPathIntValue(settings_path, "bExcludeIfInScene", MainScript.bExcludeIfInScene as Int)
+	jsonutil.SetPathIntValue(settings_path, "bApproachExcludeIfInScene", MainScript.bApproachExcludeIfInScene as Int)
 
   jsonutil.SetPathIntValue(settings_path, "iAnimInterfaceMethod", iAnimInterfaceMethod)
   jsonutil.SetPathIntValue(settings_path, "iCrimeBounty", MainScript.iCrimeBounty)
@@ -4297,9 +4301,15 @@ event OnOptionSelect(int option)
 	elseif option == OID_DIBEL_PAY_IF_ORGASMED
 		MainScript.bDibelOnlyPayIfClientOrgasmed = !MainScript.bDibelOnlyPayIfClientOrgasmed
 		SetToggleOptionValue(option, MainScript.bDibelOnlyPayIfClientOrgasmed)
+	elseif option == OID_APPROACH_EXCLUDE_IF_IN_SCENE
+		MainScript.bApproachExcludeIfInScene = !MainScript.bApproachExcludeIfInScene
+		SetToggleOptionValue(option, MainScript.bApproachExcludeIfInScene)
+	elseif option == OID_EXCLUDE_IF_IN_SCENE
+		MainScript.bExcludeIfInScene = !MainScript.bExcludeIfInScene
+		SetToggleOptionValue(option, MainScript.bExcludeIfInScene)
 	elseif option == OID_NORMAL_REWARD_IF_ORGASMED
 		MainScript.bNormalOnlyRewardIfPartnerOrgasmed = !MainScript.bNormalOnlyRewardIfPartnerOrgasmed
-		SetToggleOptionValue(option, MainScript.bNormalOnlyRewardIfPartnerOrgasmed)
+		SetToggleOptionValue(option, MainScript.bNormalOnlyRewardIfPartnerOrgasmed)	
 	elseif option == OID_NORMAL_NO_REWARD_WHEN_VICTIM
 		MainScript.bNormalNoRewardWhenVictim = !MainScript.bNormalNoRewardWhenVictim
 		SetToggleOptionValue(option, MainScript.bNormalNoRewardWhenVictim)
@@ -4469,6 +4479,12 @@ event OnOptionDefault(int option)
 	elseif option == OID_NORMAL_REWARD_IF_ORGASMED
 		MainScript.bNormalOnlyRewardIfPartnerOrgasmed = False
 		SetToggleOptionValue(option, MainScript.bNormalOnlyRewardIfPartnerOrgasmed)
+	elseif option == OID_APPROACH_EXCLUDE_IF_IN_SCENE
+		MainScript.bApproachExcludeIfInScene = True
+		SetToggleOptionValue(option, MainScript.bApproachExcludeIfInScene)
+	elseif option == OID_EXCLUDE_IF_IN_SCENE
+		MainScript.bExcludeIfInScene = True
+		SetToggleOptionValue(option, MainScript.bExcludeIfInScene)		
 	elseif option == OID_NORMAL_NO_REWARD_WHEN_VICTIM
 		MainScript.bNormalNoRewardWhenVictim = True
 		SetToggleOptionValue(option, MainScript.bNormalNoRewardWhenVictim)
@@ -4671,6 +4687,10 @@ event OnOptionHighlight(int option)
     SetInfoText("$MRT_SP_DESC_NORMAL_REWARD_IF_ORGASMED")
   elseif option == OID_NORMAL_NO_REWARD_WHEN_VICTIM
     SetInfoText("$MRT_SP_DESC_NORMAL_NO_REWARD_WHEN_VICTIM")
+  elseif option == OID_EXCLUDE_IF_IN_SCENE
+	SetInfoText("$MRT_SP_DESC_EXCLUDE_IF_IN_SCENE")
+  elseif option == OID_APPROACH_EXCLUDE_IF_IN_SCENE
+	SetInfoText("$MRT_SP_DESC_APPROACH_EXCLUDE_IF_IN_SCENE")
   elseif option == OID_NEARBY_MALES_MAY_JOIN_SEX
     SetInfoText("$MRT_SP_DESC_NEARBY_MALES_MAY_JOIN_SEX")
   elseif option == OID_NEARBY_FEMALES_MAY_JOIN_SEX
@@ -6290,6 +6310,7 @@ Function approachOptions(Int iflag)
   flg = iflag
   OID_ELDER_MAY_APPROACH = AddToggleOption("$MRT_SP_ELDER_MAY_APPROACH_TOGGLE", MainScript.bEldersMayApproach, flg)
   OID_PREVENT_FRUITLESS_APPROACH = AddToggleOption("$MRT_SP_PREVENT_FRUITLESS_APPROACH_TOGGLE", MainScript.bPreventFruitlessApproaches, flg)
+  OID_APPROACH_EXCLUDE_IF_IN_SCENE = AddToggleOption("$MRT_SP_OID_APPROACH_EXCLUDE_IF_IN_SCENE_TOGGLE", MainScript.bApproachExcludeIfInScene, flag)
 EndFunction
 
 Function DD_Options(Int iFlag)
@@ -6629,3 +6650,6 @@ Int OID_DIBEL_LOAN_SPEECH_MULT
 Int OID_DIBEL_LOAN_DEADLINE_DAYS
 Int OID_DIBEL_LOAN_SLAVERY_CHANCE
 Int OID_DIBEL_LOAN_INTEREST_COMPOUND
+
+Int OID_EXCLUDE_IF_IN_SCENE
+Int OID_APPROACH_EXCLUDE_IF_IN_SCENE

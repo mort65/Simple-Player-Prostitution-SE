@@ -306,7 +306,7 @@ Bool function canPunishPlayerForRejectingApproach(Actor akActor)
 	    MainScript.log(actorName + " cannot punish player because females are not allowed to approach player. | Punisher ID = " + akActor)
 	elseif !MainScript.bGuardsMayApproach && akActor.IsGuard()
 	    MainScript.log(actorName + " cannot punish player because guards are not allowed to approach player. | Punisher ID = " + akActor)
-	elseif akActor.GetCurrentScene() != None
+	elseif MainScript.bApproachExcludeIfInScene && (akActor.GetCurrentScene() != None)
 	   MainScript.log(actorName + " cannot punish player because the punisher is busy in a scene. | Punisher ID = " + akActor)
 	elseif akActor.GetDistance(player) > 3000.0
 	   MainScript.log(actorName + " cannot punish player because the player is too far away. | Punisher ID = " + akActor)
@@ -347,7 +347,7 @@ Bool Function canPunishPlayerForRejectingSexOffer(Actor akActor)
 		MainScript.log(actorName + " cannot punish player because the player can't move. | Punisher ID = " + akActor)
 	elseif player.GetCurrentScene() != None
 		MainScript.log(actorName + " cannot punish player because the player is busy in a scene. | Punisher ID = " + akActor)
-	elseif akActor.GetCurrentScene() != None
+	elseif MainScript.bApproachExcludeIfInScene && (akActor.GetCurrentScene() != None)
 		MainScript.log(actorName + " cannot punish player because the punisher is busy in a scene. | Punisher ID = " + akActor)
 	elseif akActor.GetDistance(player) > 3000.0
 		MainScript.log(actorName + " cannot punish player because the player is too far away. | Punisher ID = " + akActor)

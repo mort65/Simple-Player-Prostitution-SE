@@ -628,6 +628,9 @@ Float Property fTempleLoanSpeechMult = 10.0 Auto Hidden Conditional
 Float Property fTempleLoanDeadlineDays = 7.0 Auto Hidden Conditional
 Float property fTempleLoanSendToSlaveryChance = 0.0 Auto Hidden Conditional
 
+Bool property bExcludeIfInScene = true Auto Hidden Conditional
+Bool property bApproachExcludeIfInScene = true Auto Hidden Conditional
+
 function log(String sText, Bool bNotification = False, Bool bTrace = True, Int iSeverity = 1, Bool bForceNotif = False)
 	logText(sText, (bNotification && (bShowNotification || (iSeverity != 1) || bForceNotif)), bTrace, iSeverity, "SPP", sDefaultColor, sSuccessColor, sInfoColor, sWarningColor, sErrorColor, sSeparatorColor)
 endFunction
@@ -842,7 +845,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-	return getBaseVersion() + 0.64
+	return getBaseVersion() + 0.65
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
@@ -1239,7 +1242,7 @@ Function setWhoreCustomer(Actor akActor, Bool bPay = False, Bool bPersuaded = Tr
 		return
 	endif
 	int iPayment = 0
-	if (bPay || (akActor.GetCurrentScene() == None))
+	if (bPay || (!bExcludeIfInScene || (akActor.GetCurrentScene() == None)))
 		customerSpell.Cast(akActor, akActor)
 	else
 		String msg = akActor.getDisplayName() + " is busy."
@@ -1319,7 +1322,7 @@ Function setDibelCustomer(Actor akActor, bool bPay = true )
 	if !akActor || isCustomer(akActor)
 		return
 	endif
-	if (bPay || (akActor.GetCurrentScene() == None))
+	if (bPay || (!bExcludeIfInScene || (akActor.GetCurrentScene() == None)))
 		customerSpell.Cast(akActor, akActor)
 	else
 		String msg = akActor.getDisplayName() + " is busy."
@@ -2066,7 +2069,7 @@ Function entrapPlayer(Actor akEntrapper)
 		if (dialogueTarget && (dialogueTarget != akEntrapper))
 			return
 		endif
-		bAnimEntrapper = (!isActorHavingSex(akEntrapper) && !isActorHavingSex(player) && !akEntrapper.GetCurrentScene() && (akEntrapper.GetSitState() != 3))
+		bAnimEntrapper = (!isActorHavingSex(akEntrapper) && !isActorHavingSex(player) && (!bExcludeIfInScene || !akEntrapper.GetCurrentScene()) && (akEntrapper.GetSitState() != 3))
 	endif
 	Bool bWasBusy = false
 	if bIsBusy
@@ -2150,7 +2153,7 @@ endfunction
 function ProstitutePlayerTo(Actor akCustomer, bool bAccept=true)
 	setGlobalVaues()
 	if akCustomer
-		if (bAccept || (akCustomer.GetCurrentScene() == None))
+		if (bAccept || (!bExcludeIfInScene || (akCustomer.GetCurrentScene() == None)))
 			customerSpell.Cast(akCustomer, akCustomer)
 		else
 			String msg = akCustomer.getDisplayName() + " is busy."
@@ -2178,7 +2181,7 @@ endfunction
 function playerPracticeDibelArtWith(Actor akActor, bool bAccept=true)
 	setGlobalVaues()
 	if akActor
-		if (bAccept || (akActor.GetCurrentScene() == None))
+		if (bAccept || (!bExcludeIfInScene || (akActor.GetCurrentScene() == None)))
 			customerSpell.Cast(akActor, akActor)
 		else
 			String msg = akActor.getDisplayName() + " is busy."

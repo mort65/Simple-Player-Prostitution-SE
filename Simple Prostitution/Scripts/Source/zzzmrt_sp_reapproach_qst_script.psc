@@ -50,7 +50,7 @@ Bool function canPunishPlayer(Actor akActor)
 	elseif MainScript.isPlayerGettingHarassed()
 	elseif !Game.IsMovementControlsEnabled()
 	elseif player.GetCurrentScene() != None
-	elseif akActor.GetCurrentScene() != None
+	elseif MainScript.bApproachExcludeIfInScene && (akActor.GetCurrentScene() != None)
 	elseif akActor.GetDistance(player) > 3000.0
 	elseif MainScript.ApproachMonitorScr.isPlayerBusyInMOA()
 	else 
