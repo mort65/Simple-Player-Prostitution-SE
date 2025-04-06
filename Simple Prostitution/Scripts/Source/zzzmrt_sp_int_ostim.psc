@@ -52,47 +52,37 @@ int function haveSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor partner, 
 		endif
 	endif
 	Int iExtraTagsIndex = iGetExtraTagsIndex(Position, sGenders)
+	Int iAggressive = -1
+	if !bAllowAggressive 
+		iAggressive = 0
+	endif
 	if (iExtraTagsIndex > -1) && sExtraTags[iExtraTagsIndex]
 		if bRequireAllTags[iExtraTagsIndex]
-			anim2 = getRandomAnimationWithAllTags(actors, sExtraTags[iExtraTagsIndex] + ",")
+			anim2 = getRandomAnimationWithAllTags(actors, sExtraTags[iExtraTagsIndex] + ",", "", iAggressive)
 		else
-			anim2 = getRandomAnimation(actors, sExtraTags[iExtraTagsIndex] + ",")
+			anim2 = getRandomAnimation(actors, sExtraTags[iExtraTagsIndex] + ",", "", iAggressive)
 		endif
 		if !anim2
 		    logText("[OStim] couldn't find any animation with these tags: " + sExtraTags[iExtraTagsIndex], False, True, 2)
 		endif
 	endif
-	int i = 20
-	while !anim && i > 0
-		i-=1
+	string myAnim = anim2
+	if !myAnim
 		if Position == 0
-			Anim = getRandomAnimation(actors, "vaginalsex,doggystyle,missionary,cowgirl,")
-
+			Anim = getRandomAnimation(actors, "vaginalsex,doggystyle,missionary,cowgirl,", "", iAggressive)
 		elseif Position == 1
-			Anim = getRandomAnimation(actors, "analsex,")
+			Anim = getRandomAnimation(actors, "analsex,", "", iAggressive)
 		else
-			Anim = getRandomAnimation(actors, "blowjob,cunnilingus,sixtynine,facesitting,")
+			Anim = getRandomAnimation(actors, "blowjob,cunnilingus,sixtynine,facesitting,", "", iAggressive)
 		endif
-		if anim && (i > 0)
-			if !bAllowAggressive 
-				if IsSceneAggressiveOS(anim)
-					anim = ""
-				endif
-			endif
-		endif
-  endwhile
-	string myAnim = ""
-	if anim2
-			myAnim = anim2
-	else
-		myAnim = anim
+		myAnim = Anim
 	endif
 	if myAnim && (OThread.QuickStart(actors, StartingAnimation = myAnim) > -1)
 		return Position
 	else
 		logText("[OStim] couldn't find suitable animation.", False, True, 2)
 		if bAllowAll
-			myAnim = OLibrary.GetRandomScene(actors)
+			myAnim = getRandomAnimation(actors)
 			if myAnim
 				if (OThread.QuickStart(actors, StartingAnimation = myAnim) > -1)
 					return Position
@@ -123,25 +113,78 @@ Bool Function IsSceneAggressiveOS(String SceneID) Global
     Return false
 EndFunction
 
-String Function getRandomAnimation(actor[] actors, string tagCSV, string exclusion = "") Global
-  string anim = OLibrary.GetRandomSceneSuperloadCSV(actors, AnySceneTag = tagCSV, AnyActionType = tagCSV, AnyActorTagForAny = tagCSV, ActionBlacklistTypes = exclusion, SceneTagBlacklist = exclusion);
-  If (anim == "")
-      anim = OLibrary.GetRandomSceneWithAnySceneTagCSV(actors, tagCSV)
-  EndIf
-  If (anim == "")
-      anim = OLibrary.GetRandomSceneWithAnyActionCSV(actors, tagCSV);
-  EndIf
+String Function getRandomAnimation(actor[] actors, string tagCSV = "", string exclusion = "", Int iAggressive = -1)  Global
+  int i = 29
+  string anim = ""
+  String[] nextAnim
+  Bool bAggressionFound = (iAggressive == -1)
+  while ((i > 0) && (!bAggressionFound || (anim == "") || (!nextAnim || (nextAnim.length < 1))))
+	  nextAnim = None
+	  if ((tagCSV == "") && (exclusion == ""))
+		  Anim = OLibrary.GetRandomScene(actors)
+		  if Anim
+			nextAnim = OLibrary.GetScenesInRange(anim, actors)
+		  Endif
+	  else
+		  anim = OLibrary.GetRandomSceneSuperloadCSV(actors, AnySceneTag = tagCSV, AnyActionType = tagCSV, AnyActorTagForAny = tagCSV, ActionBlacklistTypes = exclusion, SceneTagBlacklist = exclusion);
+		  If (anim == "")
+			  anim = OLibrary.GetRandomSceneWithAnySceneTagCSV(actors, tagCSV)
+			  if anim
+				nextAnim = OLibrary.GetScenesInRange(anim, actors)
+			  endif
+		  Else
+			nextAnim = OLibrary.GetScenesInRange(anim, actors)
+		  EndIf
+		  If (anim == "")
+			  anim = OLibrary.GetRandomSceneWithAnyActionCSV(actors, tagCSV)
+			  if anim
+				nextAnim = OLibrary.GetScenesInRange(anim, actors)
+			  endif
+		  Else
+			nextAnim = OLibrary.GetScenesInRange(anim, actors)
+		  EndIf
+	  Endif
+	  if iAggressive == 0
+		bAggressionFound = (anim && !IsSceneAggressiveOS(anim))
+	  Elseif iAggressive == 1
+		bAggressionFound = (anim && IsSceneAggressiveOS(anim))
+	  Endif
+	  i -= 1
+  EndWhile
   Return  anim
 EndFunction
 
-String Function getRandomAnimationWithAllTags(actor[] actors, string tagCSV, string exclusion = "") Global	
-	string anim = OLibrary.GetRandomSceneSuperloadCSV(actors, AllSceneTags = tagCSV, AllActionTypes = tagCSV, AllActorTagsForAny = tagCSV, ActionBlacklistTypes = exclusion, SceneTagBlacklist = exclusion);
-  If (anim == "")
-      anim = OLibrary.GetRandomSceneWithAllSceneTagsCSV(actors, tagCSV)
-  EndIf
-  If (anim == "")
-      anim = OLibrary.GetRandomSceneWithAllActionsCSV(actors, tagCSV);
-  EndIf
+String Function getRandomAnimationWithAllTags(actor[] actors, string tagCSV, string exclusion = "", Int iAggressive = -1) Global	
+  int i = 29
+  string anim = ""
+  String[] nextAnim
+  Bool bAggressionFound = (iAggressive == -1)
+  while ((i > 0) && (!bAggressionFound || (anim == "") || (!nextAnim || (nextAnim.length < 1))))
+	  nextAnim = None
+	  anim = OLibrary.GetRandomSceneSuperloadCSV(actors, AllSceneTags = tagCSV, AllActionTypes = tagCSV, AllActorTagsForAny = tagCSV, ActionBlacklistTypes = exclusion, SceneTagBlacklist = exclusion);
+	  If (anim == "")
+		  anim = OLibrary.GetRandomSceneWithAllSceneTagsCSV(actors, tagCSV)
+		  if anim
+			nextAnim = OLibrary.GetScenesInRange(anim, actors)
+		  Endif
+	  Else
+		nextAnim = OLibrary.GetScenesInRange(anim, actors)
+	  EndIf
+	  If (anim == "")
+		  anim = OLibrary.GetRandomSceneWithAllActionsCSV(actors, tagCSV)
+		  if anim
+			nextAnim = OLibrary.GetScenesInRange(anim, actors)
+		  Endif
+	  Else
+		  nextAnim = OLibrary.GetScenesInRange(anim, actors)
+	  EndIf
+	  if iAggressive == 0
+		bAggressionFound = (anim && !IsSceneAggressiveOS(anim))
+	  Elseif iAggressive == 1
+		bAggressionFound = (anim && IsSceneAggressiveOS(anim))
+	  Endif
+	  i -= 1
+  EndWhile
   Return  anim
 EndFunction
 
@@ -195,21 +238,13 @@ Bool function bHaveRandomSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor p
 	endif
 	String  myAnim
 	if bAggressive
-		myAnim = getRandomAnimation(actors, "dominant,aggressor,", "")
+		myAnim = getRandomAnimation(actors, "dominant,aggressor,", "", 1)
 		if myAnim == ""
-		    logText("[OStim] couldn't find any Aggressive animation.", False, True, 2)
-			myAnim = OLibrary.GetRandomScene(actors)
+			logText("[OStim] couldn't find any suitable animation.", False, True, 2)
+			myAnim = getRandomAnimation(actors, "", "", 1)
 		endif
 	else
-		myAnim = OLibrary.GetRandomScene(actors)
-	endif
-	Int iIndex = 29
-	While (iIndex > 0) && (IsSceneAggressiveOS(myAnim) != bAggressive)
-		myAnim = OLibrary.GetRandomScene(actors)
-		iIndex -= 1
-	EndWhile
-	if (IsSceneAggressiveOS(myAnim) != bAggressive)
-	    logText("[OStim] couldn't find any suitable animation.", False, True, 2)
+		myAnim = getRandomAnimation(actors, "", "", 0)
 	endif
 	if myAnim 
 		if (OThread.QuickStart(actors, StartingAnimation = myAnim) > -1)
@@ -276,13 +311,11 @@ Bool function bHaveGroupSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor[] 
 			endif
 		endif
 	EndWhile
-	string sAnim = OLibrary.GetRandomScene(actors)
-	if !bAllowAggressive
-		iIndex = 29
-		While (iIndex > 0) && IsSceneAggressiveOS(sAnim)
-			sAnim = OLibrary.GetRandomScene(actors)
-			iIndex -= 1
-		EndWhile
+	string sAnim
+	if bAllowAggressive
+		sAnim = getRandomAnimation(actors)
+	else
+		sAnim = getRandomAnimation(actors, "", "", 0)
 	endif
 	if sAnim
 		if OThread.QuickStart(actors, StartingAnimation = sAnim) > -1
@@ -294,5 +327,6 @@ Bool function bHaveGroupSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor[] 
 	logText("[OStim] couldn't find any animation for " + actors.length + " actors.", False, True, 2)
 	return False
 EndFunction
+
 
 
