@@ -52,7 +52,7 @@ Bool Function bHaveRandomSexWithPlayer(Actor Partner, Bool bAggressive = False)
   return False
 EndFunction
 
-Bool Function bHaveGroupSexWithPlayer(Actor[] partners, Bool bAllowAggressive = True)
+Bool Function bHaveGroupSexWithPlayer(Actor[] partners, Bool bAllowAggressive = True, String sExcludedTags = "")
   return false
 EndFunction
 
@@ -89,8 +89,8 @@ state Installed
     return zzzmrt_sp_int_ostim.bHaveRandomSexWithPlayerOS(OSexIntegrationMainQuest, partner, bAggressive)
   endfunction
 
-  Bool Function bHaveGroupSexWithPlayer(Actor[] partners, Bool bAllowAggressive = True)
-    return zzzmrt_sp_int_ostim.bHaveGroupSexWithPlayerOS(OSexIntegrationMainQuest, partners, bAllowAggressive)
+  Bool Function bHaveGroupSexWithPlayer(Actor[] partners, Bool bAllowAggressive = True, String sExcludedTags = "")
+    return zzzmrt_sp_int_ostim.bHaveGroupSexWithPlayerOS(OSexIntegrationMainQuest, partners, bAllowAggressive, sExcludedTags)
   endfunction
 
   Bool Function isActorActive(Actor act)

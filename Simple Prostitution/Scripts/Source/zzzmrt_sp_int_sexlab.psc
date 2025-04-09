@@ -120,10 +120,11 @@ int function haveSexWithPlayerSL(Quest SexLabQuestFramework, Actor Partner, Int 
   else
       myAnims = anims2
   endif
+  logText("[SexLab] Anims: " + myAnims)
+  logText("[SexLab] Tags: " + SexLab.GetAllAnimationTagsInArray(myAnims))
   sexActors = SexLab.SortActors(sexActors, true)
-
   if SexLab.StartSex(sexActors, myAnims, none, none, true, "AnimationEnding,AnimationEnd") > -1
-    return Position
+	return Position
   endif
   logText("[SexLab] couldn't start animation.", False, true, 2)
   return -1
@@ -229,6 +230,8 @@ Bool function bHaveRandomSexWithPlayerSL(Quest SexLabQuestFramework, Actor Partn
     endif
   endif
   sexActors = SexLab.SortActors(sexActors, true)
+  logText("[SexLab] Anims: " + anims)
+  logText("[SexLab] Tags: " + SexLab.GetAllAnimationTagsInArray(anims))
   if SexLab.StartSex(sexActors, anims, none, none, true, "AnimationEnding,AnimationEnd") > -1
     return True
   endif
@@ -236,7 +239,7 @@ Bool function bHaveRandomSexWithPlayerSL(Quest SexLabQuestFramework, Actor Partn
   return False
 endfunction
 
-Bool function bHaveGroupSexWithPlayerSL(Quest SexLabQuestFramework, Actor[] partners, Bool bAllowAggressive = True, Bool bForceAgressive = false) Global
+Bool function bHaveGroupSexWithPlayerSL(Quest SexLabQuestFramework, Actor[] partners, Bool bAllowAggressive = True, Bool bForceAgressive = false, String sExcludedTags = "") Global
   SexLabFramework SexLab = SexLabQuestFramework As SexLabFramework
   if !SexLab.Enabled
     return False
@@ -245,7 +248,7 @@ Bool function bHaveGroupSexWithPlayerSL(Quest SexLabQuestFramework, Actor[] part
   Int iMales = 0
   Int iFemales = 0
   if partners.length > 4
-    logText("[SexLab] too many partners: " + partners, False, True, 1)
+    logText("[SexLab] too many partners: " + partners, False, True, 2)
     return False
   endif
   if isFemale(SexLabQuestFramework, player)
@@ -277,7 +280,7 @@ Bool function bHaveGroupSexWithPlayerSL(Quest SexLabQuestFramework, Actor[] part
   ElseIf totalActors == 2
     actors = new actor[2]
   elseIf totalActors <= 1
-	logText("[SexLab] Not enough partners: " + partners, False, True, 1)
+	logText("[SexLab] Not enough partners: " + partners, False, True, 2)
     return False
   endif
   actors[0] = player
@@ -308,9 +311,17 @@ Bool function bHaveGroupSexWithPlayerSL(Quest SexLabQuestFramework, Actor[] part
   else
     myAnims = anims
   endif
+  if sExcludedTags != ""
+	anims = SexLab.RemoveTagged(myAnims, sExcludedTags)
+	if anims.length > 0
+		myAnims = anims
+	endif
+  Endif
   if myAnims.Length > 0
     actors = SexLab.SortActors(actors, true)
-    if SexLab.StartSex(actors, anims, none, none, true, "AnimationEnding,AnimationEnd") > -1
+	logText("[SexLab] Anims: " + myAnims)
+	logText("[SexLab] Tags: " + SexLab.GetAllAnimationTagsInArray(myAnims))
+    if SexLab.StartSex(actors, myAnims, none, none, true, "AnimationEnding,AnimationEnd") > -1
       return True
     endif
 	logText("[SexLab] couldn't start SexLab animation.", False, True, 2)

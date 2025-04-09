@@ -342,6 +342,9 @@ event OnPageReset(String page)
     AddInputOptionST("EXTRATAGS_SEXLAB_VAGINAL_MF_INPUT", "$MRT_SP_EXTRATAGS_SEXLAB_VAGINAL_MF_INPUT", getInputTags(MainScript.sExtraTags_SL_VAGINAL_MF, MainScript.bExtraTags_SL_VAGINAL_MF_All, 13), flag)
     AddInputOptionST("EXTRATAGS_SEXLAB_VAGINAL_FF_INPUT", "$MRT_SP_EXTRATAGS_SEXLAB_VAGINAL_FF_INPUT", getInputTags(MainScript.sExtraTags_SL_VAGINAL_FF, MainScript.bExtraTags_SL_VAGINAL_FF_All, 13), flag)   
     addEmptyOption()
+    AddColoredHeader("$MRT_SP_HEAD_EXCLUDETAGS_SEXLAB")
+	OID_TAGS_EXCLUDE_SEXLAB_GROUP_INPUT = AddInputOption("$MRT_SP_TAGS_SEXLAB_GROUP_INPUT", shortenString(MainScript.sExclude_Tags_SL_Group, 23), flag)
+	addEmptyOption()
     AddColoredHeader("$MRT_SP_HEAD_EXTRATAGS_OSTIM")
     AddInputOptionST("EXTRATAGS_OSTIM_ORAL_MF_INPUT", "$MRT_SP_EXTRATAGS_OSTIM_ORAL_MF_INPUT", getInputTags(MainScript.sExtraTags_OS_Oral_MF, MainScript.bExtraTags_OS_Oral_MF_All, 13), flag)
     AddInputOptionST("EXTRATAGS_OSTIM_ORAL_FF_INPUT", "$MRT_SP_EXTRATAGS_OSTIM_ORAL_FF_INPUT", getInputTags(MainScript.sExtraTags_OS_Oral_FF, MainScript.bExtraTags_OS_Oral_FF_All, 13), flag)
@@ -351,7 +354,9 @@ event OnPageReset(String page)
     AddInputOptionST("EXTRATAGS_OSTIM_ANAL_MM_INPUT", "$MRT_SP_EXTRATAGS_OSTIM_ANAL_MM_INPUT", getInputTags(MainScript.sExtraTags_OS_Anal_MM, MainScript.bExtraTags_OS_Anal_MM_All, 13), flag)
     AddInputOptionST("EXTRATAGS_OSTIM_VAGINAL_MF_INPUT", "$MRT_SP_EXTRATAGS_OSTIM_VAGINAL_MF_INPUT", getInputTags(MainScript.sExtraTags_OS_VAGINAL_MF, MainScript.bExtraTags_OS_VAGINAL_MF_All, 13), flag)
     AddInputOptionST("EXTRATAGS_OSTIM_VAGINAL_FF_INPUT", "$MRT_SP_EXTRATAGS_OSTIM_VAGINAL_FF_INPUT", getInputTags(MainScript.sExtraTags_OS_VAGINAL_FF, MainScript.bExtraTags_OS_VAGINAL_FF_All, 13), flag)
-    addEmptyOption()
+	addEmptyOption()
+    AddColoredHeader("$MRT_SP_HEAD_EXCLUDETAGS_OSTIM")
+	OID_TAGS_EXCLUDE_OSTIM_GROUP_INPUT = AddInputOption("$MRT_SP_TAGS_OSTIM_GROUP_INPUT", shortenString(MainScript.sExclude_Tags_OS_Group, 23), flag)
     SetCursorPosition(1)
     AddColoredHeader("$MRT_SP_HEAD_INTEGRATION_LICENSE")
     if MainScript.bModEnabled && MainScript.bIsLicensesActive
@@ -406,6 +411,15 @@ event OnPageReset(String page)
     endif	
 	OID_SLHH_MALE_RAPIST = AddToggleOption("$MRT_SP_SLHH_MALE_RAPIST_TOGGLE", MainScript.bSLHH_MaleRapist, flag)
 	OID_SLHH_FEMALE_RAPIST = AddToggleOption("$MRT_SP_SLHH_FEMALE_RAPIST_TOGGLE", MainScript.bSLHH_FemaleRapist, flag)
+	
+	addEmptyOption()
+	AddColoredHeader("$MRT_SP_HEAD_INTEGRATION_OSTIM")
+	if MainScript.bModEnabled && MainScript.bIsOStimActive
+      flag = OPTION_FLAG_NONE
+    else
+      flag = OPTION_FLAG_DISABLED
+    endif	
+	OID_OSTIM_MAX_ACTORS = AddSliderOption("$MRT_SP_OSTIM_MAX_ACTORS_SLIDER1", MainScript.iOStimPCMaxActors, "$MRT_SP_OSTIM_MAX_ACTORS_SLIDER2", flag)
 	addEmptyOption()
 	AddColoredHeader("$MRT_SP_HEAD_INTEGRATION_ORGASM")
 	if MainScript.bModEnabled
@@ -3235,6 +3249,7 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
 	MainScript.iSLA_MinWhoreCustomerArousal = jsonutil.GetPathIntValue(settings_path, "iSLA_MinWhoreCustomerArousal", MainScript.iSLA_MinWhoreCustomerArousal)
 	MainScript.iSLA_MinDibelCustomerArousal = jsonutil.GetPathIntValue(settings_path, "iSLA_MinDibelCustomerArousal", MainScript.iSLA_MinDibelCustomerArousal)
 	MainScript.iTempleLoanInterestDaily = jsonutil.GetPathIntValue(settings_path, "iTempleLoanInterestDaily", MainScript.iTempleLoanInterestDaily)
+	MainScript.iOStimPCMaxActors = jsonutil.GetPathIntValue(settings_path, "iOStimPCMaxActors", MainScript.iOStimPCMaxActors)
 	
 	MainScript.iDefaultColor = jsonutil.GetPathIntValue(settings_path, "iDefaultColor", MainScript.iDefaultColor)
 	MainScript.sDefaultColor = Stringutil.Substring(sDecToHex(MainScript.iDefaultColor),2)
@@ -3460,6 +3475,8 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
   MainScript.sExtraTags_OS_Anal_MM = jsonutil.GetPathStringValue(settings_path, "sExtraTags_OS_Anal_MM", MainScript.sExtraTags_OS_Anal_MM)
   MainScript.sExtraTags_OS_Vaginal_MF = jsonutil.GetPathStringValue(settings_path, "sExtraTags_OS_Vaginal_MF", MainScript.sExtraTags_OS_Vaginal_MF)
   MainScript.sExtraTags_OS_Vaginal_FF = jsonutil.GetPathStringValue(settings_path, "sExtraTags_OS_Vaginal_FF", MainScript.sExtraTags_OS_Vaginal_FF)
+  MainScript.sExclude_Tags_SL_Group = jsonutil.GetPathStringValue(settings_path, "sExclude_Tags_SL_Group", MainScript.sExclude_Tags_SL_Group)
+  MainScript.sExclude_Tags_OS_Group = jsonutil.GetPathStringValue(settings_path, "sExclude_Tags_OS_Group", MainScript.sExclude_Tags_OS_Group)
 
   return true
 
@@ -3572,6 +3589,7 @@ Bool function saveUserSettingsPapyrus()
 	Jsonutil.SetPathIntValue(settings_path, "iSLA_MinWhoreCustomerArousal", MainScript.iSLA_MinWhoreCustomerArousal)
 	Jsonutil.SetPathIntValue(settings_path, "iSLA_MinDibelCustomerArousal", MainScript.iSLA_MinDibelCustomerArousal)
 	Jsonutil.SetPathIntValue(settings_path, "iTempleLoanInterestDaily", MainScript.iTempleLoanInterestDaily)
+	Jsonutil.SetPathIntValue(settings_path, "iOStimPCMaxActors", MainScript.iOStimPCMaxActors)
 	
 	Jsonutil.SetPathIntValue(settings_path, "iDefaultColor", MainScript.iDefaultColor)
 	Jsonutil.SetPathIntValue(settings_path, "iSuccessColor", MainScript.iSuccessColor)
@@ -3785,6 +3803,8 @@ Bool function saveUserSettingsPapyrus()
   jsonutil.SetPathStringValue(settings_path, "sExtraTags_OS_Anal_MM", MainScript.sExtraTags_OS_Anal_MM)
   jsonutil.SetPathStringValue(settings_path, "sExtraTags_OS_Vaginal_MF", MainScript.sExtraTags_OS_Vaginal_MF)
   jsonutil.SetPathStringValue(settings_path, "sExtraTags_OS_Vaginal_FF", MainScript.sExtraTags_OS_Vaginal_FF)
+  jsonutil.SetPathStringValue(settings_path, "sExclude_Tags_SL_Group", MainScript.sExclude_Tags_SL_Group)
+  jsonutil.SetPathStringValue(settings_path, "sExclude_Tags_OS_Group", MainScript.sExclude_Tags_OS_Group)
 
   if !jsonutil.Save(settings_path, false)
     MainScript.log("Error saving user settings.", False, true, 3)
@@ -3882,7 +3902,6 @@ string Function getInputTags(string sTags, Bool bReqAll, int iMaxLen = 10)
   endif
   return ""
 endFunction
-
 
 Function saveData_WhoreLocation_KWD(Location akLoc)
   if Mainscript.bIsPapyrusUtilActive
@@ -4861,17 +4880,19 @@ event OnOptionHighlight(int option)
     SetInfoText("$MRT_SP_DESC_DEFAULT_REJ_MALE_DD")
   elseif option == OID_SLSFR_MIN_APPROACH_REQ_FAME
     SetInfoText("$MRT_SP_DESC_SLSFR_Min_APPROACH_REQ_Fame")
-	 elseif option == OID_SLSFR_MIN_BEGGAR_SEX_OFFER_REQ_FAME
+  elseif option == OID_SLSFR_MIN_BEGGAR_SEX_OFFER_REQ_FAME
     SetInfoText("$MRT_SP_DESC_SLSFR_Min_Beggar_Sex_Offer_REQ_FAME")
   elseif option == OID_SLSFR_MIN_FAME_GAIN
     SetInfoText("$MRT_SP_DESC_SLSFR_MIN_FAME_GAIN")
-	elseif option == OID_SLSFR_MAX_FAME_GAIN
+  elseif option == OID_SLSFR_MAX_FAME_GAIN
     SetInfoText("$MRT_SP_DESC_SLSFR_MAX_FAME_GAIN")
-	elseif option == OID_SLSFR_FAME_GAIN_CHANCE 
+  elseif option == OID_SLSFR_FAME_GAIN_CHANCE 
     SetInfoText("$MRT_SP_DESC_SLSFR_FAME_GAIN_CHANCE")
-	elseif option == OID_SLSFR_TALK_FAME_GAIN_CHANCE
+  elseif option == OID_SLSFR_TALK_FAME_GAIN_CHANCE
 		SetInfoText("$MRT_SP_DESC_SLSFR_TALK_FAME_GAIN_CHANCE")
-	elseif option == OID_AEL_STRUGGLE_DIFFICULTY
+  elseif option == OID_OSTIM_MAX_ACTORS
+		SetInfoText("$MRT_SP_DESC_OSTIM_MAX_ACTORS")
+  elseif option == OID_AEL_STRUGGLE_DIFFICULTY
 		SetInfoText("$MRT_SP_DESC_AEL_STRUGGLE_DIFFICULTY")
 	elseif option == OID_SLSFR_TALK_MIN_FAME_GAIN
 		SetInfoText("$MRT_SP_DESC_SLSFR_TALK_MIN_FAME_GAIN")
@@ -4909,6 +4930,10 @@ event OnOptionHighlight(int option)
 	    SetInfoText("$MRT_SP_DESC_COLOR_ERROR")
 	elseif option == OID_COLOR_SEPARATOR
 	    SetInfoText("$MRT_SP_DESC_COLOR_SEPARATOR")
+	Elseif option == OID_TAGS_EXCLUDE_SEXLAB_GROUP_INPUT
+		SetInfoText("$MRT_SP_DESC_TAGS_EXCLUDE_SEXLAB_GROUP_INPUT")
+	Elseif option == OID_TAGS_EXCLUDE_OSTIM_GROUP_INPUT
+		SetInfoText("$MRT_SP_DESC_TAGS_EXCLUDE_OSTIM_GROUP_INPUT")
 	endif
 endevent
 
@@ -5255,6 +5280,9 @@ event OnOptionSliderAccept(int option, float value)
 	elseif option == OID_SLSFR_TALK_FAME_GAIN_CHANCE 
 		MainScript.fSLSFR_Talk_FameGainChance = value
 		SetSliderOptionValue(OID_SLSFR_TALK_FAME_GAIN_CHANCE , MainScript.fSLSFR_Talk_FameGainChance, "$MRT_SP_SLSFR_TALK_FAME_GAIN_CHANCE_SLIDER2")
+	elseif option == OID_OSTIM_MAX_ACTORS 
+		MainScript.iOStimPCMaxActors = value as Int
+		SetSliderOptionValue(OID_OSTIM_MAX_ACTORS , MainScript.iOStimPCMaxActors, "$MRT_SP_OSTIM_MAX_ACTORS_SLIDER2")
 	elseif option == OID_AEL_STRUGGLE_DIFFICULTY 
 		MainScript.fAELStruggleDifficulty = value
 		SetSliderOptionValue(OID_AEL_STRUGGLE_DIFFICULTY , MainScript.fAELStruggleDifficulty, "$MRT_SP_AEL_STRUGGLE_DIFFICULTY_SLIDER2")
@@ -5877,6 +5905,11 @@ event OnOptionSliderOpen(int option)
 		SetSliderDialogDefaultValue(100.0)
 		SetSliderDialogRange(0, 100)
 		SetSliderDialogInterval(0.1)
+	elseif option == OID_OSTIM_MAX_ACTORS
+		SetSliderDialogStartValue(MainScript.iOStimPCMaxActors)
+		SetSliderDialogDefaultValue(3.0)
+		SetSliderDialogRange(2, 5)
+		SetSliderDialogInterval(1)
 	elseif option == OID_DIBEL_TEMPLE_TASK_MIN_PAY
 		SetSliderDialogStartValue(MainScript.fTempleClientMinExtraPay)
 		SetSliderDialogDefaultValue(100.0)
@@ -6141,6 +6174,32 @@ event OnOptionColorAccept(int a_option, int a_color)
 	endIf
 endEvent
 
+Event OnOptionInputOpen(int a_option)
+	if a_option == OID_TAGS_EXCLUDE_SEXLAB_GROUP_INPUT
+		SetInputDialogStartText(MainScript.sExclude_Tags_SL_Group)
+	elseif a_option == OID_TAGS_EXCLUDE_OSTIM_GROUP_INPUT
+		SetInputDialogStartText(MainScript.sExclude_Tags_OS_Group)
+	endif
+endevent
+
+Event OnOptionInputAccept(int a_option, string a_input)
+	if a_option == OID_TAGS_EXCLUDE_SEXLAB_GROUP_INPUT
+		String str = sTrimTags(a_input)
+		If StringUtil.GetLength(str) > 30
+		  ShowMessage("Text is too long, 30 Characters Maximum", false)
+		else
+		  MainScript.sExclude_Tags_SL_Group = str
+		endif
+	elseif a_option == OID_TAGS_EXCLUDE_OSTIM_GROUP_INPUT
+		String str = sTrimTags(a_input)
+		If StringUtil.GetLength(str) > 30
+		  ShowMessage("Text is too long, 30 Characters Maximum", false)
+		else
+		  MainScript.sExclude_Tags_OS_Group = str
+		endif
+	endif
+	ForcePageReset()
+endevent
 
 function beggarRejectOptions(Int iflag)
   int flg = iflag
@@ -6653,3 +6712,8 @@ Int OID_DIBEL_LOAN_INTEREST_COMPOUND
 
 Int OID_EXCLUDE_IF_IN_SCENE
 Int OID_APPROACH_EXCLUDE_IF_IN_SCENE
+
+Int OID_TAGS_EXCLUDE_OSTIM_GROUP_INPUT
+Int OID_TAGS_EXCLUDE_SEXLAB_GROUP_INPUT
+
+Int OID_OSTIM_MAX_ACTORS

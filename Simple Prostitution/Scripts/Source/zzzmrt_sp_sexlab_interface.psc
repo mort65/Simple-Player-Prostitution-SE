@@ -61,7 +61,7 @@ Bool Function bHaveRandomSexWithPlayer(Actor Partner, Bool bAggressive = False)
   return False
 EndFunction
 
-Bool function bHaveGroupSexWithPlayer(Actor[] partners, Bool bAllowAggressive = True, Bool bForceAgressive = False)
+Bool function bHaveGroupSexWithPlayer(Actor[] partners, Bool bAllowAggressive = True, Bool bForceAgressive = False, String sExcludedTags = "")
   return False
 EndFunction
 
@@ -104,7 +104,7 @@ state Installed
     return zzzmrt_sp_int_sexlab.bHaveRandomSexWithPlayerSL(SexLabQuestFramework, Partner, bAggressive)
   EndFunction
 
-  Bool function bHaveGroupSexWithPlayer(Actor[] partners, Bool bAllowAggressive = True, Bool bForceAgressive = False)
-    return zzzmrt_sp_int_sexlab.bHaveGroupSexWithPlayerSL(SexLabQuestFramework, partners, bAllowAggressive, bForceAgressive)
+  Bool function bHaveGroupSexWithPlayer(Actor[] partners, Bool bAllowAggressive = True, Bool bForceAgressive = False, String sExcludedTags = "")
+    return zzzmrt_sp_int_sexlab.bHaveGroupSexWithPlayerSL(SexLabQuestFramework, partners, bAllowAggressive, bForceAgressive, sExcludedTags)
   EndFunction
 endstate

@@ -631,6 +631,11 @@ Float property fTempleLoanSendToSlaveryChance = 0.0 Auto Hidden Conditional
 Bool property bExcludeIfInScene = true Auto Hidden Conditional
 Bool property bApproachExcludeIfInScene = true Auto Hidden Conditional
 
+Int property iOStimPCMaxActors = 3 Auto Hidden Conditional
+
+String Property sExclude_Tags_OS_Group = "" auto Hidden Conditional
+String Property sExclude_Tags_SL_Group = "" auto Hidden Conditional
+
 function log(String sText, Bool bNotification = False, Bool bTrace = True, Int iSeverity = 1, Bool bForceNotif = False)
 	logText(sText, (bNotification && (bShowNotification || (iSeverity != 1) || bForceNotif)), bTrace, iSeverity, "SPP", sDefaultColor, sSuccessColor, sInfoColor, sWarningColor, sErrorColor, sSeparatorColor)
 endFunction
@@ -845,7 +850,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-	return getBaseVersion() + 0.65
+	return getBaseVersion() + 0.66
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
@@ -864,7 +869,13 @@ Bool function bRandomSexWithPlayer(Actor akActor, Bool bAggressive = False, Bool
 	int iTotalRapist = 1
 	Actor[] partners
 	iNumRapist = 0
-	if bGroup && (bNearbyMalesMayJoinSex || bNearbyFemalesMayJoinSex)
+	Int iMaxPartners = 4
+	if interface == "flowergirls"
+		iMaxPartners = 2
+	elseif interface == "ostim"
+		iMaxPartners = iOStimPCMaxActors - 1
+	endif
+	if bGroup && (bNearbyMalesMayJoinSex || bNearbyFemalesMayJoinSex) && (iMaxPartners > 1)
 		if participantDetector.isRunning()
 			participantDetector.stop()
 			while participantDetector.isRunning()
@@ -872,11 +883,11 @@ Bool function bRandomSexWithPlayer(Actor akActor, Bool bAggressive = False, Bool
 			endwhile
 		endif
 		participantDetector.Start()
-		if Participant1.GetActorReference()
+		if Participant1.GetActorReference() && CanParticipantJoin(Participant1.GetActorReference())
 			iTotalRapist += 1
 			log(Participant1.GetActorReference().getdisplayname() + " is joining.", true, true, 1)
 		endif
-		if Participant2.GetActorReference()
+		if Participant2.GetActorReference() && (iTotalRapist < iMaxPartners) && CanParticipantJoin(Participant2.GetActorReference())
 			iTotalRapist += 1
 			log(Participant2.GetActorReference().getdisplayname() + " is joining.", true, true, 1)
 		endif
@@ -886,14 +897,26 @@ Bool function bRandomSexWithPlayer(Actor akActor, Bool bAggressive = False, Bool
 			 partners[0] = akActor
 			 partners[1] = Participant1.GetActorReference()
 			 partners[2] = Participant2.GetActorReference()
-		   elseif (iTotalRapist == 2) && Participant1.GetActorReference() 
+			 if Participant1.GetActorReference().isInCombat()
+				Participant1.GetActorReference().StopCombat()
+			 endif
+			 if Participant2.GetActorReference().isInCombat()
+				Participant2.GetActorReference().StopCombat()
+			 endif
+		   elseif (iTotalRapist == 2) && (Participant1.GetActorReference() && CanParticipantJoin(Participant1.GetActorReference()))
 		     partners = new Actor[2]
 			 partners[0] = akActor
 			 partners[1] = Participant1.GetActorReference()
-		   elseif (iTotalRapist == 2) && Participant2.GetActorReference() 
+			 if Participant1.GetActorReference().isInCombat()
+				Participant1.GetActorReference().StopCombat()
+			 endif
+		   elseif (iTotalRapist == 2) && (Participant2.GetActorReference() && CanParticipantJoin(Participant2.GetActorReference()))
 		     partners = new Actor[2]
 			 partners[0] = akActor
 			 partners[1] = Participant2.GetActorReference()
+			 if Participant2.GetActorReference().isInCombat()
+				Participant2.GetActorReference().StopCombat()
+			 endif
 		   endif
 		endif
 	endif	
@@ -901,7 +924,7 @@ Bool function bRandomSexWithPlayer(Actor akActor, Bool bAggressive = False, Bool
 	if interface == "sexlab"
 		if bIsSexlabActive
 			if Partners && (Partners.Length > 1)
-				bResult = SexLabInterface.bHaveGroupSexWithPlayer(partners ,true, true)
+				bResult = SexLabInterface.bHaveGroupSexWithPlayer(partners ,bAggressive, bAggressive, sExclude_Tags_SL_Group)
 				if bResult
 					iNumRapist = partners.Length
 					participantDetector.stop()
@@ -920,7 +943,7 @@ Bool function bRandomSexWithPlayer(Actor akActor, Bool bAggressive = False, Bool
 	elseif interface == "ostim"
 		if bIsOstimActive
 			if Partners && (Partners.Length > 1)
-				bResult = OStimInterface.bHaveGroupSexWithPlayer(partners ,true)
+				bResult = OStimInterface.bHaveGroupSexWithPlayer(partners ,true, sExclude_Tags_OS_Group)
 				if bResult
 					iNumRapist = partners.Length
 					participantDetector.stop()
@@ -1054,6 +1077,12 @@ Bool Function bHaveGroupSex(String interface, Bool bAllowAggressive = False, Boo
 		return false
 	endif
 	Bool bResult = False
+	Int iMaxPartners = 4
+	if interface == "flowergirls"
+		iMaxPartners = 2
+	elseif interface == "ostim"
+		iMaxPartners = iOStimPCMaxActors - 1
+	endif
 	actor[] Partners = formListToActorArray(currentCustomerList)
 	int iIndex = partners.Length
 	while iIndex > 0
@@ -1088,7 +1117,7 @@ Bool Function bHaveGroupSex(String interface, Bool bAllowAggressive = False, Boo
 		Bool bAllowGroupSex
 		while !bResult && (currentCustomerList.GetSize() > 0)
 			bAllowGroupSex = (randInt(0, 999) < (fGroupSexChance * 10) as Int)
-			if bAllowGroupSex && (bNearbyMalesMayJoinSex || bNearbyFemalesMayJoinSex) && (currentCustomerList.GetSize() < 4)
+			if bAllowGroupSex && (bNearbyMalesMayJoinSex || bNearbyFemalesMayJoinSex) && (currentCustomerList.GetSize() < iMaxPartners)
 				if participantDetector.isRunning()
 					participantDetector.stop()
 					while participantDetector.isRunning()
@@ -1097,13 +1126,19 @@ Bool Function bHaveGroupSex(String interface, Bool bAllowAggressive = False, Boo
 				endif
 				participantDetector.Start()
 				Bool bClientAdded = False
-				if Participant1.GetActorReference()
+				if Participant1.GetActorReference() && CanParticipantJoin(Participant1.GetActorReference())
 					currentCustomerList.AddForm(Participant1.GetActorReference())
+					if Participant1.GetActorReference().isInCombat()
+						Participant1.GetActorReference().StopCombat()
+					endif
 					log(Participant1.GetActorReference().getdisplayname() + " is joining.", true, true, 1)
 					bClientAdded = true
 				endif
-				if (Participant2.GetActorReference() && (currentCustomerList.GetSize() < 4))
+				if (Participant2.GetActorReference() && (currentCustomerList.GetSize() < iMaxPartners) && CanParticipantJoin(Participant2.GetActorReference()))
 					currentCustomerList.AddForm(Participant2.GetActorReference())
+					if Participant2.GetActorReference().isInCombat()
+						Participant2.GetActorReference().StopCombat()
+					endif
 					log(Participant2.GetActorReference().getdisplayname() + " is joining.", true, true, 1)
 					bClientAdded = true
 				endif
@@ -1145,6 +1180,10 @@ Bool Function bHaveGroupSex(String interface, Bool bAllowAggressive = False, Boo
 					bResult = playerGroupSexSL(partners ,bAllowAggressive)
 					if !bResult
 						if bTryAllInterfaces
+							while (currentCustomerList.GetSize() >= iOStimPCMaxActors)
+								currentCustomerList.RemoveAddedForm(currentCustomerList.GetAt(currentCustomerList.GetSize() - 1))
+							endWhile
+							partners = formListToActorArray(currentCustomerList)
 							bResult = playerGroupSexOS(partners ,bAllowAggressive)
 							if !bResult
 								bResult = playerGroupSexFG(partners)
@@ -1173,6 +1212,10 @@ Bool Function bHaveGroupSex(String interface, Bool bAllowAggressive = False, Boo
 					bResult = playerGroupSexFG(partners)
 					if !bResult
 						if bTryAllInterfaces
+							while currentCustomerList.GetSize() >= iOStimPCMaxActors
+								currentCustomerList.RemoveAddedForm(currentCustomerList.GetAt(currentCustomerList.GetSize() - 1))
+							endWhile
+							partners = formListToActorArray(currentCustomerList)
 							bResult = playerGroupSexOS(partners ,bAllowAggressive)
 							if !bResult
 								bResult = playerGroupSexSL(partners)
@@ -1195,7 +1238,7 @@ Bool Function playerGroupSexOS(Actor[] akActors, Bool bAllowAggressive= False)
 	if !bIsOstimActive
 		return False
 	endif
-	if OStimInterface.bHaveGroupSexWithPlayer(akActors, bAllowAggressive)
+	if OStimInterface.bHaveGroupSexWithPlayer(akActors, bAllowAggressive, sExclude_Tags_OS_Group)
 	  RegisterForModEvent("ostim_start", "on_spp_ostim_Sex_Start")
 	  RegisterForModEvent("ostim_orgasm", "on_spp_ostim_Orgasm")
 	  RegisterForModEvent("ostim_end", "on_spp_ostim_Sex_End")
@@ -1219,7 +1262,7 @@ Bool Function playerGroupSexSL(Actor[] akActors, Bool bAllowAggressive= False)
 	if !bIsSexlabActive
 		return False
 	endif
-	if SexLabInterface.bHaveGroupSexWithPlayer(akActors, bAllowAggressive)
+	if SexLabInterface.bHaveGroupSexWithPlayer(akActors, bAllowAggressive, False, sExclude_Tags_SL_Group)
 		RegisterForModEvent("AnimationStart", "on_spp_sexlab_Sex_Start")
 		RegisterForModEvent("SexLabOrgasmSeparate", "on_spp_sexlab_OrgasmSeparate")
 		RegisterForModEvent("OrgasmStart", "on_spp_sexlab_Orgasm")
@@ -2602,7 +2645,7 @@ String function sGetCurAnimInteface(Bool bDontAsk = False)
 			return intefs[randInt(0, len - 1)]
 		elseif MCMScript.iAnimInterfaceMethod == 1 ;ask
 			if bDontAsk
-				return "ask"
+				;return "ask"
 			else
 				interf = InterfaceMenu.Show()
 			endif
@@ -2988,6 +3031,10 @@ Bool Function findSnitch(Bool bCheckDibel = False)
 	return bSnitchFound
 endfunction
 
+
+Bool Function isWhoringAllowedInPlayerLocation()
+	return (Player.GetCurrentLocation() && isWhoringAllowedInLocation(Player.GetCurrentLocation()))
+EndFunction
 
 Bool Function isWhoringAllowedInLocation(Location loc)
 	if !loc
@@ -3407,14 +3454,25 @@ State Dibeling
 			startSnitchFinder(true)
 		endif
 		origCustomersArr=formListToActorArray(dibelCustomerlist)
+		string sInterf
+		int iMaxPartners
 		Bool bResult = False
 		int i = 0
 		while (getState() == "Dibeling") && (dibelCustomerlist.GetSize() > 0)
+			sInterf = sGetCurAnimInteface()
+			iMaxPartners = 4
+			if sInterf == "flowergirls"
+				iMaxPartners = 2
+			elseif sInterf == "ostim"
+				iMaxPartners = iOStimPCMaxActors - 1
+			endif
 			currentCustomerList.revert()
 			i = 0
 			while i < dibelCustomerlist.GetSize()
 				if (dibelCustomerlist.getAt(i) as Actor) && !(dibelCustomerlist.getAt(i) as Actor).isDead()
-					currentCustomerList.AddForm(dibelCustomerlist.getAt(i) as Actor)
+					if currentCustomerList.GetSize() < maxInt(2, iMaxPartners)
+						currentCustomerList.AddForm(dibelCustomerlist.getAt(i) as Actor)
+					endif
 				else
 					dibelCustomerlist.RemoveAddedForm(dibelCustomerlist.getAt(i))
 				endif
@@ -3426,7 +3484,7 @@ State Dibeling
 					bIsTempleClient = true ;to add dibel mark using temple chance
 					currentEscortClient = None
 				endif
-				bResult = bHaveGroupSex(sGetCurAnimInteface(), bDibelAllowAggressive, bAllPosAllowed(fDibelVagChance,fDibelAnalChance,fDibelOralChance))
+				bResult = bHaveGroupSex(sInterf, bDibelAllowAggressive, bAllPosAllowed(fDibelVagChance,fDibelAnalChance,fDibelOralChance))
 				if bResult
 					i = 0
 					int j = 0
@@ -3654,14 +3712,25 @@ State Whoring
 			startSnitchFinder(false)
 		endif
 		origCustomersArr=formListToActorArray(whoreCustomerlist)
+		String sInterf
+		Int iMaxPartners
 		Bool bResult = False
 		int i = 0
 		while (getState() == "Whoring") && (whoreCustomerlist.GetSize() > 0)
+		    sInterf = sGetCurAnimInteface()
+			iMaxPartners = 4
+			if sInterf == "flowergirls"
+				iMaxPartners = 2
+			elseif sInterf == "ostim"
+				iMaxPartners = iOStimPCMaxActors - 1
+			endif
 			currentCustomerList.revert()
 			i = 0
 			while i < whoreCustomerlist.GetSize()
 				if (whoreCustomerlist.getAt(i) as Actor) && !(whoreCustomerlist.getAt(i) as Actor).isDead()
-					currentCustomerList.AddForm(whoreCustomerlist.getAt(i) as Actor)
+					if currentCustomerList.GetSize() < maxInt(2, iMaxPartners)
+						currentCustomerList.AddForm(whoreCustomerlist.getAt(i) as Actor)
+					endif
 				else
 					whoreCustomerlist.RemoveAddedForm(whoreCustomerlist.getAt(i))
 				endif
@@ -3669,7 +3738,7 @@ State Whoring
 			endWhile
 			if (whoreCustomerlist.GetSize() > 0)
 				iPositions = iWhorePositions
-				bResult = bHaveGroupSex(sGetCurAnimInteface(), bWhoreAllowAggressive, bAllPosAllowed(fWhoreVagChance,fWhoreAnalChance,fWhoreOralChance))
+				bResult = bHaveGroupSex(sInterf, bWhoreAllowAggressive, bAllPosAllowed(fWhoreVagChance,fWhoreAnalChance,fWhoreOralChance))
 				if bResult
 					i = 0
 					int j = 0
@@ -4846,6 +4915,17 @@ Bool function isForbiddenQuestRunning()
 	endwhile
 	return False
  endFunction
+ 
+ Bool function CanParticipantJoin(Actor Participant)
+	if !Participant
+	elseif isActorHavingSex(Participant)
+	elseif (bExcludeIfInScene && Participant.GetCurrentScene())
+	else
+		Return True
+	endif
+	return False
+ endFunction
+ 
 
 
 
