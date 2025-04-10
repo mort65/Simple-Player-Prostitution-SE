@@ -44,7 +44,7 @@ endfunction
 function checkVars()
 endfunction
 
-int function haveSexWithPlayer(Actor Partner, Int Position, String[] sExtraTags, Bool[] bRequireAllTags, Bool bAllowAggressive = False, Bool bAllowAll = False)
+int function haveSexWithPlayer(Actor Partner, Int Position, String[] sExtraTags, Bool[] bRequireAllTags, Bool bAllowAggressive = False, Bool bAllowAll = False, String sExcludedTags = "")
   return -1
 endfunction
 
@@ -57,7 +57,7 @@ Actor[] Function hookActors(string argStr)
   return Actors
 endfunction
 
-Bool Function bHaveRandomSexWithPlayer(Actor Partner, Bool bAggressive = False)
+Bool Function bHaveRandomSexWithPlayer(Actor Partner, Bool bAggressive = False, String sExcludedTags = "")
   return False
 EndFunction
 
@@ -88,8 +88,8 @@ state Installed
 	return zzzmrt_sp_int_sexlab.IsActorVictimSL(SexLabQuestFramework, tid, ActorRef)
   endfunction
 
-  int function haveSexWithPlayer(Actor Partner, Int Position, String[] sExtraTags, Bool[] bRequireAllTags, Bool bAllowAggressive = False, Bool bAllowAll = False)
-    return zzzmrt_sp_int_sexlab.haveSexWithPlayerSL(SexLabQuestFramework, Partner, Position, sExtraTags, bRequireAllTags, bAllowAggressive, bAllowAll)
+  int function haveSexWithPlayer(Actor Partner, Int Position, String[] sExtraTags, Bool[] bRequireAllTags, Bool bAllowAggressive = False, Bool bAllowAll = False, String sExcludedTags = "")
+    return zzzmrt_sp_int_sexlab.haveSexWithPlayerSL(SexLabQuestFramework, Partner, Position, sExtraTags, bRequireAllTags, bAllowAggressive, bAllowAll, sExcludedTags)
   endfunction
 
   Actor[] Function hookActors(string argStr)
@@ -100,8 +100,8 @@ state Installed
     return zzzmrt_sp_int_sexlab.hasPlayerSL(SexLabQuestFramework, argStr)
   endfunction
   
-  Bool Function bHaveRandomSexWithPlayer(Actor Partner, Bool bAggressive = False)
-    return zzzmrt_sp_int_sexlab.bHaveRandomSexWithPlayerSL(SexLabQuestFramework, Partner, bAggressive)
+  Bool Function bHaveRandomSexWithPlayer(Actor Partner, Bool bAggressive = False, String sExcludedTags = "")
+    return zzzmrt_sp_int_sexlab.bHaveRandomSexWithPlayerSL(SexLabQuestFramework, Partner, bAggressive, sExcludedTags)
   EndFunction
 
   Bool function bHaveGroupSexWithPlayer(Actor[] partners, Bool bAllowAggressive = True, Bool bForceAgressive = False, String sExcludedTags = "")

@@ -462,3 +462,21 @@ Function logText(String asText, Bool bNotification = False, Bool bTrace = True, 
 		Debug.Notification("<font color='#" +  asDefaultColor + "'>" + asSender + "</font>" + "<font color='#" + asSeparatorColor +"'>" + " -:- " + "</font>" + "<font color='#" + sColor  + "'>" + asText + "</font>")
 	endif
 EndFunction
+
+Function reduceFormList(Formlist fList, int iSize) Global
+	;Decrease the size of a formlist by removing items.
+	;If iSize is negative, it indicates the number of items that should be removed.
+	;If it is positive, it indicates the new size of the formlist.
+	if (!fList || (fList.GetSize() < 1))
+		return
+	endif
+	int iNewSize
+	if iSize < 0
+		iNewSize = maxInt(0, fList.GetSize() + iSize)
+	else
+		iNewSize = iSize
+	endif
+	While fList.GetSize() > iNewSize
+		fList.RemoveAddedForm(fList.GetAt(fList.GetSize() - 1))
+	EndWhile
+EndFunction

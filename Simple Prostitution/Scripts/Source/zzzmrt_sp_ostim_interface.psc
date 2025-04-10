@@ -44,11 +44,11 @@ endfunction
 function checkVars()
 endfunction
 
-int function haveSexWithPlayer(Actor Partner, Int Position, String[] sExtraTags, Bool[] bRequireAllTags, Bool bAllowAggressive = False, Bool bAllowAll = False)
+int function haveSexWithPlayer(Actor Partner, Int Position, String[] sExtraTags, Bool[] bRequireAllTags, Bool bAllowAggressive = False, Bool bAllowAll = False, String sExcludedTags = "")
   return -1
 endfunction
 
-Bool Function bHaveRandomSexWithPlayer(Actor Partner, Bool bAggressive = False)
+Bool Function bHaveRandomSexWithPlayer(Actor Partner, Bool bAggressive = False, String sExcludedTags = "")
   return False
 EndFunction
 
@@ -77,16 +77,16 @@ state Installed
     endif
   endfunction
   
-  int function haveSexWithPlayer(Actor Partner, Int Position, String[] sExtraTags, Bool[] bRequireAllTags, Bool bAllowAggressive = False, Bool bAllowAll = False)
-    return zzzmrt_sp_int_ostim.haveSexWithPlayerOS(OSexIntegrationMainQuest, Partner, Position, sExtraTags, bRequireAllTags, bAllowAggressive, bAllowAll)
+  int function haveSexWithPlayer(Actor Partner, Int Position, String[] sExtraTags, Bool[] bRequireAllTags, Bool bAllowAggressive = False, Bool bAllowAll = False, String sExcludedTags = "")
+    return zzzmrt_sp_int_ostim.haveSexWithPlayerOS(OSexIntegrationMainQuest, Partner, Position, sExtraTags, bRequireAllTags, bAllowAggressive, bAllowAll, sExcludedTags)
   endfunction
 
   Actor[] function getActors()
     return zzzmrt_sp_int_ostim.getActorsOS(OSexIntegrationMainQuest)
   endfunction
 
-  Bool Function bHaveRandomSexWithPlayer(Actor Partner, Bool bAggressive = False)
-    return zzzmrt_sp_int_ostim.bHaveRandomSexWithPlayerOS(OSexIntegrationMainQuest, partner, bAggressive)
+  Bool Function bHaveRandomSexWithPlayer(Actor Partner, Bool bAggressive = False, String sExcludedTags = "")
+    return zzzmrt_sp_int_ostim.bHaveRandomSexWithPlayerOS(OSexIntegrationMainQuest, partner, bAggressive, sExcludedTags)
   endfunction
 
   Bool Function bHaveGroupSexWithPlayer(Actor[] partners, Bool bAllowAggressive = True, String sExcludedTags = "")

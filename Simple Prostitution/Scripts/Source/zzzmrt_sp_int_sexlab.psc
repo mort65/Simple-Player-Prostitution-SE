@@ -22,7 +22,7 @@ Bool function IsActorVictimSL(Quest SexLabQuestFramework, Int tid, Actor ActorRe
 	return SexLab.IsVictim(tid, ActorRef)
 endfunction
 
-int function haveSexWithPlayerSL(Quest SexLabQuestFramework, Actor Partner, Int Position, String[] sExtraTags, Bool[] bRequireAllTags, Bool bAllowAggressive = False, Bool bAllowAll = False) Global
+int function haveSexWithPlayerSL(Quest SexLabQuestFramework, Actor Partner, Int Position, String[] sExtraTags, Bool[] bRequireAllTags, Bool bAllowAggressive = False, Bool bAllowAll = False, String sExcludedTags = "") Global
   if position < 0
 	  return -1
   endif
@@ -77,9 +77,10 @@ int function haveSexWithPlayerSL(Quest SexLabQuestFramework, Actor Partner, Int 
   Int iExtraTagsIndex = iGetExtraTagsIndex(Position, sGenders)
   if (iExtraTagsIndex > -1) && sExtraTags[iExtraTagsIndex]
     anims2 = SexLab.GetAnimationsByTags(2, sExtraTags[iExtraTagsIndex] + ",", "", RequireAll=bRequireAllTags[iExtraTagsIndex])
-		if anims2.length == 0
-			logText("[SexLab] couldn't find any animation with these tags: " + sExtraTags[iExtraTagsIndex], False, True, 2)
-		endif
+	
+	if anims2.length == 0
+		logText("[SexLab] couldn't find any animation with these tags: " + sExtraTags[iExtraTagsIndex], False, True, 2)
+	endif
   endif
   if Position == 0
     sType = "vaginal"
@@ -120,8 +121,15 @@ int function haveSexWithPlayerSL(Quest SexLabQuestFramework, Actor Partner, Int 
   else
       myAnims = anims2
   endif
-  logText("[SexLab] Anims: " + myAnims)
-  logText("[SexLab] Tags: " + SexLab.GetAllAnimationTagsInArray(myAnims))
+  if sExcludedTags != ""
+	anims = SexLab.RemoveTagged(myAnims, sExcludedTags)
+	if anims.length > 0
+		myAnims = anims
+	Else
+		logText("[SexLab] couldn't find any animation without these excluded tags: " + sExcludedTags, False, True, 2)
+	endif
+  Endif
+  logText("[SexLab] Tags for selected Animations: " + SexLab.GetAllAnimationTagsInArray(myAnims))
   sexActors = SexLab.SortActors(sexActors, true)
   if SexLab.StartSex(sexActors, myAnims, none, none, true, "AnimationEnding,AnimationEnd") > -1
 	return Position
@@ -130,36 +138,7 @@ int function haveSexWithPlayerSL(Quest SexLabQuestFramework, Actor Partner, Int 
   return -1
 endfunction
 
-
-int Function iGetExtraTagsIndex(string iPos, string sGenders) Global
-  if iPos == 0
-    if sGenders == "MF"
-      return 6
-    elseif sGenders == "FF"
-      return 7
-    endif
-  elseif iPos == 1
-    if sGenders == "MF"
-      return 3
-    elseif sGenders == "FF"
-      return 4
-    elseif sGenders == "MM"
-      return 5
-    endif
-  elseif iPos == 2
-    if sGenders == "MF"
-      return 0
-    elseif sGenders == "FF"
-      return 1
-    elseif sGenders == "MM"
-      return 2
-    endif
-  endif
-  return -1
-endfunction
-
-
-Bool function bHaveRandomSexWithPlayerSL(Quest SexLabQuestFramework, Actor Partner, Bool bAggressive = False) Global
+Bool function bHaveRandomSexWithPlayerSL(Quest SexLabQuestFramework, Actor Partner, Bool bAggressive = False, String sExcludedTags = "") Global
   SexLabFramework SexLab = SexLabQuestFramework As SexLabFramework
   if !SexLab.Enabled
     return False
@@ -229,13 +208,20 @@ Bool function bHaveRandomSexWithPlayerSL(Quest SexLabQuestFramework, Actor Partn
       endif
     endif
   endif
+  if sExcludedTags != ""
+	sslBaseAnimation[] anims2 = SexLab.RemoveTagged(anims, sExcludedTags)
+	if anims2.length > 0
+		anims = anims2
+	Else
+		logText("[SexLab] couldn't find any animation without these excluded tags: " + sExcludedTags, False, True, 2)
+	endif
+  Endif
   sexActors = SexLab.SortActors(sexActors, true)
-  logText("[SexLab] Anims: " + anims)
-  logText("[SexLab] Tags: " + SexLab.GetAllAnimationTagsInArray(anims))
+  logText("[SexLab] Tags for selected Animations: " + SexLab.GetAllAnimationTagsInArray(anims))
   if SexLab.StartSex(sexActors, anims, none, none, true, "AnimationEnding,AnimationEnd") > -1
     return True
   endif
- logText("[SexLab] couldn't start animation.", False, True, 2)
+  logText("[SexLab] couldn't start animation.", False, True, 2)
   return False
 endfunction
 
@@ -315,12 +301,14 @@ Bool function bHaveGroupSexWithPlayerSL(Quest SexLabQuestFramework, Actor[] part
 	anims = SexLab.RemoveTagged(myAnims, sExcludedTags)
 	if anims.length > 0
 		myAnims = anims
+	Else
+		logText("[SexLab] couldn't find any animation for " + actors.length + " actors without these excluded tags: " + sExcludedTags, False, True, 2)
+		return False
 	endif
   Endif
   if myAnims.Length > 0
     actors = SexLab.SortActors(actors, true)
-	logText("[SexLab] Anims: " + myAnims)
-	logText("[SexLab] Tags: " + SexLab.GetAllAnimationTagsInArray(myAnims))
+	logText("[SexLab] Tags for selected Animations: " + SexLab.GetAllAnimationTagsInArray(myAnims))
     if SexLab.StartSex(actors, myAnims, none, none, true, "AnimationEnding,AnimationEnd") > -1
       return True
     endif
@@ -331,6 +319,32 @@ Bool function bHaveGroupSexWithPlayerSL(Quest SexLabQuestFramework, Actor[] part
   return False
 EndFunction
 
+int Function iGetExtraTagsIndex(string iPos, string sGenders) Global
+  if iPos == 0
+    if sGenders == "MF"
+      return 6
+    elseif sGenders == "FF"
+      return 7
+    endif
+  elseif iPos == 1
+    if sGenders == "MF"
+      return 3
+    elseif sGenders == "FF"
+      return 4
+    elseif sGenders == "MM"
+      return 5
+    endif
+  elseif iPos == 2
+    if sGenders == "MF"
+      return 0
+    elseif sGenders == "FF"
+      return 1
+    elseif sGenders == "MM"
+      return 2
+    endif
+  endif
+  return -1
+endfunction
 
 Bool function isFemale(Quest SexLabQuestFramework, Actor akActor) Global
   Int iGender = (SexLabQuestFramework As SexLabFramework).GetGender(akActor)

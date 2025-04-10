@@ -344,6 +344,7 @@ event OnPageReset(String page)
     addEmptyOption()
     AddColoredHeader("$MRT_SP_HEAD_EXCLUDETAGS_SEXLAB")
 	OID_TAGS_EXCLUDE_SEXLAB_GROUP_INPUT = AddInputOption("$MRT_SP_TAGS_SEXLAB_GROUP_INPUT", shortenString(MainScript.sExclude_Tags_SL_Group, 23), flag)
+	OID_TAGS_EXCLUDE_SEXLAB_NOTGROUP_INPUT = AddInputOption("$MRT_SP_TAGS_SEXLAB_NOTGROUP_INPUT", shortenString(MainScript.sExclude_Tags_SL_NotGroup, 23), flag)
 	addEmptyOption()
     AddColoredHeader("$MRT_SP_HEAD_EXTRATAGS_OSTIM")
     AddInputOptionST("EXTRATAGS_OSTIM_ORAL_MF_INPUT", "$MRT_SP_EXTRATAGS_OSTIM_ORAL_MF_INPUT", getInputTags(MainScript.sExtraTags_OS_Oral_MF, MainScript.bExtraTags_OS_Oral_MF_All, 13), flag)
@@ -357,8 +358,33 @@ event OnPageReset(String page)
 	addEmptyOption()
     AddColoredHeader("$MRT_SP_HEAD_EXCLUDETAGS_OSTIM")
 	OID_TAGS_EXCLUDE_OSTIM_GROUP_INPUT = AddInputOption("$MRT_SP_TAGS_OSTIM_GROUP_INPUT", shortenString(MainScript.sExclude_Tags_OS_Group, 23), flag)
+	OID_TAGS_EXCLUDE_OSTIM_NOTGROUP_INPUT = AddInputOption("$MRT_SP_TAGS_OSTIM_NOTGROUP_INPUT", shortenString(MainScript.sExclude_Tags_OS_NotGroup, 23), flag)
     SetCursorPosition(1)
-    AddColoredHeader("$MRT_SP_HEAD_INTEGRATION_LICENSE")
+	AddColoredHeader("$MRT_SP_HEAD_INTEGRATION_SEXLAB")
+	if MainScript.bModEnabled && MainScript.bIsSexlabActive
+      flag = OPTION_FLAG_NONE
+    else
+      flag = OPTION_FLAG_DISABLED
+    endif
+	OID_SEXLAB_MAX_ACTORS = AddSliderOption("$MRT_SP_SEXLAB_MAX_ACTORS_SLIDER1", MainScript.iSexLabPCMaxActors, "$MRT_SP_SEXLAB_MAX_ACTORS_SLIDER2", flag)
+	addEmptyOption()
+	AddColoredHeader("$MRT_SP_HEAD_INTEGRATION_OSTIM")
+	if MainScript.bModEnabled && MainScript.bIsOStimActive
+      flag = OPTION_FLAG_NONE
+    else
+      flag = OPTION_FLAG_DISABLED
+    endif	
+	OID_OSTIM_MAX_ACTORS = AddSliderOption("$MRT_SP_OSTIM_MAX_ACTORS_SLIDER1", MainScript.iOStimPCMaxActors, "$MRT_SP_OSTIM_MAX_ACTORS_SLIDER2", flag)
+	addEmptyOption()
+	AddColoredHeader("$MRT_SP_HEAD_INTEGRATION_FLOWERGIRLS")
+	if MainScript.bModEnabled && MainScript.bIsFlowerGirlsActive
+      flag = OPTION_FLAG_NONE
+    else
+      flag = OPTION_FLAG_DISABLED
+    endif	
+	OID_FLOWERGIRLS_MAX_ACTORS = AddSliderOption("$MRT_SP_FLOWERGIRLS_MAX_ACTORS_SLIDER1", MainScript.iFlowerGirlsPCMaxActors, "$MRT_SP_FLOWERGIRLS_MAX_ACTORS_SLIDER2", flag)
+    addEmptyOption()
+	AddColoredHeader("$MRT_SP_HEAD_INTEGRATION_LICENSE")
     if MainScript.bModEnabled && MainScript.bIsLicensesActive
       flag = OPTION_FLAG_NONE
     else
@@ -367,31 +393,29 @@ event OnPageReset(String page)
     _AddToggleOptionST("WHORE_NEED_LICENSE_TOGGLE", "$MRT_SP_WHORE_NEED_LICENSE_TOGGLE", MainScript.bWhoreNeedLicense, flag)
     _AddToggleOptionST("DIBEL_NEED_LICENSE_TOGGLE", "$MRT_SP_DIBEL_NEED_LICENSE_TOGGLE", MainScript.bDibelNeedLicense, flag)
     AddSliderOptionST("CITIZEN_REPORT_CHANCE_SLIDER", "$MRT_SP_CITIZEN_REPORT_CHANCE_SLIDER1", MainScript.fCitizenReportChance, "$MRT_SP_CITIZEN_REPORT_CHANCE_SLIDER2", flag)
-    AddSliderOptionST("GUARD_REPORT_CHANCE_SLIDER", "$MRT_SP_GUARD_REPORT_CHANCE_SLIDER1", MainScript.fGuardReportChance, "$MRT_SP_GUARD_REPORT_CHANCE_SLIDER2", flag)
-		
-		addEmptyOption()
-		AddColoredHeader("$MRT_SP_HEAD_INTEGRATION_SLA")
-		
-		if MainScript.bModEnabled && MainScript.bIs_SLA_Active
+    AddSliderOptionST("GUARD_REPORT_CHANCE_SLIDER", "$MRT_SP_GUARD_REPORT_CHANCE_SLIDER1", MainScript.fGuardReportChance, "$MRT_SP_GUARD_REPORT_CHANCE_SLIDER2", flag)	
+	addEmptyOption()
+	AddColoredHeader("$MRT_SP_HEAD_INTEGRATION_SLA")
+	if MainScript.bModEnabled && MainScript.bIs_SLA_Active
       flag = OPTION_FLAG_NONE
     else
       flag = OPTION_FLAG_DISABLED
     endif	
-		OID_SLA_MIN_PC_AROUSAL = AddSliderOption("$MRT_SP_SLA_MIN_PC_AROUSAL_SLIDER1", MainScript.iSLA_MinPCArousal, "$MRT_SP_SLA_MIN_PC_AROUSAL_SLIDER2", flag)
-		OID_SLA_MIN_APPROACH_AROUSAL = AddSliderOption("$MRT_SP_SLA_MIN_APPROACH_AROUSAL_SLIDER1", MainScript.iSLA_MinApproachArousal, "$MRT_SP_SLA_MIN_APPROACH_AROUSAL_SLIDER2", flag)
-		OID_SLA_MIN_WHORE_CUSTOMER_AROUSAL = AddSliderOption("$MRT_SP_SLA_MIN_WHORE_CUSTOMER_AROUSAL_SLIDER1", MainScript.iSLA_MinWhoreCustomerArousal, "$MRT_SP_SLA_MIN_WHORE_CUSTOMER_AROUSAL_SLIDER2", flag)
-		OID_SLA_MIN_DIBEL_CUSTOMER_AROUSAL = AddSliderOption("$MRT_SP_SLA_MIN_DIBEL_CUSTOMER_AROUSAL_SLIDER1", MainScript.iSLA_MinDibelCustomerArousal, "$MRT_SP_SLA_MIN_DIBEL_CUSTOMER_AROUSAL_SLIDER2", flag)
-		OID_SLA_MIN_BEGGAR_SEX_OFFER_AROUSAL = AddSliderOption("$MRT_SP_SLA_MIN_BEGGAR_SEX_OFFER_AROUSAL_SLIDER1", MainScript.iSLA_MinBeggarSexOfferArousal, "$MRT_SP_SLA_MIN_BEGGAR_SEX_OFFER_AROUSAL_SLIDER2", flag)
-		addEmptyOption()
-		AddColoredHeader("$MRT_SP_HEAD_INTEGRATION_SLSFR")
-	  if MainScript.bModEnabled && MainScript.bIs_SLSFR_Active
+	OID_SLA_MIN_PC_AROUSAL = AddSliderOption("$MRT_SP_SLA_MIN_PC_AROUSAL_SLIDER1", MainScript.iSLA_MinPCArousal, "$MRT_SP_SLA_MIN_PC_AROUSAL_SLIDER2", flag)
+	OID_SLA_MIN_APPROACH_AROUSAL = AddSliderOption("$MRT_SP_SLA_MIN_APPROACH_AROUSAL_SLIDER1", MainScript.iSLA_MinApproachArousal, "$MRT_SP_SLA_MIN_APPROACH_AROUSAL_SLIDER2", flag)
+	OID_SLA_MIN_WHORE_CUSTOMER_AROUSAL = AddSliderOption("$MRT_SP_SLA_MIN_WHORE_CUSTOMER_AROUSAL_SLIDER1", MainScript.iSLA_MinWhoreCustomerArousal, "$MRT_SP_SLA_MIN_WHORE_CUSTOMER_AROUSAL_SLIDER2", flag)
+	OID_SLA_MIN_DIBEL_CUSTOMER_AROUSAL = AddSliderOption("$MRT_SP_SLA_MIN_DIBEL_CUSTOMER_AROUSAL_SLIDER1", MainScript.iSLA_MinDibelCustomerArousal, "$MRT_SP_SLA_MIN_DIBEL_CUSTOMER_AROUSAL_SLIDER2", flag)
+	OID_SLA_MIN_BEGGAR_SEX_OFFER_AROUSAL = AddSliderOption("$MRT_SP_SLA_MIN_BEGGAR_SEX_OFFER_AROUSAL_SLIDER1", MainScript.iSLA_MinBeggarSexOfferArousal, "$MRT_SP_SLA_MIN_BEGGAR_SEX_OFFER_AROUSAL_SLIDER2", flag)
+	addEmptyOption()
+	AddColoredHeader("$MRT_SP_HEAD_INTEGRATION_SLSFR")
+	if MainScript.bModEnabled && MainScript.bIs_SLSFR_Active
       flag = OPTION_FLAG_NONE
     else
       flag = OPTION_FLAG_DISABLED
     endif	
-		OID_SLSFR_MIN_APPROACH_REQ_FAME = AddSliderOption("$MRT_SP_SLSFR_MIN_APPROACH_REQ_FAME_SLIDER1", MainScript.fSLSFR_MinApproachRequiredFame, "$MRT_SP_SLSFR_MIN_APPROACH_REQ_FAME_SLIDER2", flag)
-		OID_SLSFR_MIN_BEGGAR_SEX_OFFER_REQ_FAME = AddSliderOption("$MRT_SP_SLSFR_MIN_BEGGAR_SEX_OFFER_REQ_Fame_SLIDER1", MainScript.fSLSFR_MinBeggarSexOfferRequiredFame, "$MRT_SP_SLSFR_MIN_BEGGAR_SEX_OFFER_REQ_Fame_SLIDER2", flag)
-		if MainScript.bModEnabled && MainScript.bIs_SLSFR_Active && (MainScript.bIsFlowerGirlsActive || MainScript.bIsOstimActive)
+	OID_SLSFR_MIN_APPROACH_REQ_FAME = AddSliderOption("$MRT_SP_SLSFR_MIN_APPROACH_REQ_FAME_SLIDER1", MainScript.fSLSFR_MinApproachRequiredFame, "$MRT_SP_SLSFR_MIN_APPROACH_REQ_FAME_SLIDER2", flag)
+	OID_SLSFR_MIN_BEGGAR_SEX_OFFER_REQ_FAME = AddSliderOption("$MRT_SP_SLSFR_MIN_BEGGAR_SEX_OFFER_REQ_Fame_SLIDER1", MainScript.fSLSFR_MinBeggarSexOfferRequiredFame, "$MRT_SP_SLSFR_MIN_BEGGAR_SEX_OFFER_REQ_Fame_SLIDER2", flag)
+	if MainScript.bModEnabled && MainScript.bIs_SLSFR_Active && (MainScript.bIsFlowerGirlsActive || MainScript.bIsOstimActive)
       flag = OPTION_FLAG_NONE
     else
       flag = OPTION_FLAG_DISABLED
@@ -411,15 +435,6 @@ event OnPageReset(String page)
     endif	
 	OID_SLHH_MALE_RAPIST = AddToggleOption("$MRT_SP_SLHH_MALE_RAPIST_TOGGLE", MainScript.bSLHH_MaleRapist, flag)
 	OID_SLHH_FEMALE_RAPIST = AddToggleOption("$MRT_SP_SLHH_FEMALE_RAPIST_TOGGLE", MainScript.bSLHH_FemaleRapist, flag)
-	
-	addEmptyOption()
-	AddColoredHeader("$MRT_SP_HEAD_INTEGRATION_OSTIM")
-	if MainScript.bModEnabled && MainScript.bIsOStimActive
-      flag = OPTION_FLAG_NONE
-    else
-      flag = OPTION_FLAG_DISABLED
-    endif	
-	OID_OSTIM_MAX_ACTORS = AddSliderOption("$MRT_SP_OSTIM_MAX_ACTORS_SLIDER1", MainScript.iOStimPCMaxActors, "$MRT_SP_OSTIM_MAX_ACTORS_SLIDER2", flag)
 	addEmptyOption()
 	AddColoredHeader("$MRT_SP_HEAD_INTEGRATION_ORGASM")
 	if MainScript.bModEnabled
@@ -3250,6 +3265,8 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
 	MainScript.iSLA_MinDibelCustomerArousal = jsonutil.GetPathIntValue(settings_path, "iSLA_MinDibelCustomerArousal", MainScript.iSLA_MinDibelCustomerArousal)
 	MainScript.iTempleLoanInterestDaily = jsonutil.GetPathIntValue(settings_path, "iTempleLoanInterestDaily", MainScript.iTempleLoanInterestDaily)
 	MainScript.iOStimPCMaxActors = jsonutil.GetPathIntValue(settings_path, "iOStimPCMaxActors", MainScript.iOStimPCMaxActors)
+	MainScript.iSexLabPCMaxActors = jsonutil.GetPathIntValue(settings_path, "iSexLabPCMaxActors", MainScript.iSexLabPCMaxActors)
+	MainScript.iFlowerGirlsPCMaxActors = jsonutil.GetPathIntValue(settings_path, "iFlowerGirlsPCMaxActors", MainScript.iFlowerGirlsPCMaxActors)
 	
 	MainScript.iDefaultColor = jsonutil.GetPathIntValue(settings_path, "iDefaultColor", MainScript.iDefaultColor)
 	MainScript.sDefaultColor = Stringutil.Substring(sDecToHex(MainScript.iDefaultColor),2)
@@ -3477,7 +3494,9 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
   MainScript.sExtraTags_OS_Vaginal_FF = jsonutil.GetPathStringValue(settings_path, "sExtraTags_OS_Vaginal_FF", MainScript.sExtraTags_OS_Vaginal_FF)
   MainScript.sExclude_Tags_SL_Group = jsonutil.GetPathStringValue(settings_path, "sExclude_Tags_SL_Group", MainScript.sExclude_Tags_SL_Group)
   MainScript.sExclude_Tags_OS_Group = jsonutil.GetPathStringValue(settings_path, "sExclude_Tags_OS_Group", MainScript.sExclude_Tags_OS_Group)
-
+  MainScript.sExclude_Tags_SL_NotGroup = jsonutil.GetPathStringValue(settings_path, "sExclude_Tags_SL_NotGroup", MainScript.sExclude_Tags_SL_NotGroup)
+  MainScript.sExclude_Tags_OS_NotGroup = jsonutil.GetPathStringValue(settings_path, "sExclude_Tags_OS_NotGroup", MainScript.sExclude_Tags_OS_NotGroup)
+  
   return true
 
 endFunction
@@ -3590,6 +3609,8 @@ Bool function saveUserSettingsPapyrus()
 	Jsonutil.SetPathIntValue(settings_path, "iSLA_MinDibelCustomerArousal", MainScript.iSLA_MinDibelCustomerArousal)
 	Jsonutil.SetPathIntValue(settings_path, "iTempleLoanInterestDaily", MainScript.iTempleLoanInterestDaily)
 	Jsonutil.SetPathIntValue(settings_path, "iOStimPCMaxActors", MainScript.iOStimPCMaxActors)
+	Jsonutil.SetPathIntValue(settings_path, "iSexLabPCMaxActors", MainScript.iSexLabPCMaxActors)
+	Jsonutil.SetPathIntValue(settings_path, "iFlowerGirlsPCMaxActors", MainScript.iFlowerGirlsPCMaxActors)
 	
 	Jsonutil.SetPathIntValue(settings_path, "iDefaultColor", MainScript.iDefaultColor)
 	Jsonutil.SetPathIntValue(settings_path, "iSuccessColor", MainScript.iSuccessColor)
@@ -3805,6 +3826,8 @@ Bool function saveUserSettingsPapyrus()
   jsonutil.SetPathStringValue(settings_path, "sExtraTags_OS_Vaginal_FF", MainScript.sExtraTags_OS_Vaginal_FF)
   jsonutil.SetPathStringValue(settings_path, "sExclude_Tags_SL_Group", MainScript.sExclude_Tags_SL_Group)
   jsonutil.SetPathStringValue(settings_path, "sExclude_Tags_OS_Group", MainScript.sExclude_Tags_OS_Group)
+  jsonutil.SetPathStringValue(settings_path, "sExclude_Tags_SL_NotGroup", MainScript.sExclude_Tags_SL_NotGroup)
+  jsonutil.SetPathStringValue(settings_path, "sExclude_Tags_OS_NotGroup", MainScript.sExclude_Tags_OS_NotGroup) 
 
   if !jsonutil.Save(settings_path, false)
     MainScript.log("Error saving user settings.", False, true, 3)
@@ -4892,6 +4915,10 @@ event OnOptionHighlight(int option)
 		SetInfoText("$MRT_SP_DESC_SLSFR_TALK_FAME_GAIN_CHANCE")
   elseif option == OID_OSTIM_MAX_ACTORS
 		SetInfoText("$MRT_SP_DESC_OSTIM_MAX_ACTORS")
+  elseif option == OID_SEXLAB_MAX_ACTORS
+		SetInfoText("$MRT_SP_DESC_SEXLAB_MAX_ACTORS")
+  elseif option == OID_FLOWERGIRLS_MAX_ACTORS
+		SetInfoText("$MRT_SP_DESC_FLOWERGIRLS_MAX_ACTORS")
   elseif option == OID_AEL_STRUGGLE_DIFFICULTY
 		SetInfoText("$MRT_SP_DESC_AEL_STRUGGLE_DIFFICULTY")
 	elseif option == OID_SLSFR_TALK_MIN_FAME_GAIN
@@ -4934,6 +4961,10 @@ event OnOptionHighlight(int option)
 		SetInfoText("$MRT_SP_DESC_TAGS_EXCLUDE_SEXLAB_GROUP_INPUT")
 	Elseif option == OID_TAGS_EXCLUDE_OSTIM_GROUP_INPUT
 		SetInfoText("$MRT_SP_DESC_TAGS_EXCLUDE_OSTIM_GROUP_INPUT")
+	Elseif option == OID_TAGS_EXCLUDE_SEXLAB_NOTGROUP_INPUT
+		SetInfoText("$MRT_SP_DESC_TAGS_EXCLUDE_SEXLAB_NOTGROUP_INPUT")
+	Elseif option == OID_TAGS_EXCLUDE_OSTIM_NOTGROUP_INPUT
+		SetInfoText("$MRT_SP_DESC_TAGS_EXCLUDE_OSTIM_NOTGROUP_INPUT")
 	endif
 endevent
 
@@ -5283,6 +5314,12 @@ event OnOptionSliderAccept(int option, float value)
 	elseif option == OID_OSTIM_MAX_ACTORS 
 		MainScript.iOStimPCMaxActors = value as Int
 		SetSliderOptionValue(OID_OSTIM_MAX_ACTORS , MainScript.iOStimPCMaxActors, "$MRT_SP_OSTIM_MAX_ACTORS_SLIDER2")
+	elseif option == OID_SEXLAB_MAX_ACTORS 
+		MainScript.iSexLabPCMaxActors  = value as Int
+		SetSliderOptionValue(OID_SEXLAB_MAX_ACTORS , MainScript.iSexLabPCMaxActors , "$MRT_SP_SEXLAB_MAX_ACTORS_SLIDER2")
+	elseif option == OID_FLOWERGIRLS_MAX_ACTORS 
+		MainScript.iFlowerGirlsPCMaxActors  = value as Int
+		SetSliderOptionValue(OID_FLOWERGIRLS_MAX_ACTORS , MainScript.iFlowerGirlsPCMaxActors , "$MRT_SP_FLOWERGIRLS_MAX_ACTORS_SLIDER2")
 	elseif option == OID_AEL_STRUGGLE_DIFFICULTY 
 		MainScript.fAELStruggleDifficulty = value
 		SetSliderOptionValue(OID_AEL_STRUGGLE_DIFFICULTY , MainScript.fAELStruggleDifficulty, "$MRT_SP_AEL_STRUGGLE_DIFFICULTY_SLIDER2")
@@ -5910,6 +5947,16 @@ event OnOptionSliderOpen(int option)
 		SetSliderDialogDefaultValue(3.0)
 		SetSliderDialogRange(2, 5)
 		SetSliderDialogInterval(1)
+	elseif option == OID_SEXLAB_MAX_ACTORS
+		SetSliderDialogStartValue(MainScript.iSexLabPCMaxActors)
+		SetSliderDialogDefaultValue(5.0)
+		SetSliderDialogRange(2, 5)
+		SetSliderDialogInterval(1)
+	elseif option == OID_FLOWERGIRLS_MAX_ACTORS
+		SetSliderDialogStartValue(MainScript.iFlowerGirlsPCMaxActors)
+		SetSliderDialogDefaultValue(3.0)
+		SetSliderDialogRange(2, 3)
+		SetSliderDialogInterval(1)
 	elseif option == OID_DIBEL_TEMPLE_TASK_MIN_PAY
 		SetSliderDialogStartValue(MainScript.fTempleClientMinExtraPay)
 		SetSliderDialogDefaultValue(100.0)
@@ -6179,6 +6226,10 @@ Event OnOptionInputOpen(int a_option)
 		SetInputDialogStartText(MainScript.sExclude_Tags_SL_Group)
 	elseif a_option == OID_TAGS_EXCLUDE_OSTIM_GROUP_INPUT
 		SetInputDialogStartText(MainScript.sExclude_Tags_OS_Group)
+	elseif a_option == OID_TAGS_EXCLUDE_SEXLAB_NOTGROUP_INPUT
+		SetInputDialogStartText(MainScript.sExclude_Tags_SL_NotGroup)
+	elseif a_option == OID_TAGS_EXCLUDE_OSTIM_NOTGROUP_INPUT
+		SetInputDialogStartText(MainScript.sExclude_Tags_OS_NotGroup)
 	endif
 endevent
 
@@ -6196,6 +6247,20 @@ Event OnOptionInputAccept(int a_option, string a_input)
 		  ShowMessage("Text is too long, 30 Characters Maximum", false)
 		else
 		  MainScript.sExclude_Tags_OS_Group = str
+		endif
+	elseif a_option == OID_TAGS_EXCLUDE_SEXLAB_NOTGROUP_INPUT
+		String str = sTrimTags(a_input)
+		If StringUtil.GetLength(str) > 30
+		  ShowMessage("Text is too long, 30 Characters Maximum", false)
+		else
+		  MainScript.sExclude_Tags_SL_NotGroup = str
+		endif
+	elseif a_option == OID_TAGS_EXCLUDE_OSTIM_NOTGROUP_INPUT
+		String str = sTrimTags(a_input)
+		If StringUtil.GetLength(str) > 30
+		  ShowMessage("Text is too long, 30 Characters Maximum", false)
+		else
+		  MainScript.sExclude_Tags_OS_NotGroup = str
 		endif
 	endif
 	ForcePageReset()
@@ -6715,5 +6780,9 @@ Int OID_APPROACH_EXCLUDE_IF_IN_SCENE
 
 Int OID_TAGS_EXCLUDE_OSTIM_GROUP_INPUT
 Int OID_TAGS_EXCLUDE_SEXLAB_GROUP_INPUT
+Int OID_TAGS_EXCLUDE_OSTIM_NOTGROUP_INPUT
+Int OID_TAGS_EXCLUDE_SEXLAB_NOTGROUP_INPUT
 
 Int OID_OSTIM_MAX_ACTORS
+Int OID_SEXLAB_MAX_ACTORS
+Int OID_FLOWERGIRLS_MAX_ACTORS

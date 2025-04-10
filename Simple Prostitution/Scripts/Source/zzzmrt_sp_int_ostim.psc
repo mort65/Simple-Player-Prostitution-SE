@@ -17,7 +17,7 @@ Bool function isActorVictimOS(Quest OSexIntegrationMainQuest, Actor act) Global
   return OSexMainQuest.IsVictim(act)
 EndFunction
 
-int function haveSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor partner, Int Position, String[] sExtraTags, Bool[] bRequireAllTags, Bool bAllowAggressive = False, Bool bAllowAll =False) Global
+int function haveSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor partner, Int Position, String[] sExtraTags, Bool[] bRequireAllTags, Bool bAllowAggressive = False, Bool bAllowAll = False, String sExcludedTags = "") Global
 	if Position < 0
 	  return -1
 	endif
@@ -26,7 +26,7 @@ int function haveSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor partner, 
 	string anim2 = ""
 	actor[] actors = new actor[2]
 	string sGenders = ""
-  actor player = Game.GetPlayer()
+	actor player = Game.GetPlayer()
 	Bool isPlayerFemale = ostim.isFemale(player)
 	Bool isPartnerFemale = ostim.isFemale(partner)
 	if isPlayerFemale && !isPartnerFemale
@@ -58,15 +58,32 @@ int function haveSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor partner, 
 	endif
 	if (iExtraTagsIndex > -1) && sExtraTags[iExtraTagsIndex]
 		if bRequireAllTags[iExtraTagsIndex]
-			anim2 = getRandomAnimationWithAllTags(actors, sExtraTags[iExtraTagsIndex] + ",", "", iAggressive)
+			anim2 = getRandomAnimationWithAllTags(actors, sExtraTags[iExtraTagsIndex] + ",", sExcludedTags, iAggressive)
 		else
-			anim2 = getRandomAnimation(actors, sExtraTags[iExtraTagsIndex] + ",", "", iAggressive)
+			anim2 = getRandomAnimation(actors, sExtraTags[iExtraTagsIndex] + ",", sExcludedTags, iAggressive)
 		endif
-		if !anim2
-		    logText("[OStim] couldn't find any animation with these tags: " + sExtraTags[iExtraTagsIndex], False, True, 2)
+		if (!anim2 && sExcludedTags)
+		    logText("[OStim] couldn't find any animation with these tags: " + sExtraTags[iExtraTagsIndex] + " and these excluded tags: " + sExcludedTags, False, True, 2)
+			if bRequireAllTags[iExtraTagsIndex]
+				anim2 = getRandomAnimationWithAllTags(actors, sExtraTags[iExtraTagsIndex] + ",", "", iAggressive)
+			else
+				anim2 = getRandomAnimation(actors, sExtraTags[iExtraTagsIndex] + ",", "", iAggressive)
+			endif
 		endif
+		!anim2 && logText("[OStim] couldn't find any animation with these tags: " + sExtraTags[iExtraTagsIndex], False, True, 2)
 	endif
 	string myAnim = anim2
+	if (!myAnim && sExcludedTags)
+		if Position == 0
+			Anim = getRandomAnimation(actors, "vaginalsex,doggystyle,missionary,cowgirl,", sExcludedTags, iAggressive)
+		elseif Position == 1
+			Anim = getRandomAnimation(actors, "analsex,", sExcludedTags, iAggressive)
+		else
+			Anim = getRandomAnimation(actors, "blowjob,cunnilingus,sixtynine,facesitting,", sExcludedTags, iAggressive)
+		endif
+		myAnim = Anim
+		!myAnim && logText("[OStim] couldn't find any suitable animation without these excluded tags: " + sExcludedTags, False, True, 2)
+	endif
 	if !myAnim
 		if Position == 0
 			Anim = getRandomAnimation(actors, "vaginalsex,doggystyle,missionary,cowgirl,", "", iAggressive)
@@ -100,7 +117,7 @@ int function haveSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor partner, 
 	return -1
 endfunction
 
-Bool function bHaveRandomSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor partner, Bool bAggressive = False) Global
+Bool function bHaveRandomSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor partner, Bool bAggressive = False, String sExcludedTags = "") Global
 	OSexIntegrationMain ostim = OSexIntegrationMainQuest as OSexIntegrationMain
 	actor[] actors = new actor[2]
 	actor player = Game.GetPlayer()
@@ -123,13 +140,21 @@ Bool function bHaveRandomSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor p
 	endif
 	String  myAnim
 	if bAggressive
-		myAnim = getRandomAnimation(actors, "dominant,aggressor,", "", 1)
+		myAnim = getRandomAnimation(actors, "dominant,aggressor,", sExcludedTags, 1)
+		if sExcludedTags && (myAnim == "")
+			logText("[OStim] couldn't find any suitable animation without these excluded tags: " + sExcludedTags, False, True, 2)
+			myAnim = getRandomAnimation(actors, "dominant,aggressor,", "", 1)
+		endif
 		if myAnim == ""
 			logText("[OStim] couldn't find any suitable animation.", False, True, 2)
 			myAnim = getRandomAnimation(actors, "", "", 1)
 		endif
 	else
-		myAnim = getRandomAnimation(actors, "", "", 0)
+		myAnim = getRandomAnimation(actors, "", sExcludedTags, 0)
+		if sExcludedTags && (myAnim == "")
+			logText("[OStim] couldn't find any suitable animation without these these excluded tags: " + sExcludedTags, False, True, 2)
+			myAnim = getRandomAnimation(actors, "", "", 0)
+		endif
 	endif
 	if myAnim
 		logText("[OStim] Scene Name: " + OMetadata.GetName(myAnim) + ", Scene ID: " + myAnim + ", Scene Tags: " + OMetadata.GetSceneTags(myAnim))
@@ -211,7 +236,11 @@ Bool function bHaveGroupSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor[] 
 		logText("[OStim] couldn't start animation.", False, True, 2)
 		Return  false
 	endif
-	logText("[OStim] couldn't find any animation for " + actors.length + " actors.", False, True, 2)
+	if sExcludedTags
+		logText("[OStim] couldn't find any animation for " + actors.length + " actors without these excluded tags: " + sExcludedTags, False, True, 2)
+	else
+		logText("[OStim] couldn't find any animation for " + actors.length + " actors.", False, True, 2)
+	endif
 	return False
 EndFunction
 
