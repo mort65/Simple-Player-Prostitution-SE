@@ -26,6 +26,7 @@ Message Property sendToSlaveryMessage Auto
 Bool property doSendToSlavey = False Auto Hidden Conditional
 Float property fInnDebtTimeGameDaysPassed = 0.0 Auto Hidden Conditional
 Float Property fInnWorkDeadlineDays = 0.0 Auto Hidden Conditional
+FormList Property whoreClothingList Auto
 
 
 Function checkStatus()
@@ -83,20 +84,44 @@ Function RentRoom(Actor akInnOwner)
 EndFunction
 
 Function addWhoreClothingToPlayer()
-	if MainScript.player.GetItemCount(TavernClothing) < 1
-		MainScript.player.additem(TavernClothing, 1)
-	endif
-	if MainScript.player.GetItemCount(TavernBoot) < 1
-		MainScript.player.additem(TavernBoot, 1)
+	if whoreClothingList.GetSize() > 0
+		int i = whoreClothingList.GetSize()
+		while i > 0
+			i -= 1
+			if whoreClothingList.GetAt(i) as Armor
+				if MainScript.player.GetItemCount(whoreClothingList.GetAt(i) as Armor) < 1
+					MainScript.player.additem(whoreClothingList.GetAt(i) as Armor, 1)
+				endif
+			endif
+		endWhile
+	else
+		if MainScript.player.GetItemCount(TavernClothing) < 1
+			MainScript.player.additem(TavernClothing, 1)
+		endif
+		if MainScript.player.GetItemCount(TavernBoot) < 1
+			MainScript.player.additem(TavernBoot, 1)
+		endif
 	endif
 EndFunction
 
 Function removeWhoreClothingFromPlayer()
-	if MainScript.player.GetItemCount(TavernClothing) > 0
-		MainScript.player.removeitem(TavernClothing, 1)
-	endif
-	if MainScript.player.GetItemCount(TavernBoot) > 0
-		MainScript.player.removeitem(TavernBoot, 1)
+	if  whoreClothingList.GetSize() > 0
+		int i = whoreClothingList.GetSize()
+		while i > 0
+			i -= 1
+			if whoreClothingList.GetAt(i) as Armor
+				if MainScript.player.GetItemCount(whoreClothingList.GetAt(i) as Armor) > 0
+					MainScript.player.removeitem(whoreClothingList.GetAt(i) as Armor, 1)
+				endif
+			endif
+		endWhile
+	else
+		if MainScript.player.GetItemCount(TavernClothing) > 0
+			MainScript.player.removeitem(TavernClothing, 1)
+		endif
+		if MainScript.player.GetItemCount(TavernBoot) > 0
+			MainScript.player.removeitem(TavernBoot, 1)
+		endif
 	endif
 EndFunction
 
