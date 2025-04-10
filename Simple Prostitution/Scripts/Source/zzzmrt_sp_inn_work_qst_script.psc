@@ -26,7 +26,7 @@ Message Property sendToSlaveryMessage Auto
 Bool property doSendToSlavey = False Auto Hidden Conditional
 Float property fInnDebtTimeGameDaysPassed = 0.0 Auto Hidden Conditional
 Float Property fInnWorkDeadlineDays = 0.0 Auto Hidden Conditional
-FormList Property whoreClothingList Auto
+FormList Property innWhoreClothingList Auto
 
 
 Function checkStatus()
@@ -84,13 +84,13 @@ Function RentRoom(Actor akInnOwner)
 EndFunction
 
 Function addWhoreClothingToPlayer()
-	if whoreClothingList.GetSize() > 0
-		int i = whoreClothingList.GetSize()
+	if innWhoreClothingList.GetSize() > 0
+		int i = innWhoreClothingList.GetSize()
 		while i > 0
 			i -= 1
-			if whoreClothingList.GetAt(i) as Armor
-				if MainScript.player.GetItemCount(whoreClothingList.GetAt(i) as Armor) < 1
-					MainScript.player.additem(whoreClothingList.GetAt(i) as Armor, 1)
+			if innWhoreClothingList.GetAt(i) as Armor
+				if MainScript.player.GetItemCount(innWhoreClothingList.GetAt(i) as Armor) < 1
+					MainScript.player.additem(innWhoreClothingList.GetAt(i) as Armor, 1)
 				endif
 			endif
 		endWhile
@@ -105,13 +105,13 @@ Function addWhoreClothingToPlayer()
 EndFunction
 
 Function removeWhoreClothingFromPlayer()
-	if  whoreClothingList.GetSize() > 0
-		int i = whoreClothingList.GetSize()
+	if  innWhoreClothingList.GetSize() > 0
+		int i = innWhoreClothingList.GetSize()
 		while i > 0
 			i -= 1
-			if whoreClothingList.GetAt(i) as Armor
-				if MainScript.player.GetItemCount(whoreClothingList.GetAt(i) as Armor) > 0
-					MainScript.player.removeitem(whoreClothingList.GetAt(i) as Armor, 1)
+			if innWhoreClothingList.GetAt(i) as Armor
+				if MainScript.player.GetItemCount(innWhoreClothingList.GetAt(i) as Armor) > 0
+					MainScript.player.removeitem(innWhoreClothingList.GetAt(i) as Armor, 1)
 				endif
 			endif
 		endWhile
