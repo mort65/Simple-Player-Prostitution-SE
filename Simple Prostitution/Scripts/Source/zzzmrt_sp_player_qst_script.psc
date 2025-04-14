@@ -106,6 +106,9 @@ Event OnStartFindSnitch(Form sender, Bool bCheckDibel)
 EndEvent
 
 function setVars()
+  if !MainScript.teamMateHanlderQst.isRunning()
+	MainScript.teamMateHanlderQst.Start()
+  endif
   if !MainScript.STD_Quest.isRunning()
     MainScript.STD_Quest.Start()
   endIf
@@ -123,6 +126,15 @@ function setVars()
   endif
   if !MainScript.FlowerGirlsInterface
     MainScript.FlowerGirlsInterface = MainScript.FlowerGirlsInterfaceQst as zzzmrt_sp_flowergirls_interface 
+  endif
+  if !MainScript.SexLabNPCInterface
+    MainScript.SexLabNPCInterface = MainScript.SexLabInterfaceQst as zzzmrt_sp_sexlab_npc_interface 
+  endif
+  if !MainScript.OStimNPCInterface
+    MainScript.OStimNPCInterface = MainScript.OStimInterfaceQst as zzzmrt_sp_ostim_npc_interface 
+  endif
+  if !MainScript.FlowerGirlsNPCInterface
+    MainScript.FlowerGirlsNPCInterface = MainScript.FlowerGirlsInterfaceQst as zzzmrt_sp_flowergirls_npc_interface 
   endif
   if !MainScript.LicensesInterface
     MainScript.LicensesInterface = MainScript.LicensesInterfaceQst as zzzmrt_sp_licenses_interface 
@@ -146,6 +158,9 @@ function setVars()
   MainScript.SexLabInterface.PlayerLoadsGame()
   MainScript.OStimInterface.PlayerLoadsGame()
   MainScript.FlowerGirlsInterface.PlayerLoadsGame()
+  MainScript.SexLabNPCInterface.PlayerLoadsGame()
+  MainScript.OStimNPCInterface.PlayerLoadsGame()
+  MainScript.FlowerGirlsNPCInterface.PlayerLoadsGame()  
   MainScript.LicensesInterface.PlayerLoadsGame()
   MainScript.DDI_Interface.PlayerLoadsGame()
   MainScript.DDX_Interface.PlayerLoadsGame()

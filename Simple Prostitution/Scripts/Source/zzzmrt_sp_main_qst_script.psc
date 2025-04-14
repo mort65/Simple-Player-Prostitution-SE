@@ -5,6 +5,10 @@ import zzzmrt_sp_utility
 GlobalVariable property BeggarFailureChance auto
 GlobalVariable property DibelFailureChance auto
 GlobalVariable Property BeggarNoSexOfferChance Auto
+zzzmrt_sp_teammate_handler_qst_script property teamMateHandlerScript auto
+zzzmrt_sp_ostim_npc_interface property OStimNPCInterface Auto
+zzzmrt_sp_sexlab_npc_interface property SexLabNPCInterface Auto
+zzzmrt_sp_flowergirls_npc_interface property FlowerGirlsNPCInterface Auto
 zzzmrt_sp_flowergirls_interface property FlowerGirlsInterface auto
 zzzmrt_sp_sexlab_interface property SexLabInterface auto
 zzzmrt_sp_ostim_interface property OStimInterface auto
@@ -20,6 +24,7 @@ zzzmrt_sp_reapproach_qst_script	Property ReApproachScript Auto
 zzzmrt_sp_inn_work_qst_script property InnWorkScript Auto
 zzzmrt_sp_temple_loan_qst_script property TempleLoanScript Auto
 zzzmrt_sp_reward_handler_script property RewardHandlerScript Auto
+Quest Property teamMateHanlderQst Auto
 Quest Property TempleLoanQst Auto
 Quest Property InnWorkQst Auto
 Quest Property SLA_Interface_Qst Auto
@@ -642,6 +647,26 @@ String Property sExclude_Tags_SL_Group = "" auto Hidden Conditional
 String Property sExclude_Tags_OS_NotGroup = "" auto Hidden Conditional
 String Property sExclude_Tags_SL_NotGroup = "" auto Hidden Conditional
 
+Int property iSLA_MinTeamMateCustomerArousal = 0 auto Hidden Conditional
+Int property iSLA_MinTeamMateArousal = 0 auto Hidden Conditional
+Bool property bTeamMateWhoringEnabled = True auto Hidden Conditional
+Float property fTeamMateAnalChance = 50.0 auto Hidden Conditional
+Float property fTeamMateVaginalChance = 50.0 auto Hidden Conditional
+Float property fTeamMateOralChance = 50.0 auto Hidden Conditional
+Float property fTeamMateOralPay= 5.0 auto Hidden Conditional
+Float property fTeamMateAnalPay= 10.0 auto Hidden Conditional
+Float property fTeamMateVagPay= 15.0 auto Hidden Conditional
+Float property fTeamMateMinSpeechBonusMult = 0.0 auto Hidden Conditional
+Float property fTeamMateMaxSpeechBonusMult = 5.0 auto Hidden Conditional
+Bool property bTeamMatePayUseBaseSpeech = True Auto Hidden Conditional
+Bool Property bTeamMatePositionMenu = False Auto Hidden Conditional
+Float property fTeamMatePersuadeChance = 50.0 Auto Hidden Conditional
+Bool property bCanPimpFemaleTeamMates = True Auto Hidden Conditional
+Bool property bCanPimpMaleTeamMates = False Auto Hidden Conditional
+Bool property bTeamMateAllowAggressive = False Auto Hidden Conditional
+Float Property fTeamMatePersuasionXPMult = 0.0 Auto Hidden Conditional
+GlobalVariable property TeamMateFailureChance Auto
+
 function log(String sText, Bool bNotification = False, Bool bTrace = True, Int iSeverity = 1, Bool bForceNotif = False)
 	logText(sText, (bNotification && (bShowNotification || (iSeverity != 1) || bForceNotif)), bTrace, iSeverity, "SPP", sDefaultColor, sSuccessColor, sInfoColor, sWarningColor, sErrorColor, sSeparatorColor)
 endFunction
@@ -663,6 +688,8 @@ function shutDown()
 	participantDetector.Stop()
 	STD_Script.cureActorSTDs(player, False)
 	STD_Quest.Stop()
+	teamMateHandlerScript.teammMateDetector.stop()
+	teamMateHanlderQst.Stop()
 	if pimpTracker.isRunning()
 		pimpTracker.setstage(10)
 	endif
@@ -856,7 +883,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-	return getBaseVersion() + 0.66
+	return getBaseVersion() + 0.67
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
@@ -2688,6 +2715,7 @@ function setGlobalVaues()
 	DibelFailureChance.SetValueInt(maxInt(0, (100.0 - fDibelPersuadeChance) as Int))
 	BeggarFailureChance.SetValueInt(maxInt(0, (100.0 - fBeggarPersuadeChance) as Int))
 	BeggarNoSexOfferChance.SetValueInt(maxInt(0, (100.0 - fBeggarSexOfferChance) as Int))
+	TeamMateFailureChance.SetValueInt(maxInt(0, (100.0 - fTeamMatePersuadeChance) as Int))
 	maxApproachDistance.SetValueInt(fMaxApproachDistance as Int)
 	if !maxJoinSexDistance
 		maxJoinSexDistance = Game.GetFormFromFile(0x0000A6, "mrt_SimpleProstitution.esp") As GlobalVariable
@@ -3339,9 +3367,9 @@ Event OnInit()
 EndEvent
 
 Bool function isCheckingIntegrations()
-	if !FlowerGirlsInterface.bChecked
-	elseif !SexLabInterface.bChecked
-	elseif !OStimInterface.bChecked
+	if !FlowerGirlsInterface.bChecked || !FlowerGirlsNPCInterface.bChecked
+	elseif !SexLabInterface.bChecked || !SexLabNPCInterface.bChecked
+	elseif !OStimInterface.bChecked || !OStimNPCInterface.bChecked
 	elseif !LicensesInterface.bChecked
 	elseif !DDI_Interface.bChecked
 	elseif !DDX_Interface.bChecked

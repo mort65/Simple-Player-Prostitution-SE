@@ -44,16 +44,17 @@ event OnConfigInit()
 endevent
 
 function initPages()
-  Pages = new String[9]
+  Pages = new String[10]
   pages[0] = "$MRT_SP_PAGE_GENERAL"
   pages[1] = "$MRT_SP_PAGE_PROSTITUTION"
   pages[2] = "$MRT_SP_PAGE_DIBEL"
   pages[3] = "$MRT_SP_PAGE_BEGGING"
-  pages[4] = "$MRT_SP_PAGE_DD"
-  pages[5] = "$MRT_SP_PAGE_STD"
-  pages[6] = "$MRT_SP_PAGE_INTEGRATION"
-  pages[7] = "$MRT_SP_PAGE_STATS"
-  pages[8] = "$MRT_SP_PAGE_DEBUG"
+  pages[4] = "$MRT_SP_PAGE_NPC"
+  pages[5] = "$MRT_SP_PAGE_DD"
+  pages[6] = "$MRT_SP_PAGE_STD"
+  pages[7] = "$MRT_SP_PAGE_INTEGRATION"
+  pages[8] = "$MRT_SP_PAGE_STATS"
+  pages[9] = "$MRT_SP_PAGE_DEBUG"
 endfunction
 
 event OnGameReload()
@@ -406,6 +407,8 @@ event OnPageReset(String page)
 	OID_SLA_MIN_WHORE_CUSTOMER_AROUSAL = AddSliderOption("$MRT_SP_SLA_MIN_WHORE_CUSTOMER_AROUSAL_SLIDER1", MainScript.iSLA_MinWhoreCustomerArousal, "$MRT_SP_SLA_MIN_WHORE_CUSTOMER_AROUSAL_SLIDER2", flag)
 	OID_SLA_MIN_DIBEL_CUSTOMER_AROUSAL = AddSliderOption("$MRT_SP_SLA_MIN_DIBEL_CUSTOMER_AROUSAL_SLIDER1", MainScript.iSLA_MinDibelCustomerArousal, "$MRT_SP_SLA_MIN_DIBEL_CUSTOMER_AROUSAL_SLIDER2", flag)
 	OID_SLA_MIN_BEGGAR_SEX_OFFER_AROUSAL = AddSliderOption("$MRT_SP_SLA_MIN_BEGGAR_SEX_OFFER_AROUSAL_SLIDER1", MainScript.iSLA_MinBeggarSexOfferArousal, "$MRT_SP_SLA_MIN_BEGGAR_SEX_OFFER_AROUSAL_SLIDER2", flag)
+	OID_SLA_MIN_TEAMMATE_AROUSAL = AddSliderOption("$MRT_SP_SLA_MIN_TEAMMATE_AROUSAL_SLIDER1", MainScript.iSLA_MinTeamMateArousal, "$MRT_SP_SLA_MIN_TEAMMATE_AROUSAL_SLIDER2", flag)
+	OID_SLA_MIN_TEAMMATE_CUSTOMER_AROUSAL = AddSliderOption("$MRT_SP_SLA_MIN_TEAMMATE_CUSTOMER_AROUSAL_SLIDER1", MainScript.iSLA_MinTeamMateCustomerArousal, "$MRT_SP_SLA_MIN_TEAMMATE_CUSTOMER_AROUSAL_SLIDER2", flag)
 	addEmptyOption()
 	AddColoredHeader("$MRT_SP_HEAD_INTEGRATION_SLSFR")
 	if MainScript.bModEnabled && MainScript.bIs_SLSFR_Active
@@ -455,7 +458,31 @@ event OnPageReset(String page)
       flag = OPTION_FLAG_DISABLED
     endif	
 	OID_AEL_STRUGGLE_DIFFICULTY = AddSliderOption("$MRT_SP_AEL_STRUGGLE_DIFFICULTY_SLIDER1", MainScript.fAELStruggleDifficulty, "$MRT_SP_AEL_STRUGGLE_DIFFICULTY_SLIDER2", flag)
-elseif (page == "$MRT_SP_PAGE_BEGGING")
+  elseif (page == "$MRT_SP_PAGE_NPC")
+	SetTitleText("$MRT_SP_PAGE_NPC")
+	AddColoredHeader("$MRT_SP_HEAD_TEAMMATE_PROSTITUTION")
+	if (MainScript.bModEnabled)
+      flag = OPTION_FLAG_NONE
+    else
+      flag = OPTION_FLAG_DISABLED
+    endif
+	OID_TEAMMATE_WHORING = AddToggleOption("$MRT_SP_TEAMMATE_WHORING_TOGGLE", MainScript.bTeamMateWhoringEnabled, flag)
+	OID_TEAMMATE_ALLOW_AGGRESSIVE = AddToggleOption("$MRT_SP_TEAMMATE_ALLOW_AGGRESSIVE_TOGGLE", MainScript.bTeamMateAllowAggressive, flag)
+	OID_TEAMMATE_POSITION_MENU_TOGGLE = AddToggleOption("$MRT_SP_TEAMMATE_POSITION_MENU_TOGGLE", MainScript.bTeamMatePositionMenu, flag)
+	OID_TEAMMATE_ORAL_CHANCE = AddSliderOption("$MRT_SP_TEAMMATE_ORAL_CHANCE_SLIDER1", MainScript.fTeamMateOralChance, "$MRT_SP_TEAMMATE_ORAL_CHANCE_SLIDER2", flag)
+	OID_TEAMMATE_ANAL_CHANCE = AddSliderOption("$MRT_SP_TEAMMATE_ANAL_CHANCE_SLIDER1", MainScript.fTeamMateAnalChance, "$MRT_SP_TEAMMATE_ANAL_CHANCE_SLIDER2", flag)
+	OID_TEAMMATE_VAG_CHANCE = AddSliderOption("$MRT_SP_TEAMMATE_VAG_CHANCE_SLIDER1", MainScript.fTeamMateVaginalChance, "$MRT_SP_TEAMMATE_VAG_CHANCE_SLIDER2", flag)
+	OID_TEAMMATE_ORAL_PAY = AddSliderOption("$MRT_SP_TEAMMATE_ORAL_PAY_SLIDER1", MainScript.fTeamMateOralPay, "$MRT_SP_TEAMMATE_ORAL_PAY_SLIDER2", flag)
+	OID_TEAMMATE_ANAL_PAY = AddSliderOption("$MRT_SP_TEAMMATE_ANAL_PAY_SLIDER1", MainScript.fTeamMateAnalPay, "$MRT_SP_TEAMMATE_ANAL_PAY_SLIDER2", flag)
+	OID_TEAMMATE_VAG_PAY = AddSliderOption("$MRT_SP_TEAMMATE_VAG_PAY_SLIDER1", MainScript.fTeamMateVagPay, "$MRT_SP_TEAMMATE_VAG_PAY_SLIDER2", flag)
+	OID_TEAMMATE_BONUS_MIN_MULT = AddSliderOption("$MRT_SP_TEAMMATE_BONUS_MIN_MULT_SLIDER1", MainScript.fTeamMateMinSpeechBonusMult, "$MRT_SP_TEAMMATE_BONUS_MIN_MULT_SLIDER2", flag)
+	OID_TEAMMATE_BONUS_MAX_MULT = AddSliderOption("$MRT_SP_TEAMMATE_BONUS_MAX_MULT_SLIDER1", MainScript.fTeamMateMaxSpeechBonusMult, "$MRT_SP_TEAMMATE_BONUS_MAX_MULT_SLIDER2", flag)
+	OID_TEAMMATE_PAY_USE_BASE_SPEECH = AddToggleOption("$MRT_SP_TEAMMATE_PAY_USE_BASE_SPEECH_TOGGLE", MainScript.bTeamMatePayUseBaseSpeech, flag)
+	OID_TEAMMATE_PERSUADE_CHANCE = AddSliderOption("$MRT_SP_TEAMMATE_PERSUADE_CHANCE_SLIDER1", MainScript.fTeamMatePersuadeChance, "$MRT_SP_TEAMMATE_PERSUADE_CHANCE_SLIDER2", flag)
+	OID_TEAMMATE_SPEECH_XP_MULT = AddSliderOption("$MRT_SP_TEAMMATE_SPEECH_XP_MULT_SLIDER1", MainScript.fTeamMatePersuasionXPMult, "$MRT_SP_TEAMMATE_SPEECH_XP_MULT_SLIDER2", flag)
+	OID_TEAMMATE_PIMP_FEMALE = AddToggleOption("$MRT_SP_TEAMMATE_PIMP_FEMALE_TOGGLE", MainScript.bCanPimpFemaleTeamMates, flag)
+	OID_TEAMMATE_PIMP_MALE = AddToggleOption("$MRT_SP_TEAMMATE_PIMP_MALE_TOGGLE", MainScript.bCanPimpMaleTeamMates, flag)
+  elseif (page == "$MRT_SP_PAGE_BEGGING")
     SetTitleText("$MRT_SP_PAGE_BEGGING")
     AddColoredHeader("$MRT_SP_HEAD_BEG")
     if (MainScript.bModEnabled)
@@ -3246,6 +3273,13 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
   MainScript.bPimpMayJoinSex = jsonutil.GetPathIntValue(settings_path, "bPimpMayJoinSex", MainScript.bPimpMayJoinSex as int)
   MainScript.bExcludeIfInScene = jsonutil.GetPathIntValue(settings_path, "bExcludeIfInScene", MainScript.bExcludeIfInScene as int)
   MainScript.bApproachExcludeIfInScene = jsonutil.GetPathIntValue(settings_path, "bApproachExcludeIfInScene", MainScript.bApproachExcludeIfInScene as int)
+  MainScript.bTeamMateWhoringEnabled = jsonutil.GetPathIntValue(settings_path, "bTeamMateWhoringEnabled", MainScript.bTeamMateWhoringEnabled as int)
+  MainScript.bTeamMateAllowAggressive = jsonutil.GetPathIntValue(settings_path, "bTeamMateAllowAggressive", MainScript.bTeamMateAllowAggressive as int)
+  MainScript.bTeamMatePositionMenu = jsonutil.GetPathIntValue(settings_path, "bTeamMatePositionMenu", MainScript.bTeamMatePositionMenu as int)
+  MainScript.bTeamMatePayUseBaseSpeech = jsonutil.GetPathIntValue(settings_path, "bTeamMatePayUseBaseSpeech", MainScript.bTeamMatePayUseBaseSpeech as int)
+  MainScript.bCanPimpFemaleTeamMates = jsonutil.GetPathIntValue(settings_path, "bCanPimpFemaleTeamMates", MainScript.bCanPimpFemaleTeamMates as int)
+  MainScript.bCanPimpMaleTeamMates = jsonutil.GetPathIntValue(settings_path, "bCanPimpMaleTeamMates", MainScript.bCanPimpMaleTeamMates as int)
+  
   iAnimInterfaceMethod = jsonutil.GetPathIntValue(settings_path, "iAnimInterfaceMethod", iAnimInterfaceMethod)
   
   MainScript.iCrimeBounty = jsonutil.GetPathIntValue(settings_path, "iCrimeBounty", MainScript.iCrimeBounty)
@@ -3267,6 +3301,8 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
 	MainScript.iOStimPCMaxActors = jsonutil.GetPathIntValue(settings_path, "iOStimPCMaxActors", MainScript.iOStimPCMaxActors)
 	MainScript.iSexLabPCMaxActors = jsonutil.GetPathIntValue(settings_path, "iSexLabPCMaxActors", MainScript.iSexLabPCMaxActors)
 	MainScript.iFlowerGirlsPCMaxActors = jsonutil.GetPathIntValue(settings_path, "iFlowerGirlsPCMaxActors", MainScript.iFlowerGirlsPCMaxActors)
+	MainScript.iSLA_MinTeamMateArousal = jsonutil.GetPathIntValue(settings_path, "iSLA_MinTeamMateArousal", MainScript.iSLA_MinTeamMateArousal)
+	MainScript.iSLA_MinTeamMateCustomerArousal = jsonutil.GetPathIntValue(settings_path, "iSLA_MinTeamMateCustomerArousal", MainScript.iSLA_MinTeamMateCustomerArousal)
 	
 	MainScript.iDefaultColor = jsonutil.GetPathIntValue(settings_path, "iDefaultColor", MainScript.iDefaultColor)
 	MainScript.sDefaultColor = Stringutil.Substring(sDecToHex(MainScript.iDefaultColor),2)
@@ -3475,7 +3511,18 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
 	MainScript.fWhorePunishByUnpayClientChance = jsonutil.GetPathFloatValue(settings_path, "fWhorePunishByUnpayClientChance", MainScript.fWhorePunishByUnpayClientChance)
 	MainScript.fDibelPunishByUnpayClientChance = jsonutil.GetPathFloatValue(settings_path, "fDibelPunishByUnpayClientChance", MainScript.fDibelPunishByUnpayClientChance)
 	MainScript.fAELStruggleDifficulty = jsonutil.GetPathFloatValue(settings_path, "fAELStruggleDifficulty", MainScript.fAELStruggleDifficulty)
-	
+	MainScript.fTeamMateOralChance = jsonutil.GetPathFloatValue(settings_path, "fTeamMateOralChance", MainScript.fTeamMateOralChance)
+	MainScript.fTeamMateAnalChance = jsonutil.GetPathFloatValue(settings_path, "fTeamMateAnalChance", MainScript.fTeamMateAnalChance)
+	MainScript.fTeamMateVaginalChance = jsonutil.GetPathFloatValue(settings_path, "fTeamMateVaginalChance", MainScript.fTeamMateVaginalChance)
+	MainScript.fTeamMateOralPay = jsonutil.GetPathFloatValue(settings_path, "fTeamMateOralPay", MainScript.fTeamMateOralPay)
+	MainScript.fTeamMateAnalPay = jsonutil.GetPathFloatValue(settings_path, "fTeamMateAnalPay", MainScript.fTeamMateAnalPay)
+	MainScript.fTeamMateVagPay = jsonutil.GetPathFloatValue(settings_path, "fTeamMateVagPay", MainScript.fTeamMateVagPay)
+	MainScript.fTeamMateMinSpeechBonusMult = jsonutil.GetPathFloatValue(settings_path, "fTeamMateMinSpeechBonusMult", MainScript.fTeamMateMinSpeechBonusMult)
+	MainScript.fTeamMateMaxSpeechBonusMult = jsonutil.GetPathFloatValue(settings_path, "fTeamMateMaxSpeechBonusMult", MainScript.fTeamMateMaxSpeechBonusMult)
+	MainScript.fTeamMatePersuadeChance = jsonutil.GetPathFloatValue(settings_path, "fTeamMatePersuadeChance", MainScript.fTeamMatePersuadeChance)
+    MainScript.fTeamMatePersuasionXPMult = jsonutil.GetPathFloatValue(settings_path, "fTeamMatePersuasionXPMult", MainScript.fTeamMatePersuasionXPMult)
+  
+  
   MainScript.sExtraTags_SL_Oral_MF = jsonutil.GetPathStringValue(settings_path, "sExtraTags_SL_Oral_MF", MainScript.sExtraTags_SL_Oral_MF)
   MainScript.sExtraTags_SL_Oral_FF = jsonutil.GetPathStringValue(settings_path, "sExtraTags_SL_Oral_FF", MainScript.sExtraTags_SL_Oral_FF)
   MainScript.sExtraTags_SL_Oral_MM = jsonutil.GetPathStringValue(settings_path, "sExtraTags_SL_Oral_MM", MainScript.sExtraTags_SL_Oral_MM)
@@ -3590,6 +3637,12 @@ Bool function saveUserSettingsPapyrus()
 	jsonutil.SetPathIntValue(settings_path, "bPimpMayJoinSex", MainScript.bPimpMayJoinSex as Int)
 	jsonutil.SetPathIntValue(settings_path, "bExcludeIfInScene", MainScript.bExcludeIfInScene as Int)
 	jsonutil.SetPathIntValue(settings_path, "bApproachExcludeIfInScene", MainScript.bApproachExcludeIfInScene as Int)
+	jsonutil.SetPathIntValue(settings_path, "bTeamMateWhoringEnabled", MainScript.bTeamMateWhoringEnabled as Int)
+	jsonutil.SetPathIntValue(settings_path, "bTeamMateAllowAggressive", MainScript.bTeamMateAllowAggressive as Int)
+	jsonutil.SetPathIntValue(settings_path, "bTeamMatePositionMenu", MainScript.bTeamMatePositionMenu as Int)
+	jsonutil.SetPathIntValue(settings_path, "bTeamMatePayUseBaseSpeech", MainScript.bTeamMatePayUseBaseSpeech as Int)
+	jsonutil.SetPathIntValue(settings_path, "bCanPimpFemaleTeamMates", MainScript.bCanPimpFemaleTeamMates as Int)
+	jsonutil.SetPathIntValue(settings_path, "bCanPimpMaleTeamMates", MainScript.bCanPimpMaleTeamMates as Int)
 
   jsonutil.SetPathIntValue(settings_path, "iAnimInterfaceMethod", iAnimInterfaceMethod)
   jsonutil.SetPathIntValue(settings_path, "iCrimeBounty", MainScript.iCrimeBounty)
@@ -3611,6 +3664,8 @@ Bool function saveUserSettingsPapyrus()
 	Jsonutil.SetPathIntValue(settings_path, "iOStimPCMaxActors", MainScript.iOStimPCMaxActors)
 	Jsonutil.SetPathIntValue(settings_path, "iSexLabPCMaxActors", MainScript.iSexLabPCMaxActors)
 	Jsonutil.SetPathIntValue(settings_path, "iFlowerGirlsPCMaxActors", MainScript.iFlowerGirlsPCMaxActors)
+	Jsonutil.SetPathIntValue(settings_path, "iSLA_MinTeamMateArousal", MainScript.iSLA_MinTeamMateArousal)
+	Jsonutil.SetPathIntValue(settings_path, "iSLA_MinTeamMateCustomerArousal", MainScript.iSLA_MinTeamMateCustomerArousal)
 	
 	Jsonutil.SetPathIntValue(settings_path, "iDefaultColor", MainScript.iDefaultColor)
 	Jsonutil.SetPathIntValue(settings_path, "iSuccessColor", MainScript.iSuccessColor)
@@ -3802,6 +3857,17 @@ Bool function saveUserSettingsPapyrus()
 	jsonutil.SetPathFloatValue(settings_path, "fBeggarPersuadeChance", MainScript.fBeggarPersuadeChance)
 	jsonutil.SetPathFloatValue(settings_path, "fTempleTaskMarkCost", MainScript.fTempleTaskMarkCost)
 	jsonutil.SetPathFloatValue(settings_path, "fAELStruggleDifficulty", MainScript.fAELStruggleDifficulty)
+	
+	jsonutil.SetPathFloatValue(settings_path, "fTeamMateOralChance", MainScript.fTeamMateOralChance)
+	jsonutil.SetPathFloatValue(settings_path, "fTeamMateAnalChance", MainScript.fTeamMateAnalChance)
+	jsonutil.SetPathFloatValue(settings_path, "fTeamMateVaginalChance", MainScript.fTeamMateVaginalChance)
+	jsonutil.SetPathFloatValue(settings_path, "fTeamMateOralPay", MainScript.fTeamMateOralPay)
+	jsonutil.SetPathFloatValue(settings_path, "fTeamMateAnalPay", MainScript.fTeamMateAnalPay)
+	jsonutil.SetPathFloatValue(settings_path, "fTeamMateVagPay", MainScript.fTeamMateVagPay)
+	jsonutil.SetPathFloatValue(settings_path, "fTeamMateMinSpeechBonusMult", MainScript.fTeamMateMinSpeechBonusMult)
+	jsonutil.SetPathFloatValue(settings_path, "fTeamMateMaxSpeechBonusMult", MainScript.fTeamMateMaxSpeechBonusMult)
+	jsonutil.SetPathFloatValue(settings_path, "fTeamMatePersuadeChance", MainScript.fTeamMatePersuadeChance)
+	jsonutil.SetPathFloatValue(settings_path, "fTeamMatePersuasionXPMult", MainScript.fTeamMatePersuasionXPMult)
 	
 	jsonutil.SetPathFloatValue(settings_path, "fWhoreNotPayChance", MainScript.fWhoreNotPayChance)
 	jsonutil.SetPathFloatValue(settings_path, "fDibelNotPayChance", MainScript.fDibelNotPayChance)
@@ -4373,6 +4439,24 @@ event OnOptionSelect(int option)
 	elseif option == OID_DIBEL_PUNISH_If_NOT_ORGASMED
 		MainScript.bDibelPunishIfClientNotOrgasmed = !MainScript.bDibelPunishIfClientNotOrgasmed 
 		SetToggleOptionValue(option, MainScript.bDibelPunishIfClientNotOrgasmed)
+	elseif option == OID_TEAMMATE_WHORING
+		MainScript.bTeamMateWhoringEnabled = !MainScript.bTeamMateWhoringEnabled
+		SetToggleOptionValue(option, MainScript.bTeamMateWhoringEnabled)
+	elseif option == OID_TEAMMATE_ALLOW_AGGRESSIVE
+		MainScript.bTeamMateAllowAggressive = !MainScript.bTeamMateAllowAggressive
+		SetToggleOptionValue(option, MainScript.bTeamMateAllowAggressive)
+	elseif option == OID_TEAMMATE_POSITION_MENU_TOGGLE
+		MainScript.bTeamMatePositionMenu = !MainScript.bTeamMatePositionMenu
+		SetToggleOptionValue(option, MainScript.bTeamMatePositionMenu)
+	elseif option == OID_TEAMMATE_PAY_USE_BASE_SPEECH
+		MainScript.bTeamMatePayUseBaseSpeech = !MainScript.bTeamMatePayUseBaseSpeech
+		SetToggleOptionValue(option, MainScript.bTeamMatePayUseBaseSpeech)
+	elseif option == OID_TEAMMATE_PIMP_FEMALE
+		MainScript.bCanPimpFemaleTeamMates = !MainScript.bCanPimpFemaleTeamMates
+		SetToggleOptionValue(option, MainScript.bCanPimpFemaleTeamMates)
+	elseif option == OID_TEAMMATE_PIMP_MALE
+		MainScript.bCanPimpMaleTeamMates = !MainScript.bCanPimpMaleTeamMates
+		SetToggleOptionValue(option, MainScript.bCanPimpMaleTeamMates)
 	elseif option == OID_DEBUG_PC_WHORE_TAG
 		if !MainScript.isWhore || !MainScript.isWhore_g.GetValue() || !player.isinFaction(MainScript.WhoreFaction) 
 			MainScript.isWhore = true
@@ -4500,7 +4584,7 @@ event OnOptionDefault(int option)
 	elseif option == OID_WHORE_POSITION_MENU
 		MainScript.bWhorePositionMenu = False
 		SetToggleOptionValue(option, MainScript.bWhorePositionMenu)
-  elseif option == OID_DIBEL_POSITION_MENU
+    elseif option == OID_DIBEL_POSITION_MENU
 		MainScript.bDibelPositionMenu = False
 		SetToggleOptionValue(option, MainScript.bDibelPositionMenu)
 	elseif option == OID_SLHH_MALE_RAPIST
@@ -4548,8 +4632,26 @@ event OnOptionDefault(int option)
 	elseif option == OID_DIBEL_PUNISH_If_NOT_ORGASMED
 		MainScript.bDibelPunishIfClientNotOrgasmed  = False
 		SetToggleOptionValue(option, MainScript.bDibelPunishIfClientNotOrgasmed)
-  endif
-  ForcePageReset()
+	elseif option == OID_TEAMMATE_WHORING
+		MainScript.bTeamMateWhoringEnabled = True
+		SetToggleOptionValue(option, MainScript.bTeamMateWhoringEnabled)
+	elseif option == OID_TEAMMATE_ALLOW_AGGRESSIVE
+		MainScript.bTeamMateAllowAggressive = False
+		SetToggleOptionValue(option, MainScript.bTeamMateAllowAggressive)
+	elseif option == OID_TEAMMATE_POSITION_MENU_TOGGLE
+		MainScript.bTeamMatePositionMenu = false
+		SetToggleOptionValue(option, MainScript.bTeamMatePositionMenu)
+	elseif option == OID_TEAMMATE_PAY_USE_BASE_SPEECH
+		MainScript.bTeamMatePayUseBaseSpeech = True
+		SetToggleOptionValue(option, MainScript.bTeamMatePayUseBaseSpeech)
+	elseif option == OID_TEAMMATE_PIMP_FEMALE
+		MainScript.bCanPimpFemaleTeamMates = True
+		SetToggleOptionValue(option, MainScript.bCanPimpFemaleTeamMates)
+	elseif option == OID_TEAMMATE_PIMP_MALE
+		MainScript.bCanPimpMaleTeamMates = False
+		SetToggleOptionValue(option, MainScript.bCanPimpMaleTeamMates)
+	endif
+    ForcePageReset()
 EndEvent
 
 event OnOptionHighlight(int option)
@@ -5278,6 +5380,12 @@ event OnOptionSliderAccept(int option, float value)
 	elseif option == OID_SLA_MIN_PC_AROUSAL
 		MainScript.iSLA_MinPCArousal = value as Int
 		SetSliderOptionValue(OID_SLA_MIN_PC_AROUSAL, MainScript.iSLA_MinPCArousal, "$MRT_SP_SLA_MIN_PC_AROUSAL_SLIDER2")
+	elseif option == OID_SLA_MIN_TEAMMATE_AROUSAL 
+		MainScript.iSLA_MinTeamMateArousal = value as Int
+		SetSliderOptionValue(OID_SLA_MIN_TEAMMATE_AROUSAL , MainScript.iSLA_MinTeamMateArousal, "$MRT_SP_SLA_MIN_TEAMMATE_AROUSAL_SLIDER2")
+	elseif option == OID_SLA_MIN_TEAMMATE_CUSTOMER_AROUSAL  
+		MainScript.iSLA_MinTeamMateCustomerArousal = value as Int
+		SetSliderOptionValue(OID_SLA_MIN_TEAMMATE_CUSTOMER_AROUSAL  , MainScript.iSLA_MinTeamMateCustomerArousal, "$MRT_SP_SLA_MIN_TEAMMATE_CUSTOMER_AROUSAL_SLIDER2")
 	elseif option == OID_SLA_MIN_APPROACH_AROUSAL
 		MainScript.iSLA_MinApproachArousal = value as Int
 		SetSliderOptionValue(OID_SLA_MIN_APPROACH_AROUSAL, MainScript.iSLA_MinApproachArousal, "$MRT_SP_SLA_MIN_APPROACH_AROUSAL_SLIDER2")
@@ -5323,6 +5431,37 @@ event OnOptionSliderAccept(int option, float value)
 	elseif option == OID_AEL_STRUGGLE_DIFFICULTY 
 		MainScript.fAELStruggleDifficulty = value
 		SetSliderOptionValue(OID_AEL_STRUGGLE_DIFFICULTY , MainScript.fAELStruggleDifficulty, "$MRT_SP_AEL_STRUGGLE_DIFFICULTY_SLIDER2")
+	elseif option == OID_TEAMMATE_ORAL_CHANCE
+		MainScript.fTeamMateOralChance = value
+		SetSliderOptionValue(OID_TEAMMATE_ORAL_CHANCE , MainScript.fTeamMateOralChance, "$MRT_SP_TEAMMATE_ORAL_CHANCE_SLIDER2")
+	elseif option == OID_TEAMMATE_ANAL_CHANCE
+		MainScript.fTeamMateAnalChance = value
+		SetSliderOptionValue(OID_TEAMMATE_ANAL_CHANCE , MainScript.fTeamMateAnalChance, "$MRT_SP_TEAMMATE_ANAL_CHANCE_SLIDER2")
+	elseif option == OID_TEAMMATE_VAG_CHANCE
+		MainScript.fTeamMateVaginalChance = value
+		SetSliderOptionValue(OID_TEAMMATE_VAG_CHANCE , MainScript.fTeamMateVaginalChance, "$MRT_SP_TEAMMATE_VAG_CHANCE_SLIDER2")
+	elseif option == OID_TEAMMATE_ORAL_PAY
+		MainScript.fTeamMateOralPay = value
+		SetSliderOptionValue(OID_TEAMMATE_ORAL_PAY , MainScript.fTeamMateOralPay, "$MRT_SP_TEAMMATE_ORAL_PAY_SLIDER2")
+	elseif option == OID_TEAMMATE_ANAL_PAY
+		MainScript.fTeamMateAnalPay = value
+		SetSliderOptionValue(OID_TEAMMATE_ANAL_PAY , MainScript.fTeamMateAnalPay, "$MRT_SP_TEAMMATE_ANAL_PAY_SLIDER2")
+	elseif option == OID_TEAMMATE_VAG_PAY
+		MainScript.fTeamMateVagPay = value
+		SetSliderOptionValue(OID_TEAMMATE_VAG_PAY , MainScript.fTeamMateVagPay, "$MRT_SP_TEAMMATE_VAG_PAY_SLIDER2")
+	elseif option == OID_TEAMMATE_BONUS_MIN_MULT
+		MainScript.fTeamMateMinSpeechBonusMult = value
+		SetSliderOptionValue(OID_TEAMMATE_BONUS_MIN_MULT , MainScript.fTeamMateMinSpeechBonusMult, "$MRT_SP_TEAMMATE_BONUS_MIN_MULT_SLIDER2")
+	elseif option == OID_TEAMMATE_BONUS_MAX_MULT
+		MainScript.fTeamMateMaxSpeechBonusMult = value
+		SetSliderOptionValue(OID_TEAMMATE_BONUS_MAX_MULT , MainScript.fTeamMateMaxSpeechBonusMult, "$MRT_SP_TEAMMATE_BONUS_MAX_MULT_SLIDER2")
+	elseif option == OID_TEAMMATE_PERSUADE_CHANCE
+		MainScript.fTeamMatePersuadeChance = value
+		SetSliderOptionValue(OID_TEAMMATE_PERSUADE_CHANCE , MainScript.fTeamMatePersuadeChance, "$MRT_SP_TEAMMATE_PERSUADE_CHANCE_SLIDER2")
+		MainScript.setGlobalVaues()
+	elseif option == OID_TEAMMATE_SPEECH_XP_MULT
+		MainScript.fTeamMatePersuasionXPMult = value
+		SetSliderOptionValue(OID_TEAMMATE_SPEECH_XP_MULT , MainScript.fTeamMatePersuasionXPMult, "$MRT_SP_TEAMMATE_SPEECH_XP_MULT_SLIDER2")
 	elseif option == OID_DIBEL_TEMPLE_TASK_MIN_PAY
 		MainScript.fTempleClientMinExtraPay = value
 		SetSliderOptionValue(OID_DIBEL_TEMPLE_TASK_MIN_PAY , MainScript.fTempleClientMinExtraPay, "$MRT_SP_DIBEL_TEMPLE_TASK_MIN_PAY_SLIDER2")
@@ -5877,6 +6016,16 @@ event OnOptionSliderOpen(int option)
     SetSliderDialogDefaultValue(0.0)
     SetSliderDialogRange(0, 100)
     SetSliderDialogInterval(1)
+  elseif option == OID_SLA_MIN_TEAMMATE_AROUSAL
+	SetSliderDialogStartValue(MainScript.iSLA_MinTeamMateArousal)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(1)
+  elseif option == OID_SLA_MIN_TEAMMATE_CUSTOMER_AROUSAL
+	SetSliderDialogStartValue(MainScript.iSLA_MinTeamMateCustomerArousal)
+    SetSliderDialogDefaultValue(0.0)
+    SetSliderDialogRange(0, 100)
+    SetSliderDialogInterval(1)
 	elseif option == OID_SLA_MIN_APPROACH_AROUSAL
 	  SetSliderDialogStartValue(MainScript.iSLA_MinApproachArousal)
     SetSliderDialogDefaultValue(0.0)
@@ -5932,6 +6081,56 @@ event OnOptionSliderOpen(int option)
 		SetSliderDialogDefaultValue(100.0)
 		SetSliderDialogRange(0, 100)
 		SetSliderDialogInterval(0.1)
+	elseif option == OID_TEAMMATE_ORAL_CHANCE
+		SetSliderDialogStartValue(MainScript.fTeamMateOralChance)
+		SetSliderDialogDefaultValue(50.0)
+		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(1)
+	elseif option == OID_TEAMMATE_ANAL_CHANCE
+		SetSliderDialogStartValue(MainScript.fTeamMateAnalChance)
+		SetSliderDialogDefaultValue(50.0)
+		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(1)
+	elseif option == OID_TEAMMATE_VAG_CHANCE
+		SetSliderDialogStartValue(MainScript.fTeamMateVaginalChance)
+		SetSliderDialogDefaultValue(50.0)
+		SetSliderDialogRange(0, 100)
+		SetSliderDialogInterval(1)
+	elseif option == OID_TEAMMATE_ORAL_PAY
+		SetSliderDialogStartValue(MainScript.fTeamMateOralPay)
+		SetSliderDialogDefaultValue(5.0)
+		SetSliderDialogRange(0, 1000)
+		SetSliderDialogInterval(1)
+	elseif option == OID_TEAMMATE_ANAL_PAY
+		SetSliderDialogStartValue(MainScript.fTeamMateAnalPay)
+		SetSliderDialogDefaultValue(10.0)
+		SetSliderDialogRange(0, 1000)
+		SetSliderDialogInterval(1)
+	elseif option == OID_TEAMMATE_VAG_PAY
+		SetSliderDialogStartValue(MainScript.fTeamMateVagPay)
+		SetSliderDialogDefaultValue(15.0)
+		SetSliderDialogRange(0, 1000)
+		SetSliderDialogInterval(1)
+	elseif option == OID_TEAMMATE_BONUS_MIN_MULT
+		SetSliderDialogStartValue(MainScript.fTeamMateMinSpeechBonusMult)
+		SetSliderDialogDefaultValue(0.0)
+		SetSliderDialogRange(0, 10)
+		SetSliderDialogInterval(0.1)
+	elseif option == OID_TEAMMATE_BONUS_MAX_MULT
+		SetSliderDialogStartValue(MainScript.fTeamMateMaxSpeechBonusMult)
+		SetSliderDialogDefaultValue(5.0)
+		SetSliderDialogRange(0, 10)
+		SetSliderDialogInterval(0.1)
+	elseif option == OID_TEAMMATE_PERSUADE_CHANCE
+		SetSliderDialogStartValue(MainScript.fTeamMatePersuadeChance)
+		SetSliderDialogDefaultValue(50.0)
+		SetSliderDialogRange(1, 100)
+		SetSliderDialogInterval(1)	
+	elseif option == OID_TEAMMATE_SPEECH_XP_MULT
+		SetSliderDialogStartValue(MainScript.fTeamMatePersuasionXPMult)
+		SetSliderDialogDefaultValue(0)
+		SetSliderDialogRange(0, 200)
+		SetSliderDialogInterval(1)	
 	elseif option == OID_AEL_STRUGGLE_DIFFICULTY
 		SetSliderDialogStartValue(MainScript.fAELStruggleDifficulty)
 		SetSliderDialogDefaultValue(30.0)
@@ -6786,3 +6985,22 @@ Int OID_TAGS_EXCLUDE_SEXLAB_NOTGROUP_INPUT
 Int OID_OSTIM_MAX_ACTORS
 Int OID_SEXLAB_MAX_ACTORS
 Int OID_FLOWERGIRLS_MAX_ACTORS
+
+Int OID_TEAMMATE_WHORING
+Int OID_TEAMMATE_ALLOW_AGGRESSIVE
+Int OID_TEAMMATE_POSITION_MENU_TOGGLE
+Int OID_TEAMMATE_ORAL_CHANCE
+Int OID_TEAMMATE_ANAL_CHANCE
+Int OID_TEAMMATE_VAG_CHANCE
+Int OID_TEAMMATE_ORAL_PAY
+Int OID_TEAMMATE_ANAL_PAY
+Int OID_TEAMMATE_VAG_PAY
+Int OID_TEAMMATE_BONUS_MIN_MULT
+Int OID_TEAMMATE_BONUS_MAX_MULT
+Int OID_TEAMMATE_PAY_USE_BASE_SPEECH
+Int OID_TEAMMATE_PERSUADE_CHANCE
+Int OID_TEAMMATE_SPEECH_XP_MULT
+Int OID_TEAMMATE_PIMP_FEMALE
+Int OID_TEAMMATE_PIMP_MALE
+Int OID_SLA_MIN_TEAMMATE_AROUSAL
+Int OID_SLA_MIN_TEAMMATE_CUSTOMER_AROUSAL

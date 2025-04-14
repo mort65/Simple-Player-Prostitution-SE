@@ -231,10 +231,10 @@ endfunction
 
 Bool function isPluginFound(string pluginName) Global
   {Checks if the plugin installed. Works for LE and SE}
-  if SKSE.GetVersion() < 2
-    return (Game.GetModByName(pluginName) != 255)
+  if SKSE.getVersion() < 2
+    return (Game.getModByName(pluginName) != 255)
   endif
-  return Game.IsPluginInstalled(pluginName)
+  return Game.isPluginInstalled(pluginName)
 endfunction
 
 Actor Function getPlayerDialogueTarget(Bool bPyramidUtil = False) Global
@@ -247,7 +247,7 @@ Actor Function getPlayerDialogueTarget(Bool bPyramidUtil = False) Global
   Int iLoopCount = 10
   While iLoopCount > 0
     iLoopCount -= 1
-    kPlayerDialogueTarget = Game.FindRandomActorFromRef(kPlayer , 200.0)
+    kPlayerDialogueTarget = Game.findRandomActorFromRef(kPlayer , 200.0)
     If kPlayerDialogueTarget && (kPlayerDialogueTarget != kPlayer) && kPlayerDialogueTarget.IsInDialogueWithPlayer() 
       Return kPlayerDialogueTarget
     EndIf
@@ -255,7 +255,7 @@ Actor Function getPlayerDialogueTarget(Bool bPyramidUtil = False) Global
   Return None
 EndFunction
 
-Int function RandomIntWithExclusionArray(Int iFrom, Int iTo, Bool[] iFlagArray, bool bUsePo3 = false) Global
+Int function randomIntWithExclusionArray(Int iFrom, Int iTo, Bool[] iFlagArray, bool bUsePo3 = false) Global
 {Generates a random integer between iFrom and iTo (inclusive), excluding false values with the same index in a bool array}
   if iFrom == iTo
     if iFlagArray[iFrom]
@@ -280,7 +280,7 @@ Int function RandomIntWithExclusionArray(Int iFrom, Int iTo, Bool[] iFlagArray, 
   endif
   Int iRandom 
   if bUsePo3
-	iRandom = PO3_SKSEFunctions.GenerateRandomInt(iFrom, iTo - ExcludeCount)
+	iRandom = PO3_SKSEFunctions.generateRandomInt(iFrom, iTo - ExcludeCount)
   else
 	iRandom = RandomInt(iFrom, iTo - ExcludeCount)
   endif
@@ -298,7 +298,7 @@ Int function RandomIntWithExclusionArray(Int iFrom, Int iTo, Bool[] iFlagArray, 
   return iRandom
 endfunction
 
-Form Function GetRandomItemFromLeveledListFast(LeveledItem akItemList, Int iMaxStepBacksLeveledItem = 5) Global
+Form Function getRandomItemFromLeveledListFast(LeveledItem akItemList, Int iMaxStepBacksLeveledItem = 5) Global
 	{Retrieves a random form from a given leveledlist.}
     Form loc_form = none
     Int loc_size = akItemList.GetNumForms() - 1
@@ -331,7 +331,7 @@ Form Function GetRandomItemFromLeveledListFast(LeveledItem akItemList, Int iMaxS
     Return loc_form
 EndFunction
 
-Form Function GetRandomItemFromLeveledList(LeveledItem akItemList, bool bUsePo3 = false) Global
+Form Function getRandomItemFromLeveledList(LeveledItem akItemList, bool bUsePo3 = false) Global
 	{Retrieves a random form from a given leveledlist.}
     Form loc_form = none
     Int loc_size = akItemList.GetNumForms()
@@ -479,4 +479,14 @@ Function reduceFormList(Formlist fList, int iSize) Global
 	While fList.GetSize() > iNewSize
 		fList.RemoveAddedForm(fList.GetAt(fList.GetSize() - 1))
 	EndWhile
+EndFunction
+
+Function Teleport(objectReference akObject, objectReference akTarget, float afXOffset = 0.0, float afYOffset = 0.0, float afZOffset = 0.0, bool abMatchRotation = true) Global
+	if (!akObject || !akTarget)
+		return
+	endif
+	akObject.DisableNoWait()
+	akObject.MoveTo(akTarget, afXOffset, afYOffset, afZOffset, abMatchRotation)
+	akObject.EnableNoWait()
+	(akObject as actor) && (akObject as actor).EvaluatePackage()
 EndFunction
