@@ -87,14 +87,18 @@ State Whoring
 			endif
 			debug.sendanimationevent(whore, "idleforcedefaultstate")
 			debug.sendanimationevent(whoreClient, "idleforcedefaultstate")
-			if (!whore.Is3DLoaded() || (bedRef && (sInterf == "flowergirls")))
+			if (!whore.Is3DLoaded() || !whoreClient.Is3DLoaded() || (bedRef && (sInterf == "flowergirls")))
 				Utility.Wait(0.5)
 				whore.EnableAI(False)
 				whoreClient.EnableAI(False)
 				if sInterf == "flowergirls"
 					if !whore.Is3DLoaded()
 						teleport(whore, whoreClient)
-						utility.wait(1.0)
+						utility.wait(0.5)
+					endif
+					if !whoreClient.Is3DLoaded()
+						teleport(whoreClient, whore)
+						utility.wait(0.5)
 					endif
 					if bedRef
 						whore.SetPosition(bedRef.GetPositionX(), bedRef.GetPositiony(), bedRef.GetPositionz() + 30.0)
@@ -102,14 +106,20 @@ State Whoring
 						Utility.wait(0.5)
 					endif
 				else
-					teleport(whore, whoreClient)
-					Utility.wait(0.5)
+					if !whore.Is3DLoaded()
+						teleport(whore, whoreClient)
+						Utility.wait(0.5)
+					endif
+					if !whoreClient.Is3DLoaded()
+						teleport(whoreClient, whore)
+						Utility.wait(0.5)
+					endif
 				endif
 				whore.EnableAI(True)
 				whoreClient.EnableAI(True)
 				whore.EvaluatePackage()
 				whoreClient.EvaluatePackage()
-			elseif (sInterf == "ostim")
+			else
 				Utility.wait(0.5)
 			endif
 		endif

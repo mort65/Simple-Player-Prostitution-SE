@@ -101,23 +101,23 @@ event OnPageReset(String page)
       flag = OPTION_FLAG_DISABLED
     endIf
     _AddTextOptionST("LOAD_USER_DATA_TXT", "$MRT_SP_LOAD_DATA", "$go", flag)
-		addEmptyOption()
-		AddColoredHeader("$MRT_SP_HEAD_DEBUG_PC")
+	addEmptyOption()
+	AddColoredHeader("$MRT_SP_HEAD_DEBUG_PC")
     if MainScript.bModEnabled
       flag = OPTION_FLAG_NONE
     else
       flag = OPTION_FLAG_DISABLED
     endif
-		if !MainScript.isWhore || !MainScript.isWhore_g.GetValue() || !player.isinFaction(MainScript.WhoreFaction)
-			OID_DEBUG_PC_WHORE_TAG = AddTextOption("$MRT_SP_DEBUG_PC_WHORE_TAG_OFF", "", flag)
-		else
-			OID_DEBUG_PC_WHORE_TAG = AddTextOption("$MRT_SP_DEBUG_PC_WHORE_TAG_ON", "", flag)
-		endif
-		if !MainScript.isDibel || !MainScript.isDibel_g.GetValue()
-			OID_DEBUG_PC_DIBEL_TAG = AddTextOption("$MRT_SP_DEBUG_PC_DIBEL_TAG_OFF", "", flag)
-		else
-			OID_DEBUG_PC_DIBEL_TAG = AddTextOption("$MRT_SP_DEBUG_PC_DIBEL_TAG_ON", "", flag)
-		endif
+	if !MainScript.isWhore || !MainScript.isWhore_g.GetValue() || !player.isinFaction(MainScript.WhoreFaction)
+		OID_DEBUG_PC_WHORE_TAG = AddTextOption("$MRT_SP_DEBUG_PC_WHORE_TAG_OFF", "", flag)
+	else
+		OID_DEBUG_PC_WHORE_TAG = AddTextOption("$MRT_SP_DEBUG_PC_WHORE_TAG_ON", "", flag)
+	endif
+	if !MainScript.isDibel || !MainScript.isDibel_g.GetValue()
+		OID_DEBUG_PC_DIBEL_TAG = AddTextOption("$MRT_SP_DEBUG_PC_DIBEL_TAG_OFF", "", flag)
+	else
+		OID_DEBUG_PC_DIBEL_TAG = AddTextOption("$MRT_SP_DEBUG_PC_DIBEL_TAG_ON", "", flag)
+	endif
     addEmptyOption()
     AddColoredHeader("$MRT_SP_HEAD_DEBUG_CLOTHING")
     if MainScript.bIsPO3ExtenderActive
@@ -167,8 +167,8 @@ event OnPageReset(String page)
       npc = Game.GetCurrentConsoleRef() As Actor
     endif
     if npc && (npc != player)
-      _AddTextOptionST("WHORE_TAG_NPC_NAME_TXT", sColoredTXT(shortenString(npc.GetDisplayName(), 32)), "", OPTION_FLAG_DISABLED) 
-      if Mainscript.bCanPimp(npc)
+	  OID_DEBUG_NPC_NAME_TXT = AddTextOption(sColoredTXT(shortenString(npc.GetDisplayName(), 32)), "", OPTION_FLAG_DISABLED)
+	  if Mainscript.bCanPimp(npc)
         if npc.HasKeyword(Mainscript.prostituteManager_KWD)
           _AddTextOptionST("WHORE_TAG_OWNER_TXT", "$MRT_SP_WHORE_TAG_OWNER_ON", "", flag) 
         else
@@ -195,10 +195,20 @@ event OnPageReset(String page)
       else
         _AddTextOptionST("WHORE_TAG_NotCUSTOMER_TXT", "$MRT_SP_WHORE_TAG_NotCUSTOMER_ERR", "", OPTION_FLAG_DISABLED) 
       endif
+	  if MainScript.bCanBeWhore(npc)
+		if npc.HasKeyword(Mainscript.NotProstitute_KWD)
+			OID_DEBUG_NPC_WHORE_TAG = AddTextOption("$MRT_SP_DEBUG_NPC_WHORE_TAG_ON", "", flag)
+		else
+			OID_DEBUG_NPC_WHORE_TAG = AddTextOption("$MRT_SP_DEBUG_NPC_WHORE_TAG_OFF", "", flag)
+		endif
+	  else
+		OID_DEBUG_NPC_WHORE_TAG = AddTextOption("$MRT_SP_DEBUG_NPC_WHORE_TAG_ERR", "", OPTION_FLAG_DISABLED)
+	  endif
     else
       _AddTextOptionST("WHORE_TAG_OWNER_TXT", "$MRT_SP_WHORE_TAG_OWNER_OFF", "", OPTION_FLAG_DISABLED)
       _AddTextOptionST("WHORE_TAG_HEALER_TXT", "$MRT_SP_WHORE_TAG_HEALER_OFF", "", OPTION_FLAG_DISABLED) 
-	  _AddTextOptionST("WHORE_TAG_NotCUSTOMER_TXT", "$MRT_SP_WHORE_TAG_NotCUSTOMER_OFF", "", OPTION_FLAG_DISABLED) 
+	  _AddTextOptionST("WHORE_TAG_NotCUSTOMER_TXT", "$MRT_SP_WHORE_TAG_NotCUSTOMER_OFF", "", OPTION_FLAG_DISABLED)
+	  OID_DEBUG_NPC_WHORE_TAG = AddTextOption("$MRT_SP_DEBUG_NPC_WHORE_TAG_OFF", "", OPTION_FLAG_DISABLED)
     endif
 
     SetCursorPosition(1)
@@ -4027,6 +4037,20 @@ Function saveData_STDHealer_KWD(Actor akActor)
   endif
 EndFunction
 
+Function saveData_NotWhore_KWD(Actor akActor)
+  if Mainscript.bIsPapyrusUtilActive
+    JsonUtil.FormListAdd(data_path, "NotProstitute_KWD", akActor, False)
+    JsonUtil.Save(data_path)
+  endif
+EndFunction
+
+Function deleteData_NotWhore_KWD(Actor akActor)
+  if Mainscript.bIsPapyrusUtilActive
+    JsonUtil.FormListRemove(data_path, "NotProstitute_KWD", akActor, True)
+    JsonUtil.Save(data_path)
+  endif
+EndFunction
+
 Function saveData_NotCustomer_KWD(Actor akActor)
   if Mainscript.bIsPapyrusUtilActive
     JsonUtil.FormListAdd(data_path, "NotCustomer_KWD", akActor, False)
@@ -4129,12 +4153,20 @@ Bool Function loadUserDataPapyrus(Bool bSilence = False)
       PO3_SKSEFunctions.AddKeywordToRef(arr[iIndex] as Actor, MainScript.stdHealer_KWD)
     endif
   endWhile
-	arr = JsonUtil.FormListToArray(data_path, "NotCustomer_KWD")
+  arr = JsonUtil.FormListToArray(data_path, "NotCustomer_KWD")
   iIndex = arr.Length
   While iIndex > 0
     iIndex -= 1
     if arr[iIndex] as Actor   
       PO3_SKSEFunctions.AddKeywordToRef(arr[iIndex] as Actor, MainScript.NotCustomer_KWD)
+    endif
+  endWhile
+  arr = JsonUtil.FormListToArray(data_path, "NotProstitute_KWD")
+  iIndex = arr.Length
+  While iIndex > 0
+    iIndex -= 1
+    if arr[iIndex] as Actor   
+      PO3_SKSEFunctions.AddKeywordToRef(arr[iIndex] as Actor, MainScript.NotProstitute_KWD)
     endif
   endWhile
   return true
@@ -4479,7 +4511,23 @@ event OnOptionSelect(int option)
 			MainScript.isDibel = false
 			MainScript.isDibel_g.SetValueInt(0)
 		endif
-  endif
+    elseif option == OID_DEBUG_NPC_WHORE_TAG
+		if MainScript.bIsPO3ExtenderActive
+			Actor npc = Game.GetCurrentCrosshairRef() As Actor
+			if !npc
+				npc = Game.GetCurrentConsoleRef() As Actor
+			endif
+			if npc && Mainscript.bCanBeWhore(npc)
+				if npc.HasKeyword(Mainscript.NotProstitute_KWD)
+				  PO3_SKSEFunctions.RemoveKeywordFromRef(npc, Mainscript.NotProstitute_KWD)
+				  deleteData_NotWhore_KWD(npc)
+				else
+				  PO3_SKSEFunctions.AddKeywordToRef(npc, Mainscript.NotProstitute_KWD)
+				  saveData_NotWhore_KWD(npc)
+				endif
+			endif
+		endif
+    endif
   ForcePageReset()
 EndEvent
 
@@ -5067,6 +5115,44 @@ event OnOptionHighlight(int option)
 		SetInfoText("$MRT_SP_DESC_TAGS_EXCLUDE_SEXLAB_NOTGROUP_INPUT")
 	Elseif option == OID_TAGS_EXCLUDE_OSTIM_NOTGROUP_INPUT
 		SetInfoText("$MRT_SP_DESC_TAGS_EXCLUDE_OSTIM_NOTGROUP_INPUT")
+	Elseif option == OID_DEBUG_NPC_WHORE_TAG
+		SetInfoText("$MRT_SP_DESC_DEBUG_NPC_WHORE_TAG")
+	Elseif option == OID_TEAMMATE_WHORING
+		SetInfoText("$MRT_SP_DESC_DEBUG_TEAMMATE_WHORING")
+	Elseif option == OID_TEAMMATE_ALLOW_AGGRESSIVE
+		SetInfoText("$MRT_SP_DESC_DEBUG_TEAMMATE_ALLOW_AGGRESSIVE")
+	Elseif option == OID_TEAMMATE_POSITION_MENU_TOGGLE
+		SetInfoText("$MRT_SP_DESC_TEAMMATE_POSITION_MENU_TOGGLE")
+	Elseif option == OID_TEAMMATE_ORAL_CHANCE
+		SetInfoText("$MRT_SP_DESC_TEAMMATE_ORAL_CHANCE")
+	Elseif option == OID_TEAMMATE_ANAL_CHANCE
+		SetInfoText("$MRT_SP_DESC_TEAMMATE_ANAL_CHANCE")
+	Elseif option == OID_TEAMMATE_VAG_CHANCE
+		SetInfoText("$MRT_SP_DESC_TEAMMATE_VAGINAL_CHANCE")
+	Elseif option == OID_TEAMMATE_ORAL_PAY
+		SetInfoText("$MRT_SP_DESC_TEAMMATE_ORAL_PAY_SLIDER")
+	Elseif option == OID_TEAMMATE_ANAL_PAY
+		SetInfoText("$MRT_SP_DESC_TEAMMATE_ANAL_PAY_SLIDER")
+	Elseif option == OID_TEAMMATE_VAG_PAY
+		SetInfoText("$MRT_SP_DESC_TEAMMATE_VAGINAL_PAY_SLIDER")
+	Elseif option == OID_TEAMMATE_BONUS_MIN_MULT
+		SetInfoText("$MRT_SP_DESC_TEAMMATE_BONUS_MIN_MULT_SLIDER")
+	Elseif option == OID_TEAMMATE_BONUS_MAX_MULT
+		SetInfoText("$MRT_SP_DESC_TEAMMATE_BONUS_MAX_MULT_SLIDER")
+	Elseif option == OID_TEAMMATE_PAY_USE_BASE_SPEECH
+		SetInfoText("$MRT_SP_DESC_TEAMMATE_PAY_USE_BASE_SPEECH")
+	Elseif option == OID_TEAMMATE_PERSUADE_CHANCE
+		SetInfoText("$MRT_SP_DESC_TEAMMATE_PERSUADE_CHANCE")
+	Elseif option == OID_TEAMMATE_SPEECH_XP_MULT
+		SetInfoText("$MRT_SP_DESC_TEAMMATE_SPEECH_XP_MULT_SLIDER")
+	Elseif option == OID_TEAMMATE_PIMP_FEMALE
+		SetInfoText("$MRT_SP_DESC_TEAMMATE_PIMP_FEMALE")
+	Elseif option == OID_TEAMMATE_PIMP_MALE
+		SetInfoText("$MRT_SP_DESC_TEAMMATE_PIMP_MALE")
+	Elseif option == OID_SLA_MIN_TEAMMATE_AROUSAL
+		SetInfoText("$MRT_SP_DESC_SLA_MIN_TEAMMATE_AROUSAL")
+	Elseif option == OID_SLA_MIN_TEAMMATE_CUSTOMER_AROUSAL
+		SetInfoText("$MRT_SP_DESC_SLA_MIN_TEAMMATE_CUSTOMER_AROUSAL")
 	endif
 endevent
 
@@ -6103,12 +6189,12 @@ event OnOptionSliderOpen(int option)
 		SetSliderDialogInterval(1)
 	elseif option == OID_TEAMMATE_ANAL_PAY
 		SetSliderDialogStartValue(MainScript.fTeamMateAnalPay)
-		SetSliderDialogDefaultValue(10.0)
+		SetSliderDialogDefaultValue(7.0)
 		SetSliderDialogRange(0, 1000)
 		SetSliderDialogInterval(1)
 	elseif option == OID_TEAMMATE_VAG_PAY
 		SetSliderDialogStartValue(MainScript.fTeamMateVagPay)
-		SetSliderDialogDefaultValue(15.0)
+		SetSliderDialogDefaultValue(10.0)
 		SetSliderDialogRange(0, 1000)
 		SetSliderDialogInterval(1)
 	elseif option == OID_TEAMMATE_BONUS_MIN_MULT
@@ -6118,7 +6204,7 @@ event OnOptionSliderOpen(int option)
 		SetSliderDialogInterval(0.1)
 	elseif option == OID_TEAMMATE_BONUS_MAX_MULT
 		SetSliderDialogStartValue(MainScript.fTeamMateMaxSpeechBonusMult)
-		SetSliderDialogDefaultValue(5.0)
+		SetSliderDialogDefaultValue(0.5)
 		SetSliderDialogRange(0, 10)
 		SetSliderDialogInterval(0.1)
 	elseif option == OID_TEAMMATE_PERSUADE_CHANCE
@@ -7004,3 +7090,6 @@ Int OID_TEAMMATE_PIMP_FEMALE
 Int OID_TEAMMATE_PIMP_MALE
 Int OID_SLA_MIN_TEAMMATE_AROUSAL
 Int OID_SLA_MIN_TEAMMATE_CUSTOMER_AROUSAL
+
+Int OID_DEBUG_NPC_WHORE_TAG
+Int OID_DEBUG_NPC_NAME_TXT

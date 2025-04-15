@@ -414,6 +414,7 @@ Keyword Property BeggarClothing_kwd Auto
 Keyword Property ClothingBody_kwd Auto
 Keyword Property ArmorCuirass_kwd Auto
 Keyword Property NotCustomer_KWD Auto
+Keyword property NotProstitute_KWD Auto
 associationType Property spouse  Auto
 Quest Property pimpTracker Auto
 Float Property fWhoreMarkChance = 0.0 Auto Hidden Conditional
@@ -654,10 +655,10 @@ Float property fTeamMateAnalChance = 50.0 auto Hidden Conditional
 Float property fTeamMateVaginalChance = 50.0 auto Hidden Conditional
 Float property fTeamMateOralChance = 50.0 auto Hidden Conditional
 Float property fTeamMateOralPay= 5.0 auto Hidden Conditional
-Float property fTeamMateAnalPay= 10.0 auto Hidden Conditional
-Float property fTeamMateVagPay= 15.0 auto Hidden Conditional
+Float property fTeamMateAnalPay= 7.0 auto Hidden Conditional
+Float property fTeamMateVagPay= 10.0 auto Hidden Conditional
 Float property fTeamMateMinSpeechBonusMult = 0.0 auto Hidden Conditional
-Float property fTeamMateMaxSpeechBonusMult = 5.0 auto Hidden Conditional
+Float property fTeamMateMaxSpeechBonusMult = 0.5 auto Hidden Conditional
 Bool property bTeamMatePayUseBaseSpeech = True Auto Hidden Conditional
 Bool Property bTeamMatePositionMenu = False Auto Hidden Conditional
 Float property fTeamMatePersuadeChance = 50.0 Auto Hidden Conditional
@@ -666,6 +667,7 @@ Bool property bCanPimpMaleTeamMates = False Auto Hidden Conditional
 Bool property bTeamMateAllowAggressive = False Auto Hidden Conditional
 Float Property fTeamMatePersuasionXPMult = 0.0 Auto Hidden Conditional
 GlobalVariable property TeamMateFailureChance Auto
+Faction property playerFollowerFaction auto
 
 function log(String sText, Bool bNotification = False, Bool bTrace = True, Int iSeverity = 1, Bool bForceNotif = False)
 	logText(sText, (bNotification && (bShowNotification || (iSeverity != 1) || bForceNotif)), bTrace, iSeverity, "SPP", sDefaultColor, sSuccessColor, sInfoColor, sWarningColor, sErrorColor, sSeparatorColor)
@@ -3104,6 +3106,33 @@ Function checkCurrentLocation()
 	isWhoringAllowedInCurrentLocation = isWhoringAllowedInLocation(loc)
 EndFunction
 
+Bool function bCanBeWhore(Actor NPC)
+	if !npc
+		return False
+	endif
+	if npc.ischild()
+		return False
+	endif
+	if npc.isDead()
+		return False
+	endif
+	if !npc.HasKeywordstring("actortypenpc")
+		return False
+	endif
+	if npc.HasKeywordstring("actortypeanimal")
+		return False
+	endif
+	if npc.HasKeywordstring("actortypecreature")
+		return False
+	endif
+	if npc == player
+		return false
+	endif
+	if (npc.isPlayerTeammate() || npc.IsInFaction(playerFollowerFaction))
+		return true
+	endif
+	return False
+EndFunction
 
 Bool Function bCanPimp(Actor npc)
 	if !npc
@@ -3120,9 +3149,6 @@ Bool Function bCanPimp(Actor npc)
 	endif
 	if npc == player
 		return false
-	endif
-	if npc.HasFamilyRelationship(player)
-		return False
 	endif
 	return true
 EndFunction
