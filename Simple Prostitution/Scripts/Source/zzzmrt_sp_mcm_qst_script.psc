@@ -202,7 +202,11 @@ event OnPageReset(String page)
 			OID_DEBUG_NPC_WHORE_TAG = AddTextOption("$MRT_SP_DEBUG_NPC_WHORE_TAG_OFF", "", flag)
 		endif
 	  else
-		OID_DEBUG_NPC_WHORE_TAG = AddTextOption("$MRT_SP_DEBUG_NPC_WHORE_TAG_ERR", "", OPTION_FLAG_DISABLED)
+		if Mainscript.isFollower(npc)
+			OID_DEBUG_NPC_WHORE_TAG = AddTextOption("$MRT_SP_DEBUG_NPC_WHORE_TAG_ERR", "", OPTION_FLAG_DISABLED)
+		else
+			OID_DEBUG_NPC_WHORE_TAG = AddTextOption("$MRT_SP_DEBUG_NPC_WHORE_TAG_ERR_NOTFOLLOWER", "", OPTION_FLAG_DISABLED)
+		endif
 	  endif
     else
       _AddTextOptionST("WHORE_TAG_OWNER_TXT", "$MRT_SP_WHORE_TAG_OWNER_OFF", "", OPTION_FLAG_DISABLED)

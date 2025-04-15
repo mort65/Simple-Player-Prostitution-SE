@@ -885,7 +885,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-	return getBaseVersion() + 0.67
+	return getBaseVersion() + 0.70
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
@@ -3128,10 +3128,7 @@ Bool function bCanBeWhore(Actor NPC)
 	if npc == player
 		return false
 	endif
-	if (npc.isPlayerTeammate() || npc.IsInFaction(playerFollowerFaction))
-		return true
-	endif
-	return False
+	return isFollower(npc)
 EndFunction
 
 Bool Function bCanPimp(Actor npc)
@@ -3183,6 +3180,10 @@ Bool Function IsExcludable(Actor npc)
 		return false
 	endif
 	return true
+EndFunction
+
+Bool Function isFollower(Actor act)
+	return (act && (act.isPlayerTeammate() || act.IsInFaction(playerFollowerFaction)))
 EndFunction
 
 Form Function getOwner()
