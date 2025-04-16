@@ -6,7 +6,6 @@ zzzmrt_sp_main_qst_script property MainScript auto
 Function Fragment_0(ObjectReference akSpeakerRef)
 Actor akSpeaker = akSpeakerRef as Actor
 ;BEGIN CODE
-zzzmrt_sp_teammate_handler_qst_script myOwningScript = getOwningQuest() as zzzmrt_sp_teammate_handler_qst_script
 MainScript.teamMateHandlerScript.StartWhoring(akSpeaker, MainScript.teamMateHandlerScript.teamMate9.GetReference() as Actor)
 ;END CODE
 EndFunction
