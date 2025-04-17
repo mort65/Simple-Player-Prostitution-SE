@@ -202,7 +202,7 @@ event OnPageReset(String page)
 			OID_DEBUG_NPC_WHORE_TAG = AddTextOption("$MRT_SP_DEBUG_NPC_WHORE_TAG_OFF", "", flag)
 		endif
 	  else
-		if Mainscript.isFollower(npc)
+		if Mainscript.teamMateHandlerScript.isFollower(npc)
 			OID_DEBUG_NPC_WHORE_TAG = AddTextOption("$MRT_SP_DEBUG_NPC_WHORE_TAG_ERR", "", OPTION_FLAG_DISABLED)
 		else
 			OID_DEBUG_NPC_WHORE_TAG = AddTextOption("$MRT_SP_DEBUG_NPC_WHORE_TAG_ERR_NOTFOLLOWER", "", OPTION_FLAG_DISABLED)
@@ -494,6 +494,9 @@ event OnPageReset(String page)
 	OID_TEAMMATE_PAY_USE_BASE_SPEECH = AddToggleOption("$MRT_SP_TEAMMATE_PAY_USE_BASE_SPEECH_TOGGLE", MainScript.bTeamMatePayUseBaseSpeech, flag)
 	OID_TEAMMATE_PERSUADE_CHANCE = AddSliderOption("$MRT_SP_TEAMMATE_PERSUADE_CHANCE_SLIDER1", MainScript.fTeamMatePersuadeChance, "$MRT_SP_TEAMMATE_PERSUADE_CHANCE_SLIDER2", flag)
 	OID_TEAMMATE_SPEECH_XP_MULT = AddSliderOption("$MRT_SP_TEAMMATE_SPEECH_XP_MULT_SLIDER1", MainScript.fTeamMatePersuasionXPMult, "$MRT_SP_TEAMMATE_SPEECH_XP_MULT_SLIDER2", flag)
+	OID_TEAMMATE_MARK_CHANCE = AddSliderOption("$MRT_SP_TEAMMATE_MARK_CHANCE_SLIDER1", MainScript.fTeamMateMarkChance, "$MRT_SP_TEAMMATE_MARK_CHANCE_SLIDER2", flag)
+	OID_TEAMMATE_EXTRA_REWARD_CHANCE = AddSliderOption("$MRT_SP_TEAMMATE_EXTRA_REWARD_CHANCE_SLIDER1", MainScript.fTeamMateExtraRewardChance, "$MRT_SP_TEAMMATE_EXTRA_REWARD_CHANCE_SLIDER2", flag)
+	OID_TEAMMATE_EXTRA_REWARD_ENCHANTED_CHANCE = AddSliderOption("$MRT_SP_TEAMMATE_EXTRA_REWARD_ENCHANTED_CHANCE_SLIDER1", MainScript.fTeamMateExtraRewardEnchantedChance, "$MRT_SP_TEAMMATE_EXTRA_REWARD_ENCHANTED_CHANCE_SLIDER2", flag)
 	OID_TEAMMATE_PIMP_FEMALE = AddToggleOption("$MRT_SP_TEAMMATE_PIMP_FEMALE_TOGGLE", MainScript.bCanPimpFemaleTeamMates, flag)
 	OID_TEAMMATE_PIMP_MALE = AddToggleOption("$MRT_SP_TEAMMATE_PIMP_MALE_TOGGLE", MainScript.bCanPimpMaleTeamMates, flag)
   elseif (page == "$MRT_SP_PAGE_BEGGING")
@@ -3359,6 +3362,9 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
   Mainscript.fWhorePersuasionXPMult = jsonutil.GetPathFloatValue(settings_path, "fWhorePersuasionXPMult", MainScript.fWhorePersuasionXPMult)
   Mainscript.fDibelPersuasionXPMult = jsonutil.GetPathFloatValue(settings_path, "fDibelPersuasionXPMult", MainScript.fDibelPersuasionXPMult)
   MainScript.fWhoreMarkChance = jsonutil.GetPathFloatValue(settings_path, "fWhoreMarkChance", MainScript.fWhoreMarkChance)
+  MainScript.fTeamMateMarkChance = jsonutil.GetPathFloatValue(settings_path, "fTeamMateMarkChance", MainScript.fTeamMateMarkChance)
+  MainScript.fTeamMateExtraRewardChance = jsonutil.GetPathFloatValue(settings_path, "fTeamMateExtraRewardChance", MainScript.fTeamMateExtraRewardChance)
+  MainScript.fTeamMateExtraRewardEnchantedChance = jsonutil.GetPathFloatValue(settings_path, "fTeamMateExtraRewardEnchantedChance", MainScript.fTeamMateExtraRewardEnchantedChance)
   MainScript.fDibelMarkChance = jsonutil.GetPathFloatValue(settings_path, "fDibelMarkChance", MainScript.fDibelMarkChance)
   MainScript.fAttributeCost = jsonutil.GetPathFloatValue(settings_path, "fAttributeCost", MainScript.fAttributeCost)
   MainScript.fAttributeIncrement = jsonutil.GetPathFloatValue(settings_path, "fAttributeIncrement", MainScript.fAttributeIncrement)
@@ -3717,6 +3723,9 @@ Bool function saveUserSettingsPapyrus()
   jsonutil.SetPathFloatValue(settings_path, "fDibelPersuasionXPMult", MainScript.fDibelPersuasionXPMult)
   jsonutil.SetPathFloatValue(settings_path, "fWhoreMarkChance", MainScript.fWhoreMarkChance)
   jsonutil.SetPathFloatValue(settings_path, "fDibelMarkChance", MainScript.fDibelMarkChance)
+  jsonutil.SetPathFloatValue(settings_path, "fTeamMateMarkChance", MainScript.fTeamMateMarkChance)
+  jsonutil.SetPathFloatValue(settings_path, "fTeamMateExtraRewardChance", MainScript.fTeamMateExtraRewardChance)
+  jsonutil.SetPathFloatValue(settings_path, "fTeamMateExtraRewardEnchantedChance", MainScript.fTeamMateExtraRewardEnchantedChance)
   jsonutil.SetPathFloatValue(settings_path, "fAttributeCost", MainScript.fAttributeCost)
   jsonutil.SetPathFloatValue(settings_path, "fAttributeIncrement", MainScript.fAttributeIncrement)
   jsonutil.SetPathFloatValue(settings_path, "fCarryWeightCost", MainScript.fCarryWeightCost)
@@ -5157,6 +5166,12 @@ event OnOptionHighlight(int option)
 		SetInfoText("$MRT_SP_DESC_SLA_MIN_TEAMMATE_AROUSAL")
 	Elseif option == OID_SLA_MIN_TEAMMATE_CUSTOMER_AROUSAL
 		SetInfoText("$MRT_SP_DESC_SLA_MIN_TEAMMATE_CUSTOMER_AROUSAL")
+	Elseif option == OID_TEAMMATE_MARK_CHANCE
+		SetInfoText("$MRT_SP_DESC_TEAMMATE_MARK_CHANCE")
+	Elseif option == OID_TEAMMATE_EXTRA_REWARD_CHANCE
+		SetInfoText("$MRT_SP_DESC_TEAMMATE_EXTRA_REWARD_CHANCE")
+	Elseif option == OID_TEAMMATE_EXTRA_REWARD_ENCHANTED_CHANCE
+		SetInfoText("$MRT_SP_DESC_TEAMMATE_EXTRA_REWARD_ENCHANTED_CHANCE")
 	endif
 endevent
 
@@ -5641,6 +5656,15 @@ event OnOptionSliderAccept(int option, float value)
 	elseif option == OID_DIBEL_PUNISHBYUNPAYCLIENT_CHANCE
 		MainScript.fDibelPunishByUnpayClientChance = value
 		SetSliderOptionValue(OID_DIBEL_PUNISHBYUNPAYCLIENT_CHANCE , MainScript.fDibelPunishByUnpayClientChance, "$MRT_SP_DIBEL_PUNISHBYUNPAYCLIENT_SLIDER2")
+	elseif option == OID_TEAMMATE_MARK_CHANCE
+		MainScript.fTeamMateMarkChance = value
+		SetSliderOptionValue(OID_TEAMMATE_MARK_CHANCE , MainScript.fTeamMateMarkChance , "$MRT_SP_TEAMMATE_MARK_CHANCE_SLIDER2")
+	elseif option == OID_TEAMMATE_EXTRA_REWARD_CHANCE
+		MainScript.fTeamMateExtraRewardChance = value
+		SetSliderOptionValue(OID_TEAMMATE_EXTRA_REWARD_CHANCE , MainScript.fTeamMateExtraRewardChance , "$MRT_SP_TEAMMATE_EXTRA_REWARD_CHANCE_SLIDER2")
+	elseif option == OID_TEAMMATE_EXTRA_REWARD_ENCHANTED_CHANCE
+		MainScript.fTeamMateExtraRewardEnchantedChance = value
+		SetSliderOptionValue(OID_TEAMMATE_EXTRA_REWARD_ENCHANTED_CHANCE , MainScript.fTeamMateExtraRewardEnchantedChance , "$MRT_SP_TEAMMATE_EXTRA_REWARD_ENCHANTED_CHANCE_SLIDER2")
 	endif
 	ForcePageReset()
 EndEvent
@@ -6381,7 +6405,22 @@ event OnOptionSliderOpen(int option)
         SetSliderDialogDefaultValue(0.0)
         SetSliderDialogRange(0, 100)
         SetSliderDialogInterval(0.1)
-  endif
+	elseif option == OID_TEAMMATE_MARK_CHANCE
+	    SetSliderDialogStartValue(MainScript.fTeamMateMarkChance)
+        SetSliderDialogDefaultValue(0.0)
+        SetSliderDialogRange(0, 100)
+        SetSliderDialogInterval(0.1)
+	elseif option == OID_TEAMMATE_EXTRA_REWARD_CHANCE
+	    SetSliderDialogStartValue(MainScript.fTeamMateExtraRewardChance)
+        SetSliderDialogDefaultValue(0.0)
+        SetSliderDialogRange(0, 100)
+        SetSliderDialogInterval(0.1)
+	elseif option == OID_TEAMMATE_EXTRA_REWARD_ENCHANTED_CHANCE
+	    SetSliderDialogStartValue(MainScript.fTeamMateExtraRewardEnchantedChance)
+        SetSliderDialogDefaultValue(0.0)
+        SetSliderDialogRange(0, 100)
+        SetSliderDialogInterval(0.1)
+	endif
 EndEvent
 
 event OnOptionMenuOpen(Int option)
@@ -7097,3 +7136,7 @@ Int OID_SLA_MIN_TEAMMATE_CUSTOMER_AROUSAL
 
 Int OID_DEBUG_NPC_WHORE_TAG
 Int OID_DEBUG_NPC_NAME_TXT
+
+Int OID_TEAMMATE_MARK_CHANCE
+Int OID_TEAMMATE_EXTRA_REWARD_CHANCE
+Int OID_TEAMMATE_EXTRA_REWARD_ENCHANTED_CHANCE

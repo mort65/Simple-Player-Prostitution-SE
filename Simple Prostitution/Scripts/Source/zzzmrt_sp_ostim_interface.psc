@@ -69,6 +69,10 @@ Bool Function isActorVictim(Actor act)
   return False
 endfunction
 
+ObjectReference Function findBed(ObjectReference CenterRef, Float Radius = 0.0)
+	return None
+endfunction
+
 state Installed
 
   function checkVars()
@@ -99,5 +103,9 @@ state Installed
   
   Bool Function isActorVictim(Actor act)
 	return zzzmrt_sp_int_ostim.isActorVictimOS(OSexIntegrationMainQuest, act)
+  endfunction
+  
+  ObjectReference Function findBed(ObjectReference CenterRef, Float Radius = 0.0)
+	return zzzmrt_sp_int_ostim.FindBedOS(OSexIntegrationMainQuest, CenterRef, Radius)
   endfunction
 endstate

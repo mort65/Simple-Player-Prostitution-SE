@@ -19,6 +19,7 @@ ReferenceAlias property teamMate10 Auto
 Form property WhoreTeamMate = None Auto Hidden Conditional
 Form property teamMateClient = None Auto Hidden Conditional
 FormList property BedsList auto
+Spell property TeammateCustomerSpell Auto
 
 Function detectTeamMates(Actor client)
 	if !isClientReady(client)
@@ -83,7 +84,7 @@ State Whoring
 		if ((sInterf == "flowergirls") || (sInterf == "sexlab") || (sInterf == "ostim"))
 			ObjectReference bedRef
 			if sInterf == "flowergirls"
-				bedRef = FindBed(whore as ObjectReference, 1000.0)
+				bedRef = FindBed(whore as ObjectReference)
 			endif
 			debug.sendanimationevent(whore, "idleforcedefaultstate")
 			debug.sendanimationevent(whoreClient, "idleforcedefaultstate")
@@ -175,7 +176,7 @@ State Whoring
 		endif
 		if bResult
 			payPlayer(iPosition)
-			MainScript.customerSpell.Cast(whoreClient, whoreClient)
+			TeammateCustomerSpell.Cast(whoreClient, whoreClient)
 			MainScript.persuade(MainScript.fTeamMatePersuasionXPMult)
 		endif
 		GoToState("")
@@ -231,6 +232,12 @@ Function payPlayer(Int position)
 	endif
 	Int totalPay = maxInt(0, positionReward + MainScript.randInt(minBonus, maxBonus))
 	MainScript.player.additem(MainScript.Gold, totalPay)
+	if MainScript.fTeamMateMarkChance > 0.0
+		MainScript.addDibelMarkToPlayer(MainScript.fTeamMateMarkChance, 1)
+	endif
+	if MainScript.fTeamMateExtraRewardChance > 0.0
+		MainScript.addExtraRewardsToPlayer(MainScript.fTeamMateExtraRewardChance, MainScript.fTeamMateExtraRewardEnchantedChance, 1)
+	endif
 EndFunction
 
 Bool function checkArousal(Actor act, Int iMinArousal = 0)
@@ -253,47 +260,92 @@ Bool Function isWhoring(Actor act)
 EndFunction
 
 Function endWhoring(Actor client, Bool bComplete = true)
-	bComplete && client && MainScript.customerSpell.Cast(client, client)
+	bComplete && client && TeammateCustomerSpell.Cast(client, client)
 	teammMateDetector.Stop()
 Endfunction
 
-ObjectReference function FindBed(ObjectReference CenterRef, float Radius=1000.0, bool IgnoreUsed=true, ObjectReference IgnoreRef1=none, ObjectReference IgnoreRef2=none)
-  if !CenterRef || CenterRef == none || Radius < 1.0
+ObjectReference function FindBed(ObjectReference CenterRef, float Radius=1600.0)
+  if !CenterRef
     return none
+  endif
+  if MainScript.bIsOstimActive
+    return MainScript.OStimInterface.FindBed(CenterRef, Radius)
+  endif
+  if (Radius < 1.0)
+	return None
   endif
   ObjectReference NearRef
   ObjectReference BedRef
   Form[] Suppressed = new Form[10]
-  Suppressed[9] = IgnoreRef1
-  Suppressed[8] = IgnoreRef2
+  ObjectReference anyBedRef = Game.FindRandomReferenceOfAnyTypeInListFromRef(BedsList, CenterRef, Radius)
+  if anyBedRef
+    if (Suppressed.Find(anyBedRef) > -1)
+    else
+      if CheckBed(anyBedRef)
+		if anyBedRef.GetDistance(CenterRef) < 600.0
+			return anyBedRef
+		else
+			NearRef = anyBedRef
+		endif
+	  else
+		Suppressed[9] = anyBedRef
+	  endif
+	endif
+  else
+    return None
+  endif
+  
+  int j
   int i = BedsList.GetSize()
+  Float fBedDistance
   while i
     i -= 1
     Form BedType = BedsList.GetAt(i)
     if BedType
       BedRef = Game.FindClosestReferenceOfTypeFromRef(BedType, CenterRef, Radius)
-      if BedRef && (Suppressed.Find(BedRef) == -1) && CheckBed(BedRef, IgnoreUsed)
-        if !NearRef || (BedRef.GetDistance(CenterRef) < NearRef.GetDistance(CenterRef))
-          NearRef = BedRef
+      if (BedRef && (Suppressed.Find(BedRef) == -1) && CheckBed(BedRef))
+		fBedDistance = BedRef.GetDistance(CenterRef)
+        if (!NearRef || (fBedDistance < NearRef.GetDistance(CenterRef)))
+		  if fBedDistance < 600.0
+		    return NearRef
+		  endif
+		  NearRef = BedRef
         endif
       endif
     endif
   endwhile
-  if NearRef && NearRef != none
+  
+  if NearRef
     return NearRef
   endif
+
+  i = 12
   while i
     i -= 1
     BedRef = Game.FindRandomReferenceOfAnyTypeInListFromRef(BedsList, CenterRef, Radius)
-    if !BedRef || ((Suppressed.Find(BedRef) == -1) && CheckBed(BedRef, IgnoreUsed))
-      return BedRef
-    else
-      Suppressed[i] = BedRef
+    if !BedRef
+		return none
+	elseif (Suppressed.Find(BedRef) > -1)
+	else
+		if CheckBed(BedRef)
+			return BedRef
+		else
+		  j = Suppressed.Find(None)
+		  if j > -1
+			Suppressed[j] = BedRef
+		  else
+			return none
+		  endif
+		endif
     endif
   endwhile
   return none
 endfunction
 
 bool function CheckBed(ObjectReference BedRef, bool IgnoreUsed=true)
-  return BedRef && BedRef.IsEnabled() && BedRef.Is3DLoaded() && (!IgnoreUsed || (IgnoreUsed && !BedRef.IsFurnitureInUse(true)))
+  return BedRef && BedRef.IsEnabled() && BedRef.Is3DLoaded() && (!IgnoreUsed || !BedRef.IsFurnitureInUse(true))
 endfunction
+
+Bool Function isFollower(Actor act)
+	return (act && (act.isPlayerTeammate() || act.IsInFaction(MainScript.playerFollowerFaction)))
+EndFunction

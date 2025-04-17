@@ -668,6 +668,9 @@ Bool property bTeamMateAllowAggressive = False Auto Hidden Conditional
 Float Property fTeamMatePersuasionXPMult = 0.0 Auto Hidden Conditional
 GlobalVariable property TeamMateFailureChance Auto
 Faction property playerFollowerFaction auto
+Float Property fTeamMateMarkChance = 0.0 Auto Hidden Conditional
+Float property fTeamMateExtraRewardChance = 0.0 Auto Hidden Conditional
+Float property fTeamMateExtraRewardEnchantedChance = 0.0 Auto Hidden Conditional
 
 function log(String sText, Bool bNotification = False, Bool bTrace = True, Int iSeverity = 1, Bool bForceNotif = False)
 	logText(sText, (bNotification && (bShowNotification || (iSeverity != 1) || bForceNotif)), bTrace, iSeverity, "SPP", sDefaultColor, sSuccessColor, sInfoColor, sWarningColor, sErrorColor, sSeparatorColor)
@@ -885,7 +888,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-	return getBaseVersion() + 0.70
+	return getBaseVersion() + 0.71
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
@@ -3128,7 +3131,7 @@ Bool function bCanBeWhore(Actor NPC)
 	if npc == player
 		return false
 	endif
-	return isFollower(npc)
+	return teamMateHandlerScript.isFollower(npc)
 EndFunction
 
 Bool Function bCanPimp(Actor npc)
@@ -3180,10 +3183,6 @@ Bool Function IsExcludable(Actor npc)
 		return false
 	endif
 	return true
-EndFunction
-
-Bool Function isFollower(Actor act)
-	return (act && (act.isPlayerTeammate() || act.IsInFaction(playerFollowerFaction)))
 EndFunction
 
 Form Function getOwner()

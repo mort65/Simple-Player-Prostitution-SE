@@ -244,6 +244,13 @@ Bool function bHaveGroupSexWithPlayerOS(Quest OSexIntegrationMainQuest, Actor[] 
 	return False
 EndFunction
 
+Objectreference Function FindBedOS(Quest OSexIntegrationMainQuest, ObjectReference CenterRef, Float Radius = 0.0) Global
+	if CenterRef
+		return (OSexIntegrationMainQuest as OSexIntegrationMain).FindBed(CenterRef, Radius)
+	endif
+	return None
+EndFunction
+
 Bool Function IsSceneAggressiveOS(String SceneID) Global
     if OMetadata.HasAnySceneTagCSV(SceneID, "aggressive,forced,rough,")
 		logText("[OStim] Scene with aggressive tag found: " + SceneID)
