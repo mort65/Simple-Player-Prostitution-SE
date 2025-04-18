@@ -277,10 +277,13 @@ ObjectReference function FindBed(ObjectReference CenterRef, float Radius=1600.0)
   ObjectReference NearRef
   ObjectReference BedRef
   Form[] Suppressed = new Form[10]
-  ObjectReference anyBedRef = Game.FindRandomReferenceOfAnyTypeInListFromRef(BedsList, CenterRef, Radius)
+  ObjectReference anyBedRef = Game.FindRandomReferenceOfAnyTypeInListFromRef(BedsList, CenterRef, MinFloat(600.0, Radius / 2))
+  if !anyBedRef
+	anyBedRef = Game.FindRandomReferenceOfAnyTypeInListFromRef(BedsList, CenterRef, Radius)
+  endif
   if anyBedRef
 	  if CheckBed(anyBedRef)
-		if anyBedRef.GetDistance(CenterRef) < 600.0
+		if anyBedRef.GetDistance(CenterRef) <= 600.0
 			return anyBedRef
 		else
 			NearRef = anyBedRef
