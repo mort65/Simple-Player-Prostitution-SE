@@ -283,7 +283,7 @@ ObjectReference function FindBed(ObjectReference CenterRef, float Radius=1600.0)
   endif
   if anyBedRef
 	  if CheckBed(anyBedRef)
-		if anyBedRef.GetDistance(CenterRef) <= MinFloat(600.0, Radius / 2)
+		if anyBedRef.GetDistance(CenterRef) <= 600.0
 			return anyBedRef
 		else
 			NearRef = anyBedRef
