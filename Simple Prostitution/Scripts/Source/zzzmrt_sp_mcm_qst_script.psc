@@ -407,7 +407,8 @@ event OnPageReset(String page)
     endif
     _AddToggleOptionST("WHORE_NEED_LICENSE_TOGGLE", "$MRT_SP_WHORE_NEED_LICENSE_TOGGLE", MainScript.bWhoreNeedLicense, flag)
     _AddToggleOptionST("DIBEL_NEED_LICENSE_TOGGLE", "$MRT_SP_DIBEL_NEED_LICENSE_TOGGLE", MainScript.bDibelNeedLicense, flag)
-    AddSliderOptionST("CITIZEN_REPORT_CHANCE_SLIDER", "$MRT_SP_CITIZEN_REPORT_CHANCE_SLIDER1", MainScript.fCitizenReportChance, "$MRT_SP_CITIZEN_REPORT_CHANCE_SLIDER2", flag)
+    OID_PIMPING_NEED_LICENSE = AddToggleOption("$MRT_SP_PIMPING_NEED_LICENSE_TOGGLE", MainScript.bPimpingNeedLicense, flag)
+	AddSliderOptionST("CITIZEN_REPORT_CHANCE_SLIDER", "$MRT_SP_CITIZEN_REPORT_CHANCE_SLIDER1", MainScript.fCitizenReportChance, "$MRT_SP_CITIZEN_REPORT_CHANCE_SLIDER2", flag)
     AddSliderOptionST("GUARD_REPORT_CHANCE_SLIDER", "$MRT_SP_GUARD_REPORT_CHANCE_SLIDER1", MainScript.fGuardReportChance, "$MRT_SP_GUARD_REPORT_CHANCE_SLIDER2", flag)	
 	addEmptyOption()
 	AddColoredHeader("$MRT_SP_HEAD_INTEGRATION_SLA")
@@ -3262,6 +3263,7 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
   MainScript.bDibelAmulet = jsonutil.GetPathIntValue(settings_path, "bDibelAmulet", MainScript.bDibelAmulet as int)
   MainScript.bMaleTempleClient = jsonutil.GetPathIntValue(settings_path, "bMaleTempleClient", MainScript.bMaleTempleClient as int)
   MainScript.bFemaleTempleClient = jsonutil.GetPathIntValue(settings_path, "bFemaleTempleClient", MainScript.bFemaleTempleClient as int)
+  MainScript.bTempleClientOnlyInSkyrim = jsonutil.GetPathIntValue(settings_path, "bTempleClientOnlyInSkyrim", MainScript.bTempleClientOnlyInSkyrim as int)
   MainScript.bDibelNeedWhoreOralReward = jsonutil.GetPathIntValue(settings_path, "bDibelNeedWhoreOralReward", MainScript.bDibelNeedWhoreOralReward as int)
   MainScript.bDibelNeedWhoreAnalReward = jsonutil.GetPathIntValue(settings_path, "bDibelNeedWhoreAnalReward", MainScript.bDibelNeedWhoreAnalReward as int)
   MainScript.bDibelNeedWhoreVaginalReward = jsonutil.GetPathIntValue(settings_path, "bDibelNeedWhoreVaginalReward", MainScript.bDibelNeedWhoreVaginalReward as int)
@@ -3275,6 +3277,7 @@ Bool function loadUserSettingsPapyrus(Bool bSilence = False)
   MainScript.bDibelPositionMenu = jsonutil.GetPathIntValue(settings_path, "bDibelPositionMenu", MainScript.bDibelPositionMenu as int)
   MainScript.bSLHH_MaleRapist = jsonutil.GetPathIntValue(settings_path, "bSLHH_MaleRapist", MainScript.bSLHH_MaleRapist as int)
   MainScript.bSLHH_FemaleRapist = jsonutil.GetPathIntValue(settings_path, "bSLHH_FemaleRapist", MainScript.bSLHH_FemaleRapist as int)
+  MainScript.bPimpingNeedLicense = jsonutil.GetPathIntValue(settings_path, "bPimpingNeedLicense", MainScript.bPimpingNeedLicense as int)
   MainScript.bWhoreOnlyPayIfClientOrgasmed = jsonutil.GetPathIntValue(settings_path, "bWhoreOnlyPayIfClientOrgasmed", MainScript.bWhoreOnlyPayIfClientOrgasmed as int)
   MainScript.bDibelOnlyPayIfClientOrgasmed = jsonutil.GetPathIntValue(settings_path, "bDibelOnlyPayIfClientOrgasmed", MainScript.bDibelOnlyPayIfClientOrgasmed as int)
   MainScript.bWhorePunishIfClientNotOrgasmed = jsonutil.GetPathIntValue(settings_path, "bWhorePunishIfClientNotOrgasmed", MainScript.bWhorePunishIfClientNotOrgasmed as int)
@@ -3629,6 +3632,7 @@ Bool function saveUserSettingsPapyrus()
 	jsonutil.SetPathIntValue(settings_path, "bDibelAmulet", MainScript.bDibelAmulet as Int)
 	jsonutil.SetPathIntValue(settings_path, "bMaleTempleClient", MainScript.bMaleTempleClient as Int)
 	jsonutil.SetPathIntValue(settings_path, "bFemaleTempleClient", MainScript.bFemaleTempleClient as Int)
+	jsonutil.SetPathIntValue(settings_path, "bTempleClientOnlyInSkyrim", MainScript.bTempleClientOnlyInSkyrim as Int)
 	jsonutil.SetPathIntValue(settings_path, "bDibelNeedWhoreOralReward", MainScript.bDibelNeedWhoreOralReward as Int)
 	jsonutil.SetPathIntValue(settings_path, "bDibelNeedWhoreAnalReward", MainScript.bDibelNeedWhoreAnalReward as Int)
 	jsonutil.SetPathIntValue(settings_path, "bDibelNeedWhoreVaginalReward", MainScript.bDibelNeedWhoreVaginalReward as Int)
@@ -3641,6 +3645,7 @@ Bool function saveUserSettingsPapyrus()
 	jsonutil.SetPathIntValue(settings_path, "bWhorePositionMenu", MainScript.bWhorePositionMenu as Int)
 	jsonutil.SetPathIntValue(settings_path, "bDibelPositionMenu", MainScript.bDibelPositionMenu as Int)
 	jsonutil.SetPathIntValue(settings_path, "bSLHH_MaleRapist", MainScript.bSLHH_MaleRapist as Int)
+	jsonutil.SetPathIntValue(settings_path, "bPimpingNeedLicense", MainScript.bPimpingNeedLicense as Int)
 	jsonutil.SetPathIntValue(settings_path, "bSLHH_FemaleRapist", MainScript.bSLHH_FemaleRapist as Int)
 	jsonutil.SetPathIntValue(settings_path, "bWhoreOnlyPayIfClientOrgasmed", MainScript.bWhoreOnlyPayIfClientOrgasmed as Int)
 	jsonutil.SetPathIntValue(settings_path, "bDibelOnlyPayIfClientOrgasmed", MainScript.bDibelOnlyPayIfClientOrgasmed as Int)
@@ -4412,6 +4417,9 @@ event OnOptionSelect(int option)
 	elseif option == OID_DIBEL_TEMPLE_TASK_FEMALE_CLIENT
 		MainScript.bFemaleTempleClient = !MainScript.bFemaleTempleClient
 		SetToggleOptionValue(option, MainScript.bFemaleTempleClient)
+	elseif option == OID_DIBEL_TEMPLE_TASK_CLIENT_IN_SKYRIM
+		MainScript.bTempleClientOnlyInSkyrim = !MainScript.bTempleClientOnlyInSkyrim
+		SetToggleOptionValue(option, MainScript.bTempleClientOnlyInSkyrim)
 	elseif option == OID_BEG_PAY_USE_BASE_SPEECH
 		MainScript.bBeggarPayUseBaseSpeech = !MainScript.bBeggarPayUseBaseSpeech
 		SetToggleOptionValue(option, MainScript.bBeggarPayUseBaseSpeech)
@@ -4448,6 +4456,9 @@ event OnOptionSelect(int option)
 	elseif option == OID_SLHH_FEMALE_RAPIST
 		MainScript.bSLHH_FemaleRapist = !MainScript.bSLHH_FemaleRapist
 		SetToggleOptionValue(option, MainScript.bSLHH_FemaleRapist)
+	Elseif option == OID_PIMPING_NEED_LICENSE
+		MainScript.bPimpingNeedLicense = !MainScript.bPimpingNeedLicense
+		SetToggleOptionValue(option, MainScript.bPimpingNeedLicense)	
 	elseif option == OID_WHORE_PAY_IF_ORGASMED
 		MainScript.bWhoreOnlyPayIfClientOrgasmed = !MainScript.bWhoreOnlyPayIfClientOrgasmed
 		SetToggleOptionValue(option, MainScript.bWhoreOnlyPayIfClientOrgasmed)
@@ -4621,6 +4632,9 @@ event OnOptionDefault(int option)
 	elseif option == OID_DIBEL_TEMPLE_TASK_FEMALE_CLIENT
 		MainScript.bFemaleTempleClient = True
 		SetToggleOptionValue(option, MainScript.bFemaleTempleClient)
+	elseif option == OID_DIBEL_TEMPLE_TASK_CLIENT_IN_SKYRIM
+		MainScript.bTempleClientOnlyInSkyrim = True
+		SetToggleOptionValue(option, MainScript.bTempleClientOnlyInSkyrim)
 	elseif option == OID_BEG_PAY_USE_BASE_SPEECH
 		MainScript.bBeggarPayUseBaseSpeech = True
 		SetToggleOptionValue(option, MainScript.bBeggarPayUseBaseSpeech)
@@ -4657,6 +4671,9 @@ event OnOptionDefault(int option)
 	elseif option == OID_SLHH_FEMALE_RAPIST
 		MainScript.bSLHH_FemaleRapist = False
 		SetToggleOptionValue(option, MainScript.bSLHH_FemaleRapist)
+	elseif option == OID_PIMPING_NEED_LICENSE
+		MainScript.bPimpingNeedLicense = False
+		SetToggleOptionValue(option, MainScript.bPimpingNeedLicense)
 	elseif option == OID_WHORE_PAY_IF_ORGASMED
 		MainScript.bWhoreOnlyPayIfClientOrgasmed = False
 		SetToggleOptionValue(option, MainScript.bWhoreOnlyPayIfClientOrgasmed)
@@ -4870,6 +4887,8 @@ event OnOptionHighlight(int option)
 	SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_TASK_MALE_CLIENT")
   elseif option == OID_DIBEL_TEMPLE_TASK_FEMALE_CLIENT
 	SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_TASK_FEMALE_CLIENT")
+  elseif option == OID_DIBEL_TEMPLE_TASK_CLIENT_IN_SKYRIM
+    SetInfoText("$MRT_SP_DESC_DIBEL_TEMPLE_TASK_CLIENT_IN_SKYRIM")
   elseif option == OID_BEG_PAY_USE_BASE_SPEECH
 	SetInfoText("$MRT_SP_DESC_BEG_PAY_USE_BASE_SPEECH")
   elseif option == OID_WHORE_PAY_USE_BASE_SPEECH
@@ -4883,7 +4902,9 @@ event OnOptionHighlight(int option)
   elseif option == OID_SHOW_NOTIFICATION
     SetInfoText("$MRT_SP_DESC_SHOW_NOTIFICATION")
   elseif option == OID_SLHH_FEMALE_RAPIST
-    SetInfoText("$MRT_SP_DESC_SLHH_FEMALE_RAPIST")	
+    SetInfoText("$MRT_SP_DESC_SLHH_FEMALE_RAPIST")
+  elseif option == OID_PIMPING_NEED_LICENSE
+	SetInfoText("$MRT_SP_DESC_PIMPING_NEED_LICENSE_TOGGLE")
   elseif option == OID_WHORE_PAY_IF_ORGASMED
     SetInfoText("$MRT_SP_DESC_WHORE_PAY_IF_ORGASMED")
   elseif option == OID_DIBEL_PAY_IF_ORGASMED
@@ -6794,6 +6815,7 @@ Function Dibel_Temple_Tasks(Int iflag)
   AddColoredHeader("$MRT_SP_HEAD_DIBEL_TEMPLE_TASKS")
 	OID_DIBEL_TEMPLE_TASK_MALE_CLIENT = AddToggleOption("$MRT_SP_DIBEL_TEMPLE_TASK_MALE_CLIENT", MainScript.bMaleTempleClient, flg)
 	OID_DIBEL_TEMPLE_TASK_FEMALE_CLIENT = AddToggleOption("$MRT_SP_DIBEL_TEMPLE_TASK_FEMALE_CLIENT", MainScript.bFemaleTempleClient, flg)
+	OID_DIBEL_TEMPLE_TASK_CLIENT_IN_SKYRIM = AddToggleOption("$MRT_SP_DIBEL_TEMPLE_TASK_CLIENT_IN_SKYRIM", MainScript.bTempleClientOnlyInSkyrim, flg)
 	OID_DIBEL_TEMPLE_TASK_SEPTIM_COST = AddSliderOption("$MRT_SP_DIBEL_TEMPLE_TASK_SEPTIM_COST_SLIDER1", MainScript.fTempleTaskSeptimCost, "$MRT_SP_DIBEL_TEMPLE_TASK_SEPTIM_COST_SLIDER2", flg)
 	OID_DIBEL_TEMPLE_TASK_MARK_COST = AddSliderOption("$MRT_SP_DIBEL_TEMPLE_TASK_Mark_COST_SLIDER1", MainScript.fTempleTaskMarkCost, "$MRT_SP_DIBEL_TEMPLE_TASK_MARK_COST_SLIDER2", flg)
 	OID_DIBEL_TEMPLE_TASK_MIN_PAY = AddSliderOption("$MRT_SP_DIBEL_TEMPLE_TASK_MIN_PAY_SLIDER1", MainScript.fTempleClientMinExtraPay, "$MRT_SP_DIBEL_TEMPLE_TASK_MIN_PAY_SLIDER2", flg)
@@ -7046,6 +7068,7 @@ Int OID_DIBEL_TEMPLE_TASK_SEPTIM_COST
 Int OID_DIBEL_TEMPLE_TASK_MIN_MARK_REWARD
 Int OID_DIBEL_TEMPLE_TASK_MAX_MARK_REWARD
 Int OID_DIBEL_TEMPLE_TASK_MARK_COST
+Int OID_DIBEL_TEMPLE_TASK_CLIENT_IN_SKYRIM
 
 Int OID_DEBUG_PC_WHORE_TAG
 Int OID_DEBUG_PC_DIBEL_TAG
@@ -7140,3 +7163,4 @@ Int OID_DEBUG_NPC_NAME_TXT
 Int OID_TEAMMATE_MARK_CHANCE
 Int OID_TEAMMATE_EXTRA_REWARD_CHANCE
 Int OID_TEAMMATE_EXTRA_REWARD_ENCHANTED_CHANCE
+Int OID_PIMPING_NEED_LICENSE

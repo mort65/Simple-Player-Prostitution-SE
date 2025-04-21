@@ -388,6 +388,7 @@ ReferenceAlias property SnitchRef1 auto
 ReferenceAlias property SnitchRef2 auto
 Actor Property whoreSnitch Auto Hidden Conditional
 Actor Property dibelSnitch Auto Hidden Conditional
+Actor Property TeamMateSnitch Auto Hidden Conditional
 Float Property fCitizenReportChance = 10.0 Auto Hidden Conditional
 Float Property fGuardReportChance = 90.0 Auto Hidden Conditional
 Bool Property isWhoringAllowedInCurrentLocation = False Auto Hidden Conditional
@@ -444,6 +445,7 @@ Int[] property iDeviceChanceArr Auto Hidden Conditional
 
 Bool bWhoreAnimEnded = False
 Bool bDibelAnimEnded = False
+Bool property Snitching = False Auto Hidden Conditional
 Bool Property bLastBeggingSucceed = False Auto Hidden Conditional
 Int Property iWhorePartners = 0 Auto Hidden Conditional
 Int Property iDibelPartners = 0 Auto Hidden Conditional
@@ -671,6 +673,8 @@ Faction property playerFollowerFaction auto
 Float Property fTeamMateMarkChance = 0.0 Auto Hidden Conditional
 Float property fTeamMateExtraRewardChance = 0.0 Auto Hidden Conditional
 Float property fTeamMateExtraRewardEnchantedChance = 0.0 Auto Hidden Conditional
+Bool property bPimpingNeedLicense = False Auto Hidden Conditional
+Bool Property bTempleClientOnlyInSkyrim = True Auto Hidden Conditional
 
 function log(String sText, Bool bNotification = False, Bool bTrace = True, Int iSeverity = 1, Bool bForceNotif = False)
 	logText(sText, (bNotification && (bShowNotification || (iSeverity != 1) || bForceNotif)), bTrace, iSeverity, "SPP", sDefaultColor, sSuccessColor, sInfoColor, sWarningColor, sErrorColor, sSeparatorColor)
@@ -718,9 +722,11 @@ function shutDown()
 	clearPositions()
 	dibelSnitch = None
 	whoreSnitch = None
+	teamMateSnitch = None
 	bIsBusy = False
 	isDibel = false
 	isWhore = false
+	Snitching = False
 	isWhore_g.SetValueInt(0)
 	isDibel_g.SetValueInt(0)
 	FlowerGirlsInterface.bChecked = False
@@ -867,6 +873,7 @@ Function ownerPayWhore(Actor whore)
 	Owner.clear()
 	clearWhoreCustomers()
 	currentAllowedLocations.Revert()
+	snitch()
 EndFunction
 
 function playerBegTo(Actor akActor, Bool bPay=True)
@@ -888,7 +895,7 @@ Float function getBaseVersion()
 endfunction
 
 Float function getCurrentVersion()
-	return getBaseVersion() + 0.71
+	return getBaseVersion() + 0.72
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
@@ -1361,6 +1368,8 @@ Function setWhoreCustomer(Actor akActor, Bool bPay = False, Bool bPersuaded = Tr
 				persuade(fWhorePersuasionXPMult)
 			endif
 		endif
+	else
+		Snitch()
 	endIf
 	if iWhorePositions.length != 4
 		iWhorePositions = new int[4]
@@ -1440,6 +1449,8 @@ Function setDibelCustomer(Actor akActor, bool bPay = true )
 			!bDibelPayAfterSex && (iPayment > 0) && debug.sendanimationevent(akActor, "IdleGive")
 			persuade(fDibelPersuasionXPMult)
 		endif
+	else
+		Snitch()
 	endIf
 	if iDibelPositions.length != 4
 		iDibelPositions = new int[4]
@@ -2895,7 +2906,12 @@ Bool function bCanSnitch(Actor npc, Bool bComplete = true)
 	if snitchers.hasform(npc)
 		return False
 	endif
-
+	if ((teamMateHandlerScript.teamMateClient as actor) && (npc == (teamMateHandlerScript.teamMateClient as actor)))
+		return False
+	endif
+	if ((teamMateHandlerScript.WhoreTeamMate as actor) && (npc == (teamMateHandlerScript.WhoreTeamMate as actor)))
+		return False
+	endif
 	if !bComplete
 		return True
 	endif
@@ -2958,12 +2974,19 @@ Bool Function playerHasDibelLicence()
 EndFunction
 
 function snitch()
+	If Snitching
+		Return
+	Endif
+	Snitching = True
 	actor snitch = None
 	If playerHasWhoreLicense() || !isSnitchOK(whoreSnitch)
 		whoreSnitch = None
 	endif
 	If playerHasDibelLicence() || !isSnitchOK(dibelSnitch)
 		dibelSnitch = None
+	endif
+	if teamMateHandlerScript.PlayerhasLicenseToPimp() || !isSnitchOK(teamMateSnitch)
+		teamMateSnitch = None
 	endif
 	if !isSnitchOK(angryWhoreCustomer)
 		angryWhoreCustomer = None
@@ -2977,16 +3000,27 @@ function snitch()
 				snitch = whoreSnitch
 				whoreSnitch = None
 				dibelSnitch = None
+				teamMateSnitch = None
 			endif
-		elseif dibelSnitch
+		endif
+		if !snitch && dibelSnitch
 			if (dibelSnitch.isGuard() || !inSameCell(player, dibelSnitch))
 				snitch = dibelSnitch
 				whoreSnitch = None
 				dibelSnitch = None
+				teamMateSnitch = None
+			endif
+		endif
+		if !snitch && TeamMateSnitch
+			if (teamMateSnitch.isGuard() || !inSameCell(player, teamMateSnitch))
+				snitch = teamMateSnitch
+				whoreSnitch = None
+				dibelSnitch = None
+				teamMateSnitch = None
 			endif
 		endif
 	endif
-	if (whoreSnitch || dibelSnitch) || (!snitch && (angryWhoreCustomer || angryDibelCustomer)) ;Snitches can't report so checking angry customers
+	if (whoreSnitch || dibelSnitch || teamMateSnitch) || (!snitch && (angryWhoreCustomer || angryDibelCustomer)) ;Snitches can't report so checking angry customers
 		if angryWhoreCustomer && (angryWhoreCustomer.isGuard() || !inSameCell(player, angryWhoreCustomer))
 			snitch = angryWhoreCustomer
 		elseif angryDibelCustomer && (angryDibelCustomer.isGuard() || !inSameCell(player, angryDibelCustomer))
@@ -2996,7 +3030,7 @@ function snitch()
 		endif
 	endif
 	if snitch
-		if snitch.getcrimefaction()
+		if (snitch.getcrimefaction() || ((snitch != angryDibelCustomer) && (snitch != angryWhoreCustomer)))
 			String msg
 			if snitch.isGuard() || ((iTotalCrimes > 1) && ((snitch == angryDibelCustomer) || (snitch == angryWhoreCustomer)))
 				msg = "You have been reported to the guards."
@@ -3007,9 +3041,11 @@ function snitch()
 			else
 				msg = "Someone reported you."
 			endif
-			log(msg, True, False, 2)
-			log(msg + " (" + snitch + ")")
-			if ((snitch == angryDibelCustomer) || (snitch == angryWhoreCustomer)) || !LicensesInterface.bFlagWhoreViolation()
+			Bool bSnitch = False
+			if ((snitch != angryDibelCustomer) && (snitch != angryWhoreCustomer))
+				bSnitch = LicensesInterface.bFlagWhoreViolation()
+			endif
+			if !bSnitch
 				if !player.GetCurrentLocation() || !player.GetCurrentLocation().HasKeywordstring("loctypejail")
 					if iTotalCrimes > 0
 						snitch.getcrimefaction().ModCrimeGold(minInt(1000000, iTotalCrimes * iCrimeBounty))
@@ -3017,15 +3053,22 @@ function snitch()
 					else
 						snitch.getcrimefaction().ModCrimeGold(iCrimeBounty)
 					endif
+					bSnitch = true
 				endIf
+			endif
+			if bSnitch
+				log(msg, True, False, 2)
+				log(msg + " (" + snitch + ")")
 			endif
 		endif
 		iTotalCrimes = 0
 		whoreSnitch = None
 		dibelSnitch = None
+		teamMateSnitch = None
 		angryDibelCustomer = None
 		angryWhoreCustomer = None
 	endif
+	Snitching = False
 endfunction
 
 
@@ -3050,8 +3093,6 @@ Bool Function findSnitch(Bool bCheckDibel = False)
 			endif
 			iIndex += 1
 		endWhile
-	else
-		utility.Wait(3.0)
 	endif
 	While !snitchDetector.isRunning()
 		utility.wait(0.2)
@@ -3072,6 +3113,71 @@ Bool Function findSnitch(Bool bCheckDibel = False)
 	return bSnitchFound
 endfunction
 
+Bool Function findTeamMateSnitch(Actor teamMate)
+	If !teamMate
+		return False
+	endif
+	Bool bSnitchFound = false
+	SnitchDetector.start()
+	If bIsPapyrusUtilActive
+		Actor[] actors = MiscUtil.ScanCellNPCs(teamMate as ObjectReference, radius = 3000.0, HasKeyword = none, IgnoreDead = true)
+		actor npc = None
+		int iIndex = 0
+		while (iIndex < actors.Length) && !bSnitchFound
+			npc = actors[iIndex]
+			bSnitchFound = checkTeamMateSnitch(npc, true)
+			if !bSnitchFound && (snitchRef1.GetActorReference() != None)
+				bSnitchFound = checkTeamMateSnitch(snitchRef1.GetActorReference(), false)
+			endif
+			if !bSnitchFound && (snitchRef2.GetActorReference() != None)
+				bSnitchFound = checkTeamMateSnitch(snitchRef2.GetActorReference(), false)
+			endif
+			iIndex += 1
+		endWhile
+	endif
+	While !snitchDetector.isRunning()
+		utility.wait(0.2)
+	endWhile
+	if (snitchRef1.GetActorReference() != None)
+		if !bSnitchFound
+			bSnitchFound = checkTeamMateSnitch(snitchRef1.GetActorReference(), false)
+		endif
+	endif
+	if (snitchRef2.GetActorReference() != None)
+		if !bSnitchFound
+			bSnitchFound = checkTeamMateSnitch(snitchRef2.GetActorReference(), false)
+		endif
+	endif
+	snitchDetector.stop()
+	return bSnitchFound
+endfunction
+
+Bool Function checkTeamMateSnitch(Actor npc, Bool bCompleteCheck = False)
+	if teamMateHandlerScript.PlayerhasLicenseToPimp()
+		teamMateSnitch = None
+		return True
+	endif
+	if !npc || (npc == player) || (teamMateSnitch && !teamMateSnitch.isDead() && teamMateSnitch.GetCrimeFaction())
+		Return True
+	endif
+
+	if npc.isGuard()
+		if (randInt(0,999) / 10.0) < fGuardReportChance as int
+			if bCanSnitch(npc, bCompleteCheck)
+				teamMateSnitch = npc
+				log(npc.GetDisplayName() + " (" + npc + ") wants to snitch on player teammate.")
+				Return True
+			endif
+		endif
+	elseif ((randInt(0,999) / 10.0) < fCitizenReportChance as int)
+		if bCanSnitch(npc, bCompleteCheck)
+			teamMateSnitch = npc
+			log(npc.GetDisplayName() + " (" + npc + ") wants to snitch on player teammate.")
+			Return True
+		endif
+	endif
+	Return False
+EndFunction
 
 Bool Function isWhoringAllowedInPlayerLocation()
 	return (Player.GetCurrentLocation() && isWhoringAllowedInLocation(Player.GetCurrentLocation()))

@@ -6,6 +6,7 @@ import zzzmrt_sp_utility
 
 Bool bCheckVars = False
 Bool bInit = False
+Bool bFindingSnitch = False
 
 event OnInit()
   MainScript.MCMScript.MCM_BUSY.SetValue(1)
@@ -21,6 +22,7 @@ endevent
 
 Function RegisterForEvents()
   RegisterForModEvent("SPP_StartFindSnitch", "OnStartFindSnitch")
+  RegisterForModEvent("SPP_StartFindTeamMateSnitch", "OnStartFindTeamMateSnitch")
   RegisterForModEvent("SPP_StartDetectAssault", "OnStartDetectAssault")
   RegisterForModEvent("SPP_StopDetectAssault", "OnStopDetectAssault")
   RegisterForModEvent("SPP_AELStruggle", "OnStruggleEnd")
@@ -56,6 +58,8 @@ Event OnLocationChange(Location akOldLoc, Location akNewLoc)
   MainScript.checkCurrentLocation()
   MainScript.GoToState("")
   MainScript.bIsBusy = False
+  MainScript.Snitching = False
+  bFindingSnitch = False
   if !mainscript.bPreventFruitlessApproaches
 	MainScript.stopApproach(true)
   endif
@@ -68,7 +72,7 @@ Event OnLocationChange(Location akOldLoc, Location akNewLoc)
   MainScript.startCalcSTDCurePrice()
   MainScript.CheckAliases()
   MainScript.SLSFR_Interface.SLSFR_toggle_WhoreFlag(MainScript.isPlayerDibeling() || MainScript.isPlayerWhoring())
-  if (MainScript.whoreSnitch || MainScript.dibelSnitch || MainScript.angryDibelCustomer || MainScript.angryWhoreCustomer || MainScript.InnWorkScript.doSendToSlavey || MainScript.TempleLoanScript.doSendToSlavey)
+  if (MainScript.whoreSnitch || MainScript.dibelSnitch || MainScript.TeamMateSnitch || MainScript.angryDibelCustomer || MainScript.angryWhoreCustomer || MainScript.InnWorkScript.doSendToSlavey || MainScript.TempleLoanScript.doSendToSlavey)
     RegisterForSingleUpdate(utility.randomFloat(10.0,30.0)) 
   endif
 endevent
@@ -95,13 +99,51 @@ Event OnStopDetectAssault(string eventName, string strArg, float numArg, Form se
 EndEvent
 
 Event OnStartFindSnitch(Form sender, Bool bCheckDibel)
-  MainScript.snitchers.revert()
-  if !MainScript.GetState() == ""
+  MainScript.log("OnStartFindSnitch() triggered by " + sender)
+  if MainScript.GetState() != ""
+	While bFindingSnitch
+		Utility.Wait(0.2)
+		if MainScript.GetState() == ""
+			return
+		endif
+	EndWhile
+	bFindingSnitch = True
+	MainScript.snitchers.revert()
     Bool bFound = False
     while !bFound && (MainScript.GetState() != "")
       bFound = MainScript.findSnitch(bCheckDibel)
       utility.wait(1.0)
     endWhile
+	bFindingSnitch = False
+  endif
+EndEvent
+
+Event OnStartFindTeamMateSnitch(Form sender, Bool bCheckDibel)
+  MainScript.log("OnStartFindTeamMateSnitch() triggered by " + sender)
+  if MainScript.GetState() == ""
+	While bFindingSnitch
+	  Utility.Wait(0.2)
+	  if MainScript.GetState() != ""
+		return
+	  endif
+	EndWhile
+	if MainScript.GetState() != ""
+	  return
+	endif
+	bFindingSnitch = True
+	MainScript.snitchers.revert()
+	Bool bFound = MainScript.findTeamMateSnitch(MainScript.Player)
+	if !bFound
+		Actor whore =  MainScript.teamMateHandlerScript.WhoreTeamMate as Actor
+		if whore
+			Utility.wait(3.0)
+			while (!bFound && (MainScript.GetState() == "") && MainScript.isActorHavingSex(whore))
+			  bFound = MainScript.findTeamMateSnitch(whore)
+			  utility.wait(1.0)
+			endWhile
+		endif
+	endif
+	bFindingSnitch = False
   endif
 EndEvent
 

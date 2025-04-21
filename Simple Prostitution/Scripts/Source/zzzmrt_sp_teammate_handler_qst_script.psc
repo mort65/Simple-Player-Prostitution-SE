@@ -22,7 +22,13 @@ FormList property BedsList auto
 Spell property TeammateCustomerSpell Auto
 
 Function detectTeamMates(Actor client)
+	if GetState() == ""
+		GoToState("Detecting")
+	Endif
 	if !isClientReady(client)
+		if GetState() == "Detecting"
+			GoToState("")
+		Endif
 		return
 	endif
 	if teammMateDetector.isrunning()
@@ -43,10 +49,16 @@ Function detectTeamMates(Actor client)
 			endif
 		endif
 	endWhile
+	if GetState() == "Detecting"
+		GoToState("")
+	Endif
 EndFunction
 
 
 Function StartWhoring(Actor Client, Actor Whore)
+	While getstate() == "Detecting"
+		Utility.wait(1.0)
+	EndWhile
 	if (!Client || !Whore)
 		teammMateDetector.Stop()
 		return
@@ -57,6 +69,169 @@ Function StartWhoring(Actor Client, Actor Whore)
 	teamMateClient = Client as Form
 	WhoreTeamMate = Whore as Form
 	GoTostate("Whoring")
+EndFunction
+
+Bool Function isTeamMateReady(Actor teamMate)
+	if !teamMate
+	elseif MainScript.isActorHavingSex(teamMate)
+	elseif !checkArousal(teamMate, MainScript.iSLA_MinTeamMateArousal)
+	elseif isWhoring(teamMate)
+	else
+		return true
+	endif
+	return False
+EndFunction
+
+Bool Function isClientReady(Actor client)
+	if !client
+	elseif MainScript.isActorHavingSex(client)
+	elseif (MainScript.bExcludeIfInScene && client.GetCurrentScene())
+		MainScript.log(client.GetDisplayName() + " is busy.", true, true, 1)
+	elseif !checkArousal(client, MainScript.iSLA_MinTeamMateCustomerArousal)
+	else
+		return true
+	endif
+	return False
+EndFunction
+
+Function payPlayer(Int position)
+	Float fSpeech
+	if MainScript.bTeamMatePayUseBaseSpeech
+		fSpeech = MainScript.player.GetBaseActorValue("Speechcraft")
+	else
+		fSpeech = MainScript.player.getActorValue("Speechcraft")
+	endif
+	Int minBonus = maxInt(0, ((fSpeech * MainScript.fTeamMateMinSpeechBonusMult) As Int) + 1)
+	Int maxBonus = maxInt(0, ((fSpeech * MainScript.fTeamMateMaxSpeechBonusMult) As Int) + 1)
+	minBonus = minInt(minBonus,maxBonus)
+	maxBonus = maxInt(minBonus,maxBonus)
+	int positionReward = 0
+	if position == 0
+		positionReward = MainScript.fTeamMateVagPay As Int
+	elseif position == 1
+		positionReward = MainScript.fTeamMateAnalPay As Int
+	elseif position == 2
+		positionReward = MainScript.fTeamMateOralPay As Int
+	endif
+	Int totalPay = maxInt(0, positionReward + MainScript.randInt(minBonus, maxBonus))
+	MainScript.player.additem(MainScript.Gold, totalPay)
+	if MainScript.fTeamMateMarkChance > 0.0
+		MainScript.addDibelMarkToPlayer(MainScript.fTeamMateMarkChance, 1)
+	endif
+	if MainScript.fTeamMateExtraRewardChance > 0.0
+		MainScript.addExtraRewardsToPlayer(MainScript.fTeamMateExtraRewardChance, MainScript.fTeamMateExtraRewardEnchantedChance, 1)
+	endif
+EndFunction
+
+Bool function checkArousal(Actor act, Int iMinArousal = 0)
+	if !act
+		return false
+	endif
+	if (!MainScript.bIs_SLA_Active || iMinArousal < 1)
+		return true
+	endif
+	int iArousal = MainScript.SLA_Interface.GetActorArousal(act)
+	if (iArousal >= iMinArousal)
+		return true
+	endif
+	MainScript.log(act.GetDisplayName() + " not aroused (" + iArousal + ")", true, true, 1)
+	return False
+endfunction
+
+Bool Function isWhoring(Actor act)
+	return (WhoreTeamMate && (GetState() == "Whoring") && (WhoreTeamMate == (act as Form)))
+EndFunction
+
+Function endWhoring(Actor client, Bool bComplete = true)
+	bComplete && client && TeammateCustomerSpell.Cast(client, client)
+	teammMateDetector.Stop()
+	MainScript.Snitch()
+Endfunction
+
+ObjectReference function FindBed(ObjectReference CenterRef, float Radius=1600.0)
+  if !CenterRef
+    return none
+  endif
+  if MainScript.bIsOstimActive
+    return MainScript.OStimInterface.FindBed(CenterRef, Radius)
+  endif
+  if (Radius < 1.0)
+	return None
+  endif
+  ObjectReference NearRef
+  ObjectReference BedRef
+  Form[] Suppressed = new Form[10]
+  ObjectReference anyBedRef = Game.FindRandomReferenceOfAnyTypeInListFromRef(BedsList, CenterRef, MinFloat(600.0, Radius / 2))
+  if !anyBedRef
+	anyBedRef = Game.FindRandomReferenceOfAnyTypeInListFromRef(BedsList, CenterRef, Radius)
+  endif
+  if anyBedRef
+	  if CheckBed(anyBedRef)
+		if anyBedRef.GetDistance(CenterRef) <= 600.0
+			return anyBedRef
+		else
+			NearRef = anyBedRef
+		endif
+	  else
+		Suppressed[0] = anyBedRef
+	  endif
+  else
+    return None
+  endif
+  
+  int j
+  int i = BedsList.GetSize()
+  Float fBedDistance
+  while i
+    i -= 1
+    Form BedType = BedsList.GetAt(i)
+    if BedType
+      BedRef = Game.FindClosestReferenceOfTypeFromRef(BedType, CenterRef, Radius)
+      if (BedRef && (Suppressed.Find(BedRef) == -1) && CheckBed(BedRef))
+		fBedDistance = BedRef.GetDistance(CenterRef)
+        if (!NearRef || (fBedDistance < NearRef.GetDistance(CenterRef)))
+		  if fBedDistance <= 600.0
+		    return BedRef
+		  endif
+		  NearRef = BedRef
+        endif
+      endif
+    endif
+  endwhile
+  
+  if NearRef
+    return NearRef
+  endif
+
+  i = 12
+  while i
+    i -= 1
+    BedRef = Game.FindRandomReferenceOfAnyTypeInListFromRef(BedsList, CenterRef, Radius)
+    if !BedRef
+		return none
+	elseif (Suppressed.Find(BedRef) > -1)
+	else
+		if CheckBed(BedRef)
+			return BedRef
+		else
+		  j = Suppressed.Find(None)
+		  if j > -1
+			Suppressed[j] = BedRef
+		  else
+			return none
+		  endif
+		endif
+    endif
+  endwhile
+  return none
+endfunction
+
+bool function CheckBed(ObjectReference BedRef, bool IgnoreUsed=true)
+  return BedRef && BedRef.IsEnabled() && BedRef.Is3DLoaded() && (!IgnoreUsed || !BedRef.IsFurnitureInUse(true))
+endfunction
+
+Bool Function isFollower(Actor act)
+	return (act && (act.isPlayerTeammate() || act.IsInFaction(MainScript.playerFollowerFaction)))
 EndFunction
 
 State Whoring
@@ -178,174 +353,27 @@ State Whoring
 			payPlayer(iPosition)
 			TeammateCustomerSpell.Cast(whoreClient, whoreClient)
 			MainScript.persuade(MainScript.fTeamMatePersuasionXPMult)
+			if (!PlayerhasLicenseToPimp() && !MainScript.isSnitchOK(MainScript.TeamMateSnitch))
+				int handle = ModEvent.Create("SPP_StartFindTeamMateSnitch")
+				ModEvent.PushForm(handle, self as Quest)
+				ModEvent.PushBool(handle, False)
+				ModEvent.Send(Handle)
+			endif
 		endif
 		GoToState("")
 	EndEvent
 	
 	Event OnEndState()
 		teammMateDetector.Stop()
+		MainScript.Snitch()
 	EndEvent
 EndState
 
+State Detecting
+	Function detectTeamMates(Actor client)
+	EndFunction
+EndState
 
-Bool Function isTeamMateReady(Actor teamMate)
-	if !teamMate
-	elseif MainScript.isActorHavingSex(teamMate)
-	elseif !checkArousal(teamMate, MainScript.iSLA_MinTeamMateArousal)
-	elseif isWhoring(teamMate)
-	else
-		return true
-	endif
-	return False
-EndFunction
-
-Bool Function isClientReady(Actor client)
-	if !client
-	elseif MainScript.isActorHavingSex(client)
-	elseif (MainScript.bExcludeIfInScene && client.GetCurrentScene())
-		MainScript.log(client.GetDisplayName() + " is busy.", true, true, 1)
-	elseif !checkArousal(client, MainScript.iSLA_MinTeamMateCustomerArousal)
-	else
-		return true
-	endif
-	return False
-EndFunction
-
-Function payPlayer(Int position)
-	Float fSpeech
-	if MainScript.bTeamMatePayUseBaseSpeech
-		fSpeech = MainScript.player.GetBaseActorValue("Speechcraft")
-	else
-		fSpeech = MainScript.player.getActorValue("Speechcraft")
-	endif
-	Int minBonus = maxInt(0, ((fSpeech * MainScript.fTeamMateMinSpeechBonusMult) As Int) + 1)
-	Int maxBonus = maxInt(0, ((fSpeech * MainScript.fTeamMateMaxSpeechBonusMult) As Int) + 1)
-	minBonus = minInt(minBonus,maxBonus)
-	maxBonus = maxInt(minBonus,maxBonus)
-	int positionReward = 0
-	if position == 0
-		positionReward = MainScript.fTeamMateVagPay As Int
-	elseif position == 1
-		positionReward = MainScript.fTeamMateAnalPay As Int
-	elseif position == 2
-		positionReward = MainScript.fTeamMateOralPay As Int
-	endif
-	Int totalPay = maxInt(0, positionReward + MainScript.randInt(minBonus, maxBonus))
-	MainScript.player.additem(MainScript.Gold, totalPay)
-	if MainScript.fTeamMateMarkChance > 0.0
-		MainScript.addDibelMarkToPlayer(MainScript.fTeamMateMarkChance, 1)
-	endif
-	if MainScript.fTeamMateExtraRewardChance > 0.0
-		MainScript.addExtraRewardsToPlayer(MainScript.fTeamMateExtraRewardChance, MainScript.fTeamMateExtraRewardEnchantedChance, 1)
-	endif
-EndFunction
-
-Bool function checkArousal(Actor act, Int iMinArousal = 0)
-	if !act
-		return false
-	endif
-	if (!MainScript.bIs_SLA_Active || iMinArousal < 1)
-		return true
-	endif
-	int iArousal = MainScript.SLA_Interface.GetActorArousal(act)
-	if (iArousal >= iMinArousal)
-		return true
-	endif
-	MainScript.log(act.GetDisplayName() + " not aroused (" + iArousal + ")", true, true, 1)
-	return False
-endfunction
-
-Bool Function isWhoring(Actor act)
-	return (WhoreTeamMate && (GetState() == "Whoring") && (WhoreTeamMate == (act as Form)))
-EndFunction
-
-Function endWhoring(Actor client, Bool bComplete = true)
-	bComplete && client && TeammateCustomerSpell.Cast(client, client)
-	teammMateDetector.Stop()
-Endfunction
-
-ObjectReference function FindBed(ObjectReference CenterRef, float Radius=1600.0)
-  if !CenterRef
-    return none
-  endif
-  if MainScript.bIsOstimActive
-    return MainScript.OStimInterface.FindBed(CenterRef, Radius)
-  endif
-  if (Radius < 1.0)
-	return None
-  endif
-  ObjectReference NearRef
-  ObjectReference BedRef
-  Form[] Suppressed = new Form[10]
-  ObjectReference anyBedRef = Game.FindRandomReferenceOfAnyTypeInListFromRef(BedsList, CenterRef, MinFloat(600.0, Radius / 2))
-  if !anyBedRef
-	anyBedRef = Game.FindRandomReferenceOfAnyTypeInListFromRef(BedsList, CenterRef, Radius)
-  endif
-  if anyBedRef
-	  if CheckBed(anyBedRef)
-		if anyBedRef.GetDistance(CenterRef) <= 600.0
-			return anyBedRef
-		else
-			NearRef = anyBedRef
-		endif
-	  else
-		Suppressed[0] = anyBedRef
-	  endif
-  else
-    return None
-  endif
-  
-  int j
-  int i = BedsList.GetSize()
-  Float fBedDistance
-  while i
-    i -= 1
-    Form BedType = BedsList.GetAt(i)
-    if BedType
-      BedRef = Game.FindClosestReferenceOfTypeFromRef(BedType, CenterRef, Radius)
-      if (BedRef && (Suppressed.Find(BedRef) == -1) && CheckBed(BedRef))
-		fBedDistance = BedRef.GetDistance(CenterRef)
-        if (!NearRef || (fBedDistance < NearRef.GetDistance(CenterRef)))
-		  if fBedDistance <= 600.0
-		    return BedRef
-		  endif
-		  NearRef = BedRef
-        endif
-      endif
-    endif
-  endwhile
-  
-  if NearRef
-    return NearRef
-  endif
-
-  i = 12
-  while i
-    i -= 1
-    BedRef = Game.FindRandomReferenceOfAnyTypeInListFromRef(BedsList, CenterRef, Radius)
-    if !BedRef
-		return none
-	elseif (Suppressed.Find(BedRef) > -1)
-	else
-		if CheckBed(BedRef)
-			return BedRef
-		else
-		  j = Suppressed.Find(None)
-		  if j > -1
-			Suppressed[j] = BedRef
-		  else
-			return none
-		  endif
-		endif
-    endif
-  endwhile
-  return none
-endfunction
-
-bool function CheckBed(ObjectReference BedRef, bool IgnoreUsed=true)
-  return BedRef && BedRef.IsEnabled() && BedRef.Is3DLoaded() && (!IgnoreUsed || !BedRef.IsFurnitureInUse(true))
-endfunction
-
-Bool Function isFollower(Actor act)
-	return (act && (act.isPlayerTeammate() || act.IsInFaction(MainScript.playerFollowerFaction)))
+Bool Function PlayerhasLicenseToPimp()
+	return (!MainScript.bPimpingNeedLicense || MainScript.LicensesInterface.bHasWhoreLicense())
 EndFunction
