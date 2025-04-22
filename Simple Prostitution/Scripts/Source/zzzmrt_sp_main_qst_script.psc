@@ -2249,6 +2249,7 @@ function ProstitutePlayerTo(Actor akCustomer, bool bAccept=true)
 	if akCustomer
 		if (bAccept || (!bExcludeIfInScene || (akCustomer.GetCurrentScene() == None)))
 			customerSpell.Cast(akCustomer, akCustomer)
+			Snitch()
 		else
 			String msg = akCustomer.getDisplayName() + " is busy."
 			log(msg, true, false)
@@ -2277,6 +2278,7 @@ function playerPracticeDibelArtWith(Actor akActor, bool bAccept=true)
 	if akActor
 		if (bAccept || (!bExcludeIfInScene || (akActor.GetCurrentScene() == None)))
 			customerSpell.Cast(akActor, akActor)
+			Snitch()
 		else
 			String msg = akActor.getDisplayName() + " is busy."
 			log(msg, True, False, 1)
