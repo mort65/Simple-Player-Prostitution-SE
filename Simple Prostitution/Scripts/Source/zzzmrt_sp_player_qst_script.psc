@@ -107,6 +107,9 @@ Event OnStartFindSnitch(Form sender, Bool bCheckDibel)
 			return
 		endif
 	EndWhile
+	if MainScript.GetState() == ""
+		return
+	endif
 	bFindingSnitch = True
 	MainScript.snitchers.revert()
     Bool bFound = False
