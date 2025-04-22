@@ -107,7 +107,7 @@ Event OnStartFindSnitch(Form sender, Bool bCheckDibel)
 			return
 		endif
 	EndWhile
-	if MainScript.GetState() == ""
+	if ((MainScript.GetState() == "") || !(MainScript as Quest).isRunning())
 		return
 	endif
 	bFindingSnitch = True
@@ -130,7 +130,7 @@ Event OnStartFindTeamMateSnitch(Form sender, Bool bCheckDibel)
 		return
 	  endif
 	EndWhile
-	if MainScript.GetState() != ""
+	if ((MainScript.GetState() != "") || !(MainScript as Quest).isRunning())
 	  return
 	endif
 	bFindingSnitch = True
