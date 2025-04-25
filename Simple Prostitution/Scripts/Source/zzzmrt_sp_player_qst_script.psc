@@ -9,7 +9,6 @@ Bool bInit = False
 Bool bFindingSnitch = False
 
 event OnInit()
-  MainScript.MCMScript.MCM_BUSY.SetValue(1)
   bInit = True
   bCheckVars = True
   RegisterForSingleUpdate(3.0)
@@ -45,7 +44,6 @@ event OnUpdate()
 	if MainScript.MCMScript.GetState() == "reset"
 		MainScript.MCMScript.gotostate("")
 	endif
-	MainScript.MCMScript.MCM_BUSY.SetValue(0)
   endif
 endevent
 

@@ -28,7 +28,7 @@ Int Property iTotalCarryWeightRecieved = 0 Auto Hidden
 Int Property iTotalOfferedMarks = 0 Auto Hidden
 Int Property iTotalRefundableOfferedMarks = 0 Auto Hidden
 
-GlobalVariable property MCM_BUSY auto
+GlobalVariable property MCM_BUSY auto ;useless
 
 Bool setModVars = false
 Bool bColorChanged = false
@@ -72,10 +72,7 @@ event OnPageReset(String page)
   Else
 	UnloadCustomContent()
   Endif
-  If (MCM_BUSY.GetValueInt() != 0)
-	AddColoredHeader("$MRT_SP_Head_Busy", MainScript.sInfoColor)
-	Return
-  EndIf
+  
   flag = OPTION_FLAG_NONE
   SetCursorFillMode(TOP_TO_BOTTOM)
   if (page == "$MRT_SP_PAGE_DEBUG")
@@ -769,8 +766,7 @@ event OnVersionUpdate(Int version)
 endevent
 
 Event OnConfigClose()
-  MCM_BUSY.SetValueInt(1)
-  registerForSingleUpdate(0.1)
+  registerForSingleUpdate(0.2)
 endEvent
 
 Event onUpdate()
@@ -1333,18 +1329,16 @@ state MOD_TOGGLE
 
   event OnSelectST()
     MainScript.bModEnabled = !MainScript.bModEnabled
-	MCM_BUSY.SetValue(1)
 	gotoState("reset")
     ShowMessage("Please close the MCM menu.", False)
-    Utility.wait(0.5)
+    Utility.wait(0.2)
     if MainScript.bModEnabled
       MainQuest.Start()
-	  MainScript.log("Simple Player Prostitution enabled.", true, true, 0, true) ;playerscript will reset MCM_BUSY and state
+	  MainScript.log("Simple Player Prostitution enabled.", true, true, 0, true)
     else
       MainScript.ShutDown()
       MainQuest.Stop()
 	  MainScript.log("Simple Player Prostitution disabled.", true, true, 0, true)
-	  MCM_BUSY.SetValue(0)
 	  gotoState("")
     endif
   endevent
@@ -6882,13 +6876,19 @@ State commit
 		bColorChanged = False
 	  endif
 	  GoToState("")
-	  MCM_BUSY.SetValueInt(0)
+	EndEvent
+	
+	Event OnUpdate()
 	EndEvent
 EndState
 
 State reset
 	Event OnConfigClose()
 	endEvent
+	Event OnUpdate()
+	EndEvent
+	Event OnEndState()
+	EndEvent
 EndState
 
 Int OID_BEG_GUARDS_SEX_OFFER
