@@ -1141,11 +1141,11 @@ Bool Function bHaveGroupSex(String interface, Bool bAllowAggressive = False, Boo
 	else
 		bResult = False
 		Bool bAllowGroupSex
-		Bool bGroupSexTried = False
+		Bool bExtraNPCJoined = False
 		while !bResult && (currentCustomerList.GetSize() > 0)
-			bAllowGroupSex = !bGroupSexTried && (randInt(0, 999) < (fGroupSexChance * 10) as Int)
-			bGroupSexTried = true
-			if bAllowGroupSex && (bNearbyMalesMayJoinSex || bNearbyFemalesMayJoinSex) && (currentCustomerList.GetSize() < iMaxPartners)
+			bAllowGroupSex = (randInt(0, 999) < (fGroupSexChance * 10) as Int)
+			if bAllowGroupSex && !bExtraNPCJoined && (bNearbyMalesMayJoinSex || bNearbyFemalesMayJoinSex) && (currentCustomerList.GetSize() < iMaxPartners)
+				bExtraNPCJoined = True
 				if participantDetector.isRunning()
 					participantDetector.stop()
 					while participantDetector.isRunning()
