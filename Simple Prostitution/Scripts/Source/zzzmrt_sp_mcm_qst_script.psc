@@ -6887,8 +6887,6 @@ State reset
 	endEvent
 	Event OnUpdate()
 	EndEvent
-	Event OnEndState()
-	EndEvent
 EndState
 
 Int OID_BEG_GUARDS_SEX_OFFER

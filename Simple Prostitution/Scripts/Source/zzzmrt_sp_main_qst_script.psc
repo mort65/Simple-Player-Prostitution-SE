@@ -899,7 +899,7 @@ Float function getCurrentVersion()
 endfunction
 
 Function persuade(Float fSpeechSkillMult)
-	if fSpeechSkillMult <= 0.0
+	if (fSpeechSkillMult <= 0.0) || (player.GetActorValue("Speechcraft") <= 0.0)
 		return
 	endif
 	Game.AdvanceSkill("Speechcraft", fSpeechSkillMult * player.GetActorValue("Speechcraft"))
@@ -1141,8 +1141,10 @@ Bool Function bHaveGroupSex(String interface, Bool bAllowAggressive = False, Boo
 	else
 		bResult = False
 		Bool bAllowGroupSex
+		Bool bGroupSexTried = False
 		while !bResult && (currentCustomerList.GetSize() > 0)
-			bAllowGroupSex = (randInt(0, 999) < (fGroupSexChance * 10) as Int)
+			bAllowGroupSex = !bGroupSexTried && (randInt(0, 999) < (fGroupSexChance * 10) as Int)
+			bGroupSexTried = true
 			if bAllowGroupSex && (bNearbyMalesMayJoinSex || bNearbyFemalesMayJoinSex) && (currentCustomerList.GetSize() < iMaxPartners)
 				if participantDetector.isRunning()
 					participantDetector.stop()
